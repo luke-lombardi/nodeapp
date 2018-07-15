@@ -1,0 +1,3 @@
+{
+    "explanation": "this is just used to keep the 'npm run build' command from failing until you add a ConfigGLobal.json file"
+}

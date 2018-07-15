@@ -1,0 +1,71 @@
+{
+  "name": "MobileApp",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "ios:start": "npm run build && react-native run-ios && npm run safewatch",
+    "ios:bundle": "react-native bundle --entry-file='artifacts/index.js' --bundle-output='./ios/MobileApp/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
+    "android:start": "npm run build && react-native run-android && npm run safewatch",
+    "android:bundle": "mkdir -p android/app/src/main/assets && react-native bundle --entry-file='artifacts/index.js' --bundle-output='./android/app/src/main/assets/index.android.bundle' --dev=false --platform='android' --assets-dest='./android/app/src/main/res/'",
+    "tsc": "tsc",
+    "watch": "npm run build -- -w",
+    "safewatch": "npm run safebuild -- -w",
+    "clean": "rimraf artifacts",
+    "build": "npm run clean && mkdir artifacts && cp src/*.json artifacts/ && npm run tsc --",
+    "safebuild": "npm run tsc --",
+    "lint": "tslint src/**/*.ts src/**/*.tsx",
+    "test": "jest"
+  },
+  "dependencies": {
+    "assets": "^3.0.0",
+    "auto-bind": "^1.2.0",
+    "aws-sdk": "^2.177.0",
+    "class-autobind": "^0.1.4",
+    "geolib": "^2.0.24",
+    "http-status-codes": "^1.3.0",
+    "moment": "^2.22.1",
+    "react": "16.3.1",
+    "react-native": "^0.55.3",
+    "react-native-aws-cognito-js": "0.0.7",
+    "react-native-camera": "^1.1.3",
+    "react-native-easy-toast": "^1.1.0",
+    "react-native-elements": "^1.0.0-beta5",
+    "react-native-fetch-polyfill": "^1.1.2",
+    "react-native-global-props": "^1.1.3",
+    "react-native-google-maps": "^1.0.0",
+    "react-native-keycode": "^1.0.3",
+    "react-native-linear-gradient": "^2.4.0",
+    "react-native-maps": ">=0.12.4",
+    "react-native-phone-input": "^0.2.1",
+    "react-native-pulse": "^1.0.6",
+    "react-native-stars-rating": "^0.1.7",
+    "react-native-vector-icons": "^4.6.0",
+    "react-native-view-finder": "^1.2.0",
+    "react-navigation": "^1.5.12",
+    "react-redux": "^5.0.7",
+    "react-viro": "^2.8.1",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.3.14",
+    "@types/react-native": "^0.55.12",
+    "babel-jest": "22.4.3",
+    "babel-preset-react-native": "4.0.0",
+    "jest": "22.4.3",
+    "react-test-renderer": "16.3.1",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/models/",
+      "./assets/images/"
+    ]
+  }
+}

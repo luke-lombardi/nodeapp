@@ -69,6 +69,9 @@
 		EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77EA891D532C491585AFAE2D /* libRNAWSCognito.a */; };
 		FBAFE8267C6F4D46A6F8C1E6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 087D15AC2F2641B9B5CED87C /* SimpleLineIcons.ttf */; };
 		C945FF24FB984529AE4B1B60 /* grid_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */; };
+		D1A098AF63F34C4E93F81868 /* emoji_smile_diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 48B4391D56BE4DC798CC0A90 /* emoji_smile_diffuse.png */; };
+		28BF92AE878241DE8A674213 /* emoji_smile_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B897EE75A41454CB42A11F4 /* emoji_smile_normal.png */; };
+		D12FFDB3C1EE4B6CACA9F20E /* emoji_smile_specular.png in Resources */ = {isa = PBXBuildFile; fileRef = E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -461,6 +464,9 @@
 		F9DF57A10E244C47A9B60A06 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		FE0A82D06818A9D74EB069F3 /* Pods-MobileApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */ = {isa = PBXFileReference; name = "grid_bg.jpg"; path = "../assets/images/grid_bg.jpg"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		48B4391D56BE4DC798CC0A90 /* emoji_smile_diffuse.png */ = {isa = PBXFileReference; name = "emoji_smile_diffuse.png"; path = "../assets/images/emoji_smile_diffuse.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5B897EE75A41454CB42A11F4 /* emoji_smile_normal.png */ = {isa = PBXFileReference; name = "emoji_smile_normal.png"; path = "../assets/images/emoji_smile_normal.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */ = {isa = PBXFileReference; name = "emoji_smile_specular.png"; path = "../assets/images/emoji_smile_specular.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -610,6 +616,9 @@
 				087D15AC2F2641B9B5CED87C /* SimpleLineIcons.ttf */,
 				F246B86C889E404983313B43 /* Zocial.ttf */,
 				A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */,
+				48B4391D56BE4DC798CC0A90 /* emoji_smile_diffuse.png */,
+				5B897EE75A41454CB42A11F4 /* emoji_smile_normal.png */,
+				E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1381,6 +1390,9 @@
 				FBAFE8267C6F4D46A6F8C1E6 /* SimpleLineIcons.ttf in Resources */,
 				6972E7B47BE34425A491FDDB /* Zocial.ttf in Resources */,
 				C945FF24FB984529AE4B1B60 /* grid_bg.jpg in Resources */,
+				D1A098AF63F34C4E93F81868 /* emoji_smile_diffuse.png in Resources */,
+				28BF92AE878241DE8A674213 /* emoji_smile_normal.png in Resources */,
+				D12FFDB3C1EE4B6CACA9F20E /* emoji_smile_specular.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

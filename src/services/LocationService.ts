@@ -37,6 +37,13 @@ export default class NodeService{
         let currentNode = {};
         currentNode['id'] = currentNodeId.toString();
         currentNode['data'] = {};
+
+        let testBearing = geolib.getBearing(
+          {latitude: nodeList[key].lat, longitude: nodeList[key].long}, 
+          {latitude: userRegion.latitude, longitude: userRegion.longitude}
+        );
+        
+        console.log(userRegion);
         
         currentNode['data'].latitude = nodeList[key].lat;
         currentNode['data'].longitude = nodeList[key].long;
@@ -50,12 +57,18 @@ export default class NodeService{
         currentNode['data'].description = nodeList[key].description;
         currentNode['data'].distance_in_meters = orderedList[i].distance;
         currentNode['data'].distance_in_miles = milesToNode;
+        currentNode['data'].bearing = testBearing - userRegion.bearing;
         currentNode['data'].rank = i;
 
+        console.log('TEST BEARING');
+        console.log(testBearing - userRegion.bearing);
+        console.log(userRegion);
         orderedNodeList.push(currentNode);
       }
 
       console.log(orderedNodeList);
+
+   
 
       return orderedNodeList;
       //return nodeList;

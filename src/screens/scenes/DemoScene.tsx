@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {StyleSheet} from 'react-native';
-import ResourceContainer from '../resources/resources'
+import ResourceContainer from '../../resources/resources'
 
 
 import {
@@ -24,7 +24,7 @@ interface IState{
     text: string;
 }
 
-export default class Scene extends Component<IProps, IState> {
+export default class DemoScene extends Component<IProps, IState> {
     
   private resourceContainer: ResourceContainer;
   

@@ -14,7 +14,7 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
-import { NodeListUpdatedActionCreator, VisitedNodeListUpdatedActionCreator } from '../actions/NodeActions';
+import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
 import NodeService, { INodeListUpdated } from '../services/NodeService';
 
 // custom components
@@ -26,7 +26,6 @@ import Node from '../components/Node';
 interface IProps {
     navigation: any,
     nodeList: Array<any>,
-    visitedNodeList: Array<any>,
     userRegion: any,
 
     // Redux actions
@@ -44,7 +43,7 @@ interface IState {
 }
 
 export class MainMap extends Component<IProps, IState> {
-  watchID : number;
+  timerID : number;
   _map: any;
   currentMarkerRegion: any;
 
@@ -67,6 +66,8 @@ export class MainMap extends Component<IProps, IState> {
     this.toggleWallet = this.toggleWallet.bind(this);
     this.createNode = this.createNode.bind(this);
     this.goToCreateNode = this.goToCreateNode.bind(this);
+    
+    this.createTimer = this.createTimer.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -74,6 +75,7 @@ export class MainMap extends Component<IProps, IState> {
     this.gotNewNodeList = this.gotNewNodeList.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
     this.nodeService = new NodeService({nodeListUpdated: this.gotNewNodeList, currentUserRegion: this.props.userRegion});
 
@@ -86,18 +88,31 @@ export class MainMap extends Component<IProps, IState> {
     await this.props.NodeListUpdated(props.nodeList);
   }
 
-  componentDidMount(){
-    this.watchID = navigator.geolocation.watchPosition((position) => {
+  private createTimer(){
+    this.timerID = setInterval(() => {
+      navigator.geolocation.getCurrentPosition((position) => {
         // Create the object to update this.state.mapRegion through the onRegionChange function
         let userRegion = {
           latitude:       position.coords.latitude,
           longitude:      position.coords.longitude,
           latitudeDelta:  0.00122*1.5,
-          longitudeDelta: 0.00121*1.5
+          longitudeDelta: 0.00121*1.5,
+          bearing: position.coords.heading
         }
+
         this.userPositionChanged(userRegion);
-        this._map.animateToRegion(this.props.userRegion, 100);
-    });
+    }, 
+   // @ts-ignore
+    (error) => console.log('ERROR'),
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+    );
+    
+    }, 1000);
+
+  }
+
+  componentDidMount(){
+    this.createTimer();    
 
     if(this.currentMarkerRegion){
       let selectedNode = this.props.nodeList.find(
@@ -122,10 +137,12 @@ export class MainMap extends Component<IProps, IState> {
       // this.mapView && this.mapView.animateToRegion(this.region, 500)
       this._map.animateToRegion(this.props.userRegion, 100);
     }, 10);
+
     
   }
 
   async userPositionChanged(userRegion:any){
+    console.log('CHANGED IT');
     await this.props.UserPositionChanged(userRegion);
   }
 
@@ -140,7 +157,6 @@ export class MainMap extends Component<IProps, IState> {
 
   // do not monitor the users current location when they are outside the map, for now
   componentWillUnmount(){
-    navigator.geolocation.clearWatch(this.watchID);
     // stop monitoring the node list because other screens will initialize the same method
   }
 
@@ -299,7 +315,6 @@ function mapStateToProps(state: IStoreState): IProps {
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
     NodeListUpdated: bindActionCreators(NodeListUpdatedActionCreator, dispatch),
-    VisitedNodeListUpdated: bindActionCreators(VisitedNodeListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch)
   };
 }

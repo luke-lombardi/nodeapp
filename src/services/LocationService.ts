@@ -1,13 +1,16 @@
 // import * as HttpStatus from 'http-status-codes';
 import Logger from './Logger';
-// import SleepUtil from './SleepUtil';
-// import DeferredPromise from './DeferredPromise';
+import SleepUtil from './SleepUtil';
 
 import geolib from 'geolib';
 
+export interface IUserPositionChanged {
+  readonly userRegion: any;
+}
 
 // @ts-ignore
 interface IProps {
+  readonly userPositionChanged?: (props: IUserPositionChanged) => Promise<void>;
 }
 
 export default class NodeService{
@@ -18,6 +21,35 @@ export default class NodeService{
         this.props = props;
         Logger.info(`LocationService.constructor -  Initialized location service`);
     }
+
+    private async getCurrentPositonAsync(options: any){
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, options);
+      });
+    }
+
+    public async StartMonitoring(){
+      while(true){
+        let options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        let position = await this.getCurrentPositonAsync(options);
+        
+        let userRegion = {
+              // @ts-ignore
+              latitude:       position.coords.latitude,
+              // @ts-ignore
+              longitude:      position.coords.longitude,
+              latitudeDelta:  0.00122*1.5,
+              longitudeDelta: 0.00121*1.5,
+              // @ts-ignore
+              bearing: position.coords.heading
+        }
+
+          await this.props.userPositionChanged({userRegion: userRegion});
+
+          await SleepUtil.SleepAsync(1000);
+      }
+    }
+    
 
     orderNodes(userRegion: any, nodeList: any): any{
       // @ts-ignore

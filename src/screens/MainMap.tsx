@@ -20,6 +20,7 @@ import NodeService, { INodeListUpdated } from '../services/NodeService';
 // custom components
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
+import SleepUtil from '../services/SleepUtil';
 
 // import mapStyle from '../config/mapStyle.json';
 
@@ -67,8 +68,6 @@ export class MainMap extends Component<IProps, IState> {
     this.createNode = this.createNode.bind(this);
     this.goToCreateNode = this.goToCreateNode.bind(this);
     
-    this.createTimer = this.createTimer.bind(this);
-
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
 
@@ -88,32 +87,10 @@ export class MainMap extends Component<IProps, IState> {
     await this.props.NodeListUpdated(props.nodeList);
   }
 
-  private createTimer(){
-    this.timerID = setInterval(() => {
-      navigator.geolocation.getCurrentPosition((position) => {
-        // Create the object to update this.state.mapRegion through the onRegionChange function
-        let userRegion = {
-          latitude:       position.coords.latitude,
-          longitude:      position.coords.longitude,
-          latitudeDelta:  0.00122*1.5,
-          longitudeDelta: 0.00121*1.5,
-          bearing: position.coords.heading
-        }
 
-        this.userPositionChanged(userRegion);
-    }, 
-   // @ts-ignore
-    (error) => console.log('ERROR'),
-    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-    );
-    
-    }, 1000);
-
-  }
+  
 
   componentDidMount(){
-    this.createTimer();    
-
     if(this.currentMarkerRegion){
       let selectedNode = this.props.nodeList.find(
         m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude
@@ -125,18 +102,18 @@ export class MainMap extends Component<IProps, IState> {
         this.setState({selectedNode: selectedNode});
 
         setTimeout(() => {
-          this._map.animateToRegion(this.currentMarkerRegion, 100);
+          this._map.animateToRegion(this.currentMarkerRegion, 10);
         }, 10)
 
         this.setState({nodeSelected: true});
         return;
       }
     }
-    
+
     setTimeout(() => {
-      // this.mapView && this.mapView.animateToRegion(this.region, 500)
       this._map.animateToRegion(this.props.userRegion, 100);
-    }, 10);
+    }, 1000)
+   
 
     
   }
@@ -304,7 +281,7 @@ export class MainMap extends Component<IProps, IState> {
 
 
 // Redux setup functions
-function mapStateToProps(state: IStoreState): IProps { 
+function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     nodeList: state.nodeList,

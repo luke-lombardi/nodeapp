@@ -4,5 +4,4 @@ export default interface IStoreState {
   readonly nodeList: Array<any>;
   readonly visitedNodeList: Array<any>;
   readonly userRegion: any;
-  readonly challengeSettings: any;
 }

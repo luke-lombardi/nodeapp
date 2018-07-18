@@ -52,6 +52,9 @@ export default class NodeService{
     
 
     orderNodes(userRegion: any, nodeList: any): any{
+      console.log('ORDERING THIS NODE LIST');
+      console.log(nodeList);
+
       // @ts-ignore
       let newNodeList = nodeList.map((val, index, arr) => {
         return { latitude: parseFloat(val.lat), longitude: parseFloat(val.long)}
@@ -81,10 +84,6 @@ export default class NodeService{
         currentNode['data'].longitude = nodeList[key].long;
         currentNode['data'].latDelta = nodeList[key].lat_delta;
         currentNode['data'].longDelta = nodeList[key].long_delta;
-        currentNode['data'].created_at = nodeList[key].created_at;
-        currentNode['data'].difficulty = nodeList[key].difficulty;
-        currentNode['data'].status = nodeList[key].status;
-        currentNode['data'].user_id = nodeList[key].user_id;
         currentNode['data'].title = nodeList[key].title;
         currentNode['data'].description = nodeList[key].description;
         currentNode['data'].distance_in_meters = orderedList[i].distance;

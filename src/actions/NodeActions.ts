@@ -19,23 +19,3 @@ export function NodeListUpdatedActionCreator(nodeList: Array<any>): (dispatch: D
     dispatch(NodeListUpdatedAction(nodeList));
   };
 }
-
-
-
-export interface IVisitedNodeListUpdated {
-  readonly type: keys.VISITED_NODE_LIST_UPDATED;
-  readonly visitedNodeList: Array<any>;
-}
-
-function VisitedNodeListUpdatedAction(visitedNodeList: Array<any>): IVisitedNodeListUpdated {
-  return {
-    type: keys.VISITED_NODE_LIST_UPDATED,
-    visitedNodeList: visitedNodeList,
-  };
-}
-
-export function VisitedNodeListUpdatedActionCreator(visitedNodeList: Array<any>): (dispatch: Dispatch<IStoreState>) => Promise<void> {
-  return async (dispatch: Dispatch<IStoreState>) => {
-    dispatch(VisitedNodeListUpdatedAction(visitedNodeList));
-  };
-}

@@ -6,7 +6,6 @@ const InitialState: IStoreState = {
   nodeList: [],
   visitedNodeList: [],
   userRegion: {},
-  challengeSettings: {}
 };
 
 export default InitialState;

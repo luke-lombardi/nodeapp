@@ -11,13 +11,3 @@ export function nodeListUpdatedReducer(
   }
   return state;
 }
-
-
-export function visitedNodeListUpdatedReducer(
-  state: Array<any> = InitialState.visitedNodeList, action: ActionTypes,
-): Array<any> {
-  if (action.type === ActionTypeKeys.VISITED_NODE_LIST_UPDATED) {
-    return action.visitedNodeList;
-  }
-  return state;
-}

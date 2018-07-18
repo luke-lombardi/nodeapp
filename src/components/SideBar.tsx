@@ -67,7 +67,7 @@ export class SideBar extends Component<IProps> {
                 <ListItem
                   containerStyle={styles.navItem}
                   key='nodes'
-                  title='Your boys'
+                  title='Tracked Nodes'
                   leftIcon={{name: 'map-pin', type: 'feather', color: "rgba(51, 51, 51, 0.8)"}}
 
                   onPress={ () => {

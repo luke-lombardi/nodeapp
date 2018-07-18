@@ -20,7 +20,6 @@ import NodeService, { INodeListUpdated } from '../services/NodeService';
 // custom components
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
-import SleepUtil from '../services/SleepUtil';
 
 // import mapStyle from '../config/mapStyle.json';
 

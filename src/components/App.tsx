@@ -16,10 +16,6 @@ import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
 
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
 import NodeService, { INodeListUpdated } from '../services/NodeService';
-import ChallengeService, { IChallengeSettingsUpdated } from '../services/ChallengeService';
-
-// @ts-ignore
-import { ChallengeSettingsUpdatedActionCreator } from '../actions/ChallengeActions';
 
 // SET GLOBAL PROPS //
 import { setCustomText} from 'react-native-global-props';
@@ -97,23 +93,15 @@ interface IProps{
 export class App extends Component<IProps> {
     // monitoring services
     private nodeService: NodeService;
-    private challengeService: ChallengeService;
     private locationService: LocationService;
 
     constructor(props: IProps){
       super(props);
 
       this.gotNewNodeList = this.gotNewNodeList.bind(this);
-
-      this.gotNewChallengeSettings = this.gotNewChallengeSettings.bind(this);
-
       this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
-
-
       this.getUserRegion = this.getUserRegion.bind(this);
 
-      this.challengeService = new ChallengeService({challengeSettingsUpdated: this.gotNewChallengeSettings});
-      this.challengeService.StartMonitoring();
 
       this.nodeService = new NodeService({nodeListUpdated: this.gotNewNodeList, currentUserRegion: this.getUserRegion});
       this.nodeService.StartMonitoring();
@@ -133,9 +121,6 @@ export class App extends Component<IProps> {
       await this.props.NodeListUpdated(props.nodeList);
     }
 
-    private async gotNewChallengeSettings(props: IChallengeSettingsUpdated){
-      await this.props.ChallengeSettingsUpdated(props.challengeSettings);
-    }
     
     render() {
         return (
@@ -156,8 +141,7 @@ function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     nodeList: state.nodeList,
-    userRegion: state.userRegion,
-    challengeSettings: state.challengeSettings
+    userRegion: state.userRegion
   };
 }
 
@@ -165,7 +149,6 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
     NodeListUpdated: bindActionCreators(NodeListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
-    ChallengeSettingsUpdated: bindActionCreators(ChallengeSettingsUpdatedActionCreator, dispatch),
   };
 }
 

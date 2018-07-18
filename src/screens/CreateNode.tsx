@@ -18,7 +18,6 @@ import ApiService from '../services/ApiService';
 
 interface IProps {
   navigation: any,
-  challengeSettings: any
 }
 
 interface IState {
@@ -79,7 +78,6 @@ export class CreateNode extends Component<IProps, IState> {
     let requestBody = {
         "title": this.state.title,
         "description": this.state.description,
-        "challenge_id": this.props.challengeSettings.challenge_id,
         "lat": this.state.userRegion.latitude,
         "long": this.state.userRegion.longitude,
         "lat_delta":  0.00122*1.5,
@@ -166,7 +164,6 @@ export class CreateNode extends Component<IProps, IState> {
  function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
-    challengeSettings: state.challengeSettings
   };
 }
 

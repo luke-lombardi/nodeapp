@@ -23,7 +23,7 @@ export default class ApiService {
     public async getNodes(){
       // TODO: get this pin list from AsyncStorage
       let trackedNodes = {
-        "pins": [12345]
+        "pins": [16313]
       }
 
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
@@ -42,13 +42,13 @@ export default class ApiService {
     }
                                                                           
    
-    async CreateNodeAsync(requestBody: any) {
+    async CreateNodeAsync(node_data: any) {
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(node_data)
           }); 
       
       if(response.status != HttpStatus.OK){

@@ -20,6 +20,7 @@ import NodeService, { INodeListUpdated } from '../services/NodeService';
 // custom components
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
+import CodePin from 'react-native-pin-code';
 
 // import mapStyle from '../config/mapStyle.json';
 
@@ -39,7 +40,8 @@ interface IState {
   lastLong: string,
   walletVisible: boolean,
   nodeSelected: boolean,
-  selectedNode: any
+  selectedNode: any,
+  pinCodeVisible: boolean,
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -58,7 +60,8 @@ export class MainMap extends Component<IProps, IState> {
       mapRegion: {},
       walletVisible: false,
       nodeSelected: false,
-      selectedNode: {}
+      selectedNode: {},
+      pinCodeVisible: false
     }
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
@@ -66,6 +69,7 @@ export class MainMap extends Component<IProps, IState> {
     this.toggleWallet = this.toggleWallet.bind(this);
     this.createNode = this.createNode.bind(this);
     this.goToCreateNode = this.goToCreateNode.bind(this);
+    this.enterPinCode = this.enterPinCode.bind(this);
     
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -112,16 +116,11 @@ export class MainMap extends Component<IProps, IState> {
     setTimeout(() => {
       this._map.animateToRegion(this.props.userRegion, 100);
     }, 1000)
-   
-
-    
   }
 
   async userPositionChanged(userRegion:any){
-    console.log('CHANGED IT');
     await this.props.UserPositionChanged(userRegion);
   }
-
 
   componentWillMount(){
     let shouldUpdate = this.props.navigation.getParam('updateNodes', false);
@@ -131,9 +130,7 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
-  // do not monitor the users current location when they are outside the map, for now
   componentWillUnmount(){
-    // stop monitoring the node list because other screens will initialize the same method
   }
 
   zoomToUserLocation(){    
@@ -170,14 +167,19 @@ export class MainMap extends Component<IProps, IState> {
 
   createNode(){
     Alert.alert(
-      'Create a new node',
-      'Keep in mind that this is linked to your reputation.',
+      'Add a node',
+      'Enter a pin or create a new node',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Continue', onPress: this.goToCreateNode},
+        {text: 'New Node', onPress: this.goToCreateNode},
+        {text: 'Track Node', onPress: this.enterPinCode},
       ],
       { cancelable: false }
     )
+  }
+
+  private async enterPinCode(){
+    await this.setState({pinCodeVisible: true});
   }
 
   private goToCreateNode(){
@@ -263,6 +265,23 @@ export class MainMap extends Component<IProps, IState> {
           // End map view  
         }
 
+         {
+          this.state.pinCodeVisible &&
+          
+          <CodePin
+            number={5} // You must pass number prop, it will be used to display 4 (here) inputs
+            checkPinCode={(code, callback) => callback(code === '1234')}
+            // Check manually code (ask server for instance)
+            // and call callback function with
+            //    true  (code pin is correct)
+            // or false (code pin is false)
+            success={() => console.log('hurray!')} // If user fill '2018', success is called
+            text="A simple Pin code component" // My title
+            error="You fail" // If user fail (fill '2017' for instance)
+            autoFocusFirst={true} // disabling auto-focus
+          />
+        }
+
         {
           // Node selected view
           this.state.nodeSelected &&
@@ -271,6 +290,8 @@ export class MainMap extends Component<IProps, IState> {
           </View>
           // End node selected view
         }
+
+       
 
      </View>
      // End map screen view (exported component)

@@ -55,6 +55,8 @@ export default class NodeService{
       console.log('ORDERING THIS NODE LIST');
       console.log(nodeList);
 
+      // TODO: have the API return a list as the response
+
       let nodeListArray = [];
 
       for (var key in nodeList) {
@@ -63,6 +65,7 @@ export default class NodeService{
               nodeListArray.push( nodeList[key] );
           }
       }
+
       // @ts-ignore
       let newNodeList = nodeListArray.map((val, index, arr) => {
         return { latitude: parseFloat(val.latitude), longitude: parseFloat(val.longitude)}

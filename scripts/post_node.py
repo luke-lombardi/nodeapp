@@ -17,6 +17,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+DEFAULT_NODE_TTL = 3600
+
+
 def is_cache_connected(rds):
     try:
         response = rds.client_list()
@@ -38,7 +41,12 @@ def connect_to_cache():
 
 
 def update_node(rds, pin, node_data):
-    rds.set(pin, json.dumps(node_data))
+    current_ttl = rds.ttl(pin)
+    logging.info('Node %d has %d seconds to live.', pin, current_ttl)
+    if current_ttl == -1:
+        current_ttl = DEFAULT_NODE_TTL
+
+    rds.setex(name=pin, value=json.dumps(node_data), time=current_ttl)
 
 
 def lambda_handler(event, context):

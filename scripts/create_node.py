@@ -18,6 +18,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+DEFAULT_NODE_TTL = 3600
+
+
 def random_pin(n):
     range_start = 10**(n-1)
     range_end = (10**n)-1
@@ -42,8 +45,7 @@ def connect_to_cache():
     else:
         logging.info('Could not connect to redis cache.')
         return None
-
-
+        
 
 def get_new_pin(rds):
     pin = random_pin(5)
@@ -53,9 +55,7 @@ def get_new_pin(rds):
 
 
 def insert_node(rds, pin, node_data):
-    rds.set(pin, json.dumps(node_data))
-
-
+    rds.setex(name=pin, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
 
 def lambda_handler(event, context):
     rds = connect_to_cache()

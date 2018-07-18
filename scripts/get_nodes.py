@@ -44,7 +44,10 @@ def get_nodes(rds, pins_to_get):
         if node_exists:
             logging.info('Node %d exists, getting data', pin)
             node_data = json.loads(rds.get(pin))
+            current_ttl = rds.ttl(pin)
             nodes[pin] = node_data
+            nodes[pin]['ttl'] = current_ttl
+            
         else:
             logging.info('Node %d not found')
 

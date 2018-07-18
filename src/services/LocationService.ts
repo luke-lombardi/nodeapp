@@ -55,9 +55,17 @@ export default class NodeService{
       console.log('ORDERING THIS NODE LIST');
       console.log(nodeList);
 
+      let nodeListArray = [];
+
+      for (var key in nodeList) {
+          if (nodeList.hasOwnProperty(key)) {
+              nodeList[key]['pin'] = key;
+              nodeListArray.push( nodeList[key] );
+          }
+      }
       // @ts-ignore
-      let newNodeList = nodeList.map((val, index, arr) => {
-        return { latitude: parseFloat(val.lat), longitude: parseFloat(val.long)}
+      let newNodeList = nodeListArray.map((val, index, arr) => {
+        return { latitude: parseFloat(val.latitude), longitude: parseFloat(val.longitude)}
       });
 
       let orderedList = geolib.orderByDistance({latitude: userRegion.latitude, longitude: userRegion.longitude}, newNodeList);
@@ -66,26 +74,27 @@ export default class NodeService{
 
       for(let i=0;i<orderedList.length;i++){
         let key = orderedList[i].key;
+        console.log(nodeListArray[key]);
+
         let milesToNode = geolib.convertUnit('mi', orderedList[i].distance)
-        let currentNodeId = nodeList[key].node_id;
         
         let currentNode = {};
-        currentNode['id'] = currentNodeId.toString();
+        currentNode['pin'] = nodeListArray[key].pin;
         currentNode['data'] = {};
 
         let testBearing = geolib.getBearing(
-          {latitude: nodeList[key].lat, longitude: nodeList[key].long}, 
+          {latitude: nodeListArray[key].latitude, longitude: nodeListArray[key].longitude}, 
           {latitude: userRegion.latitude, longitude: userRegion.longitude}
         );
         
         console.log(userRegion);
         
-        currentNode['data'].latitude = nodeList[key].lat;
-        currentNode['data'].longitude = nodeList[key].long;
-        currentNode['data'].latDelta = nodeList[key].lat_delta;
-        currentNode['data'].longDelta = nodeList[key].long_delta;
-        currentNode['data'].title = nodeList[key].title;
-        currentNode['data'].description = nodeList[key].description;
+        currentNode['data'].latitude = nodeListArray[key].latitude;
+        currentNode['data'].longitude = nodeListArray[key].longitude;
+        currentNode['data'].latDelta = nodeListArray[key].latDelta;
+        currentNode['data'].longDelta = nodeListArray[key].longDelta;
+        currentNode['data'].title = nodeListArray[key].title;
+        currentNode['data'].description = nodeListArray[key].description;
         currentNode['data'].distance_in_meters = orderedList[i].distance;
         currentNode['data'].distance_in_miles = milesToNode;
         currentNode['data'].bearing = testBearing - userRegion.bearing;

@@ -229,7 +229,7 @@ export class MainMap extends Component<IProps, IState> {
                   pinColor={'purple'}
                   //pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                   description={marker.data.description}
-                  key={marker.id.toString()} // TODO: replace this with marker.id, which will be the same as node.id in the SQL table
+                  key={marker.pin}
                 />
               ))}
               </MapView>

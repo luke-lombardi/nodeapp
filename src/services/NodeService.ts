@@ -56,6 +56,7 @@ export default class NodeService{
         Logger.info(`NodeService.StopMonitoring -  Disabling monitoring loop.`);
     }
    
+    // Private implementation functions
     private async MonitorNodeListAsync(){
         while(true){
             if(this.stopping) return;
@@ -70,9 +71,8 @@ export default class NodeService{
 
             Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
         }
-      }
-        
-
+    }
+    
     private async GetNodeListAsync(){
       Logger.info('NodeService.GetNodeListAsync - Getting the node list.');
       let nodes = await this.apiService.getNodes();
@@ -81,8 +81,24 @@ export default class NodeService{
         await this.props.nodeListUpdated({nodeList: orderedNodeList});
       }
     }
+
+    // Public interface functions
   
-  
+    public addNode(){
+
+    }
+
+    public createNode(){
+
+    }
+
+    public clearNodes(){
+
+    }
+
+    
+
+
 
   
 }

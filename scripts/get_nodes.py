@@ -25,7 +25,7 @@ def is_cache_connected(rds):
 
 
 def connect_to_cache():
-    rds = redis.StrictRedis(host='localhost', port=6379, db=0, socket_connect_timeout=5)
+    rds = redis.StrictRedis(host='redis-11771.c10.us-east-1-4.ec2.cloud.redislabs.com', password='3VyLUrhKv8BzUWtZKtKoIFdqlMk6TVOQ', port=11771, db=0, socket_connect_timeout=5)
 
     connected = is_cache_connected(rds)
     if connected:
@@ -47,7 +47,7 @@ def get_nodes(rds, pins_to_get):
             current_ttl = rds.ttl(pin)
             nodes[pin] = node_data
             nodes[pin]['ttl'] = current_ttl
-            
+
         else:
             logging.info('Node %d not found')
 

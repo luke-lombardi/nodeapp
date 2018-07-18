@@ -29,7 +29,7 @@ def is_cache_connected(rds):
 
 
 def connect_to_cache():
-    rds = redis.StrictRedis(host='localhost', port=6379, db=0, socket_connect_timeout=5)
+    rds = redis.StrictRedis(host='redis-11771.c10.us-east-1-4.ec2.cloud.redislabs.com', password='3VyLUrhKv8BzUWtZKtKoIFdqlMk6TVOQ', port=11771, db=0, socket_connect_timeout=5)
 
     connected = is_cache_connected(rds)
     if connected:
@@ -43,7 +43,7 @@ def connect_to_cache():
 def update_node(rds, pin, node_data):
     current_ttl = rds.ttl(pin)
     logging.info('Node %d has %d seconds to live.', pin, current_ttl)
-    if current_ttl == -1:
+    if current_ttl < 0:
         current_ttl = DEFAULT_NODE_TTL
 
     rds.setex(name=pin, value=json.dumps(node_data), time=current_ttl)
@@ -60,7 +60,9 @@ def lambda_handler(event, context):
     if node_data:
         update_node(rds, pin, node_data)
 
-    logging.info(json.loads(rds.get('12345')))
+    logging.info(json.loads(rds.get(pin)))
+
+    return json.dumps(json.loads(rds.get(pin)))
 
 
 def run():
@@ -81,8 +83,8 @@ def run():
 
     }
 
-    lambda_handler(test_event, test_context)
-
+    response = lambda_handler(test_event, test_context)
+    print(response)
 
     
     

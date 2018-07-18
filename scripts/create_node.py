@@ -36,7 +36,7 @@ def is_cache_connected(rds):
 
 
 def connect_to_cache():
-    rds = redis.StrictRedis(host='localhost', port=6379, db=0, socket_connect_timeout=5)
+    rds = redis.StrictRedis(host='redis-11771.c10.us-east-1-4.ec2.cloud.redislabs.com', password='3VyLUrhKv8BzUWtZKtKoIFdqlMk6TVOQ', port=11771, db=0, socket_connect_timeout=5)
 
     connected = is_cache_connected(rds)
     if connected:
@@ -45,7 +45,7 @@ def connect_to_cache():
     else:
         logging.info('Could not connect to redis cache.')
         return None
-        
+
 
 def get_new_pin(rds):
     pin = random_pin(5)
@@ -64,12 +64,13 @@ def lambda_handler(event, context):
         return
     
     node_data = event.get('node_data', {})
+    pin = 0
     if node_data:
         pin = get_new_pin(rds)
         logging.info('Generated new pin: %d', pin)
         insert_node(rds, pin, node_data)
-
-    logging.info(json.loads(rds.get('12345')))
+    
+    return pin
 
 
 def run():
@@ -89,8 +90,8 @@ def run():
 
     }
 
-    lambda_handler(test_event, test_context)
-
+    response = lambda_handler(test_event, test_context)
+    print(response)
 
     
     

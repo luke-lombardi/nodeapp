@@ -12,6 +12,8 @@ import redis
 import json
 import logging
 
+from uuid import uuid4
+
 from random import randint
 
 logger = logging.getLogger()
@@ -19,12 +21,6 @@ logger.setLevel(logging.INFO)
 
 
 DEFAULT_NODE_TTL = 3600
-
-
-def random_pin(n):
-    range_start = 10**(n-1)
-    range_end = (10**n)-1
-    return randint(range_start, range_end)
 
 
 def is_cache_connected(rds):
@@ -47,10 +43,10 @@ def connect_to_cache():
         return None
 
 
-def get_new_pin(rds):
-    pin = random_pin(5)
+def get_new_uuid(rds):
+    pin = uuid4()
     while rds.exists(pin):
-        pin = random_pin(5)
+        pin = uuid4()
     return pin
 
 
@@ -66,7 +62,7 @@ def lambda_handler(event, context):
     node_data = event.get('node_data', {})
     pin = 0
     if node_data:
-        pin = get_new_pin(rds)
+        pin = get_new_uuid(rds)
         logging.info('Generated new pin: %d', pin)
         insert_node(rds, pin, node_data)
     

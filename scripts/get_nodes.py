@@ -42,14 +42,14 @@ def get_nodes(rds, pins_to_get):
     for pin in pins_to_get:
         node_exists = rds.exists(pin)
         if node_exists:
-            logging.info('Node %d exists, getting data', pin)
+            logging.info('Node %s exists, getting data', pin)
             node_data = json.loads(rds.get(pin))
             current_ttl = rds.ttl(pin)
             nodes[pin] = node_data
             nodes[pin]['ttl'] = current_ttl
 
         else:
-            logging.info('Node %d not found')
+            logging.info('Node %s not found')
 
     return nodes
 
@@ -68,7 +68,7 @@ def lambda_handler(event, context):
 
 def run():
     test_event = {
-        "pins": [65496, 12345]
+        "pins": ["965133fc-bb3a-4f8d-a65e-4b98885c3c1f"]
     }
     
     test_context = {

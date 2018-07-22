@@ -10,6 +10,7 @@ import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
 import SideBar from '../components/SideBar';
+import ContactList from '../screens/ContactList';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -20,6 +21,7 @@ import LocationService, { IUserPositionChanged } from '../services/LocationServi
 import NodeService, { INodeListUpdated } from '../services/NodeService';
 
 // SET GLOBAL PROPS //
+
 import { setCustomText} from 'react-native-global-props';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
@@ -31,6 +33,7 @@ const customTextProps = {
 
 setCustomText(customTextProps);
 // END SET GLOBAL PROPS //
+
 const InternalStack = StackNavigator({
   Finder: { screen: Finder,
     navigationOptions: ({navigation}) => ({
@@ -40,8 +43,21 @@ const InternalStack = StackNavigator({
     })
   },
   Map: { screen: MainMap },
-  Nodes: {screen: NodeList },
-},
+  Nodes: { screen: NodeList,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      title: navigation.indexs,
+      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
+      })
+    },
+  ContactList: { screen: ContactList,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      title: navigation.indexs,
+      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
+      })
+    },
+  },
 {
   initialRouteName: 'Map',
   navigationOptions: ({navigation}) => ({

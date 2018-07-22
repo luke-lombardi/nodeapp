@@ -7,8 +7,7 @@ import ResourceContainer from '../../resources/resources'
 import {
     ViroARScene,
     // @ts-ignore
-    ViroText, ViroBox, Viro3DObject, ViroARPlaneSelector, ViroAmbientLight, ViroSpotLight, ViroNode, ViroPolygon, ViroARPlane,
-
+    ViroText, ViroBox, Viro3DObject, ViroARPlaneSelector, ViroAmbientLight, ViroSpotLight, ViroNode, ViroPolygon, ViroARPlane, ViroSpinner,
     ViroConstants,
     ViroMaterials,
   } from 'react-viro';
@@ -25,32 +24,41 @@ interface IState{
     isLoading: boolean;
     nodeDirection: number;
     pauseUpdates: boolean;
+    inView: boolean;
 }
 
 export default class NodeFinder extends Component<IProps, IState> {
   // @ts-ignore
   private resourceContainer: ResourceContainer;
+  // @ts-ignore
+  private scene: any;
 
   constructor(props: IProps){
     super(props);
     this.state = {
         isLoading: true,
         nodeDirection: 0.0,
-        pauseUpdates: false
+        pauseUpdates: false,
+        inView: false
     };
 
     this.resourceContainer = new ResourceContainer();
     this._onInitialized = this._onInitialized.bind(this);
+    this._setScene = this._setScene.bind(this);
 
     this.createMaterials = this.createMaterials.bind(this);
 
     this.followUserPosition = this.followUserPosition.bind(this);
 
+    this.scene = null;
+
     // @ts-ignore
     this.createMaterials();
   }
 
-
+  _setScene(ref) {
+    this.scene = ref;
+  }
   
   // @ts-ignore
   _onInitialized(state, reason) {
@@ -71,35 +79,66 @@ export default class NodeFinder extends Component<IProps, IState> {
 
 
   private async followUserPosition(){
+
     while(true){
       // @ts-ignore
       let selectedNode = await this.props.arSceneNavigator.viroAppProps.updateSelectedNode();
-      console.log(selectedNode.data.bearing);
-      await this.setState({nodeDirection: selectedNode.data.bearing})
+      // console.log(selectedNode.data.bearing);
+      await this.setState({nodeDirection: selectedNode.data.bearing});
+      
+      if((selectedNode.data.bearing < 20 && selectedNode.data.bearing > -20) || (selectedNode.data.bearing > 340 && selectedNode.data.bearing < 360)){
+        await this.setState({inView: true});
+      }
+      else{
+        await this.setState({inView: false});
+      }
+
+      // await this.scene.getCameraOrientationAsync();
       await SleepUtil.SleepAsync(100);
     }
   }
 
   render() {
     return (
-      <ViroARScene onTrackingUpdated={this._onInitialized} >
+      <ViroARScene onTrackingUpdated={this._onInitialized} ref={this._setScene}>
 
          <ViroText text={this.state.nodeDirection.toString()} scale={[.5, .5, .5]} position={[0, 0, -1]} />
+        
+        { this.state.isLoading && 
+         <ViroSpinner 
+            type='light'
+            position={[0, 0, -2]}
+        />
+        }
           
          <ViroAmbientLight color={"#aaaaaa"} />
          <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
           position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
 
-          {/* <ViroARPlane minHeight={.4} minWidth={.4} alignment={"Horizontal"} pauseUpdates={this.state.pauseUpdates}> */}
+          { !this.state.inView &&
             <Viro3DObject
               source={this.resourceContainer.getModel("arrow")}
               resources={[this.resourceContainer.getTexture("arrow")]}
               highAccuracyGaze={true}
-              position={[0, -0.1, -1.0]}
+              position={[0, -0.1, -0.75]}
               scale={[0.2, 0.2, 0.2]}
-              rotation={[90, this.state.nodeDirection + 90, 0]}
+              rotation={[-180, this.state.nodeDirection + 90, 0]}
               type="OBJ"
               />
+          }
+
+             {/* <ViroARPlane minHeight={.4} minWidth={.4} alignment={"Horizontal"} pauseUpdates={this.state.pauseUpdates}> */}
+              {/* <Viro3DObject
+              source={this.resourceContainer.getModel("beam")}
+              resources={[]}
+              highAccuracyGaze={false}
+              position={[0.0, -10.0, -10.0]}
+              scale={[0.05, 0.05, 0.005]}
+              rotation={[-90, 0, 0]}
+              type="OBJ"
+              opacity={0.3}
+              /> */}
+            {/* </ViroARPlane> */}
 
           {/* </ViroARPlane>  */}
        

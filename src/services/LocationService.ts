@@ -24,7 +24,6 @@ export default class LocationService {
         this.props = props;
         Logger.info(`LocationService.constructor -  Initialized location service`);
 
-
         this.updateBearing = this.updateBearing.bind(this);
         this.StartMonitoring = this.StartMonitoring.bind(this);
     }
@@ -40,12 +39,12 @@ export default class LocationService {
     }
 
     public async StartMonitoring(){
-      const degree_update_rate = 3; // Number of degrees changed before the callback is triggered
+      const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
       RNSimpleCompass.start(degree_update_rate, this.updateBearing);
   
       while(true){
 
-        let options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 100 }
+        let options = { enableHighAccuracy: true, timeout: 1000, maximumAge: 100 }
         let position = await this.getCurrentPositonAsync(options);
         
         let userRegion = {
@@ -109,27 +108,19 @@ export default class LocationService {
         Logger.info('Shortest path bearing:' + bearing.toString());
         Logger.info('Your orientation:' + userRegion.bearing.toString());
 
-        let arrowBearing = bearing;
-        let difference = 0;
+        let arrowBearing = 0.0
         if(userRegion.bearing == undefined){
-          Logger.info('UNDEFINED USER BEARING');
+          Logger.info('User orientation not defined, using shortest path vector.');
+          arrowBearing = bearing;
         }
         else{
-          difference = bearing - userRegion.bearing; 
-          arrowBearing = Math.abs(bearing - userRegion.bearing); 
-          Logger.info('DIFFERENCE: ' + arrowBearing.toString());
+          // shift bearing by 180 degrees so it lines up with compass angles
+          bearing = (bearing - 180);
+          arrowBearing = (bearing - userRegion.bearing) * -1; 
 
+          Logger.info('Adjusted shortest path bearing bearing:' + bearing.toString());
         }
 
-        if(difference > 0){
-          arrowBearing = arrowBearing + 180;
-        }
-        else if(difference < 0){
-          arrowBearing = arrowBearing - 180;
-        }
-
-        // Logger.info('BEARING: ' + arrowBearing.toString());
-        
         currentNode['data'].latitude = nodeListArray[key].lat;
         currentNode['data'].longitude = nodeListArray[key].lng;
         currentNode['data'].latDelta = '0.000183';

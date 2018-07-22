@@ -1,5 +1,8 @@
 import Logger from './Logger';
 import SleepUtil from './SleepUtil';
+import ApiService from '../services/ApiService';
+import { AsyncStorage } from 'react-native';
+
 
 import RNSimpleCompass from 'react-native-simple-compass';
 
@@ -18,6 +21,8 @@ interface IProps {
 export default class LocationService {
     // @ts-ignore
     private readonly props: IProps;
+    private apiService: ApiService;
+
     private bearing: number;
 
     constructor(props: IProps){
@@ -26,6 +31,7 @@ export default class LocationService {
 
         this.updateBearing = this.updateBearing.bind(this);
         this.StartMonitoring = this.StartMonitoring.bind(this);
+        this.apiService = new ApiService({});
     }
 
     private async updateBearing(degree){
@@ -41,7 +47,9 @@ export default class LocationService {
     public async StartMonitoring(){
       const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
       RNSimpleCompass.start(degree_update_rate, this.updateBearing);
-  
+      
+      let hitCount = 0;
+
       while(true){
 
         let options = { enableHighAccuracy: true, timeout: 1000, maximumAge: 100 }
@@ -59,19 +67,45 @@ export default class LocationService {
         }
 
         await this.props.userPositionChanged({userRegion: userRegion});
+
+        if(hitCount >= 10){
+          await this.postLocation(userRegion);
+          hitCount = 0;
+        }
+
         await SleepUtil.SleepAsync(100);
+        hitCount += 1;
       }
 
       RNSimpleCompass.stop();
     }
     
-    compassToBearing(compassDirection: number){
-      console.log(compassDirection);
+
+    private async postLocation(userRegion: any){
+      let currentUUID = await AsyncStorage.getItem('user_uuid');
+      if(currentUUID === undefined){
+        Logger.info('LocationService.postLocation - No UUID is defined, not posting location.')
+      }
+
+      let requestBody = {
+        "node_id": currentUUID,
+        "node_data": {
+          "lat": userRegion.latitude,
+          "lng": userRegion.longitude,
+          "title": "test",
+          "description": "test2"
+        }
+      }
+
+      let response = await this.apiService.PostNodeAsync(requestBody);
+
+      console.log('RESPONSE');
+      console.log(response);
     }
+
 
     orderNodes(userRegion: any, nodeList: any): any{
       // TODO: have the API return a list as the response
-
       let nodeListArray = [];
 
       for (var key in nodeList) {
@@ -108,7 +142,7 @@ export default class LocationService {
         Logger.info('Shortest path bearing:' + bearing.toString());
         Logger.info('Your orientation:' + userRegion.bearing.toString());
 
-        let arrowBearing = 0.0
+        let arrowBearing = 0.0;
         if(userRegion.bearing == undefined){
           Logger.info('User orientation not defined, using shortest path vector.');
           arrowBearing = bearing;

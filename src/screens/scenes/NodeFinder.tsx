@@ -106,7 +106,7 @@ export default class NodeFinder extends Component<IProps, IState> {
         
         { this.state.isLoading && 
          <ViroSpinner 
-            type='light'
+            type='Light'
             position={[0, 0, -2]}
         />
         }

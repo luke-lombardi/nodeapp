@@ -17,7 +17,7 @@ class MobileApp extends Component {
 
   componentWillMount() {
     Logger.CreateLogger({
-      logzToken: 'oPnvyWXcbTWyjQjjHEmQhqDHOzZjGnuB',  // <-- Put Logz.io (looks like an MD5 hash) here
+      logzToken: 'oPnvyWXcbTWyjQ',  // <-- Put Logz.io (looks like an MD5 hash) here
       toConsole: __DEV__,
       level: LogLevel.Info,
       sendIntervalMs: 60000,

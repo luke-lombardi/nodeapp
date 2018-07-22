@@ -78,6 +78,26 @@ export default class ApiService {
       let nodePin = await response.json(); 
       return nodePin;
     }
+
+
+    async PostNodeAsync(node_data: any) {
+      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/postNode', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(node_data)
+          }); 
+      
+      if(response.status != HttpStatus.OK){
+        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+
+        return undefined;
+      }
+      
+      response = await response.json(); 
+      return response;
+    }
   
 
 }

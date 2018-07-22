@@ -42,11 +42,8 @@ def connect_to_cache():
 
 def update_node(rds, node_id, node_data):
     current_ttl = rds.ttl(node_id)
-    logging.info('Node %d has %d seconds to live.', node_id, current_ttl)
-    if current_ttl < 0:
-        current_ttl = DEFAULT_NODE_TTL
-
-    rds.setex(name=node_id, value=json.dumps(node_data), time=current_ttl)
+    logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
+    rds.setex(name=node_id, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
 
 
 def lambda_handler(event, context):
@@ -61,7 +58,6 @@ def lambda_handler(event, context):
         update_node(rds, node_id, node_data)
 
     logging.info(json.loads(rds.get(node_id)))
-
     return json.dumps(json.loads(rds.get(node_id)))
 
 
@@ -73,7 +69,6 @@ def run():
             "description": "its me mario",
             "lat": 43.13232,
             "lng": 43.333,
-            "type": "single"
         }
     }
     

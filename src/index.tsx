@@ -7,7 +7,7 @@ import ConfigureStore from './store/ConfigureStore';
 import Logger, { LogLevel } from './services/Logger';
 import { YellowBox } from 'react-native';
 
-console.disableYellowBox = true;
+console.disableYellowBox = true
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 YellowBox.ignoreWarnings(['Class RCTCxxModule']);
 

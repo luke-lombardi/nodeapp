@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNSimpleCompassPackage;
+import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.cmcewen.blurview.BlurViewPackage;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNSimpleCompassPackage(),
+            new ReactNativeContacts(),
             new LinearGradientPackage(),
             new BlurViewPackage(),
             new BlurViewPackage(),

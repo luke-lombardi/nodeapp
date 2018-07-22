@@ -77,6 +77,8 @@ export class MainMap extends Component<IProps, IState> {
 
     this.gotNewNodeList = this.gotNewNodeList.bind(this);
 
+    this.goToContactList = this.goToContactList.bind(this);
+
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
@@ -174,10 +176,15 @@ export class MainMap extends Component<IProps, IState> {
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'New Node', onPress: this.goToNodeFinder},
         {text: 'Track Node', onPress: this.enterPinCode},
+        {text: 'Add Friend', onPress: this.goToContactList},
       ],
       { cancelable: false }
     )
   }
+
+  private goToContactList(){
+    this.props.navigation.navigate('ContactList', {action: "create_node", userRegion: this.props.userRegion});
+}
 
   private async enterPinCode(){
     await this.setState({pinCodeVisible: true});
@@ -211,6 +218,7 @@ export class MainMap extends Component<IProps, IState> {
             // Main map view
             <View style={styles.mapView}>
               <MapView
+                initialRegion={this.props.userRegion}
                 provider="google"
                 ref={component => {this._map = component;}}
                 style={StyleSheet.absoluteFillObject}

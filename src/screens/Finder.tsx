@@ -119,8 +119,6 @@ export class Finder extends Component<IProps, IState> {
 
 // Redux setup functions
 function mapStateToProps(state: IStoreState): IProps { 
-  console.log(state.userRegion);
-
   // @ts-ignore
   return {
     nodeList: state.nodeList,

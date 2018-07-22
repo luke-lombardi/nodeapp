@@ -39,10 +39,6 @@ export default class NodeFinder extends Component<IProps, IState> {
         pauseUpdates: false
     };
 
-    console.log('Passing in these props...');
-    // @ts-ignore
-    console.log(this.props.arSceneNavigator.viroAppProps.selectedNode.data.bearing)
-
     this.resourceContainer = new ResourceContainer();
     this._onInitialized = this._onInitialized.bind(this);
 
@@ -94,18 +90,18 @@ export default class NodeFinder extends Component<IProps, IState> {
          <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
           position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
 
-          <ViroARPlane minHeight={.4} minWidth={.4} alignment={"Horizontal"} pauseUpdates={this.state.pauseUpdates}>
+          {/* <ViroARPlane minHeight={.4} minWidth={.4} alignment={"Horizontal"} pauseUpdates={this.state.pauseUpdates}> */}
             <Viro3DObject
               source={this.resourceContainer.getModel("arrow")}
               resources={[this.resourceContainer.getTexture("arrow")]}
               highAccuracyGaze={true}
-              position={[0, 0.5, -1.5]}
-              scale={[0.7, 0.7, 0.7]}
-              rotation={[90, this.state.nodeDirection, 0]}
+              position={[0, -0.1, -1.0]}
+              scale={[0.2, 0.2, 0.2]}
+              rotation={[90, this.state.nodeDirection + 90, 0]}
               type="OBJ"
               />
 
-          </ViroARPlane> 
+          {/* </ViroARPlane>  */}
        
       </ViroARScene>
     )

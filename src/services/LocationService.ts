@@ -59,9 +59,6 @@ export default class LocationService {
               bearing: this.bearing
         }
 
-        // console.log('USER BEARING');
-        // console.log(userRegion.bearing);
-
         await this.props.userPositionChanged({userRegion: userRegion});
         await SleepUtil.SleepAsync(100);
       }
@@ -69,6 +66,9 @@ export default class LocationService {
       RNSimpleCompass.stop();
     }
     
+    compassToBearing(compassDirection: number){
+      console.log(compassDirection);
+    }
 
     orderNodes(userRegion: any, nodeList: any): any{
       // TODO: have the API return a list as the response
@@ -104,15 +104,31 @@ export default class LocationService {
           {latitude: userRegion.latitude, longitude: userRegion.longitude}
         );
 
+        Logger.info('NODE: ' + nodeListArray[key].title);
+        Logger.info('Figure out the bearing...');
+        Logger.info('Shortest path bearing:' + bearing.toString());
+        Logger.info('Your orientation:' + userRegion.bearing.toString());
+
         let arrowBearing = bearing;
+        let difference = 0;
         if(userRegion.bearing == undefined){
           Logger.info('UNDEFINED USER BEARING');
         }
         else{
-            arrowBearing = bearing - userRegion.bearing;
+          difference = bearing - userRegion.bearing; 
+          arrowBearing = Math.abs(bearing - userRegion.bearing); 
+          Logger.info('DIFFERENCE: ' + arrowBearing.toString());
+
         }
 
-        Logger.info('BEARING: ' + arrowBearing.toString());
+        if(difference > 0){
+          arrowBearing = arrowBearing + 180;
+        }
+        else if(difference < 0){
+          arrowBearing = arrowBearing - 180;
+        }
+
+        // Logger.info('BEARING: ' + arrowBearing.toString());
         
         currentNode['data'].latitude = nodeListArray[key].lat;
         currentNode['data'].longitude = nodeListArray[key].lng;

@@ -30,8 +30,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "MobileApp.app"
-               BlueprintName = "MobileApp"
-               ReferencedContainer = "container:MobileApp.xcodeproj">
+               BlueprintName = "FYB"
+               ReferencedContainer = "container:FYB.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "MobileAppTests.xctest"
-               BlueprintName = "MobileAppTests"
-               ReferencedContainer = "container:MobileApp.xcodeproj">
+               BuildableName = "FYBTests.xctest"
+               BlueprintName = "FYBTests"
+               ReferencedContainer = "container:FYB.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "MobileAppTests.xctest"
-               BlueprintName = "MobileAppTests"
-               ReferencedContainer = "container:MobileApp.xcodeproj">
+               BuildableName = "FYBTests.xctest"
+               BlueprintName = "FYBTests"
+               ReferencedContainer = "container:FYB.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -72,8 +72,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "MobileApp.app"
-            BlueprintName = "MobileApp"
-            ReferencedContainer = "container:MobileApp.xcodeproj">
+            BlueprintName = "FYB"
+            ReferencedContainer = "container:FYB.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -95,8 +95,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "MobileApp.app"
-            BlueprintName = "MobileApp"
-            ReferencedContainer = "container:MobileApp.xcodeproj">
+            BlueprintName = "FYB"
+            ReferencedContainer = "container:FYB.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -114,8 +114,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "MobileApp.app"
-            BlueprintName = "MobileApp"
-            ReferencedContainer = "container:MobileApp.xcodeproj">
+            BlueprintName = "FYB"
+            ReferencedContainer = "container:FYB.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

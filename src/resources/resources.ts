@@ -6,11 +6,14 @@ export default class ResourceContainer{
     private textures = {
         emoji_smile_diffuse: require('./../../assets/models/emoji_smile_diffuse.png'),
         emoji_smile_normal: require('./../../assets/models/emoji_smile_normal.png'),
-        emoji_smile_specular: require('./../../assets/models/emoji_smile_specular.png'),  
+        emoji_smile_specular: require('./../../assets/models/emoji_smile_specular.png'),
+        // arrow: require('./../../assets/models/arrow.mtl')
+
     };
 
     private models = {
         emoji_smile: require('./../../assets/models/emoji_smile.vrx'),
+        arrow: require('./../../assets/models/arrow.obj')
     };
 
     constructor(){

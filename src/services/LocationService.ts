@@ -44,82 +44,75 @@ export default class NodeService{
               bearing: position.coords.heading
         }
 
-          await this.props.userPositionChanged({userRegion: userRegion});
+        // @ts-ignore
+        console.log(position.coords);
+        console.log('COORDS');
 
-          await SleepUtil.SleepAsync(1000);
+        console.log('USER BEARING');
+        console.log(userRegion.bearing);
+
+        await this.props.userPositionChanged({userRegion: userRegion});
+        await SleepUtil.SleepAsync(1000);
       }
     }
     
 
     orderNodes(userRegion: any, nodeList: any): any{
-      console.log('ORDERING THIS NODE LIST');
-      console.log(nodeList);
-
       // TODO: have the API return a list as the response
 
       let nodeListArray = [];
 
       for (var key in nodeList) {
           if (nodeList.hasOwnProperty(key)) {
-              nodeList[key]['pin'] = key;
+              nodeList[key]['node_id'] = key;
               nodeListArray.push( nodeList[key] );
           }
       }
 
       // @ts-ignore
       let newNodeList = nodeListArray.map((val, index, arr) => {
-        return { latitude: parseFloat(val.latitude), longitude: parseFloat(val.longitude)}
+        return { latitude: parseFloat(val.lat), longitude: parseFloat(val.lng)}
       });
 
       let orderedList = geolib.orderByDistance({latitude: userRegion.latitude, longitude: userRegion.longitude}, newNodeList);
-      
       let orderedNodeList = [];
 
       for(let i=0;i<orderedList.length;i++){
         let key = orderedList[i].key;
-        console.log(nodeListArray[key]);
 
         let milesToNode = geolib.convertUnit('mi', orderedList[i].distance)
         
         let currentNode = {};
-        currentNode['pin'] = nodeListArray[key].pin;
+        currentNode['node_id'] = nodeListArray[key].node_id;
         currentNode['data'] = {};
 
         let testBearing = geolib.getBearing(
-          {latitude: nodeListArray[key].latitude, longitude: nodeListArray[key].longitude}, 
+          {latitude: nodeListArray[key].lat, longitude: nodeListArray[key].lng}, 
           {latitude: userRegion.latitude, longitude: userRegion.longitude}
         );
+
+        // console.log('TEST BEARING: ');
+        // console.log(testBearing);
         
-        console.log(userRegion);
+        // console.log(userRegion);
         
-        currentNode['data'].latitude = nodeListArray[key].latitude;
-        currentNode['data'].longitude = nodeListArray[key].longitude;
-        currentNode['data'].latDelta = nodeListArray[key].latDelta;
-        currentNode['data'].longDelta = nodeListArray[key].longDelta;
+        currentNode['data'].latitude = nodeListArray[key].lat;
+        currentNode['data'].longitude = nodeListArray[key].lng;
+        currentNode['data'].latDelta = '0.000183';
+        currentNode['data'].longDelta = '0.000183';
         currentNode['data'].title = nodeListArray[key].title;
         currentNode['data'].description = nodeListArray[key].description;
         currentNode['data'].distance_in_meters = orderedList[i].distance;
         currentNode['data'].distance_in_miles = milesToNode;
-        currentNode['data'].bearing = testBearing - userRegion.bearing;
+        currentNode['data'].bearing = testBearing;
         currentNode['data'].rank = i;
+        currentNode['data'].node_id = nodeListArray[key].node_id;
 
-        console.log('TEST BEARING');
-        console.log(testBearing - userRegion.bearing);
-        console.log(userRegion);
         orderedNodeList.push(currentNode);
       }
-
-      console.log(orderedNodeList);
-
-   
 
       return orderedNodeList;
       //return nodeList;
     }
-
-    
-
-
-
 
 }

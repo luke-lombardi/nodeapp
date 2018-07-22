@@ -66,7 +66,7 @@ export default class NodeService{
 
             await this.GetNodeListAsync();
 
-            const sleepPromise = SleepUtil.SleepAsync(10000);
+            const sleepPromise = SleepUtil.SleepAsync(5000);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
             Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');

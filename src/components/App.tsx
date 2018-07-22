@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
 import { View, StatusBar } from 'react-native';
+
+// @ts-ignore
 import Logger from '../services/Logger';
 
 import Finder from '../screens/Finder';
@@ -112,7 +114,6 @@ export class App extends Component<IProps> {
     }
 
     private async gotNewUserPosition(props: IUserPositionChanged) {
-      Logger.info(`Updated User position to: ${JSON.stringify(props.userRegion)}`);
       await this.props.UserPositionChanged(props.userRegion);
     }
 

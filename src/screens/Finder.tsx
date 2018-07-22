@@ -27,6 +27,7 @@ interface IProps {
   navigation: any,
   nodeList: Array<any>,
   userRegion: any,
+  
 
   // Redux actions
   NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>,
@@ -35,39 +36,60 @@ interface IProps {
 
 interface IState {
   isLoading: boolean,
-  sceneProps: any
+  sceneProps: any,
+  nodeId: string
 }
 
 export class Finder extends Component<IProps, IState> {
   private action: string;
-  
-  /*
-  private nextRoute: string;
-  private apiService: ApiService;
-  private nodeId: number;
-  */
 
   constructor(props: IProps){
     super(props);
 
-    this.state = {
-      isLoading: false,
-      sceneProps: {
-        nodeList: this.props.nodeList,
-        userRegion: this.props.userRegion
-      }
-    }
-
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
-    // this.apiService = new ApiService({});
+    let nodeId = this.props.navigation.getParam('nodeId', '');
+    
+
+    let selectedNode = this.props.nodeList.find(
+      n => n.data.node_id === nodeId
+    );
+
+    this.updateSelectedNode = this.updateSelectedNode.bind(this);
+    
+    this.state = {
+      isLoading: false,
+      sceneProps: {
+        userRegion: this.props.userRegion,
+        selectedNode: selectedNode,
+        updateSelectedNode: this.updateSelectedNode
+      },
+      nodeId: nodeId
     }
 
+    }
+
+    
+  private async updateSelectedNode(){
+    let nodeId = this.state.nodeId;
+
+    let selectedNode = this.props.nodeList.find(
+      n => n.data.node_id === nodeId
+    );
+    
+    // console.log(selectedNode);
+
+    return selectedNode;
+  }
+
+
   componentWillMount() {
+
   }
 
   componentWillUnmount() {
+
   }
 
   componentDidMount(){
@@ -77,6 +99,7 @@ export class Finder extends Component<IProps, IState> {
       // this.nextRoute = "Confirmation";
     }
   }
+
 
 
   render() {    
@@ -90,12 +113,14 @@ export class Finder extends Component<IProps, IState> {
       />
     );
   }
+
 }
 
 
 // Redux setup functions
 function mapStateToProps(state: IStoreState): IProps { 
   console.log(state.userRegion);
+
   // @ts-ignore
   return {
     nodeList: state.nodeList,

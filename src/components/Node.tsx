@@ -5,6 +5,7 @@ import { Card, Text, Button } from 'react-native-elements';
 interface IProps{
   title: string;
   description: string;
+  nodeId: string;
   navigation: any;
 }
 
@@ -23,7 +24,7 @@ export default class Node extends Component<IProps, IState> {
   }
 
   goToFinder(){
-    this.props.navigation.navigate('Finder', {action: "scan_node"});
+    this.props.navigation.navigate('Finder', {action: "scan_node", nodeId: this.props.nodeId });
   }
 
   render() {

@@ -1,26 +1,19 @@
 '''
-    endpoint: /fyb/createNode
-    method: POST
+    endpoint: /fyb/getAllNodes
+    method: GET
     format: application/json
 
     description:
-        Adds a new node to the database and returns a unique 5-digit node_id.
-        This node_id can then be added to the 'tracked' node list.
+        Grabs a list of all nodes present in the cache
 '''
 
 import redis
 import json
 import logging
 
-from uuid import uuid4
-
-from random import randint
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-
-DEFAULT_NODE_TTL = 3600
 
 
 def is_cache_connected(rds):
@@ -43,15 +36,13 @@ def connect_to_cache():
         return None
 
 
-def get_new_uuid(rds):
-    node_id = uuid4()
-    while rds.exists(node_id):
-        node_id = uuid4()
-    return node_id
+def get_all_nodes(rds):
+    nodes = []
 
+    nodes = [key.decode("utf-8") for key in rds.keys(pattern='*')]
 
-def insert_node(rds, node_id, node_data):
-    rds.setex(name=node_id, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+    return nodes
+
 
 def lambda_handler(event, context):
     rds = connect_to_cache()
@@ -59,25 +50,17 @@ def lambda_handler(event, context):
     if not rds:
         return
     
-    node_data = event.get('node_data', {})
-    node_id = 0
-    if node_data:
-        node_id = get_new_uuid(rds)
-        logging.info('Generated new node_id: %d', node_id)
-        insert_node(rds, node_id, node_data)
+    nodes = get_all_nodes(rds)
     
-    return str(node_id)
+    request_data = {
+        "node_ids": nodes
+    }
+
+    return json.dumps(request_data)
 
 
 def run():
     test_event = {
-        "node_data": {
-            "title": "demos for sale",
-            "description": "its me mario",
-            "lat": 43.13232,
-            "lng": 43.333,
-            "type": "single"
-        }
     }
     
     test_context = {

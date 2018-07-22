@@ -5,7 +5,7 @@
 
     description:
         Updates a nodes metadata. Used for moving nodes, such as people.
-        This pin can then be added to the 'tracked' node list.
+        This node_id can then be added to the 'tracked' node list.
 '''
 
 import redis
@@ -40,13 +40,13 @@ def connect_to_cache():
         return None
 
 
-def update_node(rds, pin, node_data):
-    current_ttl = rds.ttl(pin)
-    logging.info('Node %d has %d seconds to live.', pin, current_ttl)
+def update_node(rds, node_id, node_data):
+    current_ttl = rds.ttl(node_id)
+    logging.info('Node %d has %d seconds to live.', node_id, current_ttl)
     if current_ttl < 0:
         current_ttl = DEFAULT_NODE_TTL
 
-    rds.setex(name=pin, value=json.dumps(node_data), time=current_ttl)
+    rds.setex(name=node_id, value=json.dumps(node_data), time=current_ttl)
 
 
 def lambda_handler(event, context):
@@ -55,26 +55,24 @@ def lambda_handler(event, context):
     if not rds:
         return
     
-    pin = event.get('pin', 0)
+    node_id = event.get('node_id', 0)
     node_data = event.get('node_data', {})
     if node_data:
-        update_node(rds, pin, node_data)
+        update_node(rds, node_id, node_data)
 
-    logging.info(json.loads(rds.get(pin)))
+    logging.info(json.loads(rds.get(node_id)))
 
-    return json.dumps(json.loads(rds.get(pin)))
+    return json.dumps(json.loads(rds.get(node_id)))
 
 
 def run():
     test_event = {
-        "pin": 12345,
+        "node_id": 12345,
         "node_data": {
             "title": "demos for sale",
             "description": "its me mario",
-            "latitude": 43.13232,
-            "longitude": 43.333,
-            "latDelta": 0.00183,
-            "longDelta": 0.00183,
+            "lat": 43.13232,
+            "lng": 43.333,
             "type": "single"
         }
     }

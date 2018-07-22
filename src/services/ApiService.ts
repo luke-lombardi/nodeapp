@@ -21,6 +21,7 @@ export default class ApiService {
     }
 
     public async getNodes(){
+      /*
       // TODO: get this pin list from AsyncStorage
       let trackedNodes = {
         "pins": [16313]
@@ -36,8 +37,26 @@ export default class ApiService {
         Logger.info('NodeService.GetNodeListAsync - Unable to fetch node list');
         return undefined;
       }
+      */
+
+     let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getAllNodes', {
+          method: 'GET'
+      }); 
+
+      let responseBody = await response.json();
+      let requestBody = JSON.parse(responseBody);
+      
+      // console.log(requestBody);
+      // console.log(JSON.stringify(requestBody));
+
+      response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
+          method: 'POST',
+          headers: {'Content-Type': 'text/plain'},
+          body: JSON.stringify(requestBody)
+      }); 
 
       let nodeList = await response.json();
+
       return nodeList;
     }
                                                                           

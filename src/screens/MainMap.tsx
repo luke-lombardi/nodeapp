@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MapView, { Marker}   from 'react-native-maps';
 import Pulse from 'react-native-pulse';
 
-
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,9 +17,11 @@ import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
 import NodeService, { INodeListUpdated } from '../services/NodeService';
 
 // custom components
+
+// @ts-ignore
+import Logger from '../services/Logger';
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
-import CodePin from 'react-native-pin-code';
 
 // import mapStyle from '../config/mapStyle.json';
 
@@ -68,7 +69,7 @@ export class MainMap extends Component<IProps, IState> {
     this.viewNodeList = this.viewNodeList.bind(this);
     this.toggleWallet = this.toggleWallet.bind(this);
     this.createNode = this.createNode.bind(this);
-    this.goToCreateNode = this.goToCreateNode.bind(this);
+    this.goToNodeFinder = this.goToNodeFinder.bind(this);
     this.enterPinCode = this.enterPinCode.bind(this);
     
     this.onNodeSelected = this.onNodeSelected.bind(this);
@@ -171,7 +172,7 @@ export class MainMap extends Component<IProps, IState> {
       'Enter a pin or create a new node',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'New Node', onPress: this.goToCreateNode},
+        {text: 'New Node', onPress: this.goToNodeFinder},
         {text: 'Track Node', onPress: this.enterPinCode},
       ],
       { cancelable: false }
@@ -182,8 +183,8 @@ export class MainMap extends Component<IProps, IState> {
     await this.setState({pinCodeVisible: true});
   }
 
-  private goToCreateNode(){
-    this.props.navigation.navigate('Finder', {action: "create_node", userRegion: this.props.userRegion});
+  private goToNodeFinder(){
+    this.props.navigation.navigate('Finder', {action: "create_node", userRegion: this.props.userRegion, nodeId: this.state.selectedNode.data.node_id});
   }
   
 
@@ -231,7 +232,7 @@ export class MainMap extends Component<IProps, IState> {
                   pinColor={'purple'}
                   //pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                   description={marker.data.description}
-                  key={marker.pin}
+                  key={marker.node_id}
                 />
               ))}
               </MapView>
@@ -265,28 +266,11 @@ export class MainMap extends Component<IProps, IState> {
           // End map view  
         }
 
-         {
-          this.state.pinCodeVisible &&
-          
-          <CodePin
-            number={5} // You must pass number prop, it will be used to display 4 (here) inputs
-            checkPinCode={(code, callback) => callback(code === '1234')}
-            // Check manually code (ask server for instance)
-            // and call callback function with
-            //    true  (code pin is correct)
-            // or false (code pin is false)
-            success={() => console.log('hurray!')} // If user fill '2018', success is called
-            text="A simple Pin code component" // My title
-            error="You fail" // If user fail (fill '2017' for instance)
-            autoFocusFirst={true} // disabling auto-focus
-          />
-        }
-
         {
           // Node selected view
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
-              <Node title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description} navigation={this.props.navigation} />
+              <Node nodeId={this.state.selectedNode.data.node_id} title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description} navigation={this.props.navigation} />
           </View>
           // End node selected view
         }

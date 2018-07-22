@@ -60,7 +60,7 @@ export class NodeList extends Component<IProps> {
          data={this.props.nodeList}
          renderItem={this._renderItem}
          extraData={this.state}
-         keyExtractor={item => item.pin}
+         keyExtractor={item => item.node_id}
         />
 
         {

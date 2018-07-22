@@ -218,7 +218,7 @@ export class MainMap extends Component<IProps, IState> {
             // Main map view
             <View style={styles.mapView}>
               <MapView
-                initialRegion={this.props.userRegion}
+                // initialRegion={this.props.userRegion}
                 provider="google"
                 ref={component => {this._map = component;}}
                 style={StyleSheet.absoluteFillObject}

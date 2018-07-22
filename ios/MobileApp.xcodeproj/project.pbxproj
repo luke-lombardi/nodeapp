@@ -24,8 +24,6 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1852C4D85D2240769106A0C7 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B362B7F61085434290BB346A /* Foundation.ttf */; };
-		2345CB89BFF444FD8F899E2F /* emoji_smile_diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 239FF0556AA74518AC4CB080 /* emoji_smile_diffuse.png */; };
-		2C0560282103D0FC00F0B440 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0560042103D0D700F0B440 /* libRCTContacts.a */; };
 		2CB3882220E9674A003347F2 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB387F720E9672F003347F2 /* libBVLinearGradient.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -58,8 +56,6 @@
 		447CDAFC20D5A6F500B0CF3E /* libreact-native-google-maps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 447CDAFB20D5A6F500B0CF3E /* libreact-native-google-maps.a */; };
 		447CDAFE20D5A6F500B0CF3E /* libreact-native-maps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 447CDAFD20D5A6F500B0CF3E /* libreact-native-maps.a */; };
 		460DA0C7E4B24E6BA9FA69BD /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9DB5813C70441CCB4B05E80 /* Ionicons.ttf */; };
-		496E448866194DFB88D4B1AA /* emoji_smile_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = E30E5E88E02344B1BDFAB062 /* emoji_smile_normal.png */; };
-		5126D0A2623E4BA3BB7847CB /* emoji_smile_specular.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA36F9D80894052B2CF96C6 /* emoji_smile_specular.png */; };
 		5A86648E7782420BA3129430 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9DF57A10E244C47A9B60A06 /* libRNVectorIcons.a */; };
 		5DE2BC11CD2B4BDEBD2A49AE /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 446D9647B84146B297E8FE27 /* EvilIcons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -441,7 +437,6 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MobileApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		1A4913CDFFC80F78C8E0EC68 /* Pods-MobileApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp.release.xcconfig"; sourceTree = "<group>"; };
-		239FF0556AA74518AC4CB080 /* emoji_smile_diffuse.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_diffuse.png; path = ../assets/models/emoji_smile_diffuse.png; sourceTree = "<group>"; };
 		27549B70B6F549CA954FBD4B /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		2C055FF82103D0D600F0B440 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2C67F42520AD307900A967F6 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
@@ -487,8 +482,6 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B362B7F61085434290BB346A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		D0C069D679FF406FBB85383D /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		DEA36F9D80894052B2CF96C6 /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/models/emoji_smile_specular.png; sourceTree = "<group>"; };
-		E30E5E88E02344B1BDFAB062 /* emoji_smile_normal.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_normal.png; path = ../assets/models/emoji_smile_normal.png; sourceTree = "<group>"; };
 		E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/images/emoji_smile_specular.png; sourceTree = "<group>"; };
 		EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/models/emoji_smile_specular.png; sourceTree = "<group>"; };
 		F246B86C889E404983313B43 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -511,7 +504,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C0560282103D0FC00F0B440 /* libRCTContacts.a in Frameworks */,
 				2CB3882220E9674A003347F2 /* libBVLinearGradient.a in Frameworks */,
 				447CDAFA20D5A6F500B0CF3E /* libGoogle-Maps-iOS-Utils.a in Frameworks */,
 				447CDAFC20D5A6F500B0CF3E /* libreact-native-google-maps.a in Frameworks */,
@@ -994,11 +986,11 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = TN6X9LR957;
+						DevelopmentTeam = 7DA27ZHP58;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = TN6X9LR957;
+						DevelopmentTeam = 7DA27ZHP58;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -1642,7 +1634,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1675,7 +1667,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1708,7 +1700,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1725,6 +1717,15 @@
 				INFOPLIST_FILE = MobileApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Google-Maps-iOS-Utils\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-google-maps\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-maps\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/yoga\"",
+					"\"${PODS_ROOT}/../../node_modules/react-viro/ios/dist/lib\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-contacts\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1751,7 +1752,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

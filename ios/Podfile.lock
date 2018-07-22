@@ -24,6 +24,8 @@ PODS:
     - GoogleMaps/Base (= 2.5.0)
   - React (0.55.4):
     - React/Core (= 0.55.4)
+  - react-native-contacts (2.2.2):
+    - React
   - react-native-google-maps (0.21.0):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 2.5.0)
@@ -68,6 +70,7 @@ PODS:
 DEPENDENCIES:
   - GoogleMaps
   - GooglePlaces
+  - react-native-contacts (from `../node_modules/react-native-contacts`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - React/Core (from `../node_modules/react-native`)
@@ -95,6 +98,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   React:
     :path: "../node_modules/react-native"
+  react-native-contacts:
+    :path: "../node_modules/react-native-contacts"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
   react-native-maps:
@@ -111,12 +116,13 @@ SPEC CHECKSUMS:
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
   React: aa2040dbb6f317b95314968021bd2888816e03d5
+  react-native-contacts: 1a8913219e54d1fa20e817b99d9b42b9ec98558d
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
   ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 7efecbdcfec3e79db2055a083cece95503b3b450
+PODFILE CHECKSUM: 09a389afb7eb7f6690727da21f30cb1d8a25e614
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3

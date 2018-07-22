@@ -39,6 +39,7 @@
     "react-native-phone-input": "^0.2.1",
     "react-native-pin-code": "^0.4.1",
     "react-native-pulse": "^1.0.6",
+    "react-native-simple-compass": "^1.0.0",
     "react-native-stars-rating": "^0.1.7",
     "react-native-vector-icons": "^4.6.0",
     "react-native-view-finder": "^1.2.0",

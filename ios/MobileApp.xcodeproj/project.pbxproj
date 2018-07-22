@@ -62,11 +62,15 @@
 		685FD43F68364FCABA44FFE0 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0C069D679FF406FBB85383D /* MaterialCommunityIcons.ttf */; };
 		6972E7B47BE34425A491FDDB /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F246B86C889E404983313B43 /* Zocial.ttf */; };
 		77FFA15779574AC89A79F591 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F31A507510845F1B65CF905 /* Entypo.ttf */; };
+		79F2E1A7B39B420AAE5B6A5C /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FC96E3847194C9B9F3E61ED /* libRNSimpleCompass.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8B1F2E1131D9B2AAE6290FF6 /* libPods-MobileApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1D674A46318D5C7928FD0A /* libPods-MobileApp.a */; };
 		8EE36E0B7ED044CD823E9B88 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 485BD707C4414EF799D2A2FD /* Feather.ttf */; };
+		904CB41E19694B71B40B4791 /* emoji_smile_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = FACE1778922D44DF80F330CC /* emoji_smile_normal.png */; };
+		911ACD4BF6D149BF8F5F4F36 /* emoji_smile_diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = FE71E77FED994498935A0234 /* emoji_smile_diffuse.png */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B3E76F2583DF454090203264 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27549B70B6F549CA954FBD4B /* MaterialIcons.ttf */; };
+		C24962CC9BFB4D91AF6A331A /* emoji_smile_specular.png in Resources */ = {isa = PBXBuildFile; fileRef = EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */; };
 		C945FF24FB984529AE4B1B60 /* grid_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */; };
 		EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77EA891D532C491585AFAE2D /* libRNAWSCognito.a */; };
 		FBAFE8267C6F4D46A6F8C1E6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 087D15AC2F2641B9B5CED87C /* SimpleLineIcons.ttf */; };
@@ -262,6 +266,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNAWSCognito;
 		};
+		2E41AA5021041E2800CD960D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88854C04E2544394BBC8EF77 /* RNSimpleCompass.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSimpleCompass;
+		};
 		2EEE1268209E4B4F00C69A10 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5F022A987EA248CEA9EAAF53 /* RNVectorIcons.xcodeproj */;
@@ -451,10 +462,12 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5F022A987EA248CEA9EAAF53 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		6A1D674A46318D5C7928FD0A /* libPods-MobileApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MobileApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FC96E3847194C9B9F3E61ED /* libRNSimpleCompass.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleCompass.a; sourceTree = "<group>"; };
 		77EA891D532C491585AFAE2D /* libRNAWSCognito.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAWSCognito.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		85B1135C70E44DBEAB085147 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		88854C04E2544394BBC8EF77 /* RNSimpleCompass.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleCompass.xcodeproj; path = "../node_modules/react-native-simple-compass/ios/RNSimpleCompass.xcodeproj"; sourceTree = "<group>"; };
 		8FC1DE9AE4E74BC0AC2026BA /* RNAWSCognito.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAWSCognito.xcodeproj; path = "../node_modules/react-native-aws-cognito-js/ios/RNAWSCognito.xcodeproj"; sourceTree = "<group>"; };
 		A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = grid_bg.jpg; path = ../assets/images/grid_bg.jpg; sourceTree = "<group>"; };
 		A9DB5813C70441CCB4B05E80 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -462,9 +475,12 @@
 		B362B7F61085434290BB346A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		D0C069D679FF406FBB85383D /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/images/emoji_smile_specular.png; sourceTree = "<group>"; };
+		EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/models/emoji_smile_specular.png; sourceTree = "<group>"; };
 		F246B86C889E404983313B43 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		F9DF57A10E244C47A9B60A06 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
+		FACE1778922D44DF80F330CC /* emoji_smile_normal.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_normal.png; path = ../assets/models/emoji_smile_normal.png; sourceTree = "<group>"; };
 		FE0A82D06818A9D74EB069F3 /* Pods-MobileApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp.debug.xcconfig"; sourceTree = "<group>"; };
+		FE71E77FED994498935A0234 /* emoji_smile_diffuse.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_diffuse.png; path = ../assets/models/emoji_smile_diffuse.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -511,6 +527,7 @@
 				5A86648E7782420BA3129430 /* libRNVectorIcons.a in Frameworks */,
 				EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */,
 				8B1F2E1131D9B2AAE6290FF6 /* libPods-MobileApp.a in Frameworks */,
+				79F2E1A7B39B420AAE5B6A5C /* libRNSimpleCompass.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,6 +634,9 @@
 				48B4391D56BE4DC798CC0A90 /* emoji_smile_diffuse.png */,
 				5B897EE75A41454CB42A11F4 /* emoji_smile_normal.png */,
 				E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */,
+				FE71E77FED994498935A0234 /* emoji_smile_diffuse.png */,
+				FACE1778922D44DF80F330CC /* emoji_smile_normal.png */,
+				EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -743,11 +763,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2E41AA2421041E2800CD960D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2E41AA5121041E2800CD960D /* libRNSimpleCompass.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2EEE123F209E4B4A00C69A10 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
 				F9DF57A10E244C47A9B60A06 /* libRNVectorIcons.a */,
 				77EA891D532C491585AFAE2D /* libRNAWSCognito.a */,
+				6FC96E3847194C9B9F3E61ED /* libRNSimpleCompass.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -798,6 +827,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				5F022A987EA248CEA9EAAF53 /* RNVectorIcons.xcodeproj */,
 				8FC1DE9AE4E74BC0AC2026BA /* RNAWSCognito.xcodeproj */,
+				88854C04E2544394BBC8EF77 /* RNSimpleCompass.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1034,6 +1064,10 @@
 					ProjectRef = 2C67F42520AD307900A967F6 /* RNCamera.xcodeproj */;
 				},
 				{
+					ProductGroup = 2E41AA2421041E2800CD960D /* Products */;
+					ProjectRef = 88854C04E2544394BBC8EF77 /* RNSimpleCompass.xcodeproj */;
+				},
+				{
 					ProductGroup = 2EEE1265209E4B4E00C69A10 /* Products */;
 					ProjectRef = 5F022A987EA248CEA9EAAF53 /* RNVectorIcons.xcodeproj */;
 				},
@@ -1224,6 +1258,13 @@
 			remoteRef = 2E1840D5209F554900DE3EFE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		2E41AA5121041E2800CD960D /* libRNSimpleCompass.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSimpleCompass.a;
+			remoteRef = 2E41AA5021041E2800CD960D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		2EEE1269209E4B4F00C69A10 /* libRNVectorIcons.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1388,6 +1429,9 @@
 				FBAFE8267C6F4D46A6F8C1E6 /* SimpleLineIcons.ttf in Resources */,
 				6972E7B47BE34425A491FDDB /* Zocial.ttf in Resources */,
 				C945FF24FB984529AE4B1B60 /* grid_bg.jpg in Resources */,
+				911ACD4BF6D149BF8F5F4F36 /* emoji_smile_diffuse.png in Resources */,
+				904CB41E19694B71B40B4791 /* emoji_smile_normal.png in Resources */,
+				C24962CC9BFB4D91AF6A331A /* emoji_smile_specular.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1571,11 +1615,15 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = MobileAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1596,11 +1644,15 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = MobileAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1632,6 +1684,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/AirMaps/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = MobileApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1674,6 +1727,7 @@
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/AirMaps/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = MobileApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1707,10 +1761,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "MobileApp-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1739,10 +1797,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "MobileApp-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1770,10 +1832,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "MobileApp-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1801,10 +1867,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-simple-compass/ios",
 				);
 				INFOPLIST_FILE = "MobileApp-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

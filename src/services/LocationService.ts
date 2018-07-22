@@ -1,6 +1,8 @@
-// import * as HttpStatus from 'http-status-codes';
 import Logger from './Logger';
 import SleepUtil from './SleepUtil';
+
+import RNSimpleCompass from 'react-native-simple-compass';
+
 
 import geolib from 'geolib';
 
@@ -13,13 +15,22 @@ interface IProps {
   readonly userPositionChanged?: (props: IUserPositionChanged) => Promise<void>;
 }
 
-export default class NodeService{
+export default class LocationService {
     // @ts-ignore
     private readonly props: IProps;
+    private bearing: number;
 
     constructor(props: IProps){
         this.props = props;
         Logger.info(`LocationService.constructor -  Initialized location service`);
+
+
+        this.updateBearing = this.updateBearing.bind(this);
+        this.StartMonitoring = this.StartMonitoring.bind(this);
+    }
+
+    private async updateBearing(degree){
+      this.bearing = degree;
     }
 
     private async getCurrentPositonAsync(options: any){
@@ -29,8 +40,12 @@ export default class NodeService{
     }
 
     public async StartMonitoring(){
+      const degree_update_rate = 3; // Number of degrees changed before the callback is triggered
+      RNSimpleCompass.start(degree_update_rate, this.updateBearing);
+  
       while(true){
-        let options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+
+        let options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 100 }
         let position = await this.getCurrentPositonAsync(options);
         
         let userRegion = {
@@ -41,19 +56,17 @@ export default class NodeService{
               latitudeDelta:  0.00122*1.5,
               longitudeDelta: 0.00121*1.5,
               // @ts-ignore
-              bearing: position.coords.heading
+              bearing: this.bearing
         }
 
-        // @ts-ignore
-        console.log(position.coords);
-        console.log('COORDS');
-
-        console.log('USER BEARING');
-        console.log(userRegion.bearing);
+        // console.log('USER BEARING');
+        // console.log(userRegion.bearing);
 
         await this.props.userPositionChanged({userRegion: userRegion});
-        await SleepUtil.SleepAsync(1000);
+        await SleepUtil.SleepAsync(100);
       }
+
+      RNSimpleCompass.stop();
     }
     
 
@@ -86,15 +99,20 @@ export default class NodeService{
         currentNode['node_id'] = nodeListArray[key].node_id;
         currentNode['data'] = {};
 
-        let testBearing = geolib.getBearing(
+        let bearing = geolib.getBearing(
           {latitude: nodeListArray[key].lat, longitude: nodeListArray[key].lng}, 
           {latitude: userRegion.latitude, longitude: userRegion.longitude}
         );
 
-        // console.log('TEST BEARING: ');
-        // console.log(testBearing);
-        
-        // console.log(userRegion);
+        let arrowBearing = bearing;
+        if(userRegion.bearing == undefined){
+          Logger.info('UNDEFINED USER BEARING');
+        }
+        else{
+            arrowBearing = bearing - userRegion.bearing;
+        }
+
+        Logger.info('BEARING: ' + arrowBearing.toString());
         
         currentNode['data'].latitude = nodeListArray[key].lat;
         currentNode['data'].longitude = nodeListArray[key].lng;
@@ -104,7 +122,7 @@ export default class NodeService{
         currentNode['data'].description = nodeListArray[key].description;
         currentNode['data'].distance_in_meters = orderedList[i].distance;
         currentNode['data'].distance_in_miles = milesToNode;
-        currentNode['data'].bearing = testBearing;
+        currentNode['data'].bearing = arrowBearing;
         currentNode['data'].rank = i;
         currentNode['data'].node_id = nodeListArray[key].node_id;
 

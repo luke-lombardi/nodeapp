@@ -23,7 +23,8 @@ interface IProps{
 
 interface IState{
     isLoading: boolean;
-    nodeDirection: number
+    nodeDirection: number;
+    pauseUpdates: boolean;
 }
 
 export default class NodeFinder extends Component<IProps, IState> {
@@ -34,7 +35,8 @@ export default class NodeFinder extends Component<IProps, IState> {
     super(props);
     this.state = {
         isLoading: true,
-        nodeDirection: 0.0
+        nodeDirection: 0.0,
+        pauseUpdates: false
     };
 
     console.log('Passing in these props...');
@@ -59,6 +61,7 @@ export default class NodeFinder extends Component<IProps, IState> {
     if (state == ViroConstants.TRACKING_NORMAL) {
       this.setState({
         isLoading : false,
+        pauseUpdates: false,
         // @ts-ignore
         nodeDirection: this.props.arSceneNavigator.viroAppProps.selectedNode.data.bearing
       });
@@ -77,7 +80,7 @@ export default class NodeFinder extends Component<IProps, IState> {
       let selectedNode = await this.props.arSceneNavigator.viroAppProps.updateSelectedNode();
       console.log(selectedNode.data.bearing);
       await this.setState({nodeDirection: selectedNode.data.bearing})
-      await SleepUtil.SleepAsync(1000);
+      await SleepUtil.SleepAsync(100);
     }
   }
 
@@ -91,11 +94,11 @@ export default class NodeFinder extends Component<IProps, IState> {
          <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
           position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
 
-          <ViroARPlane minHeight={.4} minWidth={.4} alignment={"Horizontal"}>
+          <ViroARPlane minHeight={.4} minWidth={.4} alignment={"Horizontal"} pauseUpdates={this.state.pauseUpdates}>
             <Viro3DObject
               source={this.resourceContainer.getModel("arrow")}
               resources={[this.resourceContainer.getTexture("arrow")]}
-              highAccuracyGaze={false}
+              highAccuracyGaze={true}
               position={[0, 0.5, -1.5]}
               scale={[0.7, 0.7, 0.7]}
               rotation={[90, this.state.nodeDirection, 0]}

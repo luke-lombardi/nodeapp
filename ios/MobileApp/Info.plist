@@ -36,9 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Your message to user when the camera is accessed for the first time</string>
+	<string>We need permission to use your camera</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We need permission to access your contact list</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>We need permission to access your location</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

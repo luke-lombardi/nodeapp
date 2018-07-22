@@ -20,7 +20,6 @@ import NodeService, { INodeListUpdated } from '../services/NodeService';
 // custom components
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
-import CodePin from 'react-native-pin-code';
 
 // import mapStyle from '../config/mapStyle.json';
 
@@ -75,6 +74,8 @@ export class MainMap extends Component<IProps, IState> {
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
 
     this.gotNewNodeList = this.gotNewNodeList.bind(this);
+
+    this.goToContactList = this.goToContactList.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
@@ -173,10 +174,15 @@ export class MainMap extends Component<IProps, IState> {
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'New Node', onPress: this.goToCreateNode},
         {text: 'Track Node', onPress: this.enterPinCode},
+        {text: 'Add Friend', onPress: this.goToContactList},
       ],
       { cancelable: false }
     )
   }
+
+  private goToContactList(){
+    this.props.navigation.navigate('ContactList', {action: "create_node", userRegion: this.props.userRegion});
+}
 
   private async enterPinCode(){
     await this.setState({pinCodeVisible: true});
@@ -210,6 +216,7 @@ export class MainMap extends Component<IProps, IState> {
             // Main map view
             <View style={styles.mapView}>
               <MapView
+                initialRegion={this.props.userRegion}
                 provider="google"
                 ref={component => {this._map = component;}}
                 style={StyleSheet.absoluteFillObject}
@@ -263,23 +270,6 @@ export class MainMap extends Component<IProps, IState> {
 
             </View>
           // End map view  
-        }
-
-         {
-          this.state.pinCodeVisible &&
-          
-          <CodePin
-            number={5} // You must pass number prop, it will be used to display 4 (here) inputs
-            checkPinCode={(code, callback) => callback(code === '1234')}
-            // Check manually code (ask server for instance)
-            // and call callback function with
-            //    true  (code pin is correct)
-            // or false (code pin is false)
-            success={() => console.log('hurray!')} // If user fill '2018', success is called
-            text="A simple Pin code component" // My title
-            error="You fail" // If user fail (fill '2017' for instance)
-            autoFocusFirst={true} // disabling auto-focus
-          />
         }
 
         {

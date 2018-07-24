@@ -100,4 +100,26 @@ export default class ApiService {
     }
   
 
+
+    async sendText(contact_info: any) {
+
+      console.log('got contact info', contact_info)
+
+      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/sendText', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(contact_info)
+          }); 
+      
+      if(response.status != HttpStatus.OK){
+        Logger.info('ApiService.sendText - Unable to send text');
+
+        return undefined;
+      }
+      let node_id = await response.json(); 
+      return node_id;
+    }
 }
+

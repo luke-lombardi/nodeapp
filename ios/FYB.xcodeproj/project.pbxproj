@@ -1724,7 +1724,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-maps\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/yoga\"",
 					"\"${PODS_ROOT}/../../node_modules/react-viro/ios/dist/lib\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-contacts\"",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",

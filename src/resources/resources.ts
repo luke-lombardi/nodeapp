@@ -13,7 +13,9 @@ export default class ResourceContainer{
 
     private models = {
         emoji_smile: require('./../../assets/models/emoji_smile.vrx'),
-        arrow: require('./../../assets/models/arrow.obj')
+        arrow: require('./../../assets/models/arrow.obj'),
+        beam: require('./../../assets/models/beam.obj')
+
     };
 
     constructor(){

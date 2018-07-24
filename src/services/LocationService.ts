@@ -1,5 +1,8 @@
 import Logger from './Logger';
 import SleepUtil from './SleepUtil';
+import ApiService from '../services/ApiService';
+import { AsyncStorage } from 'react-native';
+
 
 import RNSimpleCompass from 'react-native-simple-compass';
 
@@ -18,15 +21,17 @@ interface IProps {
 export default class LocationService {
     // @ts-ignore
     private readonly props: IProps;
+    private apiService: ApiService;
+
     private bearing: number;
 
     constructor(props: IProps){
         this.props = props;
         Logger.info(`LocationService.constructor -  Initialized location service`);
 
-
         this.updateBearing = this.updateBearing.bind(this);
         this.StartMonitoring = this.StartMonitoring.bind(this);
+        this.apiService = new ApiService({});
     }
 
     private async updateBearing(degree){
@@ -40,12 +45,14 @@ export default class LocationService {
     }
 
     public async StartMonitoring(){
-      const degree_update_rate = 3; // Number of degrees changed before the callback is triggered
+      const degree_update_rate = 1; // Number of degrees changed before the callback is triggered
       RNSimpleCompass.start(degree_update_rate, this.updateBearing);
-  
+      
+      let hitCount = 0;
+
       while(true){
 
-        let options = { enableHighAccuracy: true, timeout: 20000, maximumAge: 100 }
+        let options = { enableHighAccuracy: true, timeout: 1000, maximumAge: 100 }
         let position = await this.getCurrentPositonAsync(options);
         
         let userRegion = {
@@ -59,20 +66,46 @@ export default class LocationService {
               bearing: this.bearing
         }
 
-        // console.log('USER BEARING');
-        // console.log(userRegion.bearing);
-
         await this.props.userPositionChanged({userRegion: userRegion});
+
+        if(hitCount >= 10){
+          await this.postLocation(userRegion);
+          hitCount = 0;
+        }
+
         await SleepUtil.SleepAsync(100);
+        hitCount += 1;
       }
 
       RNSimpleCompass.stop();
     }
     
 
+    private async postLocation(userRegion: any){
+      let currentUUID = await AsyncStorage.getItem('user_uuid');
+      if(currentUUID === undefined){
+        Logger.info('LocationService.postLocation - No UUID is defined, not posting location.')
+      }
+
+      let requestBody = {
+        "node_id": currentUUID,
+        "node_data": {
+          "lat": userRegion.latitude,
+          "lng": userRegion.longitude,
+          "title": "test",
+          "description": "test2"
+        }
+      }
+
+      let response = await this.apiService.PostNodeAsync(requestBody);
+
+      console.log('RESPONSE');
+      console.log(response);
+    }
+
+
     orderNodes(userRegion: any, nodeList: any): any{
       // TODO: have the API return a list as the response
-
       let nodeListArray = [];
 
       for (var key in nodeList) {
@@ -104,16 +137,24 @@ export default class LocationService {
           {latitude: userRegion.latitude, longitude: userRegion.longitude}
         );
 
-        let arrowBearing = bearing;
+        Logger.info('NODE: ' + nodeListArray[key].title);
+        Logger.info('Figure out the bearing...');
+        Logger.info('Shortest path bearing:' + bearing.toString());
+        Logger.info('Your orientation:' + userRegion.bearing.toString());
+
+        let arrowBearing = 0.0;
         if(userRegion.bearing == undefined){
-          Logger.info('UNDEFINED USER BEARING');
+          Logger.info('User orientation not defined, using shortest path vector.');
+          arrowBearing = bearing;
         }
         else{
-            arrowBearing = bearing - userRegion.bearing;
+          // shift bearing by 180 degrees so it lines up with compass angles
+          bearing = (bearing - 180);
+          arrowBearing = (bearing - userRegion.bearing) * -1; 
+
+          Logger.info('Adjusted shortest path bearing bearing:' + bearing.toString());
         }
 
-        Logger.info('BEARING: ' + arrowBearing.toString());
-        
         currentNode['data'].latitude = nodeListArray[key].lat;
         currentNode['data'].longitude = nodeListArray[key].lng;
         currentNode['data'].latDelta = '0.000183';

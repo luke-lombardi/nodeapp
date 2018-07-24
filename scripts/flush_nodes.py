@@ -1,17 +1,19 @@
 '''
-    endpoint: /fyb/postNode
+    endpoint: /fyb/flushNodes
     method: POST
     format: application/json
 
     description:
-        Updates a nodes metadata. Used for moving nodes, such as people.
-        This node_id can then be added to the 'tracked' node list.
+
 '''
 
 import redis
 import json
 import logging
 
+from uuid import uuid4
+
+from random import randint
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -40,11 +42,6 @@ def connect_to_cache():
         return None
 
 
-def update_node(rds, node_id, node_data):
-    current_ttl = rds.ttl(node_id)
-    logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
-    rds.setex(name=node_id, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
-
 
 def lambda_handler(event, context):
     rds = connect_to_cache()
@@ -52,24 +49,14 @@ def lambda_handler(event, context):
     if not rds:
         return
     
-    node_id = event.get('node_id', 0)
-    node_data = event.get('node_data', {})
-    if node_data:
-        update_node(rds, node_id, node_data)
-
-    logging.info(json.loads(rds.get(node_id)))
-    return json.dumps(json.loads(rds.get(node_id)))
+    
+    rds.flushall()
+    
+    return "done"
 
 
 def run():
     test_event = {
-        "node_id": 12345,
-        "node_data": {
-            "title": "demos for sale",
-            "description": "its me mario",
-            "lat": 43.13232,
-            "lng": 43.333,
-        }
     }
     
     test_context = {

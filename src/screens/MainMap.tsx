@@ -174,8 +174,8 @@ export class MainMap extends Component<IProps, IState> {
       'Enter a pin or create a new node',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'New Node', onPress: this.goToNodeFinder},
-        {text: 'Track Node', onPress: this.enterPinCode},
+        {text: 'Drop Pin', onPress: this.goToNodeFinder},
+        {text: 'Add Place', onPress: this.enterPinCode},
         {text: 'Add Friend', onPress: this.goToContactList},
       ],
       { cancelable: false }
@@ -218,7 +218,7 @@ export class MainMap extends Component<IProps, IState> {
             // Main map view
             <View style={styles.mapView}>
               <MapView
-                initialRegion={this.props.userRegion}
+                // initialRegion={this.props.userRegion}
                 provider="google"
                 ref={component => {this._map = component;}}
                 style={StyleSheet.absoluteFillObject}

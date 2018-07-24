@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
-import { View, StatusBar } from 'react-native';
+import { View, StatusBar, AsyncStorage } from 'react-native';
+
+import uuid from 'react-native-uuid';
 
 // @ts-ignore
 import Logger from '../services/Logger';
+
 
 import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
@@ -124,9 +127,18 @@ export class App extends Component<IProps> {
       this.nodeService = new NodeService({nodeListUpdated: this.gotNewNodeList, currentUserRegion: this.getUserRegion});
       this.nodeService.StartMonitoring();
 
+      this.setUUID();
+
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
       this.locationService.StartMonitoring();
+    }
 
+    private async setUUID(){
+      let currentUUID = await AsyncStorage.getItem('user_uuid');
+      if(currentUUID === null){
+        let newUUID = uuid.v4();
+        await AsyncStorage.setItem('user_uuid', newUUID);
+      }
     }
 
     private async gotNewUserPosition(props: IUserPositionChanged) {

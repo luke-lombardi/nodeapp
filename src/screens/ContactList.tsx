@@ -51,11 +51,13 @@ export class ContactList extends Component<IProps, IState> {
     }
 
     private async selectContact(item) {
+        let user_uuid = 'test_user_uuid';
         let phoneNumber = item.phoneNumbers[0].number;
         let name = item.givenName + ' ' + item.familyName;
         let requestBody = {
           "phone": phoneNumber,
-          "name": name
+          "name": name,
+          "user_uuid": user_uuid,
         }
 
         console.log('Submitted text invite for', phoneNumber);
@@ -69,7 +71,7 @@ export class ContactList extends Component<IProps, IState> {
           ],
           { cancelable: true }
         )
-      }
+      } 
 
       searchContact() {
         return this.state.data.filter(

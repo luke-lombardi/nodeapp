@@ -11,18 +11,28 @@
 import json
 import logging
 import redis
+import re
+
 from http import HTTPStatus
 from twilio.rest import Client
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-auth_token = 'f5e0cfde0c24875afcf23f014f557476'
+# Twillio API client setup 
+# TODO: store these credentials as lambda environmental variables instead of hardcoding them here
+auth_token = 'f5e0cfde0c24875afcf23f014f557476' 
 account_sid = 'ACf56b737ada2724fc5397b444bc18b229'
 
-client = Client(account_sid, auth_token)
+DEFAULT_ACK_TTL = 3600 # 1 hr
 
-DEFAULT_NODE_TTL = 3600
+# Regular expressions for contact information validation
+VALIDATION_REGEX = {
+    "name": re.compile(r'^[a-zA-Z ]+$'),
+    "phone": re.compile(r'(9\d)\s+(\d{2})\s+(\d{2})\s+(\d{3})'),
+    "user_uuid": re.compile(r'[0-9a-f]{32}\Z', re.I)
+} 
+
 
 def is_cache_connected(rds):
     try:
@@ -44,58 +54,93 @@ def connect_to_cache():
         return None
 
 
+def validate_contact_info(contact_info):
+    validated_fields = ["phone", "name", "user_uuid"]
+
+    # Iterate through validated fields and check:
+
+    # A.) If they exist at all
+    # B.) If they match the specified format
+
+    for current_field in validated_fields:
+        current_field = contact_info.get(current_field, None)
+        if not current_field:
+            return False
+        else:
+            m = re.search(VALIDATION_REGEX[current_field], current_field)
+            if not m:
+                return False
+    
+    return True
+
+
+# Sends a text to the desired phone number, and set a key in the redis cache which serves as an ACK handshake
+# When the requesting user and contacted user both set and read the key, the handshake is complete.
 def send_text(contact_info, ref_id):
+    client = Client(account_sid, auth_token) # Set this in local scope each time you connect to prevent shared memory leaks 
+
+    name = contact_info["name"]
+    phone = contact_info["phone"]
+    user_uuid = contact_info["user_uuid"]
+
     message = client.messages.create(
-        to="+3473024504",
+        to=phone,
         from_="+12037179852",
-        body="Hello! Your boy is tryna find you. \n http://smartshare.io/meatspin/")
+        body="Hello! ${name} Your boy is tryna find you. \n http://smartshare.io/meatspin/".format(name))
 
     if message:
-        logging.info('sent a text to my boy')
-        rds.setex(uuid='', value='', time=current_ttl)
-        return message
-    else:
-        logging.info('could not find your boy')
-        return none
+        logging.info("Sent a message to {} at {}".format(name, phone))
 
-        # add uuid of requesting user to cache as key
-        # when user accepts set key to their uuid - then set ttl on the key
-        # the uuid that was read on both sides is stored in friends list and monitored by node_id, which is same as uuid
+        # When user accepts set key to their uuid - then set ttl on the key
+        # The uuid that was read on both sides is stored in friends list and monitored by node_id, which is same as uuid
+        rds.setex(uuid=user_uuid, value='', time=DEFAULT_ACK_TTL) # TODO: check return code of the key set?
+        return True
+    else:        
+        logging.error('Could not send text to: ' + str())
+        return False
+
 
 def lambda_handler(event, context):
     rds = connect_to_cache()
-    
+    response = {
+        "error": ""
+    }
+
     if not rds:
-        return
+        response["error"] = "Could not connect to redis cache."
+        return json.dumps(response)
     
-    contact_info = event.get('contact_info', {})
-    ref_id = 0
-    if contact_info:
-        ref_id = 0
-        logging.info('sent a text to my boy', contact_info)
-        send_text(ref_id, contact_info)
-    
-    return contact_info
+    contact_info = event.get('contact_info', None)
+
+    valid_contact_info = validate_contact_info(contact_info)
+
+    if valid_contact_info:
+        result = send_text(ref_id, contact_info)
+
+        if not result: 
+            response["error"] = "Could not send the text message."
+    else:
+        response["error"] = "Invalid contact information."
+
+    return json.dumps(response)
 
 
 def run():
     test_event = {
-
         "contact_info": {
             "name": "Johnny Appleseed",
-            "phone": "+13473024504"
+            "phone": "+13473024504",
+            "user_uuid": "11ac3748-448d-4d9e-a7bc-58f0ec0a2068"
         },
             "ref_id": 0,
     }
     
     test_context = {
-
     }
 
     response = lambda_handler(test_event, test_context)
     print(response)
 
-    
     
 
 if __name__ == '__main__':run()

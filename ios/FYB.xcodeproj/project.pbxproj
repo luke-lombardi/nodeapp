@@ -1723,6 +1723,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-google-maps\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-maps\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/yoga\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-contacts\"",
 					"\"${PODS_ROOT}/../../node_modules/react-viro/ios/dist/lib\"",
 				);
 				OTHER_LDFLAGS = (

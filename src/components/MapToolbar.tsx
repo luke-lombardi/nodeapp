@@ -7,7 +7,6 @@ interface IProps{
 }
 
 interface IState{
-
 }
 
 export default class MapToolbar extends Component<IProps, IState> {
@@ -140,8 +139,5 @@ const styles = StyleSheet.create({
     paddingTop: 8,
 
   }
-
-
-
 
 });

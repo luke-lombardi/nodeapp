@@ -62,12 +62,16 @@ export default class ApiService {
                                                                           
    
     async CreateNodeAsync(node_data: any) {
+      let requestBody = {
+        "node_data": node_data
+      }
+
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(node_data)
+            body: JSON.stringify(requestBody)
           }); 
       
       if(response.status != HttpStatus.OK){
@@ -75,8 +79,8 @@ export default class ApiService {
 
         return undefined;
       }
-      let nodePin = await response.json(); 
-      return nodePin;
+      let new_node = await response.json(); 
+      return new_node;
     }
 
 

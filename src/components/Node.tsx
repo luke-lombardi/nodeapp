@@ -60,8 +60,6 @@ export default class Node extends Component<IProps, IState> {
       </View>
     )
   }
-
-
 };
 
 // @ts-ignore

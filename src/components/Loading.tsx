@@ -29,20 +29,6 @@ export default class Loading extends Component<IProps> {
   }
 };
 
-// render() {
-//   return (
-//     <View style={styles.mainView}>
-//       <BlurView
-//         style={styles.absolute}
-//         blurType="light"
-//         blurAmount={100}
-//       />
-//     <ActivityIndicator style={styles.indicator} size="large" color="#0000ff" animating={true}/>
-//     </View>
-//     )
-//   }
-// };
-
 const styles = StyleSheet.create({
   mainView: {
     justifyContent: 'center', 

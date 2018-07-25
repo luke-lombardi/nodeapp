@@ -70,7 +70,6 @@ export class MainMap extends Component<IProps, IState> {
     this.toggleWallet = this.toggleWallet.bind(this);
     this.createNode = this.createNode.bind(this);
     this.goToNodeFinder = this.goToNodeFinder.bind(this);
-    this.enterPinCode = this.enterPinCode.bind(this);
     
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -78,6 +77,7 @@ export class MainMap extends Component<IProps, IState> {
     this.gotNewNodeList = this.gotNewNodeList.bind(this);
 
     this.goToContactList = this.goToContactList.bind(this);
+    this.goToCreateNode = this.goToCreateNode.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
@@ -174,8 +174,8 @@ export class MainMap extends Component<IProps, IState> {
       'Enter a pin or create a new node',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Drop Pin', onPress: this.goToNodeFinder},
-        {text: 'Add Place', onPress: this.enterPinCode},
+        {text: 'Drop Pin', onPress: this.goToCreateNode},
+        {text: 'Add Place', onPress: this.goToContactList},
         {text: 'Add Friend', onPress: this.goToContactList},
       ],
       { cancelable: false }
@@ -184,10 +184,10 @@ export class MainMap extends Component<IProps, IState> {
 
   private goToContactList(){
     this.props.navigation.navigate('ContactList', {action: "create_node", userRegion: this.props.userRegion});
-}
+  }
 
-  private async enterPinCode(){
-    await this.setState({pinCodeVisible: true});
+  private goToCreateNode(){
+    this.props.navigation.navigate('CreateNode', {action: "create_node", userRegion: this.props.userRegion});
   }
 
   private goToNodeFinder(){

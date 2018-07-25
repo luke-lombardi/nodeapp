@@ -8,12 +8,12 @@ import uuid from 'react-native-uuid';
 // @ts-ignore
 import Logger from '../services/Logger';
 
-
 import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
 import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
+import CreateNode from '../screens/CreateNode';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -47,6 +47,13 @@ const InternalStack = StackNavigator({
   },
   Map: { screen: MainMap },
   Nodes: { screen: NodeList,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      title: navigation.indexs,
+      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
+      })
+    },
+  CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
@@ -112,6 +119,7 @@ interface IProps{
 
 
 export class App extends Component<IProps> {
+
     // monitoring services
     private nodeService: NodeService;
     private locationService: LocationService;
@@ -119,19 +127,24 @@ export class App extends Component<IProps> {
     constructor(props: IProps){
       super(props);
 
+      // Setting the UUID serves as a simple 'account' for each user. 
+      // It does not contain any real information, but it temporarily bound to the phone
+      this.setUUID();
+
       this.gotNewNodeList = this.gotNewNodeList.bind(this);
       this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
       this.getUserRegion = this.getUserRegion.bind(this);
 
-
+      // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService({nodeListUpdated: this.gotNewNodeList, currentUserRegion: this.getUserRegion});
       this.nodeService.StartMonitoring();
 
-      this.setUUID();
-
+      // The location service monitors the users location and calculates distance to nodes
+      // This is an async loop that runs forever, so do not await it
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
       this.locationService.StartMonitoring();
     }
+
 
     private async setUUID(){
       let currentUUID = await AsyncStorage.getItem('user_uuid');
@@ -145,7 +158,6 @@ export class App extends Component<IProps> {
       await this.props.UserPositionChanged(props.userRegion);
     }
 
-    
     private async gotNewNodeList(props: INodeListUpdated) {
       await this.props.NodeListUpdated(props.nodeList);
     }
@@ -182,13 +194,5 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-/*
-const styles = StyleSheet.create({
-  statusBar: {
-    backgroundColor: 'blue'
-  }
-})
-*/
 
 //# sourceMappingURL=App.js.map

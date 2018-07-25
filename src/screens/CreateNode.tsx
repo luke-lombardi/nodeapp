@@ -75,23 +75,21 @@ export class CreateNode extends Component<IProps, IState> {
 
 
   private async submitCreateNode(){
-    let requestBody = {
-        "title": this.state.title,
-        "description": this.state.description,
-        "lat": this.state.userRegion.latitude,
-        "long": this.state.userRegion.longitude,
-        "lat_delta":  0.00122*1.5,
-        "long_delta": 0.00121*1.5,
-        "difficulty": 0,
-        "uuid": this.state.uuid
-    };
+    let nodeData = {
+      "title": this.state.title,
+      "description": this.state.description,
+      "lat": this.state.userRegion.latitude,
+      "lng": this.state.userRegion.longitude
+    }
 
     console.log('Submitted node request');
     await this.setState({isLoading: true});
-    await this.apiService.CreateNodeAsync(requestBody);
+    let new_uuid = await this.apiService.CreateNodeAsync(nodeData);
+
+    console.log('RESPONSE FROM CREATE NODE');
+    console.log(new_uuid);
     await this.setState({isLoading: false});
     this.props.navigation.navigate('Map', {updateNodes: true});
-
   }
 
   render() {
@@ -137,15 +135,11 @@ export class CreateNode extends Component<IProps, IState> {
             <Input
               placeholder='Why should I go here?'
               containerStyle={styles.inputPadding}
-              // style={styles.descriptionInput}
               inputStyle={styles.descriptionInput}
-              //onChangeText={(username) => this.setState({username})}
-              //value={this.state.username}
               onChangeText={(description) => this.setState({description: description})}
               value={this.state.description}
               multiline={true}
               numberOfLines={6}
-              
             />
 
           </View>

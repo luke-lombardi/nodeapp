@@ -2,6 +2,8 @@ import Logger from './Logger';
 import SleepUtil from './SleepUtil';
 import DeferredPromise from './DeferredPromise';
 
+import { AsyncStorage } from 'react-native';
+
 // services
 import LocationService from './LocationService';
 import ApiService from './ApiService';
@@ -16,7 +18,7 @@ interface IProps {
   readonly nodeListUpdated?: (props: INodeListUpdated) => Promise<void>;
 }
 
-export default class NodeService{
+export default class NodeService {
     private readonly props: IProps;
     private stopping: boolean = false;
     private monitoring: boolean = false;
@@ -25,7 +27,7 @@ export default class NodeService{
     private locationService: LocationService;
     private apiService: ApiService;
 
-    constructor(props: IProps){
+    constructor(props: IProps) {
         this.props = props;
         this.locationService = new LocationService({});
         this.apiService = new ApiService({});
@@ -55,11 +57,24 @@ export default class NodeService{
         this.stopping = true;
         Logger.info(`NodeService.StopMonitoring -  Disabling monitoring loop.`);
     }
-   
+
+    // Public interface functions
+    public async addNode() {
+        await AsyncStorage.setItem('user_uuid', '');
+    }
+
+    public createNode() {
+        console.log('creating');
+    }
+
+    public clearNodes() {
+        console.log('clearing');
+    }
+
     // Private implementation functions
-    private async MonitorNodeListAsync(){
-        while(true){
-            if(this.stopping) return;
+    private async MonitorNodeListAsync() {
+        while (true) {
+            if (this.stopping) return;
 
             // Re-create the check-now trigger in case it was triggered last time
             this.checkNowTrigger = new DeferredPromise();
@@ -72,33 +87,14 @@ export default class NodeService{
             Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
         }
     }
-    
-    private async GetNodeListAsync(){
+
+    private async GetNodeListAsync() {
       Logger.info('NodeService.GetNodeListAsync - Getting the node list.');
       let nodes = await this.apiService.getNodes();
-      if(nodes){
+      if (nodes) {
         let orderedNodeList = this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
         await this.props.nodeListUpdated({nodeList: orderedNodeList});
       }
     }
 
-    // Public interface functions
-  
-    public addNode(){
-
-    }
-
-    public createNode(){
-
-    }
-
-    public clearNodes(){
-
-    }
-
-    
-
-
-
-  
 }

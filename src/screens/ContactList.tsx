@@ -5,27 +5,27 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
 
-var Contacts = require('react-native-contacts')
+import Contacts from 'react-native-contacts';
 
 interface IProps {
-    navigation: any,
+    navigation: any;
 }
 
 interface IState {
     data: Array<any>;
-    query: any, 
+    query: any;
 }
 
 export class ContactList extends Component<IProps, IState> {
   private apiService: ApiService;
 
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
 
     this.state = {
         data: [],
         query: '',
-    }
+    };
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.getContacts = this.getContacts.bind(this);
@@ -34,7 +34,7 @@ export class ContactList extends Component<IProps, IState> {
     this.apiService = new ApiService({});
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.getContacts();
     }
 
@@ -42,55 +42,30 @@ export class ContactList extends Component<IProps, IState> {
       Contacts.getAll((err, contacts) => {
           if (err && err.type === 'permissionDenied') {
               console.log(err);
-          }
-          else {
+          } else {
               this.setState({data: contacts});
               console.log(contacts);
           }
       });
     }
 
-    private async selectContact(item) {
-        let user_uuid = 'test_user_uuid';
-        let phoneNumber = item.phoneNumbers[0].number;
-        let name = item.givenName + ' ' + item.familyName;
-        let requestBody = {
-          "phone": phoneNumber,
-          "name": name,
-          "user_uuid": user_uuid,
-        }
-
-        console.log('Submitted text invite for', phoneNumber);
-        await this.apiService.sendText(requestBody);
-
-        Alert.alert(
-          'Invite sent!',
-          'You will find your boy',
-          [
-            {text: 'Invite more', onPress: () => {this.setState({query: null})}},
-          ],
-          { cancelable: true }
-        )
-      } 
-
       searchContact() {
         return this.state.data.filter(
-          item => new RegExp(`\\b${this.state.query}`, "gi").test(item.givenName || item.familyName)
-        )
+          item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.givenName || item.familyName),
+        );
       }
-
 
     _renderItem = ({item}) => (
       <ListItem
         key={item}
         onPress={() => this.selectContact(item)}
-        containerStyle={styles.nodeListItem}   
+        containerStyle={styles.nodeListItem}
         leftAvatar={this.state.query ? { source: { uri: item.thumbnailPath } } : { source: { uri: item.thumbnailPath }}}
-        leftIcon={{name: 'map-pin', type: 'feather', color: "rgba(51, 51, 51, 0.8)"}}
-        rightIcon={{name: 'chevron-right', color: "rgba(51, 51, 51, 0.8)"}}
-        title={item.givenName + ' ' + item.familyName}       
+        leftIcon={ {name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'} }
+        rightIcon={ {name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'} }
+        title={item.givenName + ' ' + item.familyName}
       />
-    );
+    )
 
     render() {
       return (
@@ -107,19 +82,40 @@ export class ContactList extends Component<IProps, IState> {
           />
 
           {
-            this.state.data.length == 0 &&
-            <Text style={styles.null}>Unable to access contacts</Text> 
+            this.state.data.length === 0 &&
+            <Text style={styles.null}>Unable to access contacts</Text>
           }
-          
         </View>
 
-      )
+      );
     }
-  };
 
+    private async selectContact(item) {
+      let userUuid = 'test_user_uuid';
+      let phoneNumber = item.phoneNumbers[0].number;
+      let name = item.givenName + ' ' + item.familyName;
+      let requestBody = {
+        'phone': phoneNumber,
+        'name': name,
+        'user_uuid': userUuid,
+      };
+
+      console.log('Submitted text invite for', phoneNumber);
+      await this.apiService.sendText(requestBody);
+
+      Alert.alert(
+        'Invite sent!',
+        'You will find your boy',
+        [
+          {text: 'Invite more', onPress: () => {this.setState({ query: undefined }); } },
+        ],
+        { cancelable: true },
+      );
+    }
+  }
 
 // @ts-ignore
-function mapStateToProps(state: IStoreState): IProps { 
+function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
   };
@@ -133,15 +129,13 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
 
-
 const styles = StyleSheet.create({
   searchBar: {
     position: 'absolute',
-    
   },
-  nodeListItem:{
+  nodeListItem: {
     borderBottomWidth: 1,
-    borderBottomColor:"rgba(51, 51, 51, 0.2)",
+    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     minHeight: 80,
     maxHeight: 80,
   },
@@ -149,5 +143,5 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginTop: 25,
     alignSelf: 'center',
-  }
+  },
 });

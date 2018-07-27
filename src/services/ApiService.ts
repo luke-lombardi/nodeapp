@@ -11,16 +11,16 @@ export interface IVisitedNodesUpdated {
 interface IProps {
 }
 
-export default class ApiService { 
+export default class ApiService {
     // @ts-ignore
     private readonly props: IProps;
 
-    constructor(props: IProps){
+    constructor(props: IProps) {
         this.props = props;
         Logger.info(`ApiService.constructor -  Initialized api service`);
     }
 
-    public async getNodes(){
+    public async getNodes() {
       /*
       // TODO: get this pin list from AsyncStorage
       let trackedNodes = {
@@ -31,7 +31,7 @@ export default class ApiService {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(trackedNodes)
-      }); 
+      });
 
       if(response.status != HttpStatus.OK){
         Logger.info('NodeService.GetNodeListAsync - Unable to fetch node list');
@@ -40,90 +40,86 @@ export default class ApiService {
       */
 
      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getAllNodes', {
-          method: 'GET'
-      }); 
+          method: 'GET',
+      });
 
       let responseBody = await response.json();
       let requestBody = JSON.parse(responseBody);
-      
+
       // console.log(requestBody);
       // console.log(JSON.stringify(requestBody));
 
       response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
           method: 'POST',
           headers: {'Content-Type': 'text/plain'},
-          body: JSON.stringify(requestBody)
-      }); 
+          body: JSON.stringify(requestBody),
+      });
 
       let nodeList = await response.json();
 
       return nodeList;
     }
-                                                                          
-   
-    async CreateNodeAsync(node_data: any) {
+
+    async CreateNodeAsync(nodeData: any) {
       let requestBody = {
-        "node_data": node_data
-      }
+        'node_data': nodeData,
+      };
 
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createNode', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify(requestBody)
-          }); 
-      
-      if(response.status != HttpStatus.OK){
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
         Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
 
         return undefined;
       }
-      let new_node = await response.json(); 
-      return new_node;
+
+      let newNode = await response.json();
+      return newNode;
     }
 
-
-    async PostNodeAsync(node_data: any) {
+    async PostNodeAsync(nodeData: any) {
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/postNode', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify(node_data)
-          }); 
-      
-      if(response.status != HttpStatus.OK){
+            body: JSON.stringify(nodeData),
+          });
+
+      if (response.status !== HttpStatus.OK) {
         Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
 
         return undefined;
       }
-      
-      response = await response.json(); 
+
+      response = await response.json();
       return response;
     }
-  
 
-
-    async sendText(contact_info: any) {
-
-      console.log('got contact info', contact_info)
+    async sendText(contactInfo: any) {
+      console.log('got contact info', contactInfo);
 
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/sendText', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify(contact_info)
-          }); 
-      
-      if(response.status != HttpStatus.OK){
+            body: JSON.stringify(contactInfo),
+          });
+
+      if (response.status !== HttpStatus.OK) {
         Logger.info('ApiService.sendText - Unable to send text');
 
         return undefined;
       }
-      let node_id = await response.json(); 
-      return node_id;
+
+      let nodeId = await response.json();
+      return nodeId;
     }
 }
-

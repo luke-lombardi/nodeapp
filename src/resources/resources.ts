@@ -1,4 +1,4 @@
-export default class ResourceContainer{
+export default class ResourceContainer {
     private images = {
         grid_bg: require('./../../assets/images/grid_bg.jpg'),
     };
@@ -14,27 +14,22 @@ export default class ResourceContainer{
     private models = {
         emoji_smile: require('./../../assets/models/emoji_smile.vrx'),
         arrow: require('./../../assets/models/arrow.obj'),
-        beam: require('./../../assets/models/beam.obj')
+        beam: require('./../../assets/models/beam.obj'),
 
     };
 
-    constructor(){
-    }
-
-    public getImage(imageID: string){
+    public getImage(imageID: string) {
         let imageURI = this.images[imageID];
         return imageURI;
     }
 
-    public getModel(modelID: string){
+    public getModel(modelID: string) {
         let modelURI = this.models[modelID];
         return modelURI;
     }
 
-    public getTexture(modelID: string){
+    public getTexture(modelID: string) {
         let modelURI = this.textures[modelID];
         return modelURI;
     }
-
-    
 }

@@ -20,46 +20,49 @@ export default class ApiService {
         Logger.info(`ApiService.constructor -  Initialized api service`);
     }
 
+    // Get all nodes, both private and public, and update the redux store
     public async getNodes() {
-      /*
-      // TODO: get this pin list from AsyncStorage
-      let trackedNodes = {
-        "pins": [16313]
-      }
-
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(trackedNodes)
-      });
-
-      if(response.status != HttpStatus.OK){
-        Logger.info('NodeService.GetNodeListAsync - Unable to fetch node list');
-        return undefined;
-      }
-      */
-
-     let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getAllNodes', {
+     let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getPublicNodes', {
           method: 'GET',
       });
 
+      // This response contains the public nodes currently available in the cache
       let responseBody = await response.json();
-      let requestBody = JSON.parse(responseBody);
 
-      // console.log(requestBody);
-      // console.log(JSON.stringify(requestBody));
+      // TODO: add error checking for bad requests here
+      let publicNodes = JSON.parse(responseBody);
 
+      // This gets the currently tracked private nodes in ASYNC storage
+      let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+
+      Logger.info(`Fetching these public nodes: ${JSON.stringify(publicNodes)}`);
+
+      let nodesToGet = {
+        'node_ids': [],
+      };
+
+      // If we are tracking any nodes, add them to request body
+      if (trackedNodes !== null) {
+        trackedNodes = JSON.parse(trackedNodes);
+        nodesToGet.node_ids = publicNodes.node_ids.concat(trackedNodes);
+      } else {
+        // If we aren't tracking any private nodes, then we'll just get the public nodes
+        nodesToGet.node_ids = publicNodes.node_ids;
+      }
+
+      Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
       response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
           method: 'POST',
           headers: {'Content-Type': 'text/plain'},
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(nodesToGet),
       });
 
+      // TODO: add error handling here
       let nodeList = await response.json();
-
       return nodeList;
     }
 
+    // Creates a new node at the users position, this can be either public or private
     async CreateNodeAsync(nodeData: any) {
       let requestBody = {
         'node_data': nodeData,
@@ -83,7 +86,8 @@ export default class ApiService {
       return newNode;
     }
 
-    async PostNodeAsync(nodeData: any) {
+    // Updates the users location node
+    async PostLocationAsync(nodeData: any) {
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/postNode', {
             method: 'POST',
             headers: {

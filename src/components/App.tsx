@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
-import { StackNavigator, DrawerNavigator } from 'react-navigation';
+import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import { View, StatusBar, AsyncStorage } from 'react-native';
-
 import uuid from 'react-native-uuid';
 
 // @ts-ignore
@@ -15,24 +14,25 @@ import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 
+// Redux imports
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
+import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
+// Services
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
 import NodeService, { INodeListUpdated } from '../services/NodeService';
 
 // SET GLOBAL PROPS //
-
 import { setCustomText} from 'react-native-global-props';
-import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
 const customTextProps = {
   style: {
-    fontFamily: 'Avenir'
-  }
-}
+    fontFamily: 'Avenir',
+  },
+};
 
 setCustomText(customTextProps);
 // END SET GLOBAL PROPS //
@@ -42,30 +42,54 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
-    })
+      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
   },
   Map: { screen: MainMap },
   Nodes: { screen: NodeList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
-      })
+      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
     },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
-      })
+      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
     },
   ContactList: { screen: ContactList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name="keyboard-arrow-left" size={30} color={'#ffffff'} onPress={ () => navigation.navigate('Map') } />
-      })
+      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
     },
   },
 {
@@ -73,10 +97,10 @@ const InternalStack = StackNavigator({
   navigationOptions: ({navigation}) => ({
     headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
     title: navigation.indexs,
-    headerLeft: <Icon name="menu" size={35} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />
-  })
-}
-)
+    headerLeft: <Icon name='menu' size={35} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
+  }),
+  },
+);
 
 const DrawerStack = DrawerNavigator({
     Main: {
@@ -86,37 +110,35 @@ const DrawerStack = DrawerNavigator({
   {
     initialRouteName: 'Main',
     contentComponent: props => <SideBar {...props} />,
-  }
-)
+  },
+);
 
 const DrawerNavigation = StackNavigator({
   DrawerStack: { screen: DrawerStack },
-}, {
-  headerMode: 'none'
-})
+  }, {
+    headerMode: 'none',
+});
 
 // Manifest of possible screens
 export const RootStack = StackNavigator({
-  drawerStack: { screen: DrawerNavigation }, 
+  drawerStack: { screen: DrawerNavigation },
 }, {
   // Default config for all screens
   headerMode: 'none',
   title: 'Main',
-  initialRouteName: 'drawerStack'
-})
+  initialRouteName: 'drawerStack',
+});
 
+interface IProps {
+  NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  VisitedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  ChallengeSettingsUpdated: (challengeSettings: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
-interface IProps{
-  NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>
-  VisitedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>
-  ChallengeSettingsUpdated: (challengeSettings: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>
-  UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>
-
-  nodeList: Array<any>
-  challengeSettings: any
-  userRegion: any
+  nodeList: Array<any>;
+  challengeSettings: any;
+  userRegion: any;
 }
-
 
 export class App extends Component<IProps> {
 
@@ -124,10 +146,10 @@ export class App extends Component<IProps> {
     private nodeService: NodeService;
     private locationService: LocationService;
 
-    constructor(props: IProps){
+    constructor(props: IProps) {
       super(props);
 
-      // Setting the UUID serves as a simple 'account' for each user. 
+      // Setting the UUID serves as a simple 'account' for each user.
       // It does not contain any real information, but it temporarily bound to the phone
       this.setUUID();
 
@@ -145,10 +167,23 @@ export class App extends Component<IProps> {
       this.locationService.StartMonitoring();
     }
 
+    render() {
+      return (
+        <View style={{flex: 1}}>
+           <StatusBar barStyle='light-content'/>
+          <RootStack />
+        </View>
+      );
+    }
 
-    private async setUUID(){
+    public getUserRegion(): any {
+      return this.props.userRegion;
+    }
+
+    // Private implementation functions
+    private async setUUID() {
       let currentUUID = await AsyncStorage.getItem('user_uuid');
-      if(currentUUID === null){
+      if (currentUUID === null) {
         let newUUID = uuid.v4();
         await AsyncStorage.setItem('user_uuid', newUUID);
       }
@@ -161,28 +196,14 @@ export class App extends Component<IProps> {
     private async gotNewNodeList(props: INodeListUpdated) {
       await this.props.NodeListUpdated(props.nodeList);
     }
-
-    
-    render() {
-        return (
-          <View style={{flex: 1}}>
-             <StatusBar barStyle="light-content"/>
-            <RootStack />
-          </View>
-        )
-    }
-
-    getUserRegion(): any {
-      return this.props.userRegion;
-    }
 }
 
 // @ts-ignore
-function mapStateToProps(state: IStoreState): IProps { 
+function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     nodeList: state.nodeList,
-    userRegion: state.userRegion
+    userRegion: state.userRegion,
   };
 }
 
@@ -194,5 +215,3 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-//# sourceMappingURL=App.js.map

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Alert, TouchableOpacity } from 'react-native';
 import {
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -26,13 +26,13 @@ import Node from '../components/Node';
 // import mapStyle from '../config/mapStyle.json';
 
 interface IProps {
-    navigation: any,
-    nodeList: Array<any>,
-    userRegion: any,
+    navigation: any;
+    nodeList: Array<any>;
+    userRegion: any;
 
     // Redux actions
-    NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>,
-    UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>,
+    NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
@@ -56,21 +56,21 @@ export class MainMap extends Component<IProps, IState> {
   constructor(props: IProps){
     super(props);
     this.state = {
-      lastLat: "0.0",
-      lastLong: "0.0",
+      lastLat: '0.0',
+      lastLong: '0.0',
       mapRegion: {},
       walletVisible: false,
       nodeSelected: false,
       selectedNode: {},
-      pinCodeVisible: false
-    }
+      pinCodeVisible: false,
+    };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.viewNodeList = this.viewNodeList.bind(this);
     this.toggleWallet = this.toggleWallet.bind(this);
     this.createNode = this.createNode.bind(this);
     this.goToNodeFinder = this.goToNodeFinder.bind(this);
-    
+
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
 
@@ -88,28 +88,20 @@ export class MainMap extends Component<IProps, IState> {
     this.currentMarkerRegion = markerRegion;
   }
 
-
-  private async gotNewNodeList(props: INodeListUpdated) {
-    await this.props.NodeListUpdated(props.nodeList);
-  }
-
-
-  
-
-  componentDidMount(){
-    if(this.currentMarkerRegion){
+  componentDidMount() {
+    if (this.currentMarkerRegion) {
       let selectedNode = this.props.nodeList.find(
         m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude
       );
-      
-      if(selectedNode){
+
+      if (selectedNode) {
         this.currentMarkerRegion.latitudeDelta =  0.00122*1.5;
         this.currentMarkerRegion.longitudeDelta =  0.00121*1.5;
         this.setState({selectedNode: selectedNode});
 
         setTimeout(() => {
           this._map.animateToRegion(this.currentMarkerRegion, 10);
-        }, 10)
+        }, 10);
 
         this.setState({nodeSelected: true});
         return;
@@ -118,34 +110,34 @@ export class MainMap extends Component<IProps, IState> {
 
     setTimeout(() => {
       this._map.animateToRegion(this.props.userRegion, 100);
-    }, 1000)
+    }, 1000);
   }
 
-  async userPositionChanged(userRegion:any){
+  async userPositionChanged(userRegion:any)  {
     await this.props.UserPositionChanged(userRegion);
   }
 
-  componentWillMount(){
+  componentWillMount() {
     let shouldUpdate = this.props.navigation.getParam('updateNodes', false);
-  
-    if(shouldUpdate){
+
+    if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
   }
 
-  zoomToUserLocation(){    
+  zoomToUserLocation() {
     this._map.animateToRegion(this.props.userRegion, 100);
     this.clearSelectedNode({nativeEvent: {action: ''}});
   }
 
-  viewNodeList(){
+  viewNodeList() {
     this.props.navigation.navigate('Nodes');
   }
 
-  onNodeSelected(e){
+  onNodeSelected(e) {
     const coordinate = e.nativeEvent.coordinate;
     const marker = this.props.nodeList.find(
       m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude
@@ -157,18 +149,18 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
-  clearSelectedNode(e){
-    if(e.nativeEvent.action !== 'marker-press'){
+  clearSelectedNode(e) {
+    if (e.nativeEvent.action !== 'marker-press') {
       this.setState({nodeSelected: false});
       return;
     }
   }
 
-  toggleWallet(){
+  toggleWallet() {
     this.setState({walletVisible: !this.state.walletVisible});
   }
 
-  createNode(){
+  createNode() {
     Alert.alert(
       'Add a node',
       'Enter a pin or create a new node',
@@ -182,17 +174,7 @@ export class MainMap extends Component<IProps, IState> {
     )
   }
 
-  private goToContactList(){
-    this.props.navigation.navigate('ContactList', {action: "create_node", userRegion: this.props.userRegion});
-  }
 
-  private goToCreateNode(){
-    this.props.navigation.navigate('CreateNode', {action: "create_node", userRegion: this.props.userRegion});
-  }
-
-  private goToNodeFinder(){
-    this.props.navigation.navigate('Finder', {action: "create_node", userRegion: this.props.userRegion, nodeId: this.state.selectedNode.data.node_id});
-  }
   
 
   render() {
@@ -200,26 +182,25 @@ export class MainMap extends Component<IProps, IState> {
       // Map screen view (exported component)
       <View style={styles.mainView}>
 
-          { 
-          // Main map toolbar 
+          {
+          // Main map toolbar
           <View style={styles.headerView}>
             <MapToolbar functions={{
               zoomToUserLocation: this.zoomToUserLocation,
               toggleWallet: this.toggleWallet,
               viewNodeList: this.viewNodeList,
-              updateNodeList: this.nodeService.CheckNow
+              updateNodeList: this.nodeService.CheckNow,
             }} />
           </View> 
           // End main map toolbar
           }
-          
-        
+
           {
             // Main map view
             <View style={styles.mapView}>
               <MapView
                 // initialRegion={this.props.userRegion}
-                provider="google"
+                provider='google'
                 ref={component => {this._map = component;}}
                 style={StyleSheet.absoluteFillObject}
                 showsUserLocation={true}
@@ -231,14 +212,14 @@ export class MainMap extends Component<IProps, IState> {
               >
 
               {
-                this.props.nodeList.length != 0 && 
+                this.props.nodeList.length !== 0 &&
                 this.props.nodeList.map(marker => (
                 // TODO: have the API return the proper values, e.g. have the API do the parseFloat, not client side
                 <Marker
                   coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                   title={marker.data.title}
                   pinColor={'purple'}
-                  //pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
+                  // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                   description={marker.data.description}
                   key={marker.node_id}
                 />
@@ -247,21 +228,21 @@ export class MainMap extends Component<IProps, IState> {
 
               <TouchableOpacity
                 style={{
-                    borderWidth:1,
-                    borderColor:'rgba(44,55,71,0.3)',
-                    alignItems:'center',
+                    borderWidth: 1,
+                    borderColor: 'rgba(44,55,71,0.3)',
+                    alignItems: 'center',
                     alignSelf: 'center',
-                    justifyContent:'center',
-                    width:80,
-                    height:80,
-                    backgroundColor:'rgba(255,255,255,0.9)',
-                    borderRadius:100,
-                    position:'absolute',
-                    bottom: '5%'
+                    justifyContent: 'center',
+                    width: 80,
+                    height: 80,
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    borderRadius: 100,
+                    position: 'absolute',
+                    bottom: '5%',
                   }}
                 onPress={this.createNode}
               >
-              <Pulse color='white' numPulses={2} diameter={210} speed={20} duration={2000} />                
+              <Pulse color='white' numPulses={2} diameter={210} speed={20} duration={2000} />
 
               <Icon
                 name='plus-circle'
@@ -278,18 +259,32 @@ export class MainMap extends Component<IProps, IState> {
           // Node selected view
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
-              <Node nodeId={this.state.selectedNode.data.node_id} title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description} navigation={this.props.navigation} />
+            <Node nodeId={this.state.selectedNode.data.node_id} title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description} navigation={this.props.navigation} />
           </View>
           // End node selected view
         }
 
-       
-
      </View>
      // End map screen view (exported component)
-    )
+    );
   }
-};
+
+  private async gotNewNodeList(props: INodeListUpdated) {
+    await this.props.NodeListUpdated(props.nodeList);
+  }
+
+  private goToContactList() {
+    this.props.navigation.navigate('ContactList', {action: "create_node", userRegion: this.props.userRegion});
+  }
+
+  private goToCreateNode() {
+    this.props.navigation.navigate('CreateNode', {action: "create_node", userRegion: this.props.userRegion});
+  }
+
+  private goToNodeFinder() {
+    this.props.navigation.navigate('Finder', {action: "create_node", userRegion: this.props.userRegion, nodeId: this.state.selectedNode.data.node_id});
+  }
+}
 
 
 // Redux setup functions

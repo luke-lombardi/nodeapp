@@ -2,6 +2,7 @@ import Logger from './Logger';
 import SleepUtil from './SleepUtil';
 import DeferredPromise from './DeferredPromise';
 
+// @ts-ignore
 import { AsyncStorage } from 'react-native';
 
 // services
@@ -29,6 +30,8 @@ export default class NodeService {
 
     constructor(props: IProps) {
         this.props = props;
+
+        // Create services
         this.locationService = new LocationService({});
         this.apiService = new ApiService({});
 
@@ -37,10 +40,13 @@ export default class NodeService {
         this.MonitorNodeListAsync = this.MonitorNodeListAsync.bind(this);
 
         this.CheckNow = this.CheckNow.bind(this);
+
         Logger.info(`NodeService.constructor -  Initialized node service`);
     }
 
-    StartMonitoring() {
+    // Public interface functions
+
+    public StartMonitoring() {
         if (this.monitoring) return;
         this.monitoring = true;
 
@@ -48,30 +54,19 @@ export default class NodeService {
         this.MonitorNodeListAsync();
     }
 
-    CheckNow() {
+    public CheckNow() {
         Logger.info('NodeService.CheckNow - updating the node list');
         this.checkNowTrigger.resolve();
     }
 
-    StopMonitoring() {
+    public StopMonitoring() {
         this.stopping = true;
         Logger.info(`NodeService.StopMonitoring -  Disabling monitoring loop.`);
     }
 
-    // Public interface functions
-    public async addNode() {
-        await AsyncStorage.setItem('user_uuid', '');
-    }
-
-    public createNode() {
-        console.log('creating');
-    }
-
-    public clearNodes() {
-        console.log('clearing');
-    }
-
     // Private implementation functions
+
+    // Monitors the cache for updates to the node list
     private async MonitorNodeListAsync() {
         while (true) {
             if (this.stopping) return;
@@ -88,11 +83,12 @@ export default class NodeService {
         }
     }
 
+    // Gets the current node list, which includes both public and tracked nodes
     private async GetNodeListAsync() {
       Logger.info('NodeService.GetNodeListAsync - Getting the node list.');
       let nodes = await this.apiService.getNodes();
       if (nodes) {
-        let orderedNodeList = this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
+        let orderedNodeList = await this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
         await this.props.nodeListUpdated({nodeList: orderedNodeList});
       }
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {StyleSheet} from 'react-native';
-import ResourceContainer from '../../resources/resources'
+import ResourceContainer from '../../resources/resources';
 
 import {
     ViroARScene,
@@ -60,7 +60,7 @@ export default class DemoScene extends Component<IProps, IState> {
           position={[0, 3, 1]} color='#ffffff' castsShadow={true} />
 
         {/* <ViroARPlaneSelector> */}
-        <ViroNode position={[0, -1, 0]} dragType='FixedToWorld' onDrag={() => {} } >
+        <ViroNode position={[0, -1, 0]} dragType='FixedToWorld' onDrag={() => { console.log('Dragged'); } } >
           <Viro3DObject
               source={this.resourceContainer.getModel('emoji_smile')}
               resources={[
@@ -80,7 +80,7 @@ export default class DemoScene extends Component<IProps, IState> {
     );
   }
 
-  private createMaterials(){
+  private createMaterials() {
     ViroMaterials.createMaterials({
         grid: {
             diffuseTexture: this.resourceContainer.getImage('grid_bg'),

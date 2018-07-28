@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-// @ts-ignore
 import {StyleSheet} from 'react-native';
-import ResourceContainer from '../../resources/resources'
-
+import ResourceContainer from '../../resources/resources';
 
 import {
     ViroARScene,
@@ -13,14 +11,12 @@ import {
   } from 'react-viro';
 import SleepUtil from '../../services/SleepUtil';
 
-
 // import Icon from 'react-native-vector-icons/FontAwesome';
-interface IProps{
+interface IProps {
   sceneProps: any;
-  
 }
 
-interface IState{
+interface IState {
     isLoading: boolean;
     nodeDirection: number;
     pauseUpdates: boolean;
@@ -32,14 +28,15 @@ export default class NodeFinder extends Component<IProps, IState> {
   private resourceContainer: ResourceContainer;
   // @ts-ignore
   private scene: any;
+  private _isMounted: boolean;
 
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
     this.state = {
         isLoading: true,
         nodeDirection: 0.0,
         pauseUpdates: false,
-        inView: false
+        inView: false,
     };
 
     this.resourceContainer = new ResourceContainer();
@@ -50,8 +47,10 @@ export default class NodeFinder extends Component<IProps, IState> {
 
     this.followUserPosition = this.followUserPosition.bind(this);
 
-    this.scene = null;
+    this.scene = undefined;
 
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
     // @ts-ignore
     this.createMaterials();
   }
@@ -59,43 +58,30 @@ export default class NodeFinder extends Component<IProps, IState> {
   _setScene(ref) {
     this.scene = ref;
   }
-  
+
   // @ts-ignore
   _onInitialized(state, reason) {
-    if (state == ViroConstants.TRACKING_NORMAL) {
+    if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
         isLoading : false,
         pauseUpdates: false,
         // @ts-ignore
-        nodeDirection: this.props.arSceneNavigator.viroAppProps.selectedNode.data.bearing
+        nodeDirection: this.props.arSceneNavigator.viroAppProps.selectedNode.data.bearing,
       });
 
       this.followUserPosition();
 
-    } else if (state == ViroConstants.TRACKING_NONE) {
+    } else if (state === ViroConstants.TRACKING_NONE) {
       // Handle loss of tracking
     }
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
 
-  private async followUserPosition(){
-
-    while(true){
-      // @ts-ignore
-      let selectedNode = await this.props.arSceneNavigator.viroAppProps.updateSelectedNode();
-      // console.log(selectedNode.data.bearing);
-      await this.setState({nodeDirection: selectedNode.data.bearing});
-      
-      if((selectedNode.data.bearing < 20 && selectedNode.data.bearing > -20) || (selectedNode.data.bearing > 340 && selectedNode.data.bearing < 360)){
-        await this.setState({inView: true});
-      }
-      else{
-        await this.setState({inView: false});
-      }
-
-      // await this.scene.getCameraOrientationAsync();
-      await SleepUtil.SleepAsync(100);
-    }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -103,27 +89,27 @@ export default class NodeFinder extends Component<IProps, IState> {
       <ViroARScene onTrackingUpdated={this._onInitialized} ref={this._setScene}>
 
          <ViroText text={this.state.nodeDirection.toString()} scale={[.5, .5, .5]} position={[0, 0, -1]} />
-        
-        { this.state.isLoading && 
-         <ViroSpinner 
+
+        { this.state.isLoading &&
+         <ViroSpinner
             type='Light'
             position={[0, 0, -2]}
         />
         }
-          
-         <ViroAmbientLight color={"#aaaaaa"} />
-         <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0,-1,-.2]}
-          position={[0, 3, 1]} color="#ffffff" castsShadow={true} />
+
+         <ViroAmbientLight color={'#aaaaaa'} />
+         <ViroSpotLight innerAngle={5} outerAngle={90} direction={[0, -1, -.2]}
+          position={[0, 3, 1]} color='#ffffff' castsShadow={true} />
 
           { !this.state.inView &&
             <Viro3DObject
-              source={this.resourceContainer.getModel("arrow")}
-              resources={[this.resourceContainer.getTexture("arrow")]}
+              source={this.resourceContainer.getModel('arrow')}
+              resources={[this.resourceContainer.getTexture('arrow')]}
               highAccuracyGaze={true}
               position={[0, -0.1, -0.75]}
               scale={[0.2, 0.2, 0.2]}
               rotation={[-180, this.state.nodeDirection + 90, 0]}
-              type="OBJ"
+              type='OBJ'
               />
           }
 
@@ -141,26 +127,52 @@ export default class NodeFinder extends Component<IProps, IState> {
             {/* </ViroARPlane> */}
 
           {/* </ViroARPlane>  */}
-       
+
       </ViroARScene>
-    )
+    );
+
   }
 
+  // Private implementation functions
+  private async followUserPosition() {
 
-  private createMaterials(){
+    while (true) {
+      // @ts-ignore
+      if (!this._isMounted)
+        break;
+
+      console.log('following');
+      // @ts-ignore
+      let selectedNode = await this.props.arSceneNavigator.viroAppProps.updateSelectedNode();
+
+      if (this._isMounted) {
+        // console.log(selectedNode.data.bearing);
+        await this.setState({nodeDirection: selectedNode.data.bearing});
+
+        if ((selectedNode.data.bearing < 20 && selectedNode.data.bearing > -20) || (selectedNode.data.bearing > 340 && selectedNode.data.bearing < 360)) {
+          await this.setState({inView: true});
+        } else {
+          await this.setState({inView: false});
+        }
+      }
+
+      // await this.scene.getCameraOrientationAsync();
+      await SleepUtil.SleepAsync(100);
+    }
+
+    console.log('DONE');
+  }
+
+  private createMaterials() {
     ViroMaterials.createMaterials({
         grid: {
-            diffuseTexture: this.resourceContainer.getImage('grid_bg')
-        }
+            diffuseTexture: this.resourceContainer.getImage('grid_bg'),
+        },
     });
   }
 
-};
+}
 
 // @ts-ignore
-var styles = StyleSheet.create({
-  
+let styles = StyleSheet.create({
 });
-   
-
-

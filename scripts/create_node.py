@@ -51,7 +51,17 @@ def get_new_uuid(rds):
 
 
 def insert_node(rds, node_id, node_data):
-    rds.setex(name=node_id, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+    public = node_data.get("public", False)
+    prefix = "private:"
+
+    if public:
+        prefix = "public:"
+    
+    key_name = prefix+str(node_id)
+
+    rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+
+    return key_name
 
 def lambda_handler(event, context):
     rds = connect_to_cache()
@@ -61,12 +71,14 @@ def lambda_handler(event, context):
     
     node_data = event.get('node_data', {})
     node_id = 0
+    key_name = ""
+
     if node_data:
         node_id = get_new_uuid(rds)
         logging.info('Generated new node_id: %d', node_id)
-        insert_node(rds, node_id, node_data)
+        key_name = insert_node(rds, node_id, node_data)
     
-    return str(node_id)
+    return key_name
 
 
 def run():
@@ -76,7 +88,8 @@ def run():
             "description": "its me mario",
             "lat": 43.13232,
             "lng": 43.333,
-            "type": "single"
+            "type": "static",
+            "public": False,
         }
     }
     

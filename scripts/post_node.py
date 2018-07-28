@@ -43,7 +43,17 @@ def connect_to_cache():
 def update_node(rds, node_id, node_data):
     current_ttl = rds.ttl(node_id)
     logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
-    rds.setex(name=node_id, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+    
+    prefix = "private:"
+    public = node_data.get("public", False)
+    if public:
+        prefix = "public:"
+
+    key_name = prefix + node_id
+
+    rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+
+    return key_name
 
 
 def lambda_handler(event, context):
@@ -54,11 +64,13 @@ def lambda_handler(event, context):
     
     node_id = event.get('node_id', 0)
     node_data = event.get('node_data', {})
-    if node_data:
-        update_node(rds, node_id, node_data)
 
-    logging.info(json.loads(rds.get(node_id)))
-    return json.dumps(json.loads(rds.get(node_id)))
+    key_name = None
+    
+    if node_data:
+        key_name = update_node(rds, node_id, node_data)
+
+    return key_name
 
 
 def run():
@@ -69,6 +81,8 @@ def run():
             "description": "its me mario",
             "lat": 43.13232,
             "lng": 43.333,
+            "public": False,
+            "type": "static",
         }
     }
     

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import {
   StyleSheet,
 } from 'react-native';
@@ -30,6 +30,7 @@ import NodeService,
 import Logger from '../services/Logger';
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
+import CreateModal from '../components/CreateModal';
 
 // Import various types of map markers
 import PublicPlaces from './markers/PublicPlaces';
@@ -66,6 +67,7 @@ interface IState {
   nodeSelected: boolean;
   selectedNode: any;
   publicNodesVisible: boolean;
+  createModalVisible: boolean;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -87,12 +89,14 @@ export class MainMap extends Component<IProps, IState> {
       nodeSelected: false,
       selectedNode: {},
       publicNodesVisible: true,
+      createModalVisible: false,
     };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.viewNodeList = this.viewNodeList.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.createNode = this.createNode.bind(this);
+    this.closeCreateModal = this.closeCreateModal.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -235,19 +239,25 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
-  createNode() {
-    Alert.alert(
-      'Track something',
-      'Enter a pin or create a new node',
-      [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Drop Pin', onPress: this.goToCreateNode},
-        {text: 'Create Group', onPress: this.goToContactList},
-        {text: 'Plan Meetup', onPress: this.goToContactList},
-        {text: 'Add Friend', onPress: this.goToContactList},
-      ],
-      { cancelable: false },
-    );
+  async createNode() {
+    // Alert.alert(
+    //   'Track something',
+    //   'Enter a pin or create a new node',
+    //   [
+    //     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+    //     {text: 'Drop Pin', onPress: this.goToCreateNode},
+    //     {text: 'Create Group', onPress: this.goToContactList},
+    //     {text: 'Plan Meetup', onPress: this.goToContactList},
+    //     {text: 'Add Friend', onPress: this.goToContactList},
+    //   ],
+    //   { cancelable: false },
+    // );
+
+    await this.setState({createModalVisible: true});
+  }
+
+  async closeCreateModal() {
+    await this.setState({createModalVisible: false});
   }
 
   render() {
@@ -332,6 +342,11 @@ export class MainMap extends Component<IProps, IState> {
           // End node selected view
         }
 
+        {
+          this.state.createModalVisible &&
+          <CreateModal functions={{ 'closeCreateModal': this.closeCreateModal }}/>
+        }
+
      </View>
      // End map screen view (exported component)
     );
@@ -394,6 +409,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 // End Redux setup functions
+
 // Local styles
 const styles = StyleSheet.create({
   mainView: {
@@ -436,6 +452,5 @@ const styles = StyleSheet.create({
     flex: 14,
   },
   createNodeButton: {
-
   },
 });

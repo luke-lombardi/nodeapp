@@ -55,6 +55,7 @@ export class Finder extends Component<IProps, IState> {
   private action: string;
   // @ts-ignore
   private _isMounted: boolean;
+  private nodeListToSearch: any;
 
   constructor(props: IProps) {
     super(props);
@@ -62,9 +63,14 @@ export class Finder extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.updateSelectedNode = this.updateSelectedNode.bind(this);
 
     let nodeId = this.props.navigation.getParam('nodeId', '');
     let nodeType = this.props.navigation.getParam('nodeType', '');
+
+    console.log('GOT NODE TYPE');
+    console.log(nodeId);
+    console.log(nodeType);
 
     let nodeListToSearch = undefined;
 
@@ -86,15 +92,12 @@ export class Finder extends Component<IProps, IState> {
         break;
     }
 
-    console.log('HEY');
-    console.log(nodeType);
+    this.nodeListToSearch = nodeListToSearch;
 
     // TODO: search for selected node in type list
     let selectedNode = nodeListToSearch.find(
       n => n.data.node_id === nodeId,
     );
-
-    this.updateSelectedNode = this.updateSelectedNode.bind(this);
 
     this.state = {
       isLoading: false,
@@ -141,10 +144,9 @@ export class Finder extends Component<IProps, IState> {
   private async updateSelectedNode() {
     let nodeId = this.state.nodeId;
 
-    let selectedNode = this.props.privatePlaceList.find(
+    let selectedNode = this.nodeListToSearch.find(
       n => n.data.node_id === nodeId,
     );
-    // console.log(selectedNode);
 
     return selectedNode;
   }

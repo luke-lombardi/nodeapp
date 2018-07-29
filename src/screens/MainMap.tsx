@@ -137,6 +137,7 @@ export class MainMap extends Component<IProps, IState> {
       if (selectedNode) {
         this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
         this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
+        selectedNode.nodeType = this.selectedNodeType;
         this.setState({selectedNode: selectedNode});
 
         setTimeout(() => {
@@ -274,10 +275,10 @@ export class MainMap extends Component<IProps, IState> {
               >
 
               {/* Map markers  */}
-              <PublicPlaces publicPlaceList={this.props.publicPlaceList} />
-              <PublicPeople publicPersonList={this.props.publicPersonList} />
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
+              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
-              <PrivatePeople privatePersonList={this.props.privatePersonList} />
+              <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 
               </MapView>
 
@@ -353,7 +354,7 @@ export class MainMap extends Component<IProps, IState> {
     this.props.navigation.navigate('Finder', {
       action: 'create_node', userRegion: this.props.userRegion,
       nodeId: this.state.selectedNode.data.node_id,
-      nodeType: this.selectedNodeType,
+      nodeType: this.state.selectedNode.nodeType,
     });
   }
 }

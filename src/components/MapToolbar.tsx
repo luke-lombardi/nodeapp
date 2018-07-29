@@ -22,11 +22,9 @@ export default class MapToolbar extends Component<IProps, IState> {
   }
 
   toggleSwitch() {
-    if(this.state.switchValue) {
+    if (this.state.switchValue) {
       this.setState({ switchValue: false });
-      //this.props.functions.updateNodeList;
-    }
-    else {
+    } else {
       this.setState({ switchValue: true });
   }
 }
@@ -38,7 +36,7 @@ export default class MapToolbar extends Component<IProps, IState> {
             icon={{
               name: 'refresh',
               size: 35,
-              color: 'rgba(44,55,71,1.0)'
+              color: 'rgba(44,55,71,1.0)',
             }}
             style={styles.refreshButton}
             containerStyle={styles.buttonContainer}
@@ -50,7 +48,7 @@ export default class MapToolbar extends Component<IProps, IState> {
             icon={{
               name: 'location-searching',
               size: 35,
-              color: 'rgba(44,55,71,1.0)'
+              color: 'rgba(44,55,71,1.0)',
             }}
             style={styles.locationButton}
             containerStyle={styles.buttonContainer}
@@ -69,7 +67,7 @@ export default class MapToolbar extends Component<IProps, IState> {
             icon={{
               name: 'list',
               size: 35,
-              color: 'rgba(44,55,71,1.0)'
+              color: 'rgba(44,55,71,1.0)',
             }}
             style={styles.nodeButton}
             containerStyle={styles.floatRight}
@@ -79,11 +77,9 @@ export default class MapToolbar extends Component<IProps, IState> {
           />
 
       </View>
-    )
+    );
   }
-
-
-};
+}
 
 // @ts-ignore
 const styles = StyleSheet.create({

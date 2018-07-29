@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-elements';
 
-interface IProps{
+interface IProps {
   title: string;
   description: string;
   nodeId: string;
@@ -15,7 +15,7 @@ interface IState {
 }
 
 export default class Node extends Component<IProps, IState> {
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
     this.state = {
     };
@@ -24,7 +24,9 @@ export default class Node extends Component<IProps, IState> {
 
   }
 
-  goToFinder(){
+  goToFinder() {
+    console.log('called gotofind');
+    console.log(this.props);
     this.props.navigation.navigate('Finder', {action: "scan_node", nodeId: this.props.nodeId, nodeType: this.props.nodeType });
   }
 
@@ -41,7 +43,7 @@ export default class Node extends Component<IProps, IState> {
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.description}>
           {this.props.description}
           </Text>
-         
+
           <View style={styles.buttonView}>
             <Button
               icon={{

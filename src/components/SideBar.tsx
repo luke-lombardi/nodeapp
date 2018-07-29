@@ -9,20 +9,21 @@ import { UserLoggedInActionCreator } from '../actions/AuthActions';
 import {ListItem} from 'react-native-elements';
 
 import {NavigationActions} from 'react-navigation';
-
+// import ApiService from '../services/ApiService';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 /*
 import { bindActionCreators } from 'redux';
 */
 
 interface IProps {
-    navigation?: any
+    navigation?: any;
+    nodeList: Array<any>;
 }
 
 export class SideBar extends Component<IProps> {
   resetAction: any;
-  
-    constructor(props: IProps){
+
+    constructor(props: IProps) {
         super(props);
 
         this.resetAction = NavigationActions.replace({ routeName: 'Map' });
@@ -40,13 +41,13 @@ export class SideBar extends Component<IProps> {
       this.props.navigation.dispatch(resetAction);
     }
 
-
     navigateToScreen = (route) => () => {
       const navigateAction = NavigationActions.navigate({
-        routeName: route
+        routeName: route,
       });
       this.props.navigation.dispatch(navigateAction);
     }
+
 
     render() {
          return (
@@ -57,28 +58,26 @@ export class SideBar extends Component<IProps> {
                   containerStyle={styles.navItem}
                   key='map'
                   title='Map'
-                  leftIcon={{name: 'map', type: 'feather', color: "rgba(51, 51, 51, 0.8)"}}
-
+                  leftIcon={{name: 'map', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
                     this.resetNavigation('Map');
-                  }} 
+                  }}
                 />
 
                 <ListItem
                   containerStyle={styles.navItem}
+                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
                   key='nodes'
                   title='Tracked Nodes'
-                  leftIcon={{name: 'map-pin', type: 'feather', color: "rgba(51, 51, 51, 0.8)"}}
-
+                  leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
                     this.resetNavigation('Nodes');
-                  }} 
+                  }}
                 />
-              
         </View>
-      )
+      );
     }
-};
+}
 
 // @ts-ignore
 export function mapStateToProps(state: IStoreState): IProps {
@@ -98,13 +97,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(SideBar);
 
 const styles = StyleSheet.create({
   view: {
-    marginTop:20,
-    flex: 1
+    marginTop: 20,
+    flex: 1,
   },
   navItem: {
     borderBottomWidth: 1,
     paddingTop: 25,
     paddingBottom: 25,
-    borderBottomColor:"rgba(51, 51, 51, 0.2)",
-  }
+    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+  },
 });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Loading from '../components/Loading';
 
 import ApiService from '../services/ApiService';
+import NodeService from '../services/NodeService';
 
 interface IProps {
   navigation: any;
@@ -31,6 +32,7 @@ interface IState {
 export class CreateNode extends Component<IProps, IState> {
   _map: any;
   private apiService: ApiService;
+  private nodeService: NodeService;
 
   constructor(props: IProps) {
     super(props);
@@ -50,7 +52,8 @@ export class CreateNode extends Component<IProps, IState> {
     this.submitCreateNode = this.submitCreateNode.bind(this);
 
     this.apiService = new ApiService({});
-    }
+    this.nodeService = new NodeService({});
+  }
 
   componentWillMount() {
     console.log('component will mount');
@@ -136,7 +139,7 @@ export class CreateNode extends Component<IProps, IState> {
       'lat': this.state.userRegion.latitude,
       'lng': this.state.userRegion.longitude,
       'public': this.state.public,
-      'type': 'static',
+      'type': 'place',
     };
 
     console.log('Submitted node request');
@@ -145,33 +148,13 @@ export class CreateNode extends Component<IProps, IState> {
     let newUuid = await this.apiService.CreateNodeAsync(nodeData);
 
     if (newUuid !== undefined) {
-      await this.storeNode(newUuid);
+      await this.nodeService.storeNode(newUuid);
+    } else {
+      Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
     }
 
-    console.log('RESPONSE FROM CREATE NODE');
-    console.log(newUuid);
     await this.setState({isLoading: false});
     this.props.navigation.navigate('Map', {updateNodes: true});
-
-  }
-
-  private async storeNode(newUuid) {
-    let trackedNodes = await AsyncStorage.getItem('trackedNodes');
-    if (trackedNodes !== null) {
-      trackedNodes = JSON.parse(trackedNodes);
-    } else {
-      // @ts-ignore
-      trackedNodes = [];
-    }
-
-    console.log('TRACKED NODES');
-    console.log(trackedNodes);
-
-    // @ts-ignore
-    trackedNodes.push(newUuid);
-
-    await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
-    Logger.info(`CreateNode.storeNode: now tracking ${newUuid}`);
   }
 
 }

@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import MapView, { Marker}   from 'react-native-maps';
+import MapView   from 'react-native-maps';
 import Pulse from 'react-native-pulse';
 
 import IStoreState from '../store/IStoreState';
@@ -13,8 +13,18 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
-import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
-import NodeService, { INodeListUpdated } from '../services/NodeService';
+import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
+import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
+import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
+import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
+
+import NodeService,
+  {
+    IPublicPersonListUpdated,
+    IPublicPlaceListUpdated,
+    IPrivatePersonListUpdated,
+    IPrivatePlaceListUpdated }
+  from '../services/NodeService';
 
 // custom components
 
@@ -23,37 +33,51 @@ import Logger from '../services/Logger';
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
 
+// Import various types of map markers
+import PublicPlaces from './markers/PublicPlaces';
+import PrivatePlaces from './markers/PrivatePlaces';
+import PublicPeople from './markers/PublicPeople';
+import PrivatePeople from './markers/PrivatePeople';
+
 // import mapStyle from '../config/mapStyle.json';
 
 interface IProps {
     navigation: any;
-    nodeList: Array<any>;
+
+    publicPersonList: Array<any>;
+    publicPlaceList: Array<any>;
+    privatePersonList: Array<any>;
+    privatePlaceList: Array<any>;
+
     userRegion: any;
 
     // Redux actions
-    NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
     UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
-  mapRegion: any,
-  lastLat: string,
-  lastLong: string,
-  walletVisible: boolean,
-  nodeSelected: boolean,
-  selectedNode: any,
-  pinCodeVisible: boolean,
+  mapRegion: any;
+  lastLat: string;
+  lastLong: string;
+  walletVisible: boolean;
+  nodeSelected: boolean;
+  selectedNode: any;
+  pinCodeVisible: boolean;
 }
 
 export class MainMap extends Component<IProps, IState> {
-  timerID : number;
+  timerID: number;
   _map: any;
   currentMarkerRegion: any;
 
   // @ts-ignore
   private nodeService: NodeService;
 
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
     this.state = {
       lastLat: '0.0',
@@ -74,15 +98,24 @@ export class MainMap extends Component<IProps, IState> {
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
 
-    this.gotNewNodeList = this.gotNewNodeList.bind(this);
+    this.gotNewPublicPersonList = this.gotNewPublicPersonList.bind(this);
+    this.gotNewPublicPlaceList = this.gotNewPublicPlaceList.bind(this);
+    this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
+    this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
 
     this.goToContactList = this.goToContactList.bind(this);
     this.goToCreateNode = this.goToCreateNode.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
-    this.nodeService = new NodeService({nodeListUpdated: this.gotNewNodeList, currentUserRegion: this.props.userRegion});
+    this.nodeService = new NodeService(
+      {
+        publicPersonListUpdated: this.gotNewPublicPersonList,
+        publicPlaceListUpdated: this.gotNewPublicPlaceList,
+        privatePersonListUpdated: this.gotNewPrivatePersonList,
+        privatePlaceListUpdated: this.gotNewPrivatePlaceList,
+        currentUserRegion: this.props.userRegion,
+    });
 
     let markerRegion = this.props.navigation.getParam('region', {});
     this.currentMarkerRegion = markerRegion;
@@ -90,13 +123,13 @@ export class MainMap extends Component<IProps, IState> {
 
   componentDidMount() {
     if (this.currentMarkerRegion) {
-      let selectedNode = this.props.nodeList.find(
-        m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude
+      let selectedNode = this.props.publicPlaceList.find(
+        m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude,
       );
 
       if (selectedNode) {
-        this.currentMarkerRegion.latitudeDelta =  0.00122*1.5;
-        this.currentMarkerRegion.longitudeDelta =  0.00121*1.5;
+        this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
+        this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
         this.setState({selectedNode: selectedNode});
 
         setTimeout(() => {
@@ -113,7 +146,7 @@ export class MainMap extends Component<IProps, IState> {
     }, 1000);
   }
 
-  async userPositionChanged(userRegion:any)  {
+  async userPositionChanged(userRegion: any)  {
     await this.props.UserPositionChanged(userRegion);
   }
 
@@ -123,9 +156,6 @@ export class MainMap extends Component<IProps, IState> {
     if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
-  }
-
-  componentWillUnmount() {
   }
 
   zoomToUserLocation() {
@@ -139,8 +169,8 @@ export class MainMap extends Component<IProps, IState> {
 
   onNodeSelected(e) {
     const coordinate = e.nativeEvent.coordinate;
-    const marker = this.props.nodeList.find(
-      m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude
+    const marker = this.props.publicPlaceList.find(
+      m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
     );
     if (marker) {
       console.log('Found marker');
@@ -170,12 +200,9 @@ export class MainMap extends Component<IProps, IState> {
         {text: 'Add Place', onPress: this.goToContactList},
         {text: 'Add Friend', onPress: this.goToContactList},
       ],
-      { cancelable: false }
-    )
+      { cancelable: false },
+    );
   }
-
-
-  
 
   render() {
     return (
@@ -191,7 +218,7 @@ export class MainMap extends Component<IProps, IState> {
               viewNodeList: this.viewNodeList,
               updateNodeList: this.nodeService.CheckNow,
             }} />
-          </View> 
+          </View>
           // End main map toolbar
           }
 
@@ -201,7 +228,7 @@ export class MainMap extends Component<IProps, IState> {
               <MapView
                 // initialRegion={this.props.userRegion}
                 provider='google'
-                ref={component => {this._map = component;}}
+                ref={ component => { this._map = component; } }
                 style={StyleSheet.absoluteFillObject}
                 showsUserLocation={true}
                 followsUserLocation={true}
@@ -211,19 +238,12 @@ export class MainMap extends Component<IProps, IState> {
                 // customMapStyle={mapStyle}
               >
 
-              {
-                this.props.nodeList.length !== 0 &&
-                this.props.nodeList.map(marker => (
-                // TODO: have the API return the proper values, e.g. have the API do the parseFloat, not client side
-                <Marker
-                  coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
-                  title={marker.data.title}
-                  pinColor={'purple'}
-                  // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
-                  description={marker.data.description}
-                  key={marker.node_id}
-                />
-              ))}
+              {/* Map markers  */}
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} />
+              <PublicPeople publicPersonList={this.props.publicPersonList} />
+              <PrivatePlaces privatePlaceList={this.props.privatePlaceList} />
+              <PrivatePeople privatePersonList={this.props.privatePersonList} />
+
               </MapView>
 
               <TouchableOpacity
@@ -252,7 +272,7 @@ export class MainMap extends Component<IProps, IState> {
               </TouchableOpacity>
 
             </View>
-          // End map view  
+          // End map view
         }
 
         {
@@ -269,53 +289,68 @@ export class MainMap extends Component<IProps, IState> {
     );
   }
 
-  private async gotNewNodeList(props: INodeListUpdated) {
-    await this.props.NodeListUpdated(props.nodeList);
+  private async gotNewPublicPersonList(props: IPublicPersonListUpdated) {
+    await this.props.PublicPersonListUpdated(props.nodeList);
+  }
+
+  private async gotNewPublicPlaceList(props: IPublicPlaceListUpdated) {
+    await this.props.PublicPersonListUpdated(props.nodeList);
+  }
+
+  private async gotNewPrivatePersonList(props: IPrivatePersonListUpdated) {
+    await this.props.PublicPersonListUpdated(props.nodeList);
+  }
+
+  private async gotNewPrivatePlaceList(props: IPrivatePlaceListUpdated) {
+    await this.props.PublicPersonListUpdated(props.nodeList);
   }
 
   private goToContactList() {
-    this.props.navigation.navigate('ContactList', {action: "create_node", userRegion: this.props.userRegion});
+    this.props.navigation.navigate('ContactList', {action: 'create_node', userRegion: this.props.userRegion});
   }
 
   private goToCreateNode() {
-    this.props.navigation.navigate('CreateNode', {action: "create_node", userRegion: this.props.userRegion});
+    this.props.navigation.navigate('CreateNode', {action: 'create_node', userRegion: this.props.userRegion});
   }
 
   private goToNodeFinder() {
-    this.props.navigation.navigate('Finder', {action: "create_node", userRegion: this.props.userRegion, nodeId: this.state.selectedNode.data.node_id});
+    this.props.navigation.navigate('Finder', {action: 'create_node', userRegion: this.props.userRegion, nodeId: this.state.selectedNode.data.node_id});
   }
 }
-
 
 // Redux setup functions
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
-    nodeList: state.nodeList,
+    publicPersonList: state.publicPersonList,
+    publicPlaceList: state.publicPlaceList,
+    privatePersonList: state.privatePersonList,
+    privatePlaceList: state.privatePlaceList,
     userRegion: state.userRegion,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    NodeListUpdated: bindActionCreators(NodeListUpdatedActionCreator, dispatch),
-    UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch)
+    PublicPersonListUpdated: bindActionCreators(PublicPersonListUpdatedActionCreator, dispatch),
+    PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
+    PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
+    PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
+    UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 // End Redux setup functions
 // Local styles
 const styles = StyleSheet.create({
   mainView: {
-    flex:1,
+    flex: 1,
   },
   headerView: {
-    flex:1,
+    flex: 1,
     position: 'relative',
-    zIndex: 2
+    zIndex: 2,
   },
   walletView: {
     backgroundColor: '#rgba(255, 255, 255, 0.9)',
@@ -323,13 +358,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     borderBottomColor: 'rgba(44,55,71,0.3)',
     borderBottomWidth: 1,
-    marginTop:5,
-    position:'relative',
+    marginTop: 5,
+    position: 'relative',
     top: 0,
     left: 0,
     height: '35%',
     width: '100%',
-    zIndex: 1
+    zIndex: 1,
   },
   nodeSelectedView: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -337,19 +372,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     borderTopColor: 'rgba(44,55,71,0.3)',
     borderTopWidth: 1,
-    marginTop:0,
-    position:'absolute',
+    marginTop: 0,
+    position: 'absolute',
     bottom: 0,
     left: 0,
     height: '35%',
     width: '100%',
-    zIndex: 1
+    zIndex: 1,
   },
   mapView: {
-    flex:14
+    flex: 14,
   },
   createNodeButton: {
 
-  }
-
+  },
 });

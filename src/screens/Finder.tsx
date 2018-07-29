@@ -20,15 +20,27 @@ import { bindActionCreators } from 'redux';
 
 // actions
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
-import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
+
+import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
+import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
+import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
+import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
 
 interface IProps {
   navigation: any;
-  nodeList: Array<any>;
+  publicPersonList: Array<any>;
+  publicPlaceList: Array<any>;
+  privatePersonList: Array<any>;
+  privatePlaceList: Array<any>;
+
   userRegion: any;
 
   // Redux actions
-  NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
@@ -52,7 +64,8 @@ export class Finder extends Component<IProps, IState> {
 
     let nodeId = this.props.navigation.getParam('nodeId', '');
 
-    let selectedNode = this.props.nodeList.find(
+    // TODO: search for selected node in type list
+    let selectedNode = this.props.publicPlaceList.find(
       n => n.data.node_id === nodeId,
     );
 
@@ -102,7 +115,7 @@ export class Finder extends Component<IProps, IState> {
   private async updateSelectedNode() {
     let nodeId = this.state.nodeId;
 
-    let selectedNode = this.props.nodeList.find(
+    let selectedNode = this.props.publicPlaceList.find(
       n => n.data.node_id === nodeId,
     );
     // console.log(selectedNode);
@@ -116,14 +129,21 @@ export class Finder extends Component<IProps, IState> {
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
-    nodeList: state.nodeList,
+    publicPersonList: state.publicPersonList,
+    publicPlaceList: state.publicPlaceList,
+    privatePersonList: state.privatePersonList,
+    privatePlaceList: state.privatePlaceList,
     userRegion: state.userRegion,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    NodeListUpdated: bindActionCreators(NodeListUpdatedActionCreator, dispatch),
+    PublicPersonListUpdated: bindActionCreators(PublicPersonListUpdatedActionCreator, dispatch),
+    PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
+    PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
+    PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
+
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }

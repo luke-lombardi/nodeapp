@@ -3,10 +3,6 @@ import Logger from './Logger';
 // @ts-ignore
 import { AsyncStorage } from 'react-native';
 
-export interface IVisitedNodesUpdated {
-  readonly nodeList: Array<any>;
-}
-
 // @ts-ignore
 interface IProps {
 }

@@ -28,6 +28,7 @@ interface NodeData {
   rank: number;
   node_id: string;
   type: string;
+  public: boolean;
 }
 
 interface Node {
@@ -129,7 +130,11 @@ export default class LocationService {
       });
 
       let orderedList = geolib.orderByDistance({latitude: userRegion.latitude, longitude: userRegion.longitude}, newNodeList);
-      let orderedNodeList = [];
+
+      let orderedPublicPersonList = [];
+      let orderedPublicPlaceList = [];
+      let orderedPrivatePersonList = [];
+      let orderedPrivatePlaceList = [];
 
       for (let i = 0; i < orderedList.length; i++) {
         let key = orderedList[i].key;
@@ -145,9 +150,10 @@ export default class LocationService {
           { latitude: userRegion.latitude, longitude: userRegion.longitude },
         );
 
-        Logger.info('Ordering node: ' + nodeListArray[key].title);
-        Logger.info('Figure out the bearing...');
-        Logger.info('Shortest path bearing:' + bearing.toString());
+        // Logger.info('Ordering node: ' + nodeListArray[key].title);
+        // Logger.info('Figure out the bearing...');
+        // Logger.info('Shortest path bearing:' + bearing.toString());
+
         // Logger.info('Your orientation:' + userRegion.bearing.toString());
 
         let arrowBearing = 0.0;
@@ -173,11 +179,28 @@ export default class LocationService {
         currentNode.data.bearing = arrowBearing;
         currentNode.data.rank = i;
         currentNode.data.node_id = nodeListArray[key].node_id;
+        currentNode.data.public = nodeListArray[key].public;
+        currentNode.data.type = nodeListArray[key].type;
 
-        orderedNodeList.push(currentNode);
+        if (currentNode.data.type === 'person' && currentNode.data.public) {
+          orderedPublicPersonList.push(currentNode);
+        } else if (currentNode.data.type === 'place' && currentNode.data.public) {
+          orderedPublicPlaceList.push(currentNode);
+        } else if (currentNode.data.type === 'person' && !currentNode.data.public) {
+          orderedPrivatePersonList.push(currentNode);
+        } else if (currentNode.data.type === 'place' && !currentNode.data.public) {
+          orderedPrivatePlaceList.push(currentNode);
+        }
       }
 
-      return orderedNodeList;
+      let nodes = {
+        'publicPersonList': orderedPublicPersonList,
+        'publicPlaceList': orderedPublicPlaceList,
+        'privatePersonList': orderedPrivatePersonList,
+        'privatePlaceList': orderedPrivatePlaceList,
+      };
+
+      return nodes;
     }
 
     // Private implementation functions
@@ -194,11 +217,11 @@ export default class LocationService {
     }
 
     // Sends the users current position to the cache
-    private async postLocation(userRegion: any) {
+    private async postLocation(userRegion: any): Promise<any> {
       let currentUUID = await AsyncStorage.getItem('user_uuid');
       if (currentUUID === undefined) {
         Logger.info('LocationService.postLocation - No UUID is defined, not posting location.');
-        return;
+        return ;
       }
 
       let requestBody = {
@@ -214,8 +237,10 @@ export default class LocationService {
       };
 
       let response = await this.apiService.PostLocationAsync(requestBody);
+
       // console.log('RESPONSE FROM POST LOCATION');
       // console.log(response);
+      return response;
     }
 
 }

@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/FontAwesome';
-interface IProps{
+interface IProps {
   functions: any;
 }
 
-interface IState{
+interface IState {
 }
 
 export default class MapToolbar extends Component<IProps, IState> {
@@ -19,7 +19,7 @@ export default class MapToolbar extends Component<IProps, IState> {
 
   render() {
     return (
-    <View style={styles.toolbarView}> 
+    <View style={styles.toolbarView}>
           <Button
             icon={{
               name: 'refresh',
@@ -45,7 +45,6 @@ export default class MapToolbar extends Component<IProps, IState> {
             // @ts-ignore
             onPress={this.props.functions.zoomToUserLocation}
           />
-          
           <Button
             icon={{
               name: 'list',

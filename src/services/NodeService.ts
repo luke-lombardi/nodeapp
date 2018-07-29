@@ -9,14 +9,29 @@ import { AsyncStorage } from 'react-native';
 import LocationService from './LocationService';
 import ApiService from './ApiService';
 
-export interface INodeListUpdated {
-  readonly nodeList: Array<any>;
+export interface IPublicPersonListUpdated {
+    readonly nodeList: Array<any>;
+}
+
+export interface IPublicPlaceListUpdated {
+    readonly nodeList: Array<any>;
+}
+
+export interface IPrivatePersonListUpdated {
+    readonly nodeList: Array<any>;
+}
+
+export interface IPrivatePlaceListUpdated {
+    readonly nodeList: Array<any>;
 }
 
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
-  readonly nodeListUpdated?: (props: INodeListUpdated) => Promise<void>;
+  readonly publicPersonListUpdated?: (props: IPublicPersonListUpdated) => Promise<void>;
+  readonly publicPlaceListUpdated?: (props: IPublicPlaceListUpdated) => Promise<void>;
+  readonly privatePersonListUpdated?: (props: IPrivatePersonListUpdated) => Promise<void>;
+  readonly privatePlaceListUpdated?: (props: IPrivatePlaceListUpdated) => Promise<void>;
 }
 
 export default class NodeService {
@@ -64,6 +79,25 @@ export default class NodeService {
         Logger.info(`NodeService.StopMonitoring -  Disabling monitoring loop.`);
     }
 
+    public async storeNode(newUuid) {
+        let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+        if (trackedNodes !== null) {
+          trackedNodes = JSON.parse(trackedNodes);
+        } else {
+          // @ts-ignore
+          trackedNodes = [];
+        }
+
+        console.log('TRACKED NODES');
+        console.log(trackedNodes);
+
+        // @ts-ignore
+        trackedNodes.push(newUuid);
+
+        await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
+        Logger.info(`CreateNode.storeNode: now tracking ${newUuid}`);
+    }
+
     // Private implementation functions
 
     // Monitors the cache for updates to the node list
@@ -88,8 +122,12 @@ export default class NodeService {
       Logger.info('NodeService.GetNodeListAsync - Getting the node list.');
       let nodes = await this.apiService.getNodes();
       if (nodes) {
-        let orderedNodeList = await this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
-        await this.props.nodeListUpdated({nodeList: orderedNodeList});
+        let orderedNodes = await this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
+        console.log(orderedNodes);
+        await this.props.publicPersonListUpdated({nodeList: orderedNodes.publicPersonList});
+        await this.props.publicPlaceListUpdated({nodeList: orderedNodes.publicPlaceList});
+        await this.props.privatePersonListUpdated({nodeList: orderedNodes.privatePersonList});
+        await this.props.privatePlaceListUpdated({nodeList: orderedNodes.privatePlaceList});
       }
     }
 

@@ -4,6 +4,7 @@ import { Marker}   from 'react-native-maps';
 interface IProps {
     publicPlaceList: any;
     functions: any;
+    visible: boolean;
 }
 
 interface IState {
@@ -18,6 +19,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
 
     render() {
         return (
+            this.props.visible &&
             this.props.publicPlaceList.map(marker => (
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }

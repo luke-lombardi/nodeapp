@@ -24,7 +24,7 @@ export default class MapToolbar extends Component<IProps, IState> {
   toggleSwitch() {
     if(this.state.switchValue) {
       this.setState({ switchValue: false });
-      //this.props.functions.updateNodeList;
+      this.props.functions.privatePlaceList;
     }
     else {
       this.setState({ switchValue: true });

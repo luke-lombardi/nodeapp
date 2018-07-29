@@ -20,6 +20,23 @@
 	<string>0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>debugbuild.fyb.smartshare.io</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fyb</string>
+			</array>
+			<key>CFBundleURLTypes</key>
+			<array>
+				<dict/>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -69,16 +86,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>debug.fyb.smartshare.io</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fyb</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

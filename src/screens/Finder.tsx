@@ -48,6 +48,7 @@ interface IState {
   isLoading: boolean;
   sceneProps: any;
   nodeId: string;
+  nodeType: string;
 }
 
 export class Finder extends Component<IProps, IState> {
@@ -63,9 +64,33 @@ export class Finder extends Component<IProps, IState> {
     this.componentDidMount = this.componentDidMount.bind(this);
 
     let nodeId = this.props.navigation.getParam('nodeId', '');
+    let nodeType = this.props.navigation.getParam('nodeType', '');
+
+    let nodeListToSearch = undefined;
+
+    // Choose which node list to search
+    switch (nodeType) {
+      case 'publicPerson':
+        nodeListToSearch = this.props.publicPersonList;
+        break;
+      case 'publicPlace':
+        nodeListToSearch = this.props.publicPlaceList;
+        break;
+      case 'privatePerson':
+        nodeListToSearch = this.props.privatePersonList;
+        break;
+      case 'privatePlace':
+        nodeListToSearch = this.props.privatePlaceList;
+        break;
+      default:
+        break;
+    }
+
+    console.log('HEY');
+    console.log(nodeType);
 
     // TODO: search for selected node in type list
-    let selectedNode = this.props.publicPlaceList.find(
+    let selectedNode = nodeListToSearch.find(
       n => n.data.node_id === nodeId,
     );
 
@@ -79,6 +104,7 @@ export class Finder extends Component<IProps, IState> {
         updateSelectedNode: this.updateSelectedNode,
       },
       nodeId: nodeId,
+      nodeType: nodeType,
     };
 
   }
@@ -115,7 +141,7 @@ export class Finder extends Component<IProps, IState> {
   private async updateSelectedNode() {
     let nodeId = this.state.nodeId;
 
-    let selectedNode = this.props.publicPlaceList.find(
+    let selectedNode = this.props.privatePlaceList.find(
       n => n.data.node_id === nodeId,
     );
     // console.log(selectedNode);

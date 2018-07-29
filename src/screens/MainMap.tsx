@@ -73,6 +73,7 @@ export class MainMap extends Component<IProps, IState> {
   timerID: number;
   _map: any;
   currentMarkerRegion: any;
+  selectedNodeType: string;
 
   // @ts-ignore
   private nodeService: NodeService;
@@ -93,7 +94,6 @@ export class MainMap extends Component<IProps, IState> {
     this.viewNodeList = this.viewNodeList.bind(this);
     this.toggleWallet = this.toggleWallet.bind(this);
     this.createNode = this.createNode.bind(this);
-    this.goToNodeFinder = this.goToNodeFinder.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -105,8 +105,11 @@ export class MainMap extends Component<IProps, IState> {
 
     this.goToContactList = this.goToContactList.bind(this);
     this.goToCreateNode = this.goToCreateNode.bind(this);
+    this.goToNodeFinder = this.goToNodeFinder.bind(this);
+    this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -117,13 +120,17 @@ export class MainMap extends Component<IProps, IState> {
         currentUserRegion: this.props.userRegion,
     });
 
-    let markerRegion = this.props.navigation.getParam('region', {});
+    let markerRegion = this.props.navigation.getParam('region', undefined);
+    this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
+
     this.currentMarkerRegion = markerRegion;
   }
 
   componentDidMount() {
-    if (this.currentMarkerRegion) {
-      let selectedNode = this.props.publicPlaceList.find(
+    if (this.currentMarkerRegion !== undefined) {
+      let nodeListToSearch = this.getNodeListToSearch();
+
+      let selectedNode = nodeListToSearch.find(
         m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude,
       );
 
@@ -167,13 +174,19 @@ export class MainMap extends Component<IProps, IState> {
     this.props.navigation.navigate('Nodes');
   }
 
-  onNodeSelected(e) {
+  onNodeSelected(e, nodeType) {
     const coordinate = e.nativeEvent.coordinate;
-    const marker = this.props.publicPlaceList.find(
+    this.selectedNodeType = nodeType;
+    let nodeListToSearch = this.getNodeListToSearch();
+
+    const marker = nodeListToSearch.find(
       m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
     );
+
     if (marker) {
       console.log('Found marker');
+
+      marker.nodeType = nodeType;
       this.setState({selectedNode: marker});
       this.setState({nodeSelected: true});
     }
@@ -188,6 +201,28 @@ export class MainMap extends Component<IProps, IState> {
 
   toggleWallet() {
     this.setState({walletVisible: !this.state.walletVisible});
+  }
+
+  getNodeListToSearch() {
+    let nodeListToSearch = undefined;
+
+    switch (this.selectedNodeType) {
+      case 'publicPerson':
+        nodeListToSearch = this.props.publicPersonList;
+        break;
+      case 'publicPlace':
+        nodeListToSearch = this.props.publicPlaceList;
+        break;
+      case 'privatePerson':
+        nodeListToSearch = this.props.privatePersonList;
+        break;
+      case 'privatePlace':
+        nodeListToSearch = this.props.privatePlaceList;
+        break;
+      default:
+        break;
+    }
+    return nodeListToSearch;
   }
 
   createNode() {
@@ -233,7 +268,7 @@ export class MainMap extends Component<IProps, IState> {
                 showsUserLocation={true}
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
-                onMarkerPress={this.onNodeSelected}
+                // onMarkerPress={this.onNodeSelected}
                 onPress={this.clearSelectedNode}
                 // customMapStyle={mapStyle}
               >
@@ -241,7 +276,7 @@ export class MainMap extends Component<IProps, IState> {
               {/* Map markers  */}
               <PublicPlaces publicPlaceList={this.props.publicPlaceList} />
               <PublicPeople publicPersonList={this.props.publicPersonList} />
-              <PrivatePlaces privatePlaceList={this.props.privatePlaceList} />
+              <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} />
 
               </MapView>
@@ -279,7 +314,8 @@ export class MainMap extends Component<IProps, IState> {
           // Node selected view
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
-            <Node nodeId={this.state.selectedNode.data.node_id} title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description} navigation={this.props.navigation} />
+            <Node nodeId={this.state.selectedNode.data.node_id} nodeType={ this.state.selectedNode.nodeType } 
+            title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description}  navigation={this.props.navigation} />
           </View>
           // End node selected view
         }
@@ -314,7 +350,11 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   private goToNodeFinder() {
-    this.props.navigation.navigate('Finder', {action: 'create_node', userRegion: this.props.userRegion, nodeId: this.state.selectedNode.data.node_id});
+    this.props.navigation.navigate('Finder', {
+      action: 'create_node', userRegion: this.props.userRegion,
+      nodeId: this.state.selectedNode.data.node_id,
+      nodeType: this.selectedNodeType,
+    });
   }
 }
 

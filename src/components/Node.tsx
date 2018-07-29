@@ -6,10 +6,11 @@ interface IProps{
   title: string;
   description: string;
   nodeId: string;
+  nodeType: string;
   navigation: any;
 }
 
-interface IState{
+interface IState {
 
 }
 
@@ -24,16 +25,16 @@ export default class Node extends Component<IProps, IState> {
   }
 
   goToFinder(){
-    this.props.navigation.navigate('Finder', {action: "scan_node", nodeId: this.props.nodeId });
+    this.props.navigation.navigate('Finder', {action: "scan_node", nodeId: this.props.nodeId, nodeType: this.props.nodeType });
   }
 
   render() {
     return (
       <View style={styles.view}>
-        <Card containerStyle={styles.nodeCard}> 
+        <Card containerStyle={styles.nodeCard}>
 
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.nodeTitle}>
-      
+
             {this.props.title}
 
           </Text>

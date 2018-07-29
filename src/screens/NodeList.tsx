@@ -17,7 +17,6 @@ interface IProps {
 export class NodeList extends Component<IProps> {
   constructor(props: IProps) {
     super(props);
-
   }
 
   _onTouchNode(node: any) {
@@ -28,7 +27,14 @@ export class NodeList extends Component<IProps> {
       longitudeDelta: parseFloat(node.data.longDelta),
     };
 
-    this.props.navigation.navigate('Map', {region: region});
+    let nodeType = node.data.type;
+    if (nodeType === 'place') {
+      nodeType = 'privatePlace';
+    } else if (nodeType === 'person') {
+      nodeType = 'privatePerson';
+    }
+
+    this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
   }
 
   _renderItem = ({item}) => (

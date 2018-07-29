@@ -3,6 +3,7 @@ import { Marker}   from 'react-native-maps';
 
 interface IProps {
     privatePlaceList: any;
+    functions: any;
 }
 
 interface IState {
@@ -22,6 +23,7 @@ export default class PrivatePlaces extends Component<IProps, IState> {
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 title={marker.data.title}
                 pinColor={'red'}
+                onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePlace'); }}
                 // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                 description={marker.data.description}
                 key={marker.node_id}

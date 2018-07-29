@@ -76,7 +76,7 @@
 			<string>debug.fyb.smartshare.io</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string></string>
+				<string>fyb</string>
 			</array>
 		</dict>
 	</array>

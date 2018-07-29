@@ -145,7 +145,7 @@ export class MainMap extends Component<IProps, IState> {
 
         setTimeout(() => {
           this._map.animateToRegion(this.currentMarkerRegion, 10);
-        }, 10);
+        }, 5);
 
         return;
       }
@@ -156,7 +156,7 @@ export class MainMap extends Component<IProps, IState> {
     } else {
       setTimeout(() => {
         this._map.animateToRegion(this.props.userRegion, 10);
-      }, 10);
+      }, 5);
     }
 
   }

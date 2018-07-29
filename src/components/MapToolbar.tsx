@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Switch } from 'react-native';
 import { Button } from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 interface IProps{
@@ -7,15 +7,30 @@ interface IProps{
 }
 
 interface IState{
+
+  switchValue: boolean;
 }
 
 export default class MapToolbar extends Component<IProps, IState> {
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
     this.state = {
+      switchValue: false,
     };
 
+    this.toggleSwitch = this.toggleSwitch.bind(this);
+
   }
+
+  toggleSwitch() {
+    if(this.state.switchValue) {
+      this.setState({ switchValue: false });
+      //this.props.functions.updateNodeList;
+    }
+    else {
+      this.setState({ switchValue: true });
+  }
+}
 
   render() {
     return (
@@ -45,7 +60,11 @@ export default class MapToolbar extends Component<IProps, IState> {
             // @ts-ignore
             onPress={this.props.functions.zoomToUserLocation}
           />
-          
+          <Switch 
+            style={styles.switch}
+            value={this.state.switchValue}
+            onValueChange={this.toggleSwitch}
+          />
           <Button
             icon={{
               name: 'list',
@@ -137,7 +156,10 @@ const styles = StyleSheet.create({
   transparentButton: {
     backgroundColor: 'rgba(44,55,71,0.0)',
     paddingTop: 8,
-
-  }
-
+  },
+  switch: {
+    paddingTop: 20,
+    margin: 10,
+    alignSelf: 'center',
+  },
 });

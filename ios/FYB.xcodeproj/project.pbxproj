@@ -64,10 +64,10 @@
 		77FFA15779574AC89A79F591 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F31A507510845F1B65CF905 /* Entypo.ttf */; };
 		79F2E1A7B39B420AAE5B6A5C /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FC96E3847194C9B9F3E61ED /* libRNSimpleCompass.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		8B1F2E1131D9B2AAE6290FF6 /* libPods-MobileApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1D674A46318D5C7928FD0A /* libPods-MobileApp.a */; };
 		8EE36E0B7ED044CD823E9B88 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 485BD707C4414EF799D2A2FD /* Feather.ttf */; };
 		904CB41E19694B71B40B4791 /* emoji_smile_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = FACE1778922D44DF80F330CC /* emoji_smile_normal.png */; };
 		911ACD4BF6D149BF8F5F4F36 /* emoji_smile_diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = FE71E77FED994498935A0234 /* emoji_smile_diffuse.png */; };
+		A122628C754119D8E207B849 /* libPods-FYB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1354BEEE667848C65E5B1DB0 /* libPods-FYB.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B3E76F2583DF454090203264 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27549B70B6F549CA954FBD4B /* MaterialIcons.ttf */; };
 		C24962CC9BFB4D91AF6A331A /* emoji_smile_specular.png in Resources */ = {isa = PBXBuildFile; fileRef = EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */; };
@@ -426,6 +426,8 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* MobileAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MobileAppTests.m; sourceTree = "<group>"; };
 		087D15AC2F2641B9B5CED87C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		0ABA8792B33BF335E68527E8 /* Pods-FYB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.debug.xcconfig"; sourceTree = "<group>"; };
+		1354BEEE667848C65E5B1DB0 /* libPods-FYB.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FYB.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* FYB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FYB.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -484,6 +486,7 @@
 		D0C069D679FF406FBB85383D /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		E74C172D9CD8442296C91EAE /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/images/emoji_smile_specular.png; sourceTree = "<group>"; };
 		EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_specular.png; path = ../assets/models/emoji_smile_specular.png; sourceTree = "<group>"; };
+		EFCCA4245ACA7A4005BD62C0 /* Pods-FYB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.release.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.release.xcconfig"; sourceTree = "<group>"; };
 		F246B86C889E404983313B43 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		F9DF57A10E244C47A9B60A06 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		FACE1778922D44DF80F330CC /* emoji_smile_normal.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_normal.png; path = ../assets/models/emoji_smile_normal.png; sourceTree = "<group>"; };
@@ -534,8 +537,8 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				5A86648E7782420BA3129430 /* libRNVectorIcons.a in Frameworks */,
 				EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */,
-				8B1F2E1131D9B2AAE6290FF6 /* libPods-MobileApp.a in Frameworks */,
 				79F2E1A7B39B420AAE5B6A5C /* libRNSimpleCompass.a in Frameworks */,
+				A122628C754119D8E207B849 /* libPods-FYB.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -758,6 +761,7 @@
 				2E2DC44D20A805AA00CB56E7 /* CoreData.framework */,
 				2E2DC44920A8051900CB56E7 /* GoogleMapsCore.framework */,
 				6A1D674A46318D5C7928FD0A /* libPods-MobileApp.a */,
+				1354BEEE667848C65E5B1DB0 /* libPods-FYB.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -767,6 +771,8 @@
 			children = (
 				FE0A82D06818A9D74EB069F3 /* Pods-MobileApp.debug.xcconfig */,
 				1A4913CDFFC80F78C8E0EC68 /* Pods-MobileApp.release.xcconfig */,
+				0ABA8792B33BF335E68527E8 /* Pods-FYB.debug.xcconfig */,
+				EFCCA4245ACA7A4005BD62C0 /* Pods-FYB.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1515,7 +1521,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-frameworks.sh",
 				"${PODS_ROOT}/../../node_modules/react-viro/ios/dist/ViroRenderer/static_lib/ViroKit_static_lib.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1524,7 +1530,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		4C0746E6C6F48FFA1CE90951 /* [CP] Check Pods Manifest.lock */ = {
@@ -1538,7 +1544,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MobileApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-FYB-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1551,7 +1557,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
 			);
@@ -1562,7 +1568,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MobileApp/Pods-MobileApp-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1693,7 +1699,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE0A82D06818A9D74EB069F3 /* Pods-MobileApp.debug.xcconfig */;
+			baseConfigurationReference = 0ABA8792B33BF335E68527E8 /* Pods-FYB.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1746,7 +1752,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1A4913CDFFC80F78C8E0EC68 /* Pods-MobileApp.release.xcconfig */;
+			baseConfigurationReference = EFCCA4245ACA7A4005BD62C0 /* Pods-FYB.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

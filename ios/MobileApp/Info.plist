@@ -23,17 +23,11 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>debugbuild.fyb.smartshare.io</string>
+			<string>debug.fyb.smartshare.io</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fyb</string>
-			</array>
-			<key>CFBundleURLTypes</key>
-			<array>
-				<dict/>
 			</array>
 		</dict>
 	</array>

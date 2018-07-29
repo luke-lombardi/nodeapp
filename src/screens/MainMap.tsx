@@ -66,7 +66,7 @@ interface IState {
   walletVisible: boolean;
   nodeSelected: boolean;
   selectedNode: any;
-  pinCodeVisible: boolean;
+  publicNodesVisible: boolean;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -87,12 +87,13 @@ export class MainMap extends Component<IProps, IState> {
       walletVisible: false,
       nodeSelected: false,
       selectedNode: {},
-      pinCodeVisible: false,
+      publicNodesVisible: true,
     };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.viewNodeList = this.viewNodeList.bind(this);
     this.toggleWallet = this.toggleWallet.bind(this);
+    this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.createNode = this.createNode.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
@@ -204,6 +205,10 @@ export class MainMap extends Component<IProps, IState> {
     this.setState({walletVisible: !this.state.walletVisible});
   }
 
+  togglePublicVisible() {
+    this.setState({ publicNodesVisible: !this.state.publicNodesVisible });
+  }
+
   getNodeListToSearch() {
     let nodeListToSearch = undefined;
 
@@ -253,7 +258,11 @@ export class MainMap extends Component<IProps, IState> {
               toggleWallet: this.toggleWallet,
               viewNodeList: this.viewNodeList,
               updateNodeList: this.nodeService.CheckNow,
-            }} />
+              toggleSwitch: this.togglePublicVisible,
+            }} 
+
+            publicNodesVisible={this.state.publicNodesVisible}
+            />
           </View>
           // End main map toolbar
           }
@@ -275,8 +284,8 @@ export class MainMap extends Component<IProps, IState> {
               >
 
               {/* Map markers  */}
-              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
-              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }  visible={this.state.publicNodesVisible}/>
+              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 

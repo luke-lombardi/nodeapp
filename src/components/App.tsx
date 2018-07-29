@@ -159,7 +159,10 @@ interface IProps {
   userRegion: any;
 }
 
-export class App extends Component<IProps> {
+interface IState {
+}
+
+export class App extends Component<IProps, IState> {
 
     // monitoring services
     private nodeService: NodeService;
@@ -203,21 +206,21 @@ export class App extends Component<IProps> {
     }
 
     componentDidMount() {
-        // listen for incoming URL
-          Linking.addEventListener('url', this.handleLink);
-      }
+      // listen for incoming URL
+        Linking.addEventListener('url', this.handleLink);
+    }
 
-      handleLink(event) {
-        // parse the user_uuid as a string from the URL
-        let userUuid = event.url.replace(/.*?:\/\//g, '');
-        // TODO: set user_uuid in redis cache for session
-        console.log('got user_uuid from url.......', userUuid);
-      }
+    handleLink(event) {
+      // parse the user_uuid as a string from the URL
+      let userUuid = event.url.replace(/.*?:\/\//g, '');
+      // TODO: set user_uuid in redis cache for session
+      console.log('got user_uuid from url.......', userUuid);
+    }
 
-      componentWillUnmount() {
-        // stop listening for URL
-        Linking.removeEventListener('url', this.handleLink);
-      }
+    componentWillUnmount() {
+      // stop listening for URL
+      Linking.removeEventListener('url', this.handleLink);
+    }
 
     render() {
       return (

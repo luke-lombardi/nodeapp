@@ -26,8 +26,6 @@ import NodeService,
     IPrivatePlaceListUpdated }
   from '../services/NodeService';
 
-// custom components
-
 // @ts-ignore
 import Logger from '../services/Logger';
 import MapToolbar from '../components/MapToolbar';
@@ -38,6 +36,7 @@ import PublicPlaces from './markers/PublicPlaces';
 import PrivatePlaces from './markers/PrivatePlaces';
 import PublicPeople from './markers/PublicPeople';
 import PrivatePeople from './markers/PrivatePeople';
+import SleepUtil from '../services/SleepUtil';
 
 // import mapStyle from '../config/mapStyle.json';
 
@@ -124,6 +123,8 @@ export class MainMap extends Component<IProps, IState> {
     this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
 
     this.currentMarkerRegion = markerRegion;
+    this.waitForUserPosition = this.waitForUserPosition.bind(this);
+
   }
 
   componentDidMount() {
@@ -138,24 +139,26 @@ export class MainMap extends Component<IProps, IState> {
         this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
         this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
         selectedNode.nodeType = this.selectedNodeType;
+
         this.setState({selectedNode: selectedNode});
+        this.setState({nodeSelected: true});
 
         setTimeout(() => {
           this._map.animateToRegion(this.currentMarkerRegion, 10);
         }, 10);
 
-        this.setState({nodeSelected: true});
         return;
       }
     }
 
-    setTimeout(() => {
-      this._map.animateToRegion(this.props.userRegion, 100);
-    }, 1000);
-  }
+    if (this.props.userRegion.latitude === undefined) {
+      this.waitForUserPosition();
+    } else {
+      setTimeout(() => {
+        this._map.animateToRegion(this.props.userRegion, 10);
+      }, 10);
+    }
 
-  async userPositionChanged(userRegion: any)  {
-    await this.props.UserPositionChanged(userRegion);
   }
 
   componentWillMount() {
@@ -164,6 +167,14 @@ export class MainMap extends Component<IProps, IState> {
     if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
+  }
+
+  async waitForUserPosition() {
+    console.log('CALLED');
+    while (this.props.userRegion.latitude === undefined) {
+      await SleepUtil.SleepAsync(1);
+    }
+    this._map.animateToRegion(this.props.userRegion, 100);
   }
 
   zoomToUserLocation() {
@@ -262,12 +273,12 @@ export class MainMap extends Component<IProps, IState> {
           {
             // Main map view
             <View style={styles.mapView}>
+
               <MapView
                 provider='google'
                 ref={ component => { this._map = component; } }
                 style={StyleSheet.absoluteFillObject}
                 showsUserLocation={true}
-                initialRegion={this.props.userRegion}
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
                 onPress={this.clearSelectedNode}

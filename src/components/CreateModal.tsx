@@ -112,8 +112,8 @@ export default class CreateModal extends Component<IProps, IState> {
                                         loading={false}
                                         disabled={false}
                                         // loadingStyle={}
-                                        title='Drop a pin'
-                                        icon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                        title='New meetup'
+                                        icon={{name: 'calendar', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                         iconRight
                                 />
                         </View>

@@ -11,6 +11,7 @@ import Logger from '../services/Logger';
 import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
+import GroupList from '../screens/GroupList';
 import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
@@ -79,6 +80,19 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
     },
+    Groups: { screen: GroupList,
+      navigationOptions: ({navigation}) => ({
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
+        title: navigation.indexs,
+        headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+          navigation.dispatch(NavigationActions.reset(
+          {
+            index: 0,
+            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          },
+          )) } />,
+        }),
+      },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},

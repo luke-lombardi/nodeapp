@@ -84,7 +84,6 @@ export default class LocationService {
 
      }
     }
-                                                                          
 
     public async orderNodes(userRegion: any, nodeList: any): Promise<any> {
       // TODO: have the API return a list as the response

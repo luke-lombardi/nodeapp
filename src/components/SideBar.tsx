@@ -6,14 +6,9 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { UserLoggedInActionCreator } from '../actions/AuthActions';
 
-import {ListItem} from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 
-import {NavigationActions} from 'react-navigation';
-// import ApiService from '../services/ApiService';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-/*
-import { bindActionCreators } from 'redux';
-*/
+import { NavigationActions } from 'react-navigation';
 
 interface IProps {
     navigation?: any;
@@ -67,7 +62,7 @@ export class SideBar extends Component<IProps> {
                   containerStyle={styles.navItem}
                   // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
                   key='nodes'
-                  title='Tracked Nodes'
+                  title='Pins'
                   leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
                     this.resetNavigation('Nodes');
@@ -84,6 +79,29 @@ export class SideBar extends Component<IProps> {
                     this.resetNavigation('Nodes');
                 }}
                 />
+
+                <ListItem
+                  containerStyle={styles.navItem}
+                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
+                  key='groups'
+                  title='Groups'
+                  leftIcon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => {
+                    this.resetNavigation('Nodes');
+                }}
+                />
+
+                <ListItem
+                  containerStyle={styles.navItem}
+                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
+                  key='meetups'
+                  title='Meetups'
+                  leftIcon={{name: 'calendar', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => {
+                    this.resetNavigation('Nodes');
+                }}
+                />
+
         </View>
       );
     }

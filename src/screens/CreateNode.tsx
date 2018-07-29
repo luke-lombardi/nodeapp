@@ -119,12 +119,12 @@ export class CreateNode extends Component<IProps, IState> {
 
           </View>
 
-          <Button style={styles.fullWidthButton} buttonStyle={{width:"100%", height:"100%"}}
+          <Button style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
-            title="Create new node"
+            title='Create new node'
 
           />
 
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     bottom: 0,
-    padding: 0
+    padding: 0,
   },
   loading: {
     alignSelf: 'center',

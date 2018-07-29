@@ -170,7 +170,6 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async waitForUserPosition() {
-    console.log('CALLED');
     while (this.props.userRegion.latitude === undefined) {
       await SleepUtil.SleepAsync(1);
     }
@@ -238,12 +237,13 @@ export class MainMap extends Component<IProps, IState> {
 
   createNode() {
     Alert.alert(
-      'Add a node',
+      'Track something',
       'Enter a pin or create a new node',
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
         {text: 'Drop Pin', onPress: this.goToCreateNode},
-        {text: 'Add Place', onPress: this.goToContactList},
+        {text: 'Create Group', onPress: this.goToContactList},
+        {text: 'Plan Meetup', onPress: this.goToContactList},
         {text: 'Add Friend', onPress: this.goToContactList},
       ],
       { cancelable: false },

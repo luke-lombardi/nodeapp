@@ -80,10 +80,11 @@ export default class LocationService {
 
         await SleepUtil.SleepAsync(1000);
         hitCount += 1;
-      }
+        RNSimpleCompass.stop();
 
-      RNSimpleCompass.stop();
+     }
     }
+                                                                          
 
     public async orderNodes(userRegion: any, nodeList: any): Promise<any> {
       // TODO: have the API return a list as the response

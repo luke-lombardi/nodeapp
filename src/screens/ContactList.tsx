@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, AsyncStorage } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -92,12 +92,12 @@ export class ContactList extends Component<IProps, IState> {
 
     // Private implementation functions
     private async selectContact(item) {
-      let userUuid = 'test_user_uuid';
+      let userUuid = await AsyncStorage.getItem('user_uuid');
       let phoneNumber = item.phoneNumbers[0].number;
       let name = item.givenName + ' ' + item.familyName;
       let requestBody = {
-        'phone': phoneNumber,
         'name': name,
+        'phone': phoneNumber,
         'user_uuid': userUuid,
       };
 

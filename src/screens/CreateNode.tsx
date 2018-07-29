@@ -11,7 +11,6 @@ import { connect, Dispatch } from 'react-redux';
 
 import { Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Loading from '../components/Loading';
 
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
@@ -77,11 +76,6 @@ export class CreateNode extends Component<IProps, IState> {
     return (
       <View style={styles.container}>
         <View style={styles.nodeForm}>
-          {
-            this.state.isLoading &&
-            <Loading/>
-          }
-
           <View style={styles.miniMapView}>
            {
             // Main map view
@@ -116,15 +110,22 @@ export class CreateNode extends Component<IProps, IState> {
               containerStyle={styles.inputPadding}
               inputStyle={styles.descriptionInput}
               onChangeText={(description) => this.setState({description: description})}
+              enablesReturnKeyAutomatically={true}
+              onSubmitEditing={this.submitCreateNode}
               value={this.state.description}
               multiline={true}
               numberOfLines={6}
             />
 
           </View>
-          <Button style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
+
+          <Button style={styles.fullWidthButton} buttonStyle={{width:"100%", height:"100%"}}
             onPress={this.submitCreateNode}
-            title='Create new node'
+            loading={this.state.isLoading}
+            disabled={this.state.isLoading}
+            loadingStyle={styles.loading}
+            title="Create new node"
+
           />
 
         </View>
@@ -210,6 +211,11 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     bottom: 0,
-    padding: 0,
+    padding: 0
+  },
+  loading: {
+    alignSelf: 'center',
+    width: 300,
+    height: 50,
   },
 });

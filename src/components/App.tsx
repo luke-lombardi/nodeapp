@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
-import { View, StatusBar, AsyncStorage } from 'react-native';
+import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+
 import uuid from 'react-native-uuid';
 
 // @ts-ignore
@@ -35,6 +36,7 @@ import NodeService,
     IPrivatePlaceListUpdated }
   from '../services/NodeService';
 
+// Services
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
 
 // SET GLOBAL PROPS //
@@ -178,6 +180,10 @@ export class App extends Component<IProps> {
       this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
       this.getUserRegion = this.getUserRegion.bind(this);
 
+      this.componentDidMount = this.componentDidMount.bind(this);
+      this.componentWillUnmount = this.componentWillUnmount.bind(this);
+      this.handleLink = this.handleLink.bind(this);
+
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService(
         {
@@ -195,6 +201,25 @@ export class App extends Component<IProps> {
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
       this.locationService.StartMonitoring();
     }
+
+
+    componentDidMount() {
+        // listen for incoming URL
+          Linking.addEventListener('url', this.handleLink);
+      }
+  
+      handleLink(event) {
+        // parse the user_uuid as a string from the URL
+        let user_uuid = event.url.replace(/.*?:\/\//g, '');
+        // TODO: set user_uuid in redis cache for session
+        console.log('got user_uuid from url.......', user_uuid);
+      }
+  
+      componentWillUnmount() {
+        // stop listening for URL
+        Linking.removeEventListener('url', this.handleLink);
+      }
+
 
     render() {
       return (
@@ -237,6 +262,7 @@ export class App extends Component<IProps> {
     private async gotNewPrivatePlaceList(props: IPrivatePlaceListUpdated) {
       await this.props.PrivatePlaceListUpdated(props.nodeList);
     }
+
 }
 
 // @ts-ignore

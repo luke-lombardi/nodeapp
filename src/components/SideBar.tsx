@@ -48,7 +48,6 @@ export class SideBar extends Component<IProps> {
       this.props.navigation.dispatch(navigateAction);
     }
 
-
     render() {
          return (
         <View style={styles.view}>
@@ -73,6 +72,17 @@ export class SideBar extends Component<IProps> {
                   onPress={ () => {
                     this.resetNavigation('Nodes');
                   }}
+                />
+
+                <ListItem
+                  containerStyle={styles.navItem}
+                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
+                  key='nodes'
+                  title='People'
+                  leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => {
+                    this.resetNavigation('Nodes');
+                }}
                 />
         </View>
       );

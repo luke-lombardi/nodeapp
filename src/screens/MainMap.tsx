@@ -92,7 +92,6 @@ export class MainMap extends Component<IProps, IState> {
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.viewNodeList = this.viewNodeList.bind(this);
-    this.toggleWallet = this.toggleWallet.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.createNode = this.createNode.bind(this);
 
@@ -187,7 +186,6 @@ export class MainMap extends Component<IProps, IState> {
 
     if (marker) {
       console.log('Found marker');
-
       marker.nodeType = nodeType;
       this.setState({selectedNode: marker});
       this.setState({nodeSelected: true});
@@ -199,10 +197,6 @@ export class MainMap extends Component<IProps, IState> {
       this.setState({nodeSelected: false});
       return;
     }
-  }
-
-  toggleWallet() {
-    this.setState({walletVisible: !this.state.walletVisible});
   }
 
   togglePublicVisible() {
@@ -255,12 +249,10 @@ export class MainMap extends Component<IProps, IState> {
           <View style={styles.headerView}>
             <MapToolbar functions={{
               zoomToUserLocation: this.zoomToUserLocation,
-              toggleWallet: this.toggleWallet,
               viewNodeList: this.viewNodeList,
               updateNodeList: this.nodeService.CheckNow,
               toggleSwitch: this.togglePublicVisible,
-            }} 
-
+            }}
             publicNodesVisible={this.state.publicNodesVisible}
             />
           </View>
@@ -271,20 +263,19 @@ export class MainMap extends Component<IProps, IState> {
             // Main map view
             <View style={styles.mapView}>
               <MapView
-                // initialRegion={this.props.userRegion}
                 provider='google'
                 ref={ component => { this._map = component; } }
                 style={StyleSheet.absoluteFillObject}
                 showsUserLocation={true}
+                initialRegion={this.props.userRegion}
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
-                // onMarkerPress={this.onNodeSelected}
                 onPress={this.clearSelectedNode}
                 // customMapStyle={mapStyle}
               >
 
               {/* Map markers  */}
-              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }  visible={this.state.publicNodesVisible}/>
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
               <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
@@ -324,7 +315,7 @@ export class MainMap extends Component<IProps, IState> {
           // Node selected view
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
-            <Node nodeId={this.state.selectedNode.data.node_id} nodeType={ this.state.selectedNode.nodeType } 
+            <Node nodeId={this.state.selectedNode.data.node_id} nodeType={ this.state.selectedNode.nodeType }
             title={this.state.selectedNode.data.title} description={this.state.selectedNode.data.description}  navigation={this.props.navigation} />
           </View>
           // End node selected view

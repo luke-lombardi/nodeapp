@@ -68,10 +68,6 @@ export class Finder extends Component<IProps, IState> {
     let nodeId = this.props.navigation.getParam('nodeId', '');
     let nodeType = this.props.navigation.getParam('nodeType', '');
 
-    console.log('GOT NODE TYPE');
-    console.log(nodeId);
-    console.log(nodeType);
-
     let nodeListToSearch = undefined;
 
     // Choose which node list to search

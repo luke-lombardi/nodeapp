@@ -202,24 +202,22 @@ export class App extends Component<IProps> {
       this.locationService.StartMonitoring();
     }
 
-
     componentDidMount() {
         // listen for incoming URL
           Linking.addEventListener('url', this.handleLink);
       }
-  
+
       handleLink(event) {
         // parse the user_uuid as a string from the URL
-        let user_uuid = event.url.replace(/.*?:\/\//g, '');
+        let userUuid = event.url.replace(/.*?:\/\//g, '');
         // TODO: set user_uuid in redis cache for session
-        console.log('got user_uuid from url.......', user_uuid);
+        console.log('got user_uuid from url.......', userUuid);
       }
-  
+
       componentWillUnmount() {
         // stop listening for URL
         Linking.removeEventListener('url', this.handleLink);
       }
-
 
     render() {
       return (

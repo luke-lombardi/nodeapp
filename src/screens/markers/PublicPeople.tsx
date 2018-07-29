@@ -31,7 +31,6 @@ export default class PublicPeople extends Component<IProps, IState> {
                 description={marker.data.description}
                 key={marker.node_id}
             />
-            
         )));
     }
 

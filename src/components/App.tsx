@@ -57,7 +57,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
@@ -71,7 +71,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
@@ -84,7 +84,7 @@ const InternalStack = StackNavigator({
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
         title: navigation.indexs,
-        headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
             index: 0,
@@ -97,7 +97,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
@@ -110,7 +110,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name='keyboard-arrow-left' size={30} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
@@ -125,7 +125,7 @@ const InternalStack = StackNavigator({
   navigationOptions: ({navigation}) => ({
     headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
     title: navigation.indexs,
-    headerLeft: <Icon name='menu' size={35} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
+    headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
   }),
   },
 );

@@ -47,8 +47,9 @@ def get_nodes(rds, node_ids_to_get):
             current_ttl = rds.ttl(node_id)
             nodes[node_id] = node_data
             nodes[node_id]['ttl'] = current_ttl
-
+            nodes[node_id]['status'] = "active"
         else:
+            nodes[node_id] = {"status": "not_found"}
             logging.info('Node %s not found')
 
     return nodes

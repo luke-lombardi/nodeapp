@@ -1,7 +1,9 @@
 export default interface IStoreState {
   readonly nav: string;
   readonly loggedIn: boolean;
-  readonly nodeList: Array<any>;
-  readonly visitedNodeList: Array<any>;
+  readonly publicPersonList: Array<any>;
+  readonly publicPlaceList: Array<any>;
+  readonly privatePersonList: Array<any>;
+  readonly privatePlaceList: Array<any>;
   readonly userRegion: any;
 }

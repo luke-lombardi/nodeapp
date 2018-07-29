@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+
 import uuid from 'react-native-uuid';
 
 // @ts-ignore
@@ -18,12 +19,25 @@ import CreateNode from '../screens/CreateNode';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { NodeListUpdatedActionCreator } from '../actions/NodeActions';
+
+import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
+import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
+import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
+import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
+
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
 // Services
+import NodeService,
+  {
+    IPublicPersonListUpdated,
+    IPublicPlaceListUpdated,
+    IPrivatePersonListUpdated,
+    IPrivatePlaceListUpdated }
+  from '../services/NodeService';
+
+// Services
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
-import NodeService, { INodeListUpdated } from '../services/NodeService';
 
 // SET GLOBAL PROPS //
 import { setCustomText} from 'react-native-global-props';
@@ -130,12 +144,17 @@ export const RootStack = StackNavigator({
 });
 
 interface IProps {
-  NodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-  VisitedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-  ChallengeSettingsUpdated: (challengeSettings: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
-  nodeList: Array<any>;
+  publicPersonList: Array<any>;
+  publicPlaceList: Array<any>;
+  privatePersonList: Array<any>;
+  privatePlaceList: Array<any>;
+
   challengeSettings: any;
   userRegion: any;
 }
@@ -153,7 +172,11 @@ export class App extends Component<IProps> {
       // It does not contain any real information, but it temporarily bound to the phone
       this.setUUID();
 
-      this.gotNewNodeList = this.gotNewNodeList.bind(this);
+      this.gotNewPublicPersonList = this.gotNewPublicPersonList.bind(this);
+      this.gotNewPublicPlaceList = this.gotNewPublicPlaceList.bind(this);
+      this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
+      this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
+
       this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
       this.getUserRegion = this.getUserRegion.bind(this);
 
@@ -162,7 +185,15 @@ export class App extends Component<IProps> {
       this.handleLink = this.handleLink.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
-      this.nodeService = new NodeService({nodeListUpdated: this.gotNewNodeList, currentUserRegion: this.getUserRegion});
+      this.nodeService = new NodeService(
+        {
+          publicPersonListUpdated: this.gotNewPublicPersonList,
+          publicPlaceListUpdated: this.gotNewPublicPlaceList,
+          privatePersonListUpdated: this.gotNewPrivatePersonList,
+          privatePlaceListUpdated: this.gotNewPrivatePlaceList,
+          currentUserRegion: this.getUserRegion,
+      });
+
       this.nodeService.StartMonitoring();
 
       // The location service monitors the users location and calculates distance to nodes
@@ -170,6 +201,7 @@ export class App extends Component<IProps> {
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
       this.locationService.StartMonitoring();
     }
+
 
     componentDidMount() {
         // listen for incoming URL
@@ -187,6 +219,7 @@ export class App extends Component<IProps> {
         // stop listening for URL
         Linking.removeEventListener('url', this.handleLink);
       }
+
 
     render() {
       return (
@@ -214,23 +247,42 @@ export class App extends Component<IProps> {
       await this.props.UserPositionChanged(props.userRegion);
     }
 
-    private async gotNewNodeList(props: INodeListUpdated) {
-      await this.props.NodeListUpdated(props.nodeList);
+    private async gotNewPublicPersonList(props: IPublicPersonListUpdated) {
+      await this.props.PublicPersonListUpdated(props.nodeList);
     }
+
+    private async gotNewPublicPlaceList(props: IPublicPlaceListUpdated) {
+      await this.props.PublicPlaceListUpdated(props.nodeList);
+    }
+
+    private async gotNewPrivatePersonList(props: IPrivatePersonListUpdated) {
+      await this.props.PrivatePersonListUpdated(props.nodeList);
+    }
+
+    private async gotNewPrivatePlaceList(props: IPrivatePlaceListUpdated) {
+      await this.props.PrivatePlaceListUpdated(props.nodeList);
+    }
+
 }
 
 // @ts-ignore
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
-    nodeList: state.nodeList,
+    publicPersonList: state.publicPersonList,
+    publicPlaceList: state.publicPlaceList,
+    privatePersonList: state.privatePersonList,
+    privatePlaceList: state.privatePlaceList,
     userRegion: state.userRegion,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    NodeListUpdated: bindActionCreators(NodeListUpdatedActionCreator, dispatch),
+    PublicPersonListUpdated: bindActionCreators(PublicPersonListUpdatedActionCreator, dispatch),
+    PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
+    PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
+    PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }

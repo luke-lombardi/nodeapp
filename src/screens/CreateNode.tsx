@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 
-// import Logger from '../services/Logger';
+import Logger from '../services/Logger';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -13,34 +13,36 @@ import { Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ApiService from '../services/ApiService';
-
+import NodeService from '../services/NodeService';
 
 interface IProps {
-  navigation: any,
+  navigation: any;
 }
 
 interface IState {
-  title: string,
-  description: string,
-  userRegion: any,
-  isLoading: boolean,
-  uuid: string
+  title: string;
+  description: string;
+  userRegion: any;
+  isLoading: boolean;
+  uuid: string;
+  public: boolean;
 }
 
 export class CreateNode extends Component<IProps, IState> {
   _map: any;
   private apiService: ApiService;
+  private nodeService: NodeService;
 
-  constructor(props: IProps){
+  constructor(props: IProps) {
     super(props);
-
 
     this.state = {
       title: '',
       description: '',
       userRegion: {},
       isLoading: false,
-      uuid: ''
+      uuid: '',
+      public: false,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -49,46 +51,25 @@ export class CreateNode extends Component<IProps, IState> {
     this.submitCreateNode = this.submitCreateNode.bind(this);
 
     this.apiService = new ApiService({});
-    }
+    this.nodeService = new NodeService({});
+  }
 
   componentWillMount() {
-    
-  }
+    console.log('component will mount');
 
-  componentWillUnmount() {
-  }
-
-  componentDidMount(){
     let userRegion = this.props.navigation.getParam('userRegion', {});
     let uuid = this.props.navigation.getParam('uuid', '');
 
     this.setState({userRegion: userRegion});
     this.setState({uuid: uuid});
-
-
-    setTimeout(() => {
-      // this._map.animateToRegion(this.userRegion, 100);
-    }, 10)
-
   }
 
+  componentWillUnmount() {
+    console.log('component will unmount');
+  }
 
-  private async submitCreateNode() {
-    let nodeData = {
-      "title": this.state.title,
-      "description": this.state.description,
-      "lat": this.state.userRegion.latitude,
-      "lng": this.state.userRegion.longitude,
-    }
-
-    console.log('Submitted node request');
-    await this.setState({isLoading: true});
-    let new_uuid = await this.apiService.CreateNodeAsync(nodeData);
-
-    console.log('RESPONSE FROM CREATE NODE');
-    console.log(new_uuid);
-    await this.setState({isLoading: false});
-    this.props.navigation.navigate('Map', {updateNodes: true});
+  componentDidMount() {
+    console.log('component mounted');
   }
 
   render() {
@@ -99,8 +80,8 @@ export class CreateNode extends Component<IProps, IState> {
            {
             // Main map view
               <MapView
-                provider="google"
-                ref={component => {this._map = component;}}
+                provider='google'
+                ref={component => { this._map = component; } }
                 style={[StyleSheet.absoluteFillObject, styles.map]}
                 showsUserLocation={true}
                 followsUserLocation={true}
@@ -109,8 +90,7 @@ export class CreateNode extends Component<IProps, IState> {
               </MapView>
            }
           </View>
-          <View style={styles.inputView}> 
-           
+          <View style={styles.inputView}>
             <Input
               placeholder='Whats here?'
               leftIcon={
@@ -145,12 +125,39 @@ export class CreateNode extends Component<IProps, IState> {
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
             title="Create new node"
+
           />
 
         </View>
       </View>
     );
   }
+
+  private async submitCreateNode() {
+    let nodeData = {
+      'title': this.state.title,
+      'description': this.state.description,
+      'lat': this.state.userRegion.latitude,
+      'lng': this.state.userRegion.longitude,
+      'public': this.state.public,
+      'type': 'place',
+    };
+
+    console.log('Submitted node request');
+
+    await this.setState({isLoading: true});
+    let newUuid = await this.apiService.CreateNodeAsync(nodeData);
+
+    if (newUuid !== undefined) {
+      await this.nodeService.storeNode(newUuid);
+    } else {
+      Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
+    }
+
+    await this.setState({isLoading: false});
+    this.props.navigation.navigate('Map', {updateNodes: true});
+  }
+
 }
 
  // @ts-ignore
@@ -170,39 +177,39 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreateNode);
 
 const styles = StyleSheet.create({
   container: {
-    padding:0,
+    padding: 0,
     flex: 1,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   miniMapView: {
-    flex:1,
-    padding:10
+    flex: 1,
+    padding: 10,
   },
-  map:{
-    borderRadius: 10
+  map: {
+    borderRadius: 10,
   },
   inputView: {
-    flex:2
+    flex: 2,
   },
   nodeForm: {
     flex: 6,
     alignSelf: 'stretch',
   },
-  inputPadding:{
+  inputPadding: {
     marginTop: 20,
     marginLeft: 15,
   },
   descriptionInput: {
-    padding:10,
-    height:100,
+    padding: 10,
+    height: 100,
   },
   fullWidthButton: {
     backgroundColor: 'blue',
-    height:70,
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    width:'100%',
-    position:'absolute',
+    width: '100%',
+    position: 'absolute',
     bottom: 0,
     padding: 0
   },
@@ -212,5 +219,3 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
-  
-  

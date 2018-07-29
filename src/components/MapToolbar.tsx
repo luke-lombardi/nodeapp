@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Switch } from 'react-native';
 import { Button } from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/FontAwesome';
-interface IProps{
+interface IProps {
   functions: any;
 }
 
 interface IState{
-
   switchValue: boolean;
 }
 
@@ -34,7 +33,7 @@ export default class MapToolbar extends Component<IProps, IState> {
 
   render() {
     return (
-    <View style={styles.toolbarView}> 
+    <View style={styles.toolbarView}>
           <Button
             icon={{
               name: 'refresh',
@@ -65,6 +64,7 @@ export default class MapToolbar extends Component<IProps, IState> {
             value={this.state.switchValue}
             onValueChange={this.toggleSwitch}
           />
+
           <Button
             icon={{
               name: 'list',

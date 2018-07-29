@@ -90,6 +90,7 @@ export class ContactList extends Component<IProps, IState> {
       );
     }
 
+    // Private implementation functions
     private async selectContact(item) {
       let userUuid = await AsyncStorage.getItem('user_uuid');
       let phoneNumber = item.phoneNumbers[0].number;

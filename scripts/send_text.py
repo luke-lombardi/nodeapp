@@ -29,8 +29,8 @@ DEFAULT_ACK_TTL = 3600 # 1 hr
 # Regular expressions for contact information validation
 VALIDATION_REGEX = {
     "name": re.compile(r'^[a-zA-Z ]+$'),
-    "phone": re.compile(r'(9\d)\s+(\d{2})\s+(\d{2})\s+(\d{3})'),
-    "user_uuid": re.compile(r'[0-9a-f]{32}\Z', re.I)
+    "phone": re.compile(r'.*?(\(?\d{3}\D{0,3}\d{3}\D{0,3}\d{4}).*?', flags=re.S),
+    "user_uuid": re.compile('[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}', re.I)
 } 
 
 
@@ -55,6 +55,7 @@ def connect_to_cache():
 
 
 def validate_contact_info(contact_info):
+    print(contact_info)
     validated_fields = ["phone", "name", "user_uuid"]
 
     # Iterate through validated fields and check:
@@ -63,12 +64,14 @@ def validate_contact_info(contact_info):
     # B.) If they match the specified format
 
     for current_field in validated_fields:
-        current_field = contact_info.get(current_field, None)
-        if not current_field:
+        current_value = contact_info.get(current_field, None)
+        if not current_value:
             return False
         else:
-            m = re.search(VALIDATION_REGEX[current_field], current_field)
+            m = re.search(VALIDATION_REGEX[current_field], current_value)
             if not m:
+                print('hey')
+                print(current_field)
                 return False
     
     return True
@@ -76,7 +79,7 @@ def validate_contact_info(contact_info):
 
 # Sends a text to the desired phone number, and set a key in the redis cache which serves as an ACK handshake
 # When the requesting user and contacted user both set and read the key, the handshake is complete.
-def send_text(contact_info, ref_id):
+def send_text(contact_info, rds):
     client = Client(account_sid, auth_token) # Set this in local scope each time you connect to prevent shared memory leaks 
 
     name = contact_info["name"]
@@ -86,14 +89,14 @@ def send_text(contact_info, ref_id):
     message = client.messages.create(
         to=phone,
         from_="+12037179852",
-        body="Hello! ${name} Your boy is tryna find you. \n http://smartshare.io/meatspin/".format(name))
+        body="Hello %s, your boy is tryna find you. \n fyb://%s" % (name,user_uuid))
 
     if message:
         logging.info("Sent a message to {} at {}".format(name, phone))
 
         # When user accepts set key to their uuid - then set ttl on the key
         # The uuid that was read on both sides is stored in friends list and monitored by node_id, which is same as uuid
-        rds.setex(uuid=user_uuid, value='', time=DEFAULT_ACK_TTL) # TODO: check return code of the key set?
+        rds.setex(name=user_uuid, value='', time=DEFAULT_ACK_TTL) # TODO: check return code of the key set?
         return True
     else:        
         logging.error('Could not send text to: ' + str())
@@ -115,7 +118,7 @@ def lambda_handler(event, context):
     valid_contact_info = validate_contact_info(contact_info)
 
     if valid_contact_info:
-        result = send_text(ref_id, contact_info)
+        result = send_text(contact_info, rds)
 
         if not result: 
             response["error"] = "Could not send the text message."
@@ -131,8 +134,7 @@ def run():
             "name": "Johnny Appleseed",
             "phone": "+13473024504",
             "user_uuid": "11ac3748-448d-4d9e-a7bc-58f0ec0a2068"
-        },
-            "ref_id": 0,
+        }
     }
     
     test_context = {

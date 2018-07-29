@@ -1,5 +1,10 @@
 import { IUserLoggedIn } from './AuthActions';
-import { INodeListUpdated } from './NodeActions';
+
+import { IPublicPersonListUpdated } from './NodeActions';
+import { IPublicPlaceListUpdated } from './NodeActions';
+import { IPrivatePersonListUpdated } from './NodeActions';
+import { IPrivatePlaceListUpdated } from './NodeActions';
+
 import { IUserPositionChanged } from './MapActions';
 
 type ActionTypes =
@@ -7,10 +12,15 @@ type ActionTypes =
   // User Actions
   | IUserLoggedIn
 
-  | INodeListUpdated
+  | IPublicPersonListUpdated
+
+  | IPublicPlaceListUpdated
+
+  | IPrivatePersonListUpdated
+
+  | IPrivatePlaceListUpdated
 
   | IUserPositionChanged
-  
   ;
 
 export default ActionTypes;

@@ -2,20 +2,36 @@ import Logger from './Logger';
 import SleepUtil from './SleepUtil';
 import DeferredPromise from './DeferredPromise';
 
+// @ts-ignore
 import { AsyncStorage } from 'react-native';
 
 // services
 import LocationService from './LocationService';
 import ApiService from './ApiService';
 
-export interface INodeListUpdated {
-  readonly nodeList: Array<any>;
+export interface IPublicPersonListUpdated {
+    readonly nodeList: Array<any>;
+}
+
+export interface IPublicPlaceListUpdated {
+    readonly nodeList: Array<any>;
+}
+
+export interface IPrivatePersonListUpdated {
+    readonly nodeList: Array<any>;
+}
+
+export interface IPrivatePlaceListUpdated {
+    readonly nodeList: Array<any>;
 }
 
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
-  readonly nodeListUpdated?: (props: INodeListUpdated) => Promise<void>;
+  readonly publicPersonListUpdated?: (props: IPublicPersonListUpdated) => Promise<void>;
+  readonly publicPlaceListUpdated?: (props: IPublicPlaceListUpdated) => Promise<void>;
+  readonly privatePersonListUpdated?: (props: IPrivatePersonListUpdated) => Promise<void>;
+  readonly privatePlaceListUpdated?: (props: IPrivatePlaceListUpdated) => Promise<void>;
 }
 
 export default class NodeService {
@@ -29,6 +45,8 @@ export default class NodeService {
 
     constructor(props: IProps) {
         this.props = props;
+
+        // Create services
         this.locationService = new LocationService({});
         this.apiService = new ApiService({});
 
@@ -37,10 +55,13 @@ export default class NodeService {
         this.MonitorNodeListAsync = this.MonitorNodeListAsync.bind(this);
 
         this.CheckNow = this.CheckNow.bind(this);
+
         Logger.info(`NodeService.constructor -  Initialized node service`);
     }
 
-    StartMonitoring() {
+    // Public interface functions
+
+    public StartMonitoring() {
         if (this.monitoring) return;
         this.monitoring = true;
 
@@ -48,30 +69,38 @@ export default class NodeService {
         this.MonitorNodeListAsync();
     }
 
-    CheckNow() {
+    public CheckNow() {
         Logger.info('NodeService.CheckNow - updating the node list');
         this.checkNowTrigger.resolve();
     }
 
-    StopMonitoring() {
+    public StopMonitoring() {
         this.stopping = true;
         Logger.info(`NodeService.StopMonitoring -  Disabling monitoring loop.`);
     }
 
-    // Public interface functions
-    public async addNode() {
-        await AsyncStorage.setItem('user_uuid', '');
-    }
+    public async storeNode(newUuid) {
+        let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+        if (trackedNodes !== null) {
+          trackedNodes = JSON.parse(trackedNodes);
+        } else {
+          // @ts-ignore
+          trackedNodes = [];
+        }
 
-    public createNode() {
-        console.log('creating');
-    }
+        console.log('TRACKED NODES');
+        console.log(trackedNodes);
 
-    public clearNodes() {
-        console.log('clearing');
+        // @ts-ignore
+        trackedNodes.push(newUuid);
+
+        await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
+        Logger.info(`CreateNode.storeNode: now tracking ${newUuid}`);
     }
 
     // Private implementation functions
+
+    // Monitors the cache for updates to the node list
     private async MonitorNodeListAsync() {
         while (true) {
             if (this.stopping) return;
@@ -88,12 +117,17 @@ export default class NodeService {
         }
     }
 
+    // Gets the current node list, which includes both public and tracked nodes
     private async GetNodeListAsync() {
       Logger.info('NodeService.GetNodeListAsync - Getting the node list.');
       let nodes = await this.apiService.getNodes();
       if (nodes) {
-        let orderedNodeList = this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
-        await this.props.nodeListUpdated({nodeList: orderedNodeList});
+        let orderedNodes = await this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
+        console.log(orderedNodes);
+        await this.props.publicPersonListUpdated({nodeList: orderedNodes.publicPersonList});
+        await this.props.publicPlaceListUpdated({nodeList: orderedNodes.publicPlaceList});
+        await this.props.privatePersonListUpdated({nodeList: orderedNodes.privatePersonList});
+        await this.props.privatePlaceListUpdated({nodeList: orderedNodes.privatePlaceList});
       }
     }
 

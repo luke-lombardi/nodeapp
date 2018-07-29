@@ -39,9 +39,10 @@ def connect_to_cache():
 def get_all_nodes(rds):
     nodes = []
 
-    nodes = [key.decode("utf-8") for key in rds.keys(pattern='*')]
+    public_nodes = [key.decode("utf-8") for key in rds.keys(pattern='public[\:]*')]
+    private_nodes = [key.decode("utf-8") for key in rds.keys(pattern='private[\:]*')]
 
-    return nodes
+    return  (public_nodes, private_nodes)
 
 
 def lambda_handler(event, context):

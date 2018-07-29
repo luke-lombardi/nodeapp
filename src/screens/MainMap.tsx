@@ -344,7 +344,10 @@ export class MainMap extends Component<IProps, IState> {
 
         {
           this.state.createModalVisible &&
-          <CreateModal functions={{ 'closeCreateModal': this.closeCreateModal }}/>
+          <CreateModal functions={{
+            'closeCreateModal': this.closeCreateModal,
+            'goToCreateNode': this.goToCreateNode,
+          }}/>
         }
 
      </View>

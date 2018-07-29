@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import {  Text } from 'react-native-elements';
+import {  Button } from 'react-native-elements';
+
 import Modal from 'react-native-modal';
 
 interface IProps {
@@ -25,7 +26,7 @@ export default class CreateModal extends Component<IProps, IState> {
 
     handleOnScroll = event => {
         this.setState({
-          scrollOffset: event.nativeEvent.contentOffset.y
+          scrollOffset: event.nativeEvent.contentOffset.y,
         });
     }
 
@@ -44,7 +45,7 @@ export default class CreateModal extends Component<IProps, IState> {
                     swipeDirection='down'
                     scrollTo={this.handleScrollTo}
                     scrollOffset={this.state.scrollOffset}
-                    scrollOffsetMax={400 - 350} // content height - ScrollView height
+                    scrollOffsetMax={10} // content height - ScrollView height
                     style={styles.bottomModal}
                     >
                     <View style={styles.scrollableModal}>
@@ -54,16 +55,67 @@ export default class CreateModal extends Component<IProps, IState> {
                         scrollEventThrottle={10}
                         >
                         <View style={styles.scrollableModalContent1}>
-                            <Text>Drop a pin</Text>
+                            <Button style={styles.fullWidthButton}
+                                    buttonStyle={styles.buttonStyle}
+                                    titleStyle={{
+                                        'color': 'black',
+                                    }}
+                                    onPress={() => {
+                                        this.props.functions.closeCreateModal();
+                                        this.props.functions.goToCreateNode();
+                                    } }
+                                    loading={false}
+                                    disabled={false}
+                                    // loadingStyle={}
+                                    title='Drop a pin'
+                                    icon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                    iconRight
+                            />
                         </View>
                         <View style={styles.scrollableModalContent1}>
-                            <Text>Create Group</Text>
+                            <Button style={styles.fullWidthButton}
+                                        buttonStyle={styles.buttonStyle}
+                                        titleStyle={{
+                                            'color': 'black',
+                                        }}
+                                        // onPress={this.submitCreateNode}
+                                        loading={false}
+                                        disabled={false}
+                                        // loadingStyle={}
+                                        title='New group'
+                                        icon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                        iconRight
+                            />
                         </View>
                         <View style={styles.scrollableModalContent1}>
-                            <Text>Create Meetup</Text>
+                            <Button style={styles.fullWidthButton}
+                                        buttonStyle={styles.buttonStyle}
+                                        titleStyle={{
+                                            'color': 'black',
+                                        }}
+                                        // onPress={this.submitCreateNode}
+                                        loading={false}
+                                        disabled={false}
+                                        // loadingStyle={}
+                                        title='Add friend'
+                                        icon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                        iconRight
+                                />
                         </View>
                         <View style={styles.scrollableModalContent1}>
-                            <Text>Add People</Text>
+                            <Button style={styles.fullWidthButton}
+                                        buttonStyle={styles.buttonStyle}
+                                        titleStyle={{
+                                            'color': 'black',
+                                        }}
+                                        // onPress={this.submitCreateNode}
+                                        loading={false}
+                                        disabled={false}
+                                        // loadingStyle={}
+                                        title='Drop a pin'
+                                        icon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                        iconRight
+                                />
                         </View>
                         </ScrollView>
                     </View>
@@ -82,9 +134,24 @@ const styles = StyleSheet.create({
         height: 300,
     },
     scrollableModalContent1: {
-        height: 100,
+        height: 90,
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    fullWidthButton: {
+        // flex: 1,
+        alignSelf: 'stretch',
+        backgroundColor: '#ffffff',
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonStyle: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#ffffff',
+        borderColor: 'rgba(51, 51, 51, 0.8)',
+        borderWidth: 1,
     },
 });

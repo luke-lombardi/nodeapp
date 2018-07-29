@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
   },
   navItem: {
     borderBottomWidth: 1,
-    paddingTop: 25,
-    paddingBottom: 25,
+    paddingTop: 15,
+    paddingBottom: 15,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
   },
 });

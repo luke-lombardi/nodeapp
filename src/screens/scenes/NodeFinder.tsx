@@ -135,7 +135,6 @@ export default class NodeFinder extends Component<IProps, IState> {
 
   // Private implementation functions
   private async followUserPosition() {
-
     while (true) {
       // @ts-ignore
       if (!this._isMounted)
@@ -143,21 +142,21 @@ export default class NodeFinder extends Component<IProps, IState> {
 
       console.log('following');
       // @ts-ignore
-      let selectedNode = await this.props.arSceneNavigator.viroAppProps.updateSelectedNode();
+      // let selectedNode = await this.props.arSceneNavigator.viroAppProps.updateSelectedNode();
 
       if (this._isMounted) {
         // console.log(selectedNode.data.bearing);
-        await this.setState({nodeDirection: selectedNode.data.bearing});
+        await this.setState({nodeDirection: this.state.nodeDirection + 5});
 
-        if ((selectedNode.data.bearing < 20 && selectedNode.data.bearing > -20) || (selectedNode.data.bearing > 340 && selectedNode.data.bearing < 360)) {
-          await this.setState({inView: true});
-        } else {
-          await this.setState({inView: false});
-        }
+        // if ((selectedNode.data.bearing < 20 && selectedNode.data.bearing > -20) || (selectedNode.data.bearing > 340 && selectedNode.data.bearing < 360)) {
+        //   await this.setState({inView: true});
+        // } else {
+        //   await this.setState({inView: false});
+        // }
       }
 
       // await this.scene.getCameraOrientationAsync();
-      await SleepUtil.SleepAsync(100);
+      await SleepUtil.SleepAsync(6);
     }
 
     console.log('DONE');

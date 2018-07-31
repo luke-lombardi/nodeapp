@@ -125,7 +125,6 @@ export class CreateNode extends Component<IProps, IState> {
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
             title='Create new node'
-
           />
 
         </View>

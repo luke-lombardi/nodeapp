@@ -62,7 +62,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                     }}
                                     onPress={() => {
                                         this.props.functions.closeCreateModal();
-                                        this.props.functions.goToCreateNode();
+                                        this.props.functions.navigateToPage('CreateNode');
                                     } }
                                     loading={false}
                                     disabled={false}
@@ -78,7 +78,10 @@ export default class CreateModal extends Component<IProps, IState> {
                                         titleStyle={{
                                             'color': 'black',
                                         }}
-                                        // onPress={this.submitCreateNode}
+                                        onPress={() => {
+                                            this.props.functions.closeCreateModal();
+                                            this.props.functions.navigateToPage('GroupEditor');
+                                        } }
                                         loading={false}
                                         disabled={false}
                                         // loadingStyle={}

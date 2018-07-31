@@ -7,7 +7,7 @@ import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
-import { Input, Button, ListItem } from 'react-native-elements';
+import { Input, Button, ListItem, Slider } from 'react-native-elements';
 
 // import ApiService from '../services/ApiService';
 // import NodeService from '../services/NodeService';
@@ -41,14 +41,9 @@ export class GroupEditor extends Component<IProps, IState> {
       public: false,
       peopleInGroup: [
         {
-            'id': 'ok',
-            'title': 'Some guy',
-        },
-        {
-            'id': 'add_button',
+            'recordID': 'add_button',
             'title': 'Add someone to the group',
         },
-
       ],
     };
 
@@ -81,17 +76,42 @@ export class GroupEditor extends Component<IProps, IState> {
     console.log('component mounted');
   }
 
-  _addPerson() {
-      console.log('go to contacts');
-      this.props.navigation.navigate('ContactList');
+  async returnData(item) {
+    let existingContact = this.state.peopleInGroup.find(
+        n => n.recordID === item.recordID,
+    );
+
+    if (existingContact === undefined) {
+        let newGroup = this.state.peopleInGroup;
+        newGroup.push(item);
+        await this.setState({peopleInGroup: newGroup});
+        console.log('Adding new contact');
+    } else {
+        console.log('Contact already added');
+    }
+
+    console.log(this.state.peopleInGroup);
   }
 
-  _removePerson(item) {
-      console.log(item);
+  _addPerson() {
+      let params = {action: 'add_friend_to_group', returnData: this.returnData.bind(this)};
+      this.props.navigation.navigate('ContactList', params);
+  }
+
+  async _removePerson(item) {
+    let index = this.state.peopleInGroup.findIndex(
+        n => n.recordID === item.recordID,
+    );
+
+    let newGroup = this.state.peopleInGroup;
+    newGroup.splice(index, 1);
+
+    await this.setState({peopleInGroup: newGroup});
   }
 
   _renderPeopleInGroup(item) {
-    if (item.item.id === 'add_button') {
+      console.log(item);
+    if (item.item.recordID === 'add_button') {
         return(<ListItem
             onPress={this._addPerson}
             containerStyle={styles.peopleListItem}
@@ -104,8 +124,8 @@ export class GroupEditor extends Component<IProps, IState> {
         containerStyle={styles.peopleListItem}
         leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
         rightIcon={{name: 'minus-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-        title={item.item.title}
-        // subtitle={item.data.distance_in_miles.toString() + ' miles'}
+        title={item.item.givenName + ' ' + item.item.familyName}
+        subtitle={'Status: Pending, ' + item.item.phoneNumbers[0].number}
         />);
     }
 
@@ -137,7 +157,8 @@ export class GroupEditor extends Component<IProps, IState> {
             renderItem={this._renderPeopleInGroup}
             extraData={this.state}
             // @ts-ignore
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.recordID}
+            showsVerticalScrollIndicator={true}
             >
 
             </FlatList>
@@ -158,7 +179,7 @@ export class GroupEditor extends Component<IProps, IState> {
                 <Button style={styles.bottomButton} buttonStyle={{width: '100%', height: '100%'}}
                     onPress={this.submitSaveGroup}
                     loading={this.state.isLoading}
-                    disabled={this.state.isLoading}
+                    disabled={true}
                     loadingStyle={styles.loading}
                     title='Delete'
                 />
@@ -166,7 +187,14 @@ export class GroupEditor extends Component<IProps, IState> {
         </View>
 
         <View style={styles.configView}>
-
+            <Slider
+                // value={this.state.value}
+                // onValueChange={(value) => this.setState({})}
+                minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
+                maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
+                thumbTintColor={'rgba(51, 51, 51, 0.8)'}
+                />
+            {/* <Text>Value: {this.state.value}</Text> */}
         </View>
 
         </View>
@@ -249,7 +277,8 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   configView: {
-    flex: 1,
+    flex: 2,
+    padding: 20,
   },
   peopleListItem: {
     borderBottomWidth: 1,

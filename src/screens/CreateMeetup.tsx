@@ -35,6 +35,7 @@ interface IState {
   chosenDate: any;
   place: any;
   calendarVisible: boolean;
+  selectedPlace: any;
 }
 
 export class CreateMeetup extends Component<IProps, IState> {
@@ -55,6 +56,7 @@ export class CreateMeetup extends Component<IProps, IState> {
       chosenDate: new Date(),
       place: '',
       calendarVisible: false,
+      selectedPlace: this.props.navigation.getParam('selectedPlace'),
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -68,6 +70,7 @@ export class CreateMeetup extends Component<IProps, IState> {
 
     this.setDate = this.setDate.bind(this);
     this.showCalendar = this.showCalendar.bind(this);
+    this.showPlace = this.showPlace.bind(this);
 
     this.apiService = new ApiService({});
     this.nodeService = new NodeService({});
@@ -94,6 +97,8 @@ export class CreateMeetup extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    console.log('got your selected place', this.state.selectedPlace);
+    this.showPlace();
     console.log('component mounted');
   }
 
@@ -105,6 +110,12 @@ export class CreateMeetup extends Component<IProps, IState> {
     this.state.calendarVisible ?
     this.setState({calendarVisible: false}) :
     this.setState({calendarVisible: true});
+  }
+
+  showPlace() {
+    if (this.state.selectedPlace) {
+      console.log('got your selected place', this.state.selectedPlace);
+    }
   }
 
   render() {
@@ -154,6 +165,19 @@ export class CreateMeetup extends Component<IProps, IState> {
           <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
           name='arrow-right' />
           </TouchableOpacity>
+          {
+            this.state.selectedPlace &&
+            <MapView
+            provider='google'
+            ref={component => { this._map = component; } }
+            style={styles.map}
+            showsUserLocation={true}
+            followsUserLocation={true}
+            initialRegion={this.state.userRegion}
+          >
+          </MapView>
+
+          }
 
           <TouchableOpacity
           style={styles.calendar}
@@ -236,9 +260,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  map: {
-    borderRadius: 10,
-  },
   inputView: {
     flex: 2,
   },
@@ -292,5 +313,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: .5,
     width: '100%',
     backgroundColor: 'white',
+  },
+  map: {
+    alignSelf: 'center',
+    height: 75,
+    width: '100%',
   },
 });

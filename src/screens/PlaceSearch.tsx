@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-import ApiService from '../services/ApiService';
 
 interface IProps {
     navigation: any;
@@ -16,8 +15,6 @@ interface IState {
 }
 
 export class PlaceSearch extends Component<IProps, IState> {
-  private apiService: ApiService;
-
   constructor(props: IProps) {
     super(props);
 
@@ -40,13 +37,12 @@ export class PlaceSearch extends Component<IProps, IState> {
           method: 'POST',
         });
         let places = await response.json();
-        console.log('got places', places);
-        this.setState({data: places});
+        this.setState({data: places.response.venues});
       }
 
       searchContact() {
         return this.state.data.filter(
-          item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.venue || item.venue),
+          item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.name || item.name),
         );
       }
 
@@ -55,10 +51,14 @@ export class PlaceSearch extends Component<IProps, IState> {
         key={item}
         onPress={() => this.selectContact(item)}
         containerStyle={styles.nodeListItem}
-        leftAvatar={this.state.query ? { source: { uri: item.thumbnailPath } } : { source: { uri: item.thumbnailPath }}}
         leftIcon={ {name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'} }
         rightIcon={ {name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'} }
-        title={item.name}
+        title={
+          <Text style={styles.title}>{item.name}</Text>
+        }
+        subtitle={
+          <Text style={styles.subtitle}>{item.location.address}</Text>
+        }
       />
     )
 
@@ -87,28 +87,10 @@ export class PlaceSearch extends Component<IProps, IState> {
 
     // Private implementation functions
     private async selectContact(item) {
-      let userUuid = await AsyncStorage.getItem('user_uuid');
-      let phoneNumber = item.phoneNumbers[0].number;
-      let name = item.givenName + ' ' + item.familyName;
-      let requestBody = {
-        'name': name,
-        'phone': phoneNumber,
-        'user_uuid': userUuid,
-      };
-
-      console.log('Submitted text invite for', phoneNumber);
-      await this.apiService.sendText(requestBody);
-
-      Alert.alert(
-        'Invite sent!',
-        'You will find your boy',
-        [
-          {text: 'Invite more', onPress: () => {this.setState({ query: undefined }); } },
-        ],
-        { cancelable: true },
-      );
+      const selectedPlace = item.name;
+      this.props.navigation.navigate('CreateMeetup', {selectedPlace: selectedPlace});
+      }
     }
-  }
 
 // @ts-ignore
 function mapStateToProps(state: IStoreState): IProps {
@@ -139,5 +121,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginTop: 25,
     alignSelf: 'center',
+  },
+  title: {
+    fontSize: 14,
+  },
+  subtitle: {
+    fontSize: 10,
   },
 });

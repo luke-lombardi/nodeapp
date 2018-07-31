@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import DateSelect from '../components/DateSelect';
-import AutoComplete from '../components/AutoComplete';
+import { View, StyleSheet, Text, DatePickerIOS, TouchableOpacity } from 'react-native';
 
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
@@ -11,11 +9,17 @@ import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
-import { Input, Button} from 'react-native-elements';
+import { Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
+
+// import ContactList from '../screens/ContactList';
+// import PlaceSearch from '../screens/PlaceSearch';
+
+// const CLIENT_ID = 'K14FVC2J10UYPEHTE2JL1PHXNRX3CCPXSB0KUMCYOSNQUY5Y';
+// const CLIENT_SECRET = 'STMMKGZ3JNJEOTTUPQBQBUYBQF0V1M1RUZFTKN4EIUP2UNUT';
 
 interface IProps {
   navigation: any;
@@ -28,7 +32,9 @@ interface IState {
   isLoading: boolean;
   uuid: string;
   public: boolean;
-  date: any;
+  chosenDate: any;
+  place: any;
+  calendarVisible: boolean;
 }
 
 export class CreateMeetup extends Component<IProps, IState> {
@@ -46,7 +52,9 @@ export class CreateMeetup extends Component<IProps, IState> {
       isLoading: false,
       uuid: '',
       public: false,
-      date: new Date(),
+      chosenDate: new Date(),
+      place: '',
+      calendarVisible: false,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -54,18 +62,31 @@ export class CreateMeetup extends Component<IProps, IState> {
 
     this.submitCreateNode = this.submitCreateNode.bind(this);
 
+    this.goToContactList = this.goToContactList.bind(this);
+
+    this.goToSearch = this.goToSearch.bind(this);
+
+    this.setDate = this.setDate.bind(this);
+    this.showCalendar = this.showCalendar.bind(this);
+
     this.apiService = new ApiService({});
     this.nodeService = new NodeService({});
   }
 
+  setDate(date) {
+    this.setState({chosenDate: date});
+  }
+
+  goToContactList() {
+    this.props.navigation.navigate('ContactList', {action: 'meetup_invite'});
+  }
+
+  goToSearch() {
+    this.props.navigation.navigate('PlaceSearch');
+  }
+
   componentWillMount() {
     console.log('component will mount');
-
-    let userRegion = this.props.navigation.getParam('userRegion', {});
-    let uuid = this.props.navigation.getParam('uuid', '');
-
-    this.setState({userRegion: userRegion});
-    this.setState({uuid: uuid});
   }
 
   componentWillUnmount() {
@@ -76,30 +97,72 @@ export class CreateMeetup extends Component<IProps, IState> {
     console.log('component mounted');
   }
 
+  openContacts() {
+    console.log('opening contacts');
+  }
+
+  showCalendar() {
+    this.state.calendarVisible ?
+    this.setState({calendarVisible: false}) :
+    this.setState({calendarVisible: true});
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.nodeForm}>
           <View style={styles.inputView}>
-          <Text style={styles.text}>Coordinate a Meetup</Text>
-          <Input
-              placeholder='Counterparty'
-              leftIcon={
-                <Icon
-                  name='question-circle'
-                  size={20}
-                  color='rgba(44,55,71,0.3)'
-                />
-              }
-              containerStyle={styles.inputPadding}
-              onChangeText={(description) => this.setState({description: description})}
-              enablesReturnKeyAutomatically={true}
-              onSubmitEditing={this.submitCreateNode}
-              value={this.state.description}
-              multiline={true}
+          {/* <Text style={styles.text}>Coordinate a Meetup</Text> */}
+
+          <TouchableOpacity
+          style={styles.calendar}
+          onPress={this.showCalendar}
+          >
+          <Text style={styles.dateSelect}>When?</Text>
+          <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
+          name='arrow-right' />
+          </TouchableOpacity>
+
+          {
+            this.state.calendarVisible &&
+            <View>
+            <DatePickerIOS
+            style={styles.datePicker}
+            date={this.state.chosenDate}
+            onDateChange={this.setDate}
+          />
+          <Button
+            icon={
+            <Icon
+              name='check'
+              size={15}
+              color='white'
             />
-            <DateSelect />
-            <AutoComplete />
+            }
+            buttonStyle={{backgroundColor: 'limegreen'}}
+            title='Confirm'
+            onPress={this.showCalendar}
+          />
+          </View>
+          }
+
+          <TouchableOpacity
+          style={styles.calendar}
+          onPress={this.goToSearch}
+          >
+          <Text style={styles.dateSelect}>Where?</Text>
+          <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
+          name='arrow-right' />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          style={styles.calendar}
+          onPress={this.goToContactList}
+          >
+          <Text style={styles.dateSelect}>Who?</Text>
+          <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
+          name='arrow-right' />
+          </TouchableOpacity>
 
           </View>
 
@@ -108,7 +171,7 @@ export class CreateMeetup extends Component<IProps, IState> {
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
-            title='Create new node'
+            title='Create Meetup'
 
           />
 
@@ -165,6 +228,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  placesInput: {
+    width: '100%',
+    borderBottomColor: 'black',
+  },
   miniMapView: {
     flex: 1,
     padding: 10,
@@ -203,9 +270,27 @@ const styles = StyleSheet.create({
     height: 50,
   },
   text: {
-      marginTop: 50,
-      marginBottom: 25,
-      alignSelf: 'center',
-      fontSize: 24,
+    marginTop: 10,
+    marginBottom: 10,
+    padding: 20,
+    alignSelf: 'center',
+    fontSize: 16,
+  },
+  datePicker: {
+    marginTop: 20,
+  },
+  dateSelect: {
+    padding: 25,
+    left: 20,
+    alignSelf: 'flex-start',
+    fontSize: 16,
+  },
+  calendar: {
+    borderTopColor: 'gray',
+    borderBottomColor: 'gray',
+    borderTopWidth: .5,
+    borderBottomWidth: .5,
+    width: '100%',
+    backgroundColor: 'white',
   },
 });

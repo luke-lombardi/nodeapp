@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert, AsyncStorage } from 'react-native';
+// @ts-ignore
+import { View, FlatList, StyleSheet, Text, AsyncStorage } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -14,10 +15,15 @@ interface IProps {
 interface IState {
     data: Array<any>;
     query: any;
+    selectedPlace: any;
+    chosenDate: any;
+    item: any;
 }
 
 export class ContactList extends Component<IProps, IState> {
+  // @ts-ignore
   private apiService: ApiService;
+  private action: any;
 
   constructor(props: IProps) {
     super(props);
@@ -25,17 +31,24 @@ export class ContactList extends Component<IProps, IState> {
     this.state = {
         data: [],
         query: '',
+        selectedPlace: this.props.navigation.getParam('selectedPlace'),
+        chosenDate: this.props.navigation.getParam('chosenDate'),
+        item: this.props.navigation.getParam('contact'),
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.getContacts = this.getContacts.bind(this);
     this.selectContact = this.selectContact.bind(this);
     this.searchContact = this.searchContact.bind(this);
+    this._renderItem = this._renderItem.bind(this);
     this.apiService = new ApiService({});
+
     }
 
     componentWillMount() {
         this.getContacts();
+
+        this.action = this.props.navigation.getParam('action', '');
     }
 
     getContacts() {
@@ -44,7 +57,7 @@ export class ContactList extends Component<IProps, IState> {
               console.log(err);
           } else {
               this.setState({data: contacts});
-              console.log(contacts);
+              // console.log(contacts);
           }
       });
     }
@@ -55,17 +68,19 @@ export class ContactList extends Component<IProps, IState> {
         );
       }
 
-    _renderItem = ({item}) => (
-      <ListItem
-        key={item}
-        onPress={() => this.selectContact(item)}
+    _renderItem(item) {
+      return (<ListItem
+        key={item.item.recordID}
+        onPress={() => this.selectContact(item.item)}
         containerStyle={styles.nodeListItem}
-        leftAvatar={this.state.query ? { source: { uri: item.thumbnailPath } } : { source: { uri: item.thumbnailPath }}}
+        // Commented out to stop those annoying URI errors until we add handling around that
+        // leftAvatar={this.state.query ? { source: { uri: item.thumbnailPath } } : { source: { uri: item.thumbnailPath }}}
         leftIcon={ {name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'} }
         rightIcon={ {name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'} }
-        title={item.givenName + ' ' + item.familyName}
+        title={item.item.givenName + ' ' + item.item.familyName}
       />
-    )
+    );
+  }
 
     render() {
       return (
@@ -78,7 +93,7 @@ export class ContactList extends Component<IProps, IState> {
           data={this.state.query ? this.searchContact() : this.state.data}
           renderItem={this._renderItem}
           extraData={this.state}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.recordID}
           />
 
           {
@@ -92,26 +107,36 @@ export class ContactList extends Component<IProps, IState> {
 
     // Private implementation functions
     private async selectContact(item) {
-      let userUuid = await AsyncStorage.getItem('user_uuid');
-      let phoneNumber = item.phoneNumbers[0].number;
-      let name = item.givenName + ' ' + item.familyName;
-      let requestBody = {
-        'name': name,
-        'phone': phoneNumber,
-        'user_uuid': userUuid,
-      };
+      // let userUuid = await AsyncStorage.getItem('user_uuid');
+      // let phoneNumber = item.phoneNumbers[0].number;
+      // let name = item.givenName + ' ' + item.familyName;
+      if (this.action === 'add_friend') {
+        console.log('sending text to your boy');
+      } else if (this.action === 'add_friend_to_group') {
+        this.props.navigation.state.params.returnData(item);
+        this.props.navigation.goBack(undefined);
+      } else if (this.action === 'meetup_invite') {
+        this.props.navigation.navigate('CreateMeetup', {
+          contact: item,
+          selectedPlace: this.state.selectedPlace,
+          chosenDate: this.state.chosenDate,
+        });
 
-      console.log('Submitted text invite for', phoneNumber);
-      await this.apiService.sendText(requestBody);
-
-      Alert.alert(
-        'Invite sent!',
-        'You will find your boy',
-        [
-          {text: 'Invite more', onPress: () => {this.setState({ query: undefined }); } },
-        ],
-        { cancelable: true },
-      );
+      // let requestBody = {
+      //   'name': name,
+      //   'phone': phoneNumber,
+      //   'user_uuid': userUuid,
+      // };
+      // console.log('Submitted text invite for', phoneNumber);
+      // await this.apiService.sendText(requestBody);
+      // Alert.alert(
+      //   'Invite sent!',
+      //   'You will find your boy',
+      //   [
+      //     {text: 'Invite more', onPress: () => {this.setState({ query: undefined }); } },
+      //   ],
+      //   { cancelable: true },
+      // );
     }
   }
 

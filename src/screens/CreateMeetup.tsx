@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, DatePickerIOS, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, DatePickerIOS, TouchableOpacity, FlatList } from 'react-native';
 
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
@@ -9,7 +9,7 @@ import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
-import { Button} from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ApiService from '../services/ApiService';
@@ -36,6 +36,9 @@ interface IState {
   place: any;
   calendarVisible: boolean;
   selectedPlace: any;
+  selectedDate: boolean;
+  selectedContact: boolean;
+  item: any;
 }
 
 export class CreateMeetup extends Component<IProps, IState> {
@@ -53,16 +56,19 @@ export class CreateMeetup extends Component<IProps, IState> {
       isLoading: false,
       uuid: '',
       public: false,
-      chosenDate: new Date(),
+      chosenDate: this.props.navigation.getParam('chosenDate'),
       place: '',
       calendarVisible: false,
       selectedPlace: this.props.navigation.getParam('selectedPlace'),
+      item: this.props.navigation.getParam('contact'),
+      selectedDate: false,
+      selectedContact: false,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
-    this.submitCreateNode = this.submitCreateNode.bind(this);
+    this.submitCreateMeetup = this.submitCreateMeetup.bind(this);
 
     this.goToContactList = this.goToContactList.bind(this);
 
@@ -77,15 +83,37 @@ export class CreateMeetup extends Component<IProps, IState> {
   }
 
   setDate(date) {
-    this.setState({chosenDate: date});
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    this.setState({selectedDate: true});
+    this.setState({chosenDate: date.toLocaleDateString(options)});
   }
 
   goToContactList() {
-    this.props.navigation.navigate('ContactList', {action: 'meetup_invite'});
+    this.props.navigation.navigate('ContactList', {
+      action: 'meetup_invite',
+      contact: this.state.item,
+      selectedPlace: this.state.selectedPlace,
+      chosenDate: this.state.chosenDate,
+      selectedDate: this.state.selectedDate,
+    });
   }
 
   goToSearch() {
-    this.props.navigation.navigate('PlaceSearch');
+    this.props.navigation.navigate('PlaceSearch', {
+      contact: this.state.item,
+      chosenDate: this.state.chosenDate,
+      selectedPlace: this.state.selectedPlace,
+    });
+  }
+
+  async submitCreateMeetup() {
+    this.setState({isLoading: true});
+    let requestBody = {
+      'date': this.state.chosenDate,
+      'location': this.state.selectedPlace,
+      'member': this.state.selectedContact,
+    };
+    await this.apiService.createMeetup(requestBody);
   }
 
   componentWillMount() {
@@ -123,23 +151,27 @@ export class CreateMeetup extends Component<IProps, IState> {
       <View style={styles.container}>
         <View style={styles.nodeForm}>
           <View style={styles.inputView}>
-          {/* <Text style={styles.text}>Coordinate a Meetup</Text> */}
+          <Text style={styles.text}>Create a Meetup</Text>
 
-          <TouchableOpacity
-          style={styles.calendar}
-          onPress={this.showCalendar}
-          >
-          <Text style={styles.dateSelect}>When?</Text>
-          <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
-          name='arrow-right' />
-          </TouchableOpacity>
+            <TouchableOpacity
+            style={styles.calendar}
+            onPress={this.showCalendar}
+            >
+            <Text style={styles.dateSelect}>{this.state.chosenDate ? this.state.chosenDate : 'When?'}</Text>
+            <Icon
+            style={this.state.chosenDate ?
+            { color: 'green', alignSelf: 'flex-end', right: 50, bottom: '50%'} :
+            { color: 'black', alignSelf: 'flex-end', right: 50, bottom: '50%'}}
+              name={this.state.chosenDate ? 'check' : 'arrow-right'}/>
+
+            </TouchableOpacity>
 
           {
             this.state.calendarVisible &&
             <View>
             <DatePickerIOS
             style={styles.datePicker}
-            date={this.state.chosenDate}
+            date={new Date()}
             onDateChange={this.setDate}
           />
           <Button
@@ -157,46 +189,58 @@ export class CreateMeetup extends Component<IProps, IState> {
           </View>
           }
 
-          <TouchableOpacity
-          style={styles.calendar}
-          onPress={this.goToSearch}
-          >
-          <Text style={styles.dateSelect}>Where?</Text>
-          <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
-          name='arrow-right' />
-          </TouchableOpacity>
-          {
-            this.state.selectedPlace &&
-            <MapView
-            provider='google'
-            ref={component => { this._map = component; } }
-            style={styles.map}
-            showsUserLocation={true}
-            followsUserLocation={true}
-            initialRegion={this.state.userRegion}
-          >
-          </MapView>
+            <TouchableOpacity
+            style={styles.calendar}
+            onPress={this.goToSearch}
+            >
+            <Text style={styles.dateSelect}>{this.state.selectedPlace ? this.state.selectedPlace : 'Where?'}</Text>
+            <Icon
+            style={this.state.selectedPlace ?
+            { color: 'green', alignSelf: 'flex-end', right: 50, bottom: '50%'} :
+            { color: 'black', alignSelf: 'flex-end', right: 50, bottom: '50%'}}
+              name={this.state.selectedPlace ? 'check' : 'arrow-right'} />
+            </TouchableOpacity>
 
-          }
+          {/* {
+            this.state.selectedPlace &&
+            <Card
+            title='Where?'
+            containerStyle={styles.mapCard}>
+            {
+              <MapView
+              provider='google'
+              ref={component => { this._map = component; } }
+              style={styles.map}
+              showsUserLocation={true}
+              followsUserLocation={true}
+              initialRegion={this.state.userRegion}
+            >
+            </MapView>
+            }
+          </Card>
+          } */}
 
           <TouchableOpacity
           style={styles.calendar}
           onPress={this.goToContactList}
           >
-          <Text style={styles.dateSelect}>Who?</Text>
-          <Icon style={{ alignSelf: 'flex-end', right: 50, bottom: '50%'}}
-          name='arrow-right' />
+            <Text style={styles.dateSelect}>{this.state.item ? `${this.state.item.givenName} ${this.state.item.familyName}` : 'Who?'}</Text>
+
+            <Icon
+            style={this.state.item ?
+            { color: 'green', alignSelf: 'flex-end', right: 50, bottom: '50%'} :
+            {color: 'black', alignSelf: 'flex-end', right: 50, bottom: '50%'}}
+            name={this.state.item ? 'check' : 'arrow-right'} />
           </TouchableOpacity>
 
           </View>
 
           <Button style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
-            onPress={this.submitCreateNode}
+            onPress={this.submitCreateMeetup}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
             title='Create Meetup'
-
           />
 
         </View>
@@ -252,6 +296,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  mapCard: {
+    marginBottom: 20,
+    height: 250,
+  },
   placesInput: {
     width: '100%',
     borderBottomColor: 'black',
@@ -291,8 +339,8 @@ const styles = StyleSheet.create({
     height: 50,
   },
   text: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 5,
+    marginBottom: 5,
     padding: 20,
     alignSelf: 'center',
     fontSize: 16,
@@ -316,7 +364,7 @@ const styles = StyleSheet.create({
   },
   map: {
     alignSelf: 'center',
-    height: 75,
+    height: 150,
     width: '100%',
   },
 });

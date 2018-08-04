@@ -12,6 +12,9 @@ interface IState {
     data: Array<any>;
     places: Array<any>;
     query: any;
+    selectedPlace: any;
+    chosenDate: any;
+    item: any;
 }
 
 export class PlaceSearch extends Component<IProps, IState> {
@@ -22,6 +25,9 @@ export class PlaceSearch extends Component<IProps, IState> {
         data: [],
         places: [],
         query: '',
+        selectedPlace: this.props.navigation.getParam('selectedPlace'),
+        chosenDate: this.props.navigation.getParam('chosenDate'),
+        item: this.props.navigation.getParam('contact'),
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -88,7 +94,11 @@ export class PlaceSearch extends Component<IProps, IState> {
     // Private implementation functions
     private async selectContact(item) {
       const selectedPlace = item.name;
-      this.props.navigation.navigate('CreateMeetup', {selectedPlace: selectedPlace});
+      this.props.navigation.navigate('CreateMeetup', {
+        contact: this.state.item,
+        selectedPlace: selectedPlace,
+        chosenDate: this.state.chosenDate,
+      });
       }
     }
 

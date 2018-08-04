@@ -82,6 +82,30 @@ export default class ApiService {
       return newNode;
     }
 
+      // Creates a new group
+      async CreateGroupAsync(groupData: any) {
+        let requestBody = {
+          'group_data': groupData,
+        };
+
+        let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createGroup', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestBody),
+            });
+
+        if (response.status !== HttpStatus.OK) {
+          Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
+
+          return undefined;
+        }
+
+        let newGroup = await response.json();
+        return newGroup;
+    }
+
     // Updates the users location node
     async PostLocationAsync(nodeData: any) {
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/postNode', {

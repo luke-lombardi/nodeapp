@@ -41,7 +41,6 @@ export class ContactList extends Component<IProps, IState> {
 
     componentWillMount() {
         this.getContacts();
-
         this.action = this.props.navigation.getParam('action', 'add_friend');
     }
 
@@ -120,15 +119,6 @@ export class ContactList extends Component<IProps, IState> {
 
       // console.log('Submitted text invite for', phoneNumber);
       // await this.apiService.sendText(requestBody);
-
-      // Alert.alert(
-      //   'Invite sent!',
-      //   'You will find your boy',
-      //   [
-      //     {text: 'Invite more', onPress: () => {this.setState({ query: undefined }); } },
-      //   ],
-      //   { cancelable: true },
-      // );
     }
   }
 

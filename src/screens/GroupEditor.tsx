@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, AsyncStorage } from 'react-native';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -9,8 +9,8 @@ import { connect, Dispatch } from 'react-redux';
 
 import { Input, Button, ListItem, Slider } from 'react-native-elements';
 
-// import ApiService from '../services/ApiService';
-// import NodeService from '../services/NodeService';
+import ApiService from '../services/ApiService';
+import NodeService from '../services/NodeService';
 
 interface IProps {
   navigation: any;
@@ -27,8 +27,10 @@ interface IState {
 
 export class GroupEditor extends Component<IProps, IState> {
   _map: any;
-//   private apiService: ApiService;
-//   private nodeService: NodeService;
+
+  private apiService: ApiService;
+  private nodeService: NodeService;
+  private action: string;
 
   constructor(props: IProps) {
     super(props);
@@ -49,13 +51,15 @@ export class GroupEditor extends Component<IProps, IState> {
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
 
     this.submitSaveGroup = this.submitSaveGroup.bind(this);
 
     this._addPerson = this._addPerson.bind(this);
     this._renderPeopleInGroup = this._renderPeopleInGroup.bind(this);
-    // this.apiService = new ApiService({});
-    // this.nodeService = new NodeService({});
+
+    this.apiService = new ApiService({});
+    this.nodeService = new NodeService({});
   }
 
   componentWillMount() {
@@ -63,6 +67,8 @@ export class GroupEditor extends Component<IProps, IState> {
 
     let userRegion = this.props.navigation.getParam('userRegion', {});
     let uuid = this.props.navigation.getParam('uuid', '');
+
+    this.action = this.props.navigation.getParam('action', '');
 
     this.setState({userRegion: userRegion});
     this.setState({uuid: uuid});
@@ -74,6 +80,16 @@ export class GroupEditor extends Component<IProps, IState> {
 
   componentDidMount() {
     console.log('component mounted');
+
+    if (this.action === 'edit_group') {
+      console.log('editing the group');
+      let groupData = this.props.navigation.getParam('group_data', '');
+
+      this.setState({
+        title: groupData.title,
+      });
+    }
+
   }
 
   async returnData(item) {
@@ -83,7 +99,13 @@ export class GroupEditor extends Component<IProps, IState> {
 
     if (existingContact === undefined) {
         let newGroup = this.state.peopleInGroup;
-        newGroup.push(item);
+        let newPerson = {
+          'name': item.givenName + ' ' + item.familyName,
+          'phone': item.phoneNumbers[0].number,
+          'recordID': item.recordID,
+        };
+
+        newGroup.push(newPerson);
         await this.setState({peopleInGroup: newGroup});
         console.log('Adding new contact');
     } else {
@@ -124,8 +146,8 @@ export class GroupEditor extends Component<IProps, IState> {
         containerStyle={styles.peopleListItem}
         leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
         rightIcon={{name: 'minus-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-        title={item.item.givenName + ' ' + item.item.familyName}
-        subtitle={'Status: Pending, ' + item.item.phoneNumbers[0].number}
+        title={item.item.name}
+        subtitle={'Status: Pending, ' + item.item.phone}
         />);
     }
 
@@ -178,7 +200,7 @@ export class GroupEditor extends Component<IProps, IState> {
             <View style={styles.buttonView}>
                 <Button style={styles.bottomButton} buttonStyle={{width: '100%', height: '100%'}}
                     onPress={this.submitSaveGroup}
-                    loading={this.state.isLoading}
+                    loading={false}
                     disabled={true}
                     loadingStyle={styles.loading}
                     title='Delete'
@@ -203,27 +225,33 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   private async submitSaveGroup() {
-    // let groupData = {
-    //   'title': this.state.title,
-    //   'description': this.state.description,
-    //   'lat': this.state.userRegion.latitude,
-    //   'lng': this.state.userRegion.longitude,
-    //   'public': this.state.public,
-    //   'type': 'place',
-    // };
+    let currentUUID = await AsyncStorage.getItem('user_uuid');
 
-    // console.log('Submitted node request');
+    let groupData = {
+      'group_data': {
+        'title': this.state.title,
+        'public': false,
+        'type': 'group',
+        'owner': 'private:' + currentUUID,
+        'ttl': 36000,
+        'members': {},
+      },
+      'people_to_invite': this.state.peopleInGroup.slice(1),
+    };
 
-    // await this.setState({isLoading: true});
-    // let newUuid = await this.apiService.CreateNodeAsync(nodeData);
+    console.log('Submitted group request');
+    console.log(groupData);
 
-    // if (newUuid !== undefined) {
-    //   await this.nodeService.storeNode(newUuid);
-    // } else {
-    //   Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
-    // }
+    await this.setState({isLoading: true});
+    let newGroupId = await this.apiService.CreateGroupAsync(groupData);
+    await this.setState({isLoading: false});
 
-    // await this.setState({isLoading: false});
+    if (newGroupId !== undefined) {
+      await this.nodeService.storeGroup(newGroupId);
+    } else {
+      Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
+    }
+
     // this.props.navigation.navigate('Map', {updateNodes: true});
   }
 

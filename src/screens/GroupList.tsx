@@ -18,32 +18,19 @@ export class GroupList extends Component<IProps> {
     super(props);
   }
 
-  _onTouchNode(node: any) {
-    let region = {
-      latitude: parseFloat(node.data.latitude),
-      longitude: parseFloat(node.data.longitude),
-      latitudeDelta: parseFloat(node.data.latDelta),
-      longitudeDelta: parseFloat(node.data.longDelta),
-    };
-
-    let nodeType = node.data.type;
-    if (nodeType === 'place') {
-      nodeType = 'privatePlace';
-    } else if (nodeType === 'person') {
-      nodeType = 'privatePerson';
-    }
-
-    this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
+  _onTouchGroup(group: any) {
+    console.log(group);
+    this.props.navigation.navigate('GroupEditor', {action: 'edit_group', group_data: group});
   }
 
   _renderItem = ({item}) => (
     <ListItem
-      onPress={() => this._onTouchNode(item)}
-      containerStyle={styles.nodeListItem}
+      onPress={() => this._onTouchGroup(item)}
+      containerStyle={styles.groupListItem}
       leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
-      title={item.data.title}
-      subtitle={item.data.distance_in_miles.toString() + ' miles'}
+      title={item.title}
+      subtitle={item.group_id}
     />
   )
 
@@ -51,14 +38,14 @@ export class GroupList extends Component<IProps> {
     return (
       <View>
         <FlatList
-         data={this.props.privatePlaceList}
+         data={this.props.groupList}
          renderItem={this._renderItem}
          extraData={this.state}
-         keyExtractor={item => item.node_id}
+         keyExtractor={item => item.group_id}
         />
 
         {
-          this.props.privatePlaceList.length === 0 &&
+          this.props.groupList.length === 0 &&
           <Text style={styles.null}>No groups have been created yet</Text>
         }
      </View>
@@ -72,6 +59,7 @@ function mapStateToProps(state: IStoreState): IProps {
   return {
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
+    groupList: state.groupList,
   };
 }
 
@@ -84,7 +72,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 export default connect(mapStateToProps, mapDispatchToProps)(GroupList);
 
 const styles = StyleSheet.create({
-  nodeListItem: {
+  groupListItem: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     minHeight: 80,

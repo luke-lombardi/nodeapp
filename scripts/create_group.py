@@ -57,7 +57,6 @@ def get_new_uuid(rds, prefix):
 
 # Create the actual group in the cache
 def insert_group(rds, group_id, group_data):
-    public = group_data.get("public", False)
     rds.setex(name=group_id, value=json.dumps(group_data), time=DEFAULT_GROUP_TTL)
     return group_id
 
@@ -102,17 +101,25 @@ def create_uuids_for_members(rds, people_to_invite):
 
 
 # Updates the new member list w/ those whose lambda text calls have actually responded
-def set_members(rds, group_id, members):
+def set_members(rds, group_id, group_data, members):
     current_group_data = json.loads(rds.get(name=group_id))
 
     members = {member['member_id']: None for member in members}
+    
+    # add the owner as well
+    owner_uuid = group_data['owner']
+    group_owner_id = get_new_uuid(rds, 'group_member:')
+    members[group_owner_id] = owner_uuid
+
+    # set the key so group members can pull owners location as well
+    rds.setex(name=group_owner_id, value=owner_uuid, time=DEFAULT_GROUP_TTL)
+
     current_group_data['members'] = members
 
     # update the group with member data
     rds.setex(name=group_id, value=json.dumps(current_group_data), time=DEFAULT_GROUP_TTL)
 
     current_group_data = json.loads(rds.get(name=group_id))
-
     logger.info('Current group data: ' + str(current_group_data))
 
 
@@ -122,6 +129,7 @@ def lambda_handler(event, context):
     if not rds:
         return
     
+    logger.info('Event payload: ' + str(event))
     # First, we have to create a list of 'mirror' UUIDs to associate w/ user UUIDS in our group
     people_to_invite = event.get('people_to_invite', [])
     members, people_to_invite = create_uuids_for_members(rds, people_to_invite)
@@ -135,7 +143,7 @@ def lambda_handler(event, context):
 
     # Third, we have to send texts to each group member w/ a group ID and their member ID
     members = send_texts_to_members(people_to_invite, group_id)
-    set_members(rds, group_id, members)     # then, update the cache with members whose requests worked
+    set_members(rds, group_id, group_data, members)     # then, update the cache with members whose requests worked
 
     return group_id
 
@@ -147,8 +155,7 @@ def run():
             "type": "group",
             "public": False,
             "owner": "private:7d8b17e8-e944-4869-b3e5-0730bed5ed89",
-            "members": {
-            },
+            "members": {},
             "ttl": 3600
         },
         "people_to_invite": [
@@ -158,13 +165,12 @@ def run():
             },
             {
                 "name": "Johnny Appleseed",
-                "phone": "+13473024504ss",
+                "phone": "(347) 302-4504",
             },
         ]
     }
     
     test_context = {
-
     }
 
     response = lambda_handler(test_event, test_context)

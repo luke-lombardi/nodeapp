@@ -91,7 +91,7 @@ def send_text(contact_info, rds):
         message = client.messages.create(
             to=phone,
             from_="+12037179852",
-            body="Hello %s, you were invited to join a group: \n fyb://%s/%s" % (name, group_id, member_id))
+            body="Hello %s, you were invited to join a group: \n fyb://join_group/%s/%s" % (name, group_id, member_id))
 
     if message:
         logging.info("Sent a message to {} at {}".format(name, phone))

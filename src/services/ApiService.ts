@@ -5,6 +5,7 @@ import { AsyncStorage } from 'react-native';
 
 // @ts-ignore
 interface IProps {
+  readonly currentGroupList?: () => any;
 }
 
 export default class ApiService {
@@ -14,6 +15,9 @@ export default class ApiService {
     constructor(props: IProps) {
         this.props = props;
         Logger.info(`ApiService.constructor -  Initialized api service`);
+
+        this.getNodes = this.getNodes.bind(this);
+
     }
 
     // Get all nodes, both private and public, and update the redux store
@@ -46,6 +50,24 @@ export default class ApiService {
         nodesToGet.node_ids = publicNodes.node_ids;
       }
 
+     // If we are tracking any groups, get the member nodes as well
+     let trackedGroups = await AsyncStorage.getItem('trackedGroups');
+
+     if (trackedGroups !== null) {
+       trackedGroups = JSON.parse(trackedGroups);
+       let groupMembers = [];
+       let groups = this.props.currentGroupList();
+       //  console.log('Getting group members....');
+       if (groups) {
+           // @ts-ignore
+           groups.forEach(function (group, index) {
+               groupMembers = groupMembers.concat(group.members);
+               console.log(groupMembers);
+           });
+        }
+        nodesToGet.node_ids = nodesToGet.node_ids.concat(groupMembers);
+      }
+
       Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
       response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
           method: 'POST',
@@ -56,6 +78,33 @@ export default class ApiService {
       // TODO: add error handling here
       let nodeList = await response.json();
       return nodeList;
+    }
+
+    public async getGroups() {
+        // This gets the currently tracked private groups in ASYNC storage
+        let trackedGroups = await AsyncStorage.getItem('trackedGroups');
+
+        let groupsToGet = {
+          'group_ids': [],
+        };
+
+        // If we are tracking any nodes, add them to request body
+        if (trackedGroups !== null) {
+          trackedGroups = JSON.parse(trackedGroups);
+          // @ts-ignore
+          groupsToGet.group_ids = trackedGroups;
+        }
+
+        Logger.info(`Fetching these groups: ${JSON.stringify(groupsToGet)}`);
+        let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getGroups', {
+            method: 'POST',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify(groupsToGet),
+        });
+
+        // TODO: add error handling here
+        let groupList = await response.json();
+        return groupList;
     }
 
     // Creates a new node at the users position, this can be either public or private
@@ -84,9 +133,7 @@ export default class ApiService {
 
       // Creates a new group
       async CreateGroupAsync(groupData: any) {
-        let requestBody = {
-          'group_data': groupData,
-        };
+        let requestBody = groupData;
 
         let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createGroup', {
               method: 'POST',
@@ -105,6 +152,28 @@ export default class ApiService {
         let newGroup = await response.json();
         return newGroup;
     }
+
+    // Creates a new group
+    async JoinGroupAsync(groupData: any) {
+      let requestBody = groupData;
+
+      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/joinGroup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      let newGroup = await response.json();
+      return newGroup;
+  }
 
     // Updates the users location node
     async PostLocationAsync(nodeData: any) {
@@ -126,6 +195,7 @@ export default class ApiService {
       return response;
     }
 
+    // Sends a text to add a friend or share a node
     async sendText(contactInfo: any) {
       let requestBody = {
         'contact_info': contactInfo,

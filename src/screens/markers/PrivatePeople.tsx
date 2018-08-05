@@ -22,7 +22,7 @@ export default class PrivatePeople extends Component<IProps, IState> {
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 title={marker.data.title}
-                pinColor={'purple'}
+                pinColor={marker.data.color}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePerson'); }}
                 // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                 description={marker.data.description}

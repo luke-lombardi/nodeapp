@@ -6,7 +6,7 @@ import sys
 def build_package(name):
     handler = ''
     
-    if name in ['create_node', 'post_node', 'get_nodes', 'get_all_nodes', 'send_text', 'get_public_nodes', 'create_group']:
+    if name in ['create_node', 'post_node', 'get_nodes', 'get_all_nodes', 'send_text', 'get_public_nodes', 'create_group', 'join_group', 'get_groups']:
         handler = name + '.py'
         command = 'cp ./deployment_packages/template.zip ./deployment_packages/' + name + '.zip'
         rc = subprocess.call(command, shell=True)

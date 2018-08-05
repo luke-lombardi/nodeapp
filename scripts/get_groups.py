@@ -1,10 +1,10 @@
 '''
-    endpoint: /fyb/getNodes
+    endpoint: /fyb/getGroups
     method: GET
     format: application/json
 
     description:
-        Grabs a list of nodes metadata by their unique node_id numbers.
+        Grabs a list of groups metadata by their unique group_id strings
 '''
 
 import redis
@@ -36,23 +36,24 @@ def connect_to_cache():
         return None
 
 
-def get_nodes(rds, node_ids_to_get):
-    nodes = {}
+def get_groups(rds, group_ids_to_get):
+    groups = {}
 
-    for node_id in node_ids_to_get:
-        node_exists = rds.exists(node_id)
-        if node_exists:
-            logging.info('Node %s exists, getting data', node_id)
-            node_data = json.loads(rds.get(node_id))
-            current_ttl = rds.ttl(node_id)
-            nodes[node_id] = node_data
-            nodes[node_id]['ttl'] = current_ttl
-            nodes[node_id]['status'] = "active"
+    for group_id in group_ids_to_get:
+        group_exists = rds.exists(group_id)
+        if group_exists:
+            logging.info('group %s exists, getting data', group_id)
+            group_data = json.loads(rds.get(group_id))
+            current_ttl = rds.ttl(group_id)
+            groups[group_id] = group_data
+            groups[group_id]['ttl'] = current_ttl
+            groups[group_id]['status'] = "active"
+            groups[group_id]['members'] = [ k for k,v in groups[group_id]['members'].items() ]
         else:
-            nodes[node_id] = {"status": "not_found"}
-            logging.info('Node %s not found')
+            groups[group_id] = {"status": "not_found"}
+            logging.info('group %s not found' % (group_id, ))
 
-    return nodes
+    return groups
 
 
 def lambda_handler(event, context):
@@ -61,15 +62,15 @@ def lambda_handler(event, context):
     if not rds:
         return
     
-    node_ids_to_get = event.get('node_ids', 0)
-    nodes = get_nodes(rds, node_ids_to_get)
+    group_ids_to_get = event.get('group_ids', 0)
+    groups = get_groups(rds, group_ids_to_get)
 
-    return nodes
+    return groups
 
 
 def run():
     test_event = {
-        "node_ids": ["965133fc-bb3a-4f8d-a65e-4b98885c3c1f"]
+        "group_ids": ["group:202bdb74-ca74-4052-bcac-db9c7f57eb45"]
     }
     
     test_context = {

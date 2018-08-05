@@ -15,6 +15,8 @@ import GroupList from '../screens/GroupList';
 import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
+import CreateMeetup from '../screens/CreateMeetup';
+import PlaceSearch from '../screens/PlaceSearch';
 import GroupEditor from '../screens/GroupEditor';
 
 // Redux imports
@@ -112,6 +114,7 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
     },
+    CreateMeetup: { screen: CreateMeetup,
     GroupEditor: { screen: GroupEditor,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -132,6 +135,19 @@ const InternalStack = StackNavigator({
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => { navigation.goBack(undefined); } } />,
       }),
     },
+    PlaceSearch: { screen: PlaceSearch,
+      navigationOptions: ({navigation}) => ({
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
+        title: navigation.indexs,
+        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          navigation.dispatch(NavigationActions.reset(
+          {
+            index: 0,
+            actions: [ NavigationActions.navigate({ routeName: 'CreateMeetup' }) ],
+          },
+          )) } />,
+        }),
+      },
   },
 {
   initialRouteName: 'Map',

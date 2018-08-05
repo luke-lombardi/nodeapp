@@ -219,4 +219,28 @@ export default class ApiService {
       console.log('successfully sent text', response);
       return result;
     }
-}
+
+    async createMeetup(meetupInfo: any) {
+      let requestBody = {
+        'meetup_info': meetupInfo,
+      };
+
+      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/sendText', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.sendText - Unable to create meetup');
+        console.log('could not create meetup', response);
+        return undefined;
+      }
+
+      let result = await response.json();
+      console.log('successfully created meetup', response);
+      return result;
+    }
+  }

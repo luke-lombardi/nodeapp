@@ -15,6 +15,11 @@ interface IProps {
 interface IState {
     data: Array<any>;
     query: any;
+    selectedPlace: any;
+    date: any;
+    item: any;
+    selectedDate: boolean;
+    selectedPlaceAddress: any;
 }
 
 export class ContactList extends Component<IProps, IState> {
@@ -28,6 +33,11 @@ export class ContactList extends Component<IProps, IState> {
     this.state = {
         data: [],
         query: '',
+        selectedPlace: this.props.navigation.getParam('selectedPlace'),
+        date: this.props.navigation.getParam('date'),
+        item: this.props.navigation.getParam('contact'),
+        selectedDate: this.props.navigation.getParam('selectedDate'),
+        selectedPlaceAddress: this.props.navigation.getParam('selectedPlaceAddress'),
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -41,7 +51,7 @@ export class ContactList extends Component<IProps, IState> {
 
     componentWillMount() {
         this.getContacts();
-        this.action = this.props.navigation.getParam('action', 'add_friend');
+        this.action = this.props.navigation.getParam('action', '');
     }
 
     getContacts() {
@@ -109,6 +119,14 @@ export class ContactList extends Component<IProps, IState> {
       } else if (this.action === 'add_friend_to_group') {
         this.props.navigation.state.params.returnData(item);
         this.props.navigation.goBack(undefined);
+      } else if (this.action === 'meetup_invite') {
+        this.props.navigation.navigate('CreateMeetup', {
+          contact: item,
+          selectedPlace: this.state.selectedPlace,
+          selectedDate: this.state.selectedDate,
+          date: this.state.date,
+          selectedPlaceAddress: this.state.selectedPlaceAddress,
+        });
       }
 
       // let requestBody = {

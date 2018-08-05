@@ -94,11 +94,11 @@ export class SideBar extends Component<IProps> {
                 <ListItem
                   containerStyle={styles.navItem}
                   // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
-                  key='meetups'
+                  key='createMeetup'
                   title='Meetups'
                   leftIcon={{name: 'calendar', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
-                    this.resetNavigation('Nodes');
+                    this.resetNavigation('CreateMeetup');
                 }}
                 />
 

@@ -11,7 +11,6 @@
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
 		00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
-		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* MobileAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MobileAppTests.m */; };
 		024A0C93151B4ABF996CED8A /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3493EB5654484628B25F8064 /* Octicons.ttf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -24,6 +23,8 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1852C4D85D2240769106A0C7 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B362B7F61085434290BB346A /* Foundation.ttf */; };
+		2C8430C2210E471600518799 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		2C8430C3210E471D00518799 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		2CB3882220E9674A003347F2 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB387F720E9672F003347F2 /* libBVLinearGradient.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -68,7 +69,6 @@
 		904CB41E19694B71B40B4791 /* emoji_smile_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = FACE1778922D44DF80F330CC /* emoji_smile_normal.png */; };
 		911ACD4BF6D149BF8F5F4F36 /* emoji_smile_diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = FE71E77FED994498935A0234 /* emoji_smile_diffuse.png */; };
 		A122628C754119D8E207B849 /* libPods-FYB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1354BEEE667848C65E5B1DB0 /* libPods-FYB.a */; };
-		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B3E76F2583DF454090203264 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27549B70B6F549CA954FBD4B /* MaterialIcons.ttf */; };
 		C24962CC9BFB4D91AF6A331A /* emoji_smile_specular.png in Resources */ = {isa = PBXBuildFile; fileRef = EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */; };
 		C945FF24FB984529AE4B1B60 /* grid_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */; };
@@ -507,6 +507,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C8430C3210E471D00518799 /* libRCTVibration.a in Frameworks */,
+				2C8430C2210E471600518799 /* libRCTBlob.a in Frameworks */,
 				2CB3882220E9674A003347F2 /* libBVLinearGradient.a in Frameworks */,
 				447CDAFA20D5A6F500B0CF3E /* libGoogle-Maps-iOS-Utils.a in Frameworks */,
 				447CDAFC20D5A6F500B0CF3E /* libreact-native-google-maps.a in Frameworks */,
@@ -520,7 +522,6 @@
 				2E2DC44E20A805AA00CB56E7 /* CoreData.framework in Frameworks */,
 				2E2DC45020A805BB00CB56E7 /* Accelerate.framework in Frameworks */,
 				447CDAF820D5A6D900B0CF3E /* GoogleMapsBase.framework in Frameworks */,
-				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
@@ -533,7 +534,6 @@
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
-				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				5A86648E7782420BA3129430 /* libRNVectorIcons.a in Frameworks */,
 				EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */,
@@ -992,11 +992,11 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 7DA27ZHP58;
+						DevelopmentTeam = TN6X9LR957;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 7DA27ZHP58;
+						DevelopmentTeam = TN6X9LR957;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -1640,7 +1640,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 7DA27ZHP58;
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1673,7 +1673,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 7DA27ZHP58;
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1701,12 +1701,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0ABA8792B33BF335E68527E8 /* Pods-FYB.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 7DA27ZHP58;
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1731,6 +1732,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/yoga\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-contacts\"",
 					"\"${PODS_ROOT}/../../node_modules/react-viro/ios/dist/lib\"",
+					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1754,11 +1756,12 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EFCCA4245ACA7A4005BD62C0 /* Pods-FYB.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7DA27ZHP58;
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1784,6 +1787,7 @@
 				PRODUCT_NAME = FYB;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"USER_HEADER_SEARCH_PATHS[arch=*]" = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

@@ -115,6 +115,18 @@ const InternalStack = StackNavigator({
       }),
     },
     CreateMeetup: { screen: CreateMeetup,
+      navigationOptions: ({navigation}) => ({
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+        title: navigation.indexs,
+        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          navigation.dispatch(NavigationActions.reset(
+          {
+            index: 0,
+            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          },
+          )) } />,
+        }),
+      },
     GroupEditor: { screen: GroupEditor,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},

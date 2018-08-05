@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+// @ts-ignore
 import MapView, { Circle } from 'react-native-maps';
 import Pulse from 'react-native-pulse';
 

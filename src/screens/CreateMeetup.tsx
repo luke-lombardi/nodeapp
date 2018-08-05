@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+
+// @ts-ignore
 import { View, StyleSheet, Text, DatePickerIOS, TouchableOpacity, FlatList } from 'react-native';
 
 // @ts-ignore
@@ -269,6 +271,7 @@ export class CreateMeetup extends Component<IProps, IState> {
     );
   }
 
+  // @ts-ignore
   private async submitCreateNode() {
     let nodeData = {
       'title': this.state.title,

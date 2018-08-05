@@ -23,6 +23,7 @@ interface IState {
   uuid: string;
   public: boolean;
   peopleInGroup: any;
+  editing: boolean;
 }
 
 export class GroupEditor extends Component<IProps, IState> {
@@ -41,6 +42,7 @@ export class GroupEditor extends Component<IProps, IState> {
       isLoading: false,
       uuid: '',
       public: false,
+      editing: false,
       peopleInGroup: [
         {
             'recordID': 'add_button',
@@ -54,6 +56,8 @@ export class GroupEditor extends Component<IProps, IState> {
     this.componentDidMount = this.componentDidMount.bind(this);
 
     this.submitSaveGroup = this.submitSaveGroup.bind(this);
+    this.submitEditGroup = this.submitEditGroup.bind(this);
+    this.submitDeleteGroup = this.submitDeleteGroup.bind(this);
 
     this._addPerson = this._addPerson.bind(this);
     this._renderPeopleInGroup = this._renderPeopleInGroup.bind(this);
@@ -87,6 +91,7 @@ export class GroupEditor extends Component<IProps, IState> {
 
       this.setState({
         title: groupData.title,
+        editing: true,
       });
     }
 
@@ -190,18 +195,18 @@ export class GroupEditor extends Component<IProps, IState> {
           <View style={styles.buttonContainer}>
             <View style={styles.buttonView}>
                 <Button style={styles.bottomButton} buttonStyle={{width: '100%', height: '100%'}}
-                    onPress={this.submitSaveGroup}
+                    onPress={this.state.editing ? this.submitEditGroup : this.submitSaveGroup}
                     loading={this.state.isLoading}
                     disabled={this.state.isLoading}
                     loadingStyle={styles.loading}
-                    title='Save/Update'
+                    title={this.state.editing ? 'Update' : 'Create'}
                 />
             </View>
             <View style={styles.buttonView}>
-                <Button style={styles.bottomButton} buttonStyle={{width: '100%', height: '100%'}}
-                    onPress={this.submitSaveGroup}
+                <Button style={styles.bottomButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'red'}}
+                    onPress={this.submitDeleteGroup}
                     loading={false}
-                    disabled={true}
+                    disabled={this.state.editing ? false : true}
                     loadingStyle={styles.loading}
                     title='Delete'
                 />
@@ -248,11 +253,20 @@ export class GroupEditor extends Component<IProps, IState> {
 
     if (newGroupId !== undefined) {
       await this.nodeService.storeGroup(newGroupId);
+      await this.setState({editing: true});
     } else {
       Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
     }
 
     // this.props.navigation.navigate('Map', {updateNodes: true});
+  }
+
+  private async submitEditGroup() {
+    console.log('edit action');
+  }
+
+  private async submitDeleteGroup() {
+    console.log('delete action');
   }
 
 }

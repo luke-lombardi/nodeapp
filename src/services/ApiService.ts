@@ -62,7 +62,7 @@ export default class ApiService {
            // @ts-ignore
            groups.forEach(function (group, index) {
                groupMembers = groupMembers.concat(group.members);
-               console.log(groupMembers);
+              //  console.log(groupMembers);
            });
         }
         nodesToGet.node_ids = nodesToGet.node_ids.concat(groupMembers);

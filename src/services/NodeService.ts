@@ -179,6 +179,7 @@ export default class NodeService {
         let groupListArray = [];
         let groupList = await this.apiService.getGroups();
         let modified = false;
+
         if (groupList) {
             for (let key in groupList) {
                 if (groupList.hasOwnProperty(key)) {
@@ -188,12 +189,12 @@ export default class NodeService {
                         Logger.info(`Cannot find group ${key}, removing from storage.`);
 
                         if (trackedGroups) {
-                        let index = trackedGroups.indexOf(key);
-                        if (index !== -1) {
-                            // @ts-ignore
-                            trackedGroups.splice(index, 1);
-                            modified = true;
-                        }
+                            let index = trackedGroups.indexOf(key);
+                            if (index !== -1) {
+                                // @ts-ignore
+                                trackedGroups.splice(index, 1);
+                                modified = true;
+                            }
                         }
                         continue;
                     }
@@ -202,7 +203,7 @@ export default class NodeService {
                 }
             }
 
-            // If any groups were not found in the cache, update the tracked list
+            // If any groups were not found in the cache, update the tracked group list
             if (modified) {
                 await AsyncStorage.setItem('trackedGroups', JSON.stringify(trackedGroups));
             }

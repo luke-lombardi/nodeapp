@@ -101,7 +101,7 @@ def create_uuids_for_members(rds, people_to_invite):
 
 
 # Updates the new member list w/ those whose lambda text calls have actually responded
-def set_members(rds, group_id, group_data, members):
+def set_members(rds, group_id, group_data, members, people_to_invite):
     current_group_data = json.loads(rds.get(name=group_id))
 
     members = {member['member_id']: None for member in members}
@@ -115,6 +115,7 @@ def set_members(rds, group_id, group_data, members):
     rds.setex(name=group_owner_id, value=owner_uuid, time=DEFAULT_GROUP_TTL)
 
     current_group_data['members'] = members
+    current_group_data['people'] = people_to_invite
 
     # update the group with member data
     rds.setex(name=group_id, value=json.dumps(current_group_data), time=DEFAULT_GROUP_TTL)
@@ -143,7 +144,7 @@ def lambda_handler(event, context):
 
     # Third, we have to send texts to each group member w/ a group ID and their member ID
     members = send_texts_to_members(people_to_invite, group_id)
-    set_members(rds, group_id, group_data, members)     # then, update the cache with members whose requests worked
+    set_members(rds, group_id, group_data, members, people_to_invite)     # then, update the cache with members whose requests worked
 
     return group_id
 

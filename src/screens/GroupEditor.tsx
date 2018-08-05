@@ -89,8 +89,10 @@ export class GroupEditor extends Component<IProps, IState> {
       console.log('editing the group');
       let groupData = this.props.navigation.getParam('group_data', '');
 
+      // TODO: distinguish between group owners and group members (use owner_uuid in response)
       this.setState({
         title: groupData.title,
+        peopleInGroup: this.state.peopleInGroup.concat(groupData.people),
         editing: true,
       });
     }
@@ -174,7 +176,7 @@ export class GroupEditor extends Component<IProps, IState> {
                 inputContainerStyle={{ borderBottomWidth: 0, 'height': '100%'}}
                 onChangeText={(title) => this.setState({title: title})}
                 value={this.state.title}
-                autoFocus={true}
+                autoFocus={ this.action === 'edit_group' ? false : true}
             />
 
           </View>

@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import MapView   from 'react-native-maps';
+import MapView, { Circle } from 'react-native-maps';
 import Pulse from 'react-native-pulse';
 
 import IStoreState from '../store/IStoreState';

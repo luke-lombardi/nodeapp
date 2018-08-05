@@ -16,8 +16,10 @@ interface IState {
     data: Array<any>;
     query: any;
     selectedPlace: any;
-    chosenDate: any;
+    date: any;
     item: any;
+    selectedDate: boolean;
+    selectedPlaceAddress: any;
 }
 
 export class ContactList extends Component<IProps, IState> {
@@ -32,8 +34,10 @@ export class ContactList extends Component<IProps, IState> {
         data: [],
         query: '',
         selectedPlace: this.props.navigation.getParam('selectedPlace'),
-        chosenDate: this.props.navigation.getParam('chosenDate'),
+        date: this.props.navigation.getParam('date'),
         item: this.props.navigation.getParam('contact'),
+        selectedDate: this.props.navigation.getParam('selectedDate'),
+        selectedPlaceAddress: this.props.navigation.getParam('selectedPlaceAddress'),
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -119,7 +123,9 @@ export class ContactList extends Component<IProps, IState> {
         this.props.navigation.navigate('CreateMeetup', {
           contact: item,
           selectedPlace: this.state.selectedPlace,
-          chosenDate: this.state.chosenDate,
+          selectedDate: this.state.selectedDate,
+          date: this.state.date,
+          selectedPlaceAddress: this.state.selectedPlaceAddress,
         });
 
       // let requestBody = {

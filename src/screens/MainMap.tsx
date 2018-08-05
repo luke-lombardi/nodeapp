@@ -81,6 +81,7 @@ export class MainMap extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
+
     this.state = {
       lastLat: '0.0',
       lastLong: '0.0',
@@ -93,9 +94,7 @@ export class MainMap extends Component<IProps, IState> {
     };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
-    this.viewNodeList = this.viewNodeList.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
-    this.createNode = this.createNode.bind(this);
     this.closeCreateModal = this.closeCreateModal.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
@@ -106,9 +105,7 @@ export class MainMap extends Component<IProps, IState> {
     this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
     this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
 
-    this.goToContactList = this.goToContactList.bind(this);
-    this.goToCreateNode = this.goToCreateNode.bind(this);
-    this.goToNodeFinder = this.goToNodeFinder.bind(this);
+    this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -239,23 +236,6 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
-  async createNode() {
-    // Alert.alert(
-    //   'Track something',
-    //   'Enter a pin or create a new node',
-    //   [
-    //     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-    //     {text: 'Drop Pin', onPress: this.goToCreateNode},
-    //     {text: 'Create Group', onPress: this.goToContactList},
-    //     {text: 'Plan Meetup', onPress: this.goToContactList},
-    //     {text: 'Add Friend', onPress: this.goToContactList},
-    //   ],
-    //   { cancelable: false },
-    // );
-
-    await this.setState({createModalVisible: true});
-  }
-
   async closeCreateModal() {
     await this.setState({createModalVisible: false});
   }
@@ -270,7 +250,7 @@ export class MainMap extends Component<IProps, IState> {
           <View style={styles.headerView}>
             <MapToolbar functions={{
               zoomToUserLocation: this.zoomToUserLocation,
-              viewNodeList: this.viewNodeList,
+              navigateToPage: this.navigateToPage,
               updateNodeList: this.nodeService.CheckNow,
               toggleSwitch: this.togglePublicVisible,
             }}
@@ -317,7 +297,7 @@ export class MainMap extends Component<IProps, IState> {
                     position: 'absolute',
                     bottom: '5%',
                   }}
-                onPress={this.createNode}
+                onPress={() => { this.setState({createModalVisible: true}); }}
               >
               <Pulse color='white' numPulses={2} diameter={210} speed={20} duration={2000} />
 
@@ -346,7 +326,7 @@ export class MainMap extends Component<IProps, IState> {
           this.state.createModalVisible &&
           <CreateModal functions={{
             'closeCreateModal': this.closeCreateModal,
-            'goToCreateNode': this.goToCreateNode,
+            'navigateToPage': this.navigateToPage,
           }}/>
         }
 
@@ -371,21 +351,33 @@ export class MainMap extends Component<IProps, IState> {
     await this.props.PublicPersonListUpdated(props.nodeList);
   }
 
-  private goToContactList() {
-    this.props.navigation.navigate('ContactList', {action: 'create_node', userRegion: this.props.userRegion});
+  private navigateToPage(pageName: string) {
+    let params = undefined;
+
+    switch (pageName) {
+      case 'GroupEditor':
+        params = {action: 'create_group', userRegion: this.props.userRegion};
+        break;
+      case 'CreateNode':
+        params = {action: 'create_node', userRegion: this.props.userRegion};
+        break;
+      case 'ContactList':
+        params = {action: 'add_friend', userRegion: this.props.userRegion};
+        break;
+      case 'Finder':
+        params = {
+          action: 'find_node', userRegion: this.props.userRegion,
+          nodeId: this.state.selectedNode.data.node_id,
+          nodeType: this.state.selectedNode.nodeType,
+        };
+        break;
+      default:
+        console.log('Page not found');
+    }
+
+    this.props.navigation.navigate(pageName, params);
   }
 
-  private goToCreateNode() {
-    this.props.navigation.navigate('CreateNode', {action: 'create_node', userRegion: this.props.userRegion});
-  }
-
-  private goToNodeFinder() {
-    this.props.navigation.navigate('Finder', {
-      action: 'create_node', userRegion: this.props.userRegion,
-      nodeId: this.state.selectedNode.data.node_id,
-      nodeType: this.state.selectedNode.nodeType,
-    });
-  }
 }
 
 // Redux setup functions

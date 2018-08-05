@@ -30,7 +30,7 @@ DEFAULT_ACK_TTL = 3600 # 1 hr
 VALIDATION_REGEX = {
     "name": re.compile(r'^[a-zA-Z ]+$'),
     "phone": re.compile(r'.*?(\(?\d{3}\D{0,3}\d{3}\D{0,3}\d{4}).*?', flags=re.S),
-    "user_uuid": re.compile('[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}', re.I)
+    # "user_uuid": re.compile('[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}', re.I)
 } 
 
 
@@ -56,7 +56,7 @@ def connect_to_cache():
 
 def validate_contact_info(contact_info):
     print(contact_info)
-    validated_fields = ["phone", "name", "user_uuid"]
+    validated_fields = ["phone", "name"]
 
     # Iterate through validated fields and check:
 
@@ -70,8 +70,6 @@ def validate_contact_info(contact_info):
         else:
             m = re.search(VALIDATION_REGEX[current_field], current_value)
             if not m:
-                print('hey')
-                print(current_field)
                 return False
     
     return True
@@ -81,29 +79,28 @@ def validate_contact_info(contact_info):
 # When the requesting user and contacted user both set and read the key, the handshake is complete.
 def send_text(contact_info, rds):
     client = Client(account_sid, auth_token) # Set this in local scope each time you connect to prevent shared memory leaks 
+    message = None
+    action = contact_info.get('action', None)
 
-    name = contact_info["name"]
-    phone = contact_info["phone"]
-    user_uuid = contact_info["user_uuid"]
-
-    message = client.messages.create(
-        to=phone,
-        from_="+12037179852",
-        body="Hello %s, your boy is tryna find you. \n fyb://%s" % (name,user_uuid))
+    if action == 'send_group_invite':
+        name = contact_info["name"]
+        phone = contact_info["phone"]
+        member_id = contact_info["member_id"]
+        group_id = contact_info["group_id"]
+    
+        message = client.messages.create(
+            to=phone,
+            from_="+12037179852",
+            body="Hello %s, you were invited to join a group: \n fyb://join_group/%s/%s" % (name, group_id, member_id))
 
     if message:
         logging.info("Sent a message to {} at {}".format(name, phone))
-
-        # When user accepts set key to their uuid - then set ttl on the key
-        # The uuid that was read on both sides is stored in friends list and monitored by node_id, which is same as uuid
-        rds.setex(name=user_uuid, value='', time=DEFAULT_ACK_TTL) # TODO: check return code of the key set?
         return True
-    else:        
-        logging.error('Could not send text to: ' + str())
-        return False
+    
+    return False
 
 
-def lambda_handler(event, context):
+def lambda_handler(contact_info, context):
     rds = connect_to_cache()
     response = {
         "error": ""
@@ -112,8 +109,6 @@ def lambda_handler(event, context):
     if not rds:
         response["error"] = "Could not connect to redis cache."
         return json.dumps(response)
-    
-    contact_info = event.get('contact_info', None)
 
     valid_contact_info = validate_contact_info(contact_info)
 
@@ -130,11 +125,11 @@ def lambda_handler(event, context):
 
 def run():
     test_event = {
-        "contact_info": {
-            "name": "Johnny Appleseed",
-            "phone": "+13473024504",
-            "user_uuid": "11ac3748-448d-4d9e-a7bc-58f0ec0a2068"
-        }
+        "name": "Luke Lombardi",
+        "phone": "+17184145662",
+        "member_id": "group_member:f15fdf3c-4b36-4bfa-98bc-d21622563fc7",
+        "group_id": "group:f15fdf3c-4b36-4bfa-98bc-d21622563fc7",
+        "action": "send_group_invite",
     }
     
     test_context = {

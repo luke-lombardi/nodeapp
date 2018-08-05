@@ -15,6 +15,12 @@ enum ActionTypeKeys {
   PRIVATE_PLACE_LIST_UPDATED = 'PRIVATE_PLACE_LIST_UPDATED',
 
   //
+  // Group Actions
+  //
+
+  GROUP_LIST_UPDATED = 'GROUP_LIST_UPDATED',
+
+  //
   // Map Actions
   //
 

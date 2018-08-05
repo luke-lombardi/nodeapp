@@ -51,7 +51,6 @@ export class ContactList extends Component<IProps, IState> {
 
     componentWillMount() {
         this.getContacts();
-
         this.action = this.props.navigation.getParam('action', '');
     }
 
@@ -114,6 +113,7 @@ export class ContactList extends Component<IProps, IState> {
       // let userUuid = await AsyncStorage.getItem('user_uuid');
       // let phoneNumber = item.phoneNumbers[0].number;
       // let name = item.givenName + ' ' + item.familyName;
+
       if (this.action === 'add_friend') {
         console.log('sending text to your boy');
       } else if (this.action === 'add_friend_to_group') {
@@ -127,22 +127,16 @@ export class ContactList extends Component<IProps, IState> {
           date: this.state.date,
           selectedPlaceAddress: this.state.selectedPlaceAddress,
         });
+      }
 
       // let requestBody = {
       //   'name': name,
       //   'phone': phoneNumber,
       //   'user_uuid': userUuid,
       // };
+
       // console.log('Submitted text invite for', phoneNumber);
       // await this.apiService.sendText(requestBody);
-      // Alert.alert(
-      //   'Invite sent!',
-      //   'You will find your boy',
-      //   [
-      //     {text: 'Invite more', onPress: () => {this.setState({ query: undefined }); } },
-      //   ],
-      //   { cancelable: true },
-      // );
     }
   }
 

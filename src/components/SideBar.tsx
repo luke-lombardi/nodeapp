@@ -87,7 +87,7 @@ export class SideBar extends Component<IProps> {
                   title='Groups'
                   leftIcon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
-                    this.resetNavigation('Nodes');
+                    this.resetNavigation('Groups');
                 }}
                 />
 

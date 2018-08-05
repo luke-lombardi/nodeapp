@@ -17,6 +17,7 @@ import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import CreateMeetup from '../screens/CreateMeetup';
 import PlaceSearch from '../screens/PlaceSearch';
+import GroupEditor from '../screens/GroupEditor';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -30,16 +31,21 @@ import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
 
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
+import { GroupListUpdatedActionCreator } from '../actions/GroupActions';
+
 // Services
 import NodeService,
   {
     IPublicPersonListUpdated,
     IPublicPlaceListUpdated,
     IPrivatePersonListUpdated,
-    IPrivatePlaceListUpdated }
+    IPrivatePlaceListUpdated,
+    IGroupListUpdated,
+  }
   from '../services/NodeService';
 
-// Services
+import ApiService from '../services/ApiService';
+
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
 
 // SET GLOBAL PROPS //
@@ -109,6 +115,7 @@ const InternalStack = StackNavigator({
       }),
     },
     CreateMeetup: { screen: CreateMeetup,
+    GroupEditor: { screen: GroupEditor,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
         title: navigation.indexs,
@@ -125,13 +132,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       title: navigation.indexs,
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-        },
-        )) } />,
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => { navigation.goBack(undefined); } } />,
       }),
     },
     PlaceSearch: { screen: PlaceSearch,
@@ -190,12 +191,15 @@ interface IProps {
   PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  GroupListUpdated: (groupList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
   publicPlaceList: Array<any>;
   privatePersonList: Array<any>;
   privatePlaceList: Array<any>;
+  groupList: Array<any>;
 
   challengeSettings: any;
   userRegion: any;
@@ -208,6 +212,8 @@ export class App extends Component<IProps, IState> {
 
     // monitoring services
     private nodeService: NodeService;
+    private apiService: ApiService;
+
     private locationService: LocationService;
 
     constructor(props: IProps) {
@@ -222,8 +228,11 @@ export class App extends Component<IProps, IState> {
       this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
       this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
 
+      this.gotNewGroupList = this.gotNewGroupList.bind(this);
+
       this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
       this.getUserRegion = this.getUserRegion.bind(this);
+      this.getGroupList = this.getGroupList.bind(this);
 
       this.componentDidMount = this.componentDidMount.bind(this);
       this.componentWillUnmount = this.componentWillUnmount.bind(this);
@@ -236,10 +245,16 @@ export class App extends Component<IProps, IState> {
           publicPlaceListUpdated: this.gotNewPublicPlaceList,
           privatePersonListUpdated: this.gotNewPrivatePersonList,
           privatePlaceListUpdated: this.gotNewPrivatePlaceList,
+          groupListUpdated: this.gotNewGroupList,
           currentUserRegion: this.getUserRegion,
+          currentGroupList: this.getGroupList,
       });
 
       this.nodeService.StartMonitoring();
+
+      this.apiService = new ApiService({
+        currentGroupList: this.getGroupList,
+      });
 
       // The location service monitors the users location and calculates distance to nodes
       // This is an async loop that runs forever, so do not await it
@@ -249,14 +264,39 @@ export class App extends Component<IProps, IState> {
 
     componentDidMount() {
       // listen for incoming URL
-        Linking.addEventListener('url', this.handleLink);
+      Linking.addEventListener('url', this.handleLink);
     }
 
-    handleLink(event) {
+    async handleLink(event) {
       // parse the user_uuid as a string from the URL
-      let userUuid = event.url.replace(/.*?:\/\//g, '');
-      // TODO: set user_uuid in redis cache for session
-      console.log('got user_uuid from url.......', userUuid);
+      let linkData = event.url.replace(/.*?:\/\//g, '');
+      let splitLinkData = linkData.split('/');
+
+      let action = splitLinkData[0];
+
+      if (action === 'join_group') {
+        console.log(splitLinkData);
+        let groupId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'group_id': groupId,
+          'member_id': memberId,
+        };
+
+        let newGroupId = await this.apiService.JoinGroupAsync(groupData);
+
+        if (newGroupId !== undefined) {
+          await this.nodeService.storeGroup(newGroupId);
+        } else {
+          Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
+        }
+
+      }
+
     }
 
     componentWillUnmount() {
@@ -275,6 +315,10 @@ export class App extends Component<IProps, IState> {
 
     public getUserRegion(): any {
       return this.props.userRegion;
+    }
+
+    public getGroupList(): any {
+      return this.props.groupList;
     }
 
     // Private implementation functions
@@ -306,6 +350,10 @@ export class App extends Component<IProps, IState> {
       await this.props.PrivatePlaceListUpdated(props.nodeList);
     }
 
+    private async gotNewGroupList(props: IGroupListUpdated) {
+      await this.props.GroupListUpdated(props.groupList);
+    }
+
 }
 
 // @ts-ignore
@@ -316,6 +364,7 @@ function mapStateToProps(state: IStoreState): IProps {
     publicPlaceList: state.publicPlaceList,
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
+    groupList: state.groupList,
     userRegion: state.userRegion,
   };
 }
@@ -327,6 +376,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
+    GroupListUpdated: bindActionCreators(GroupListUpdatedActionCreator, dispatch),
   };
 }
 

@@ -117,16 +117,46 @@ export class ContactList extends Component<IProps, IState> {
 
     // Private implementation functions
     private async selectContact(item) {
-      // let userUuid = await AsyncStorage.getItem('user_uuid');
-      // let phoneNumber = item.phoneNumbers[0].number;
-      // let name = item.givenName + ' ' + item.familyName;
 
-      if (this.action === 'add_friend') {
+      if (this.action === 'share_pin') {
         console.log('sending text to your boy');
-      } else if (this.action === 'share_pin') {
+      } else if (this.action === 'add_firned') {
         console.log('sharing pin with this nodeId --------->   ' + this.state.nodeId);
         Alert.alert(`Invited ${item.givenName} to ${this.state.nodeId}`);
 
+        let phoneNumber = item.phoneNumbers[0].number;
+        let name = item.givenName + ' ' + item.familyName;
+
+       let userUuid = await AsyncStorage.getItem('user_uuid');
+
+        let inviteData = {
+          'invite_data': {
+            'type': 'friend',
+            'host': 'private:' + userUuid,
+            'rcpt': undefined,
+            'ttl': undefined,
+          },
+          'person_to_invite': {
+            'name': name,
+            'phone': phoneNumber,
+          },
+        };
+
+        console.log(inviteData);
+
+        let newInviteId = await this.apiService.AddFriendAsync(inviteData);
+
+        if (newInviteId !== undefined) {
+          console.log('storing invite');
+          // await this.nodeService.storeInvite(newInviteId);
+        } else {
+          // Logger.info('ContactList.selectContact - invalid response from add friend.');
+        }
+
+        console.log('GOT IT');
+        console.log(newInviteId);
+
+        this.props.navigation.goBack(undefined);
       } else if (this.action === 'add_friend_to_group') {
         this.props.navigation.state.params.returnData(item);
         this.props.navigation.goBack(undefined);
@@ -139,15 +169,6 @@ export class ContactList extends Component<IProps, IState> {
           selectedPlaceAddress: this.state.selectedPlaceAddress,
         });
       }
-
-      // let requestBody = {
-      //   'name': name,
-      //   'phone': phoneNumber,
-      //   'user_uuid': userUuid,
-      // };
-
-      // console.log('Submitted text invite for', phoneNumber);
-      // await this.apiService.sendText(requestBody);
     }
   }
 

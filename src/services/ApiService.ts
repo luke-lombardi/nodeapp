@@ -175,6 +175,28 @@ export default class ApiService {
       return newGroup;
   }
 
+    // Creates a new group
+    async AddFriendAsync(inviteData: any) {
+      let requestBody = inviteData;
+
+      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/addFriend', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.AddFriendAsync - Unable to add friend');
+
+        return undefined;
+      }
+
+      let newFriendInvite = await response.json();
+      return newFriendInvite;
+    }
+
     // Updates the users location node
     async PostLocationAsync(nodeData: any) {
       let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/postNode', {

@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
   switch: {
     paddingTop: 20,
     margin: 10,
+    // marginLeft: '20%',
     alignSelf: 'center',
   },
 });

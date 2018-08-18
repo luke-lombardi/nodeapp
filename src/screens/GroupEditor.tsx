@@ -142,6 +142,11 @@ export class GroupEditor extends Component<IProps, IState> {
       console.log(item);
     if (item.item.recordID === 'add_button') {
         return(<ListItem
+            scaleProps={{
+              friction: 90,
+              tension: 100,
+              activeScale: 0.95,
+            }}
             onPress={this._addPerson}
             containerStyle={styles.peopleListItem}
             rightIcon={{name: 'plus-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
@@ -149,6 +154,11 @@ export class GroupEditor extends Component<IProps, IState> {
             />);
     } else {
         return(<ListItem
+          scaleProps={{
+            friction: 90,
+            tension: 100,
+            activeScale: 0.95,
+          }}
         onPress={() => this._removePerson(item.item)}
         containerStyle={styles.peopleListItem}
         leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Switch, Text } from 'react-native';
 
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
@@ -116,6 +116,15 @@ export class CreateNode extends Component<IProps, IState> {
               multiline={true}
               numberOfLines={6}
             />
+            <Text style={styles.switchText}>Public?</Text>
+            <Switch
+              onTintColor={'black'}
+              style={styles.switch}
+              value={this.state.public}
+              onValueChange={ () => {this.setState({public: !this.state.public});
+            }
+          }
+            />
 
           </View>
 
@@ -124,7 +133,7 @@ export class CreateNode extends Component<IProps, IState> {
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
-            title='Create new node'
+            title='Create New Node'
           />
 
         </View>
@@ -216,5 +225,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 300,
     height: 50,
+  },
+  switch: {
+    paddingTop: 20,
+    margin: 10,
+    alignSelf: 'center',
+  },
+  switchText: {
+    paddingTop: 20,
+    margin: 10,
+    alignSelf: 'center',
   },
 });

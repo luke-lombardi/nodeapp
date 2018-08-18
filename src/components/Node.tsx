@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-elements';
+import getDirections from 'react-native-google-maps-directions';
 
 interface IProps {
   title: string;
@@ -8,6 +9,11 @@ interface IProps {
   nodeId: string;
   nodeType: string;
   navigation: any;
+  distance: any;
+  minutesAway: any;
+  onDirections: boolean;
+  origin: any;
+  destination: any;
 }
 
 interface IState {
@@ -21,16 +27,55 @@ export default class Node extends Component<IProps, IState> {
     };
 
     this.goToFinder = this.goToFinder.bind(this);
+    this.sharePin = this.sharePin.bind(this);
+    this.handleGetDirections = this.handleGetDirections.bind(this);
+  }
+
+  handleGetDirections = () => {
+    const { origin, destination } = this.props;
+    const data = {
+       source: {
+        latitude: origin.latitude,
+        longitude: origin.longitude,
+      },
+      destination: {
+        latitude: destination.latitude,
+        longitude: destination.longitude,
+      },
+      params: [
+        {
+          key: 'travelmode',
+          value: 'walking',       // may be "walking", "bicycling" or "transit" as well
+        },
+        {
+          key: 'dir_action',
+          value: 'navigate',      // this instantly initializes navigation using the given travel mode 
+        },
+      ],
+    };
+    getDirections(data);
   }
 
   goToFinder() {
     this.props.navigation.navigate('Finder', {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType });
   }
 
+  sharePin() {
+    this.props.navigation.navigate('ContactList', {action: 'share_pin', nodeId: this.props.nodeId });
+  }
+
   render() {
     return (
       <View style={styles.view}>
         <Card containerStyle={styles.nodeCard}>
+
+          {/* <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.distance}>
+            {this.props.distance ? this.props.distance + ' miles away' : ''}
+          </Text>
+
+          <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.distance}>
+            {this.props.minutesAway ? this.props.minutesAway + ' minutes away' : ''}
+          </Text> */}
 
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.nodeTitle}>
             {this.props.title}
@@ -39,13 +84,26 @@ export default class Node extends Component<IProps, IState> {
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.description}>
             {this.props.description}
           </Text>
-
+          <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
             <Button
               icon={{
+                name: 'map',
+                type: 'feather',
+                size: 50,
+                color: 'rgba(44,55,71,0.8)',
+              }}
+              style={styles.mapButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={this.handleGetDirections}
+            />
+             <Button
+              icon={{
                 name: 'camera',
                 type: 'feather',
-                size: 60,
+                size: 50,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.cameraButton}
@@ -54,6 +112,20 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.goToFinder}
             />
+            <Button
+              icon={{
+                name: 'share',
+                type: 'feather',
+                size: 50,
+                color: 'rgba(44,55,71,0.8)',
+              }}
+              style={styles.directionsButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={this.sharePin}
+            />
+          </View>
           </View>
         </Card>
       </View>
@@ -65,13 +137,22 @@ export default class Node extends Component<IProps, IState> {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
   },
   nodeCard: {
     height: '85%',
+    width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(53,53,53,0.1)',
     flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
+    shadowColor: 'black',
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    shadowOffset: { width: 2, height: 3 },
   },
   nodeTitle: {
     fontSize: 24,
@@ -80,26 +161,52 @@ const styles = StyleSheet.create({
   },
   description: {
     alignSelf: 'center',
+    marginBottom: 10,
+  },
+  distance: {
+    fontSize: 14,
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  minutesAway: {
+    fontSize: 14,
+    alignSelf: 'center',
+    marginBottom: 10,
   },
   buttonContainer: {
+    flex: 3,
     backgroundColor: 'rgba(44,55,71,0.0)',
     padding: 0,
+    flexDirection: 'row',
+    alignSelf: 'center',
     width: '100%',
     height: '100%',
     borderRightWidth: 0,
     borderRightColor: 'rgba(44,55,71,0.3)',
   },
   buttonView: {
-    flex: 1,
+    width: '100%',
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: 'rgba(44,55,71,0.1)',
   },
   cameraButton: {
-    width: '100%',
+    width: '70%',
     height: '100%',
-    alignItems: 'center',
-    padding: 0,
+    alignSelf: 'center',
+    marginLeft: 15,
+  },
+  mapButton: {
+    width: '70%',
+    height: '100%',
+    alignSelf: 'center',
+    marginLeft: 15,
+  },
+  directionsButton: {
+    width: '70%',
+    height: '100%',
+    alignSelf: 'center',
+    marginLeft: 15,
   },
   transparentButton: {
     backgroundColor: 'rgba(44,55,71,0.0)',

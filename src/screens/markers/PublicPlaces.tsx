@@ -3,8 +3,10 @@ import { Marker}   from 'react-native-maps';
 
 interface IProps {
     publicPlaceList: any;
+    distance: any;
     functions: any;
     visible: boolean;
+    minutesAway: any;
 }
 
 interface IState {
@@ -23,11 +25,11 @@ export default class PublicPlaces extends Component<IProps, IState> {
             this.props.publicPlaceList.map(marker => (
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
-                title={marker.data.title}
+                title={this.props.minutesAway}
                 pinColor={'purple'}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPlace'); }}
                 // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
-                description={marker.data.description}
+                // description={this.props.minutesAway}
                 key={marker.node_id}
             />
         )));

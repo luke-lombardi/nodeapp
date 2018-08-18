@@ -30,6 +30,7 @@ interface NodeData {
   type: string;
   public: boolean;
   color: string;
+  speed: number;
 }
 
 interface Node {
@@ -66,6 +67,8 @@ export default class LocationService {
               latitude:       position.coords.latitude,
               // @ts-ignore
               longitude:      position.coords.longitude,
+              // @ts-ignore
+              speed:          position.coords.speed,
               latitudeDelta:  0.00122 * 1.5,
               longitudeDelta: 0.00121 * 1.5,
               // @ts-ignore

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
+// import LinearGradient from 'react-native-linear-gradient';
 
 // import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
@@ -38,9 +39,24 @@ export class NodeList extends Component<IProps> {
 
   _renderItem = ({item}) => (
     <ListItem
+    scaleProps={{
+      friction: 90,
+      tension: 100,
+      activeScale: 0.95,
+    }}
+    // linearGradientProps={{
+    //   colors: ['#FF9800', '#F44336'],
+    //   start: [1, 0],
+    //   end: [0.2, 0],
+    // }}
+    // ViewComponent={LinearGradient}
       onPress={() => this._onTouchNode(item)}
       containerStyle={styles.nodeListItem}
-      leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+      leftIcon={
+        item.data.type === 'place' ?
+        {name: 'circle', type: 'font-awesome', size: 10, color: 'green'} :
+        {name: 'circle', type: 'font-awesome', size: 10, color: 'blue'}
+      }
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
       title={item.data.title}
       subtitle={item.data.distance_in_miles.toString() + ' miles'}
@@ -85,10 +101,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 
 const styles = StyleSheet.create({
   nodeListItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     minHeight: 80,
     maxHeight: 80,
+    margin: 10,
+    borderRadius: 20,
   },
   null: {
     fontSize: 22,

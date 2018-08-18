@@ -13,6 +13,8 @@ import { NavigationActions } from 'react-navigation';
 interface IProps {
     navigation?: any;
     nodeList: Array<any>;
+    groupList: Array<any>;
+    privatePlaceList: Array<any>;
 }
 
 export class SideBar extends Component<IProps> {
@@ -47,8 +49,11 @@ export class SideBar extends Component<IProps> {
          return (
         <View style={styles.view}>
                 <ListItem
-                  // roundAvatar
-                  // avatar={{uri:l.avatar_url}}
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
                   containerStyle={styles.navItem}
                   key='map'
                   title='Map'
@@ -58,40 +63,61 @@ export class SideBar extends Component<IProps> {
                   }}
                 />
 
-                <ListItem
+                  <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
                   containerStyle={styles.navItem}
-                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
+                  badge={{ value: this.props.privatePlaceList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
                   key='nodes'
                   title='Pins'
                   leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => {
+                  onPress={ () => { this.props.privatePlaceList.length === 0 ?
+                    this.resetNavigation('CreateNode') :
                     this.resetNavigation('Nodes');
                   }}
                 />
 
-                <ListItem
+                  <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
                   containerStyle={styles.navItem}
-                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
                   key='people'
                   title='People'
                   leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => {
+                  onPress={ () => { this.props.privatePlaceList.length === 0 ?
+                    this.resetNavigation('CreateNode') :
                     this.resetNavigation('Nodes');
                 }}
                 />
 
-                <ListItem
+                  <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
                   containerStyle={styles.navItem}
-                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
                   key='groups'
                   title='Groups'
                   leftIcon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => {
+                  onPress={ () => { this.props.groupList.length === 0 ?
+                    this.resetNavigation('GroupEditor') :
                     this.resetNavigation('Groups');
                 }}
                 />
 
                 <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
                   containerStyle={styles.navItem}
                   // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
                   key='createMeetup'
@@ -111,6 +137,8 @@ export class SideBar extends Component<IProps> {
 export function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
+    groupList: state.groupList,
+    privatePlaceList: state.privatePlaceList,
   };
 }
 

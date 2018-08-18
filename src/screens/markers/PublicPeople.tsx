@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Marker}   from 'react-native-maps';
+import {Marker}   from 'react-native-maps';
 
 interface IProps {
     publicPersonList: any;

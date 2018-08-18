@@ -3,7 +3,6 @@ import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-import Geocoder from 'react-native-geocoder';
 
 
 interface IProps {
@@ -51,7 +50,6 @@ export class PlaceSearch extends Component<IProps, IState> {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
           });
-          console.log('GOT LT AND LNG', this.state.lat, this.state.lng);
           this.getPlaces();
         });
       }
@@ -62,7 +60,6 @@ export class PlaceSearch extends Component<IProps, IState> {
           method: 'POST',
         });
         let places = await response.json();
-        console.log(places);
         this.setState({data: places.response.venues});
       }
 
@@ -74,6 +71,11 @@ export class PlaceSearch extends Component<IProps, IState> {
 
     _renderItem = ({item}) => (
       <ListItem
+        scaleProps={{
+          friction: 90,
+          tension: 100,
+          activeScale: 0.95,
+        }}
         key={item}
         onPress={() => this.selectContact(item)}
         containerStyle={styles.nodeListItem}

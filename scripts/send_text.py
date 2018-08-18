@@ -93,6 +93,16 @@ def send_text(contact_info, rds):
             from_="+12037179852",
             body="Hello %s, you were invited to join a group: \n fyb://join_group/%s/%s" % (name, group_id, member_id))
 
+    elif action == 'send_friend_invite':
+        name = contact_info["name"]
+        phone = contact_info["phone"]
+        invite_id = contact_info["invite_id"]
+    
+        message = client.messages.create(
+            to=phone,
+            from_="+12037179852",
+            body="Hello %s, you were invited to become friends with a guy: \n fyb://add_friend/%s" % (name, invite_id))
+
     if message:
         logging.info("Sent a message to {} at {}".format(name, phone))
         return True

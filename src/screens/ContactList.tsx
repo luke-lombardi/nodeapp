@@ -110,12 +110,34 @@ export class ContactList extends Component<IProps, IState> {
 
     // Private implementation functions
     private async selectContact(item) {
-      // let userUuid = await AsyncStorage.getItem('user_uuid');
-      // let phoneNumber = item.phoneNumbers[0].number;
-      // let name = item.givenName + ' ' + item.familyName;
 
       if (this.action === 'add_friend') {
-        console.log('sending text to your boy');
+        let phoneNumber = item.phoneNumbers[0].number;
+        let name = item.givenName + ' ' + item.familyName;
+
+       let userUuid = await AsyncStorage.getItem('user_uuid');
+
+        let inviteData = {
+          'invite_data': {
+            'type': 'friend',
+            'host': 'private:' + userUuid,
+            'rcpt': undefined,
+            'ttl': undefined,
+          },
+          'person_to_invite': {
+            'name': name,
+            'phone': phoneNumber,
+          },
+        };
+
+        console.log(inviteData);
+
+        let response = await this.apiService.AddFriendAsync(inviteData);
+
+        console.log('GOT IT');
+        console.log(response);
+
+        this.props.navigation.goBack(undefined);
       } else if (this.action === 'add_friend_to_group') {
         this.props.navigation.state.params.returnData(item);
         this.props.navigation.goBack(undefined);

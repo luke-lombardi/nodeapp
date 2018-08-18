@@ -4,6 +4,7 @@ import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
+
 interface IProps {
     navigation: any;
 }
@@ -17,6 +18,8 @@ interface IState {
     selectedPlaceAddress: any;
     date: any;
     item: any;
+    lat: any;
+    lng: any;
 }
 
 export class PlaceSearch extends Component<IProps, IState> {
@@ -32,6 +35,8 @@ export class PlaceSearch extends Component<IProps, IState> {
         selectedPlaceAddress: this.props.navigation.getParam('selectedPlaceAddress'),
         date: this.props.navigation.getParam('date'),
         item: this.props.navigation.getParam('contact'),
+        lat: '',
+        lng: '',
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -39,15 +44,22 @@ export class PlaceSearch extends Component<IProps, IState> {
     }
 
     componentWillMount() {
-        this.getPlaces();
-    }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.setState({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+          });
+          this.getPlaces();
+        });
+      }
 
     async getPlaces() {
-        let response = await fetch(`https://api.foursquare.com/v2/venues/search?ll=40.7484,-73.9857&oauth_token=SBYAMQL0LBBFVXLBDSPGFYAEEWSSQSCZZOWOHIQ05TAEX3CZ&v=20180730`, {
+        const authToken = 'SBYAMQL0LBBFVXLBDSPGFYAEEWSSQSCZZOWOHIQ05TAEX3CZ';
+        let response = await fetch(`https://api.foursquare.com/v2/venues/search?ll=${this.state.lat + ',' + this.state.lng}&oauth_token=${authToken}&v=20180730`, {
           method: 'POST',
         });
         let places = await response.json();
-        console.log(places);
         this.setState({data: places.response.venues});
       }
 
@@ -59,6 +71,11 @@ export class PlaceSearch extends Component<IProps, IState> {
 
     _renderItem = ({item}) => (
       <ListItem
+        scaleProps={{
+          friction: 90,
+          tension: 100,
+          activeScale: 0.95,
+        }}
         key={item}
         onPress={() => this.selectContact(item)}
         containerStyle={styles.nodeListItem}

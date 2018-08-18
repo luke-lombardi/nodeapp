@@ -20,7 +20,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-DEFAULT_NODE_TTL = 3600
+DEFAULT_NODE_TTL = 3600 * 24
 
 
 def is_cache_connected(rds):

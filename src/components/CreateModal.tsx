@@ -67,7 +67,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                     loading={false}
                                     disabled={false}
                                     // loadingStyle={}
-                                    title='Drop a pin'
+                                    title='Drop a Pin'
                                     icon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                     iconRight
                             />
@@ -85,7 +85,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                         loading={false}
                                         disabled={false}
                                         // loadingStyle={}
-                                        title='New group'
+                                        title='New Group'
                                         icon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                         iconRight
                             />
@@ -103,7 +103,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                         loading={false}
                                         disabled={false}
                                         // loadingStyle={}
-                                        title='Add friend'
+                                        title='Add Friend'
                                         icon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                         iconRight
                                 />
@@ -118,7 +118,11 @@ export default class CreateModal extends Component<IProps, IState> {
                                         loading={false}
                                         disabled={false}
                                         // loadingStyle={}
-                                        title='New meetup'
+                                        title='New Meetup'
+                                        onPress={() => {
+                                            this.props.functions.closeCreateModal();
+                                            this.props.functions.navigateToPage('CreateMeetup');
+                                        } }
                                         icon={{name: 'calendar', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                         iconRight
                                 />
@@ -146,10 +150,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     fullWidthButton: {
+        paddingTop: 10,
+        paddingBottom: 10,
         // flex: 1,
         alignSelf: 'stretch',
         backgroundColor: '#ffffff',
-        height: 60,
+        height: 80,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -158,6 +164,6 @@ const styles = StyleSheet.create({
         height: '100%',
         backgroundColor: '#ffffff',
         borderColor: 'rgba(51, 51, 51, 0.8)',
-        borderWidth: 1,
+        borderWidth: 2.0,
     },
 });

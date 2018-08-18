@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text, AsyncStorage, Alert } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -20,6 +20,7 @@ interface IState {
     item: any;
     selectedDate: boolean;
     selectedPlaceAddress: any;
+    nodeId: string;
 }
 
 export class ContactList extends Component<IProps, IState> {
@@ -38,6 +39,7 @@ export class ContactList extends Component<IProps, IState> {
         item: this.props.navigation.getParam('contact'),
         selectedDate: this.props.navigation.getParam('selectedDate'),
         selectedPlaceAddress: this.props.navigation.getParam('selectedPlaceAddress'),
+        nodeId: this.props.navigation.getParam('nodeId', ''),
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -72,13 +74,18 @@ export class ContactList extends Component<IProps, IState> {
       }
 
     _renderItem(item) {
-      return (<ListItem
+      return (
+      <ListItem
+        scaleProps={{
+          friction: 90,
+          tension: 100,
+          activeScale: 0.95,
+        }}
         key={item.item.recordID}
         onPress={() => this.selectContact(item.item)}
         containerStyle={styles.nodeListItem}
-        // Commented out to stop those annoying URI errors until we add handling around that
-        // leftAvatar={this.state.query ? { source: { uri: item.thumbnailPath } } : { source: { uri: item.thumbnailPath }}}
-        leftIcon={ {name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'} }
+        leftAvatar={item.thumbnailPath ? { source: { uri: item.thumbnailPath } } : { source: require('./../../assets/images/grid_bg.jpg') }}
+        leftIcon={ {name: 'circle', type: 'font-awesome', size: 10, color: 'rgba(51, 51, 51, 0.8)'} }
         rightIcon={ {name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'} }
         title={item.item.givenName + ' ' + item.item.familyName}
       />
@@ -111,7 +118,12 @@ export class ContactList extends Component<IProps, IState> {
     // Private implementation functions
     private async selectContact(item) {
 
-      if (this.action === 'add_friend') {
+      if (this.action === 'share_pin') {
+        console.log('sending text to your boy');
+      } else if (this.action === 'add_firned') {
+        console.log('sharing pin with this nodeId --------->   ' + this.state.nodeId);
+        Alert.alert(`Invited ${item.givenName} to ${this.state.nodeId}`);
+
         let phoneNumber = item.phoneNumbers[0].number;
         let name = item.givenName + ' ' + item.familyName;
 
@@ -157,15 +169,6 @@ export class ContactList extends Component<IProps, IState> {
           selectedPlaceAddress: this.state.selectedPlaceAddress,
         });
       }
-
-      // let requestBody = {
-      //   'name': name,
-      //   'phone': phoneNumber,
-      //   'user_uuid': userUuid,
-      // };
-
-      // console.log('Submitted text invite for', phoneNumber);
-      // await this.apiService.sendText(requestBody);
     }
   }
 

@@ -177,18 +177,6 @@ export class CreateMeetup extends Component<IProps, IState> {
             date={this.state.date || new Date()}
             onDateChange={date => this.setState({date, selectedDate: true})}
           />
-          <Button
-            icon={
-            <Icon
-              name='check'
-              size={15}
-              color='white'
-            />
-            }
-            buttonStyle={styles.calendarButton}
-            title='Confirm'
-            onPress={this.showCalendar}
-          />
           </View>
           }
 
@@ -252,7 +240,18 @@ export class CreateMeetup extends Component<IProps, IState> {
           }
 
           </View>
+          {
+            this.state.calendarVisible &&
+            <Button style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
+            onPress={this.showCalendar}
+            loading={this.state.isLoading}
+            loadingStyle={styles.loading}
+            title={'Confirm'}
+          />
+          }
 
+          {
+          !this.state.calendarVisible &&
           <Button style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
             onPress={this.submitCreateMeetup}
             loading={this.state.isLoading}
@@ -263,8 +262,9 @@ export class CreateMeetup extends Component<IProps, IState> {
               this.state.selectedDate === false
             }
             loadingStyle={styles.loading}
-            title='Create Meetup'
+            title={'Create Meetup'}
           />
+          }
 
         </View>
       </View>
@@ -318,7 +318,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 0,
     flex: 1,
-    backgroundColor: 'white',
   },
   textBackground: {
     backgroundColor: 'purple',

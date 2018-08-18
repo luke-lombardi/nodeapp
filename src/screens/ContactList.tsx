@@ -132,10 +132,17 @@ export class ContactList extends Component<IProps, IState> {
 
         console.log(inviteData);
 
-        let response = await this.apiService.AddFriendAsync(inviteData);
+        let newInviteId = await this.apiService.AddFriendAsync(inviteData);
+
+        if (newInviteId !== undefined) {
+          console.log('storing invite');
+          // await this.nodeService.storeInvite(newInviteId);
+        } else {
+          // Logger.info('ContactList.selectContact - invalid response from add friend.');
+        }
 
         console.log('GOT IT');
-        console.log(response);
+        console.log(newInviteId);
 
         this.props.navigation.goBack(undefined);
       } else if (this.action === 'add_friend_to_group') {

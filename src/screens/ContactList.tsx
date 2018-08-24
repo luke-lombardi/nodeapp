@@ -54,6 +54,7 @@ export class ContactList extends Component<IProps, IState> {
     componentWillMount() {
         this.getContacts();
         this.action = this.props.navigation.getParam('action', '');
+        console.log('got action', this.action);
     }
 
     getContacts() {
@@ -67,11 +68,11 @@ export class ContactList extends Component<IProps, IState> {
       });
     }
 
-      searchContact() {
-        return this.state.data.filter(
-          item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.givenName || item.familyName),
-        );
-      }
+    searchContact() {
+      return this.state.data.filter(
+        item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.givenName || item.familyName),
+      );
+    }
 
     _renderItem(item) {
       return (
@@ -119,15 +120,13 @@ export class ContactList extends Component<IProps, IState> {
     private async selectContact(item) {
 
       if (this.action === 'share_pin') {
-        console.log('sending text to your boy');
-      } else if (this.action === 'add_firned') {
-        console.log('sharing pin with this nodeId --------->   ' + this.state.nodeId);
-        Alert.alert(`Invited ${item.givenName} to ${this.state.nodeId}`);
+
+        Alert.alert(`Successfully invited ${item.givenName}!`);
 
         let phoneNumber = item.phoneNumbers[0].number;
         let name = item.givenName + ' ' + item.familyName;
 
-       let userUuid = await AsyncStorage.getItem('user_uuid');
+        let userUuid = await AsyncStorage.getItem('user_uuid');
 
         let inviteData = {
           'invite_data': {
@@ -150,6 +149,65 @@ export class ContactList extends Component<IProps, IState> {
           console.log('storing invite');
           // await this.nodeService.storeInvite(newInviteId);
         } else {
+          console.log('unable to invite friend');
+          // Logger.info('ContactList.selectContact - invalid response from add friend.');
+        }
+
+        console.log('GOT IT');
+        console.log(newInviteId);
+
+        this.props.navigation.goBack(undefined);
+
+      // if (this.action === 'share_pin') {
+      //   console.log('sending text to your boy');
+
+      //   let contactInfo = {
+      //     phone: item.phoneNumbers[0].number,
+      //     name: item.givenName,
+      //     user_uuid: await AsyncStorage.getItem('user_uuid'),
+      //   };
+
+      //   console.log('got contact info', contactInfo);
+
+      //   let result = await this.apiService.sendText(contactInfo);
+
+      //   if (result !== undefined) {
+      //     console.log('sending text to your boy', result);
+      //     // await this.nodeService.storeInvite(newInviteId);
+      //   } else {
+      //     console.log('unable to send text', result);
+      //   }
+
+      } else if (this.action === 'add_friend') {
+        Alert.alert(`Successfully invited ${item.givenName}!`);
+
+        let phoneNumber = item.phoneNumbers[0].number;
+        let name = item.givenName + ' ' + item.familyName;
+
+        let userUuid = await AsyncStorage.getItem('user_uuid');
+
+        let inviteData = {
+          'invite_data': {
+            'type': 'friend',
+            'host': 'private:' + userUuid,
+            'rcpt': undefined,
+            'ttl': undefined,
+          },
+          'person_to_invite': {
+            'name': name,
+            'phone': phoneNumber,
+          },
+        };
+
+        console.log(inviteData);
+
+        let newInviteId = await this.apiService.AddFriendAsync(inviteData);
+
+        if (newInviteId !== undefined) {
+          console.log('storing invite');
+          // await this.nodeService.storeInvite(newInviteId);
+        } else {
+          console.log('unable to invite friend');
           // Logger.info('ContactList.selectContact - invalid response from add friend.');
         }
 

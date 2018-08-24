@@ -35,7 +35,6 @@ export class GroupList extends Component<IProps> {
       leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
       title={item.title}
-      subtitle={item.group_id}
     />
   )
 
@@ -78,10 +77,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(GroupList);
 
 const styles = StyleSheet.create({
   groupListItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     minHeight: 80,
     maxHeight: 80,
+    margin: 10,
+    borderRadius: 20,
   },
   null: {
     fontSize: 22,

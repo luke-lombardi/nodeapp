@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text, DatePickerIOS, TouchableOpacity, FlatList } from 'react-native';
 
 // @ts-ignore
-import MapView, { Marker}   from 'react-native-maps';
+import MapView, { Marker }   from 'react-native-maps';
 
 import Logger from '../services/Logger';
 
@@ -113,6 +113,7 @@ export class CreateMeetup extends Component<IProps, IState> {
       'member': this.state.selectedContact,
     };
     await this.apiService.createMeetup(requestBody);
+    this.props.navigation.navigate('Map', {updateNodes: true});
   }
 
   componentWillMount() {
@@ -149,11 +150,10 @@ export class CreateMeetup extends Component<IProps, IState> {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.nodeForm}>
           <View style={styles.inputView}>
-            <View style={styles.textBackground}>
+            {/* <View style={styles.textBackground}>
               <Text style={styles.text}>Create a Meetup</Text>
-            </View>
+            </View> */}
 
             <TouchableOpacity
             style={styles.calendar}
@@ -225,7 +225,7 @@ export class CreateMeetup extends Component<IProps, IState> {
           {
             !this.state.calendarVisible &&
             <TouchableOpacity
-            style={styles.contactSelect}
+            style={styles.calendar}
             onPress={this.goToContactList}
             >
               <Text style={styles.dateSelect}>{this.state.item ? `${this.state.item.givenName} ${this.state.item.familyName}` : 'Who?'}</Text>
@@ -267,7 +267,6 @@ export class CreateMeetup extends Component<IProps, IState> {
           }
 
         </View>
-      </View>
     );
   }
 
@@ -341,10 +340,6 @@ const styles = StyleSheet.create({
   inputView: {
     flex: 2,
   },
-  nodeForm: {
-    flex: 6,
-    alignSelf: 'stretch',
-  },
   inputPadding: {
     marginTop: 20,
     marginLeft: 15,
@@ -378,21 +373,24 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     marginTop: 10,
+    borderTopColor: 'gray',
+    borderBottomColor: 'gray',
+    borderBottomWidth: .5,
   },
   dateSelect: {
     width: '75%',
     padding: 25,
-    left: 20,
+    left: 10,
     alignSelf: 'flex-start',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'normal',
   },
   placeText: {
     width: '75%',
     padding: 25,
-    left: 20,
+    left: 10,
     alignSelf: 'flex-start',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'normal',
   },
   addressText: {
@@ -400,27 +398,16 @@ const styles = StyleSheet.create({
     marginTop: -10,
     paddingBottom: 10,
     paddingLeft: 25,
-    left: 20,
+    left: 10,
     alignSelf: 'flex-start',
-    fontSize: 14,
+    fontSize: 20,
   },
   calendar: {
     paddingTop: 10,
     borderTopColor: 'gray',
     borderBottomColor: 'gray',
-    borderTopWidth: .5,
     borderBottomWidth: .5,
     width: '100%',
-    backgroundColor: 'white',
-  },
-  contactSelect: {
-    paddingTop: 5,
-    borderTopColor: 'gray',
-    borderBottomColor: 'gray',
-    borderTopWidth: .5,
-    borderBottomWidth: .5,
-    width: '100%',
-    maxHeight: 85,
     backgroundColor: 'white',
   },
   map: {

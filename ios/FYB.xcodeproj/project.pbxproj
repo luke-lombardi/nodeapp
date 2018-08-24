@@ -51,7 +51,6 @@
 		2E2DC45C20A8061700CB56E7 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2DC45B20A8061600CB56E7 /* libz.tbd */; };
 		2E2DC4D920A80CB900CB56E7 /* AirMaps in Resources */ = {isa = PBXBuildFile; fileRef = 2E2DC4D820A80CB800CB56E7 /* AirMaps */; };
 		321F159FADBC4E79AAC91CFA /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 85B1135C70E44DBEAB085147 /* FontAwesome.ttf */; };
-		397461F1ECFD8246C114B7DA /* libPods-FYB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A555FCBF46EDB542729536E /* libPods-FYB.a */; };
 		447CDAF720D5A6D900B0CF3E /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 447CDAF520D5A6D900B0CF3E /* GoogleMaps.framework */; };
 		447CDAF820D5A6D900B0CF3E /* GoogleMapsBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 447CDAF620D5A6D900B0CF3E /* GoogleMapsBase.framework */; };
 		447CDAFA20D5A6F500B0CF3E /* libGoogle-Maps-iOS-Utils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 447CDAF920D5A6F500B0CF3E /* libGoogle-Maps-iOS-Utils.a */; };
@@ -72,6 +71,7 @@
 		B3E76F2583DF454090203264 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27549B70B6F549CA954FBD4B /* MaterialIcons.ttf */; };
 		C24962CC9BFB4D91AF6A331A /* emoji_smile_specular.png in Resources */ = {isa = PBXBuildFile; fileRef = EDFFEE2A143142E3B48C6B2A /* emoji_smile_specular.png */; };
 		C945FF24FB984529AE4B1B60 /* grid_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */; };
+		E1ED2E581F72A7E1A8C6A76B /* libPods-FYB.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2466A31C389F2F7F6AEF9ACD /* libPods-FYB.a */; };
 		EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 77EA891D532C491585AFAE2D /* libRNAWSCognito.a */; };
 		FBAFE8267C6F4D46A6F8C1E6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 087D15AC2F2641B9B5CED87C /* SimpleLineIcons.ttf */; };
 /* End PBXBuildFile section */
@@ -443,9 +443,12 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MobileApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MobileApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		2347A56E18E85480BBC760AF /* Pods-FYB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.release.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.release.xcconfig"; sourceTree = "<group>"; };
+		2466A31C389F2F7F6AEF9ACD /* libPods-FYB.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FYB.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27549B70B6F549CA954FBD4B /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		2C055FF82103D0D600F0B440 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2C67F42520AD307900A967F6 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
+		2C99CCB5212E072B000384DB /* FYB.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FYB.entitlements; sourceTree = "<group>"; };
 		2CB387F120E9672E003347F2 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		2CB3882320E98565003347F2 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* FYB-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FYB-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -464,7 +467,6 @@
 		2E2DC4D820A80CB800CB56E7 /* AirMaps */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AirMaps; path = "../node_modules/react-native-maps/lib/ios/AirMaps"; sourceTree = "<group>"; };
 		2F31A507510845F1B65CF905 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		3493EB5654484628B25F8064 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		351D332E2C16F0590B55CA39 /* Pods-FYB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.release.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.release.xcconfig"; sourceTree = "<group>"; };
 		446D9647B84146B297E8FE27 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		447CDAF520D5A6D900B0CF3E /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		447CDAF620D5A6D900B0CF3E /* GoogleMapsBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMapsBase.framework; sourceTree = "<group>"; };
@@ -476,7 +478,6 @@
 		5B897EE75A41454CB42A11F4 /* emoji_smile_normal.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_normal.png; path = ../assets/images/emoji_smile_normal.png; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5F022A987EA248CEA9EAAF53 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
-		6B68A7B34BC87F661A639A46 /* Pods-FYB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.debug.xcconfig"; sourceTree = "<group>"; };
 		6FC96E3847194C9B9F3E61ED /* libRNSimpleCompass.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleCompass.a; sourceTree = "<group>"; };
 		77EA891D532C491585AFAE2D /* libRNAWSCognito.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAWSCognito.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -484,8 +485,8 @@
 		85B1135C70E44DBEAB085147 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		88854C04E2544394BBC8EF77 /* RNSimpleCompass.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleCompass.xcodeproj; path = "../node_modules/react-native-simple-compass/ios/RNSimpleCompass.xcodeproj"; sourceTree = "<group>"; };
 		8FC1DE9AE4E74BC0AC2026BA /* RNAWSCognito.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAWSCognito.xcodeproj; path = "../node_modules/react-native-aws-cognito-js/ios/RNAWSCognito.xcodeproj"; sourceTree = "<group>"; };
-		9A555FCBF46EDB542729536E /* libPods-FYB.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FYB.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2427BEEC7CB4A95B3B79AB9 /* grid_bg.jpg */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = grid_bg.jpg; path = ../assets/images/grid_bg.jpg; sourceTree = "<group>"; };
+		A7AC8846F5E90B11B3D93E01 /* Pods-FYB.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.debug.xcconfig"; sourceTree = "<group>"; };
 		A9DB5813C70441CCB4B05E80 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B362B7F61085434290BB346A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -542,7 +543,7 @@
 				5A86648E7782420BA3129430 /* libRNVectorIcons.a in Frameworks */,
 				EDFDE91430E74CC29DE692A7 /* libRNAWSCognito.a in Frameworks */,
 				79F2E1A7B39B420AAE5B6A5C /* libRNSimpleCompass.a in Frameworks */,
-				397461F1ECFD8246C114B7DA /* libPods-FYB.a in Frameworks */,
+				E1ED2E581F72A7E1A8C6A76B /* libPods-FYB.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,15 +629,6 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		015DD4AC20D038246509E122 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				6B68A7B34BC87F661A639A46 /* Pods-FYB.debug.xcconfig */,
-				351D332E2C16F0590B55CA39 /* Pods-FYB.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		0E7250E30B184993B3A7B216 /* Resources */ = {
@@ -773,7 +765,7 @@
 				2E2DC44F20A805BB00CB56E7 /* Accelerate.framework */,
 				2E2DC44D20A805AA00CB56E7 /* CoreData.framework */,
 				2E2DC44920A8051900CB56E7 /* GoogleMapsCore.framework */,
-				9A555FCBF46EDB542729536E /* libPods-FYB.a */,
+				2466A31C389F2F7F6AEF9ACD /* libPods-FYB.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -810,6 +802,15 @@
 				2EEE1269209E4B4F00C69A10 /* libRNVectorIcons.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		5761415B9469AD9F55DDACAA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A7AC8846F5E90B11B3D93E01 /* Pods-FYB.debug.xcconfig */,
+				2347A56E18E85480BBC760AF /* Pods-FYB.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
@@ -867,6 +868,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2C99CCB5212E072B000384DB /* FYB.entitlements */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				2E2DC4D820A80CB800CB56E7 /* AirMaps */,
 				2E0DE49F20A7F67400608683 /* AirGoogleMaps */,
@@ -877,7 +879,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				0E7250E30B184993B3A7B216 /* Resources */,
 				2EEE123F209E4B4A00C69A10 /* Recovered References */,
-				015DD4AC20D038246509E122 /* Pods */,
+				5761415B9469AD9F55DDACAA /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -929,13 +931,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FYB" */;
 			buildPhases = (
-				E2CC7F8FBCEC726DD8179BA5 /* [CP] Check Pods Manifest.lock */,
+				57C9347E0E8429BF2DA141A2 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				2AD17F547C5E3E35BE78C109 /* [CP] Embed Pods Frameworks */,
-				1290FA8560C680D6ECEFA35D /* [CP] Copy Pods Resources */,
+				25E4103A2CB4CE5A4353AC60 /* [CP] Embed Pods Frameworks */,
+				AF4373A9D2E05DD37C068FC8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1000,6 +1002,11 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = TN6X9LR957;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1503,27 +1510,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh artifacts/index.js";
 		};
-		1290FA8560C680D6ECEFA35D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-resources.sh",
-				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
-				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2AD17F547C5E3E35BE78C109 /* [CP] Embed Pods Frameworks */ = {
+		25E4103A2CB4CE5A4353AC60 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1555,7 +1542,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh artifacts/index.js";
 		};
-		E2CC7F8FBCEC726DD8179BA5 /* [CP] Check Pods Manifest.lock */ = {
+		57C9347E0E8429BF2DA141A2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1571,6 +1558,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AF4373A9D2E05DD37C068FC8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-resources.sh",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FYB/Pods-FYB-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1706,10 +1713,11 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B68A7B34BC87F661A639A46 /* Pods-FYB.debug.xcconfig */;
+			baseConfigurationReference = A7AC8846F5E90B11B3D93E01 /* Pods-FYB.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FYB.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1746,25 +1754,23 @@
 					"-ObjC",
 					"-lc++",
 				);
-				"OTHER_LDFLAGS[arch=*]" = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb;
+				"OTHER_LDFLAGS[arch=*]" = "$(inherited) -ObjC -lc++";
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb0;
 				PRODUCT_NAME = FYB;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 351D332E2C16F0590B55CA39 /* Pods-FYB.release.xcconfig */;
+			baseConfigurationReference = 2347A56E18E85480BBC760AF /* Pods-FYB.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FYB.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1790,10 +1796,11 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb0;
 				PRODUCT_NAME = FYB;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.0;
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1944,6 +1951,7 @@
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1960,6 +1968,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1979,12 +1988,14 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2001,6 +2012,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2013,6 +2025,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

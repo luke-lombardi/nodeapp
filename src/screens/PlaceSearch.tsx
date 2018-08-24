@@ -158,9 +158,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   title: {
-    fontSize: 14,
+    fontSize: 16,
   },
   subtitle: {
-    fontSize: 10,
+    fontSize: 14,
   },
 });

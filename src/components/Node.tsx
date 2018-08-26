@@ -112,6 +112,8 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.goToFinder}
             />
+
+            {this.props.nodeType === 'privatePlace' ?
             <Button
               icon={{
                 name: 'share',
@@ -124,7 +126,10 @@ export default class Node extends Component<IProps, IState> {
               buttonStyle={styles.transparentButton}
               title=''
               onPress={this.sharePin}
-            />
+              />
+              :
+              undefined
+            }
 
           </View>
 

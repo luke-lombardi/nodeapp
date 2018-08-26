@@ -25,6 +25,7 @@ interface IState {
   peopleInGroup: any;
   editing: boolean;
   value: any;
+  groupData: any;
 }
 
 export class GroupEditor extends Component<IProps, IState> {
@@ -45,6 +46,7 @@ export class GroupEditor extends Component<IProps, IState> {
       public: false,
       editing: false,
       value: 3600,
+      groupData: {},
       peopleInGroup: [
         {
             'recordID': 'add_button',
@@ -96,6 +98,7 @@ export class GroupEditor extends Component<IProps, IState> {
         title: groupData.title,
         peopleInGroup: this.state.peopleInGroup.concat(groupData.people),
         editing: true,
+        groupData: groupData,
       });
     }
 
@@ -115,8 +118,19 @@ export class GroupEditor extends Component<IProps, IState> {
         };
 
         newGroup.push(newPerson);
+
+        // Edit the actual group data to be passed to API
+        let groupData = this.state.groupData;
+        let groupMembers = groupData.people;
+
+        // Remove group member
+        groupMembers.push(newPerson);
+        groupData.people = groupMembers;
+
         await this.setState({peopleInGroup: newGroup});
-        console.log('Adding new contact');
+        await this.setState({groupData: groupData});
+        console.log('ADDED NEW MEMBER');
+        console.log(groupData);
     } else {
         console.log('Contact already added');
     }
@@ -137,7 +151,17 @@ export class GroupEditor extends Component<IProps, IState> {
     let newGroup = this.state.peopleInGroup;
     newGroup.splice(index, 1);
 
+    // Edit the actual group data to be passed to API
+    let groupData = this.state.groupData;
+    let groupMembers = groupData.people;
+
+    // Remove group member
+    groupMembers.splice(index - 1, 1);
+    groupData.people = groupMembers;
+
     await this.setState({peopleInGroup: newGroup});
+    await this.setState({groupData: groupData});
+
   }
 
   _renderPeopleInGroup(item) {
@@ -279,6 +303,7 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   private async submitEditGroup() {
+    console.log(this.state.groupData);
     console.log('edit action');
   }
 

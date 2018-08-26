@@ -93,6 +93,8 @@ def send_text(contact_info, rds):
             from_="+12037179852",
             body="Hello %s, you were invited to join a group: \n fyb://join_group/%s/%s" % (name, group_id, member_id))
 
+    elif action == 'share_pin':
+        pass
     elif action == 'send_friend_invite':
         name = contact_info["name"]
         phone = contact_info["phone"]

@@ -170,7 +170,7 @@ export default class LocationService {
           bearing = (bearing - 180);
           arrowBearing = (bearing - userRegion.bearing) * -1;
 
-          Logger.info('Adjusted shortest path bearing bearing:' + bearing.toString());
+          // Logger.info('Adjusted shortest path bearing bearing:' + bearing.toString());
         }
 
         currentNode.data.latitude = nodeListArray[key].lat;

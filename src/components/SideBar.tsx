@@ -103,6 +103,7 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
+                  badge={{ value: this.props.groupList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
                   key='groups'
                   title='Groups'
                   leftIcon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}

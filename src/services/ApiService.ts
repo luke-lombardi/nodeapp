@@ -128,6 +128,7 @@ export default class ApiService {
       }
 
       let newNode = await response.json();
+      console.log('created new node', newNode);
       return newNode;
     }
 

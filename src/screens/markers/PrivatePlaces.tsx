@@ -4,8 +4,6 @@ import { Marker }   from 'react-native-maps';
 
 interface IProps {
     privatePlaceList: any;
-    distance: any;
-    minutesAway: any;
     functions: any;
 }
 
@@ -24,7 +22,7 @@ export default class PrivatePlaces extends Component<IProps, IState> {
             this.props.privatePlaceList.map(marker => (
             // <View style={{overflow: 'hidden' }}>
             <Marker
-                title={this.props.minutesAway}
+                title={marker.data.title}
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 pinColor={'red'}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePlace'); }}

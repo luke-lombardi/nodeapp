@@ -9,9 +9,6 @@ interface IProps {
   nodeId: string;
   nodeType: string;
   navigation: any;
-  distance: any;
-  minutesAway: any;
-  onDirections: boolean;
   origin: any;
   destination: any;
 }
@@ -49,7 +46,7 @@ export default class Node extends Component<IProps, IState> {
         },
         {
           key: 'dir_action',
-          value: 'navigate',      // this instantly initializes navigation using the given travel mode 
+          value: 'navigate',      // this instantly initializes navigation using the given travel mode
         },
       ],
     };
@@ -61,7 +58,8 @@ export default class Node extends Component<IProps, IState> {
   }
 
   sharePin() {
-    this.props.navigation.navigate('ContactList', {action: 'share_pin', nodeId: this.props.nodeId });
+    console.log('sharing pin 99999');
+    this.props.navigation.navigate('ContactList', {action: 'share_pin'});
   }
 
   render() {

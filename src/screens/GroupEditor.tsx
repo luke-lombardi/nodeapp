@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList, AsyncStorage } from 'react-native';
+import { View, StyleSheet, FlatList, AsyncStorage, Text } from 'react-native';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -24,6 +24,7 @@ interface IState {
   public: boolean;
   peopleInGroup: any;
   editing: boolean;
+  value: any;
 }
 
 export class GroupEditor extends Component<IProps, IState> {
@@ -43,6 +44,7 @@ export class GroupEditor extends Component<IProps, IState> {
       uuid: '',
       public: false,
       editing: false,
+      value: 3600,
       peopleInGroup: [
         {
             'recordID': 'add_button',
@@ -174,7 +176,6 @@ export class GroupEditor extends Component<IProps, IState> {
     return (
       <View style={styles.container}>
         <View style={styles.groupForm}>
-
           <View style={styles.inputView}>
             <Input
               placeholder='Group title'
@@ -199,9 +200,7 @@ export class GroupEditor extends Component<IProps, IState> {
             keyExtractor={item => item.recordID}
             showsVerticalScrollIndicator={true}
             >
-
             </FlatList>
-
           </View>
 
           <View style={styles.buttonContainer}>
@@ -224,16 +223,22 @@ export class GroupEditor extends Component<IProps, IState> {
                 />
             </View>
         </View>
-
         <View style={styles.configView}>
-            <Slider
-                // value={this.state.value}
-                // onValueChange={(value) => this.setState({})}
-                minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
-                maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
-                thumbTintColor={'rgba(51, 51, 51, 0.8)'}
-                />
-            {/* <Text>Value: {this.state.value}</Text> */}
+        <Slider
+            style={styles.slider}
+            value={this.state.value}
+            thumbTouchSize={{width: 40, height: 40}}
+            onValueChange={(value) => this.setState({value: value})}
+            minimumValue={3600}
+            maximumValue={86400}
+            minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
+            maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
+            thumbTintColor={'red'}
+            />
+            <Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{(this.state.value / 3600).toFixed(1)} Hours</Text>
+            </Text>
         </View>
 
         </View>
@@ -250,7 +255,7 @@ export class GroupEditor extends Component<IProps, IState> {
         'public': false,
         'type': 'group',
         'owner': 'private:' + currentUUID,
-        'ttl': 36000,
+        'ttl': this.state.value,
         'members': {},
       },
       'people_to_invite': this.state.peopleInGroup.slice(1),
@@ -270,7 +275,7 @@ export class GroupEditor extends Component<IProps, IState> {
       Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
     }
 
-    // this.props.navigation.navigate('Map', {updateNodes: true});
+    this.props.navigation.navigate('Map', {updateNodes: true});
   }
 
   private async submitEditGroup() {
@@ -333,6 +338,7 @@ const styles = StyleSheet.create({
   configView: {
     flex: 2,
     padding: 20,
+    alignItems: 'center',
   },
   peopleListItem: {
     borderBottomWidth: 1,
@@ -374,5 +380,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 300,
     height: 50,
+  },
+  sliderText: {
+    fontSize: 20,
+    color: 'gray',
+  },
+  hourText: {
+    fontSize: 20,
+    color: 'red',
+  },
+  slider: {
+    width: 300,
   },
 });

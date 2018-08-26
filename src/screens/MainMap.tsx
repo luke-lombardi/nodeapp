@@ -5,8 +5,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// @ts-ignore
-import MapView, { Marker, PROVIDER_GOOGLE, Circle } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import Pulse from 'react-native-pulse';
 
 import IStoreState from '../store/IStoreState';
@@ -18,9 +17,6 @@ import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
-import { mapStyle } from '../config/map';
-// import { MapDirections } from '../components/MapDirections';
-// import { GOOGLE_MAPS_APIKEY } from '../config/map';
 
 import NodeService,
   {
@@ -43,6 +39,7 @@ import PublicPeople from './markers/PublicPeople';
 import PrivatePeople from './markers/PrivatePeople';
 import SleepUtil from '../services/SleepUtil';
 
+// import mapStyle from '../config/mapStyle.json';
 interface IProps {
     navigation: any;
 
@@ -50,9 +47,8 @@ interface IProps {
     publicPlaceList: Array<any>;
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
+
     userRegion: any;
-    coordinates: any;
-    onDirections: boolean;
 
     // Redux actions
     PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
@@ -71,14 +67,6 @@ interface IState {
   selectedNode: any;
   publicNodesVisible: boolean;
   createModalVisible: boolean;
-  directionsVisible: boolean;
-  destination: any;
-  coordinates: any;
-  selectedNodeCoordinates: any;
-  minutesAway: any;
-  distance: any;
-  latitude: any;
-  longitude: any;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -102,14 +90,6 @@ export class MainMap extends Component<IProps, IState> {
       selectedNode: {},
       publicNodesVisible: true,
       createModalVisible: false,
-      directionsVisible: false,
-      destination: '',
-      coordinates: '',
-      selectedNodeCoordinates: '',
-      minutesAway: '',
-      distance: '',
-      latitude: '',
-      longitude: '',
     };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
@@ -145,12 +125,9 @@ export class MainMap extends Component<IProps, IState> {
     this.currentMarkerRegion = markerRegion;
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
 
-    // this.onDirections = this.onDirections.bind(this);
-
   }
 
   componentDidMount() {
-    console.log('got props', this.props.navigation.getParam('onDirections'));
     if (this.currentMarkerRegion !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
 
@@ -159,8 +136,8 @@ export class MainMap extends Component<IProps, IState> {
       );
 
       if (selectedNode) {
-        this.currentMarkerRegion.latitudeDelta =  0.00122 * 10;
-        this.currentMarkerRegion.longitudeDelta =  0.00121 * 10;
+        this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
+        this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
         selectedNode.nodeType = this.selectedNodeType;
 
         this.setState({selectedNode: selectedNode});
@@ -181,6 +158,7 @@ export class MainMap extends Component<IProps, IState> {
         this._map.animateToRegion(this.props.userRegion, 10);
       }, 5);
     }
+
   }
 
   componentWillMount() {
@@ -199,12 +177,8 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   zoomToUserLocation() {
-    if (!this.state.nodeSelected) {
     this._map.animateToRegion(this.props.userRegion, 100);
     this.clearSelectedNode({nativeEvent: {action: ''}});
-    } else {
-    this._map.animateToRegion(this.state.destination, 100);
-    }
   }
 
   viewNodeList() {
@@ -213,7 +187,6 @@ export class MainMap extends Component<IProps, IState> {
 
   onNodeSelected(e, nodeType) {
     const coordinate = e.nativeEvent.coordinate;
-    this.setState({destination: coordinate});
     this.selectedNodeType = nodeType;
     let nodeListToSearch = this.getNodeListToSearch();
 
@@ -222,13 +195,10 @@ export class MainMap extends Component<IProps, IState> {
     );
 
     if (marker) {
+      console.log('Found marker');
       marker.nodeType = nodeType;
       this.setState({selectedNode: marker});
       this.setState({nodeSelected: true});
-      this.setState({
-          latitude: marker.data.latitude,
-          longitude: marker.data.longitude,
-      });
     }
   }
 
@@ -238,14 +208,6 @@ export class MainMap extends Component<IProps, IState> {
       return;
     }
   }
-
-  // onDirections() {
-  //   if (this.props.onDirections) {
-  //     this._map.animateToRegion(this.props.userRegion, 100);
-  //     this.currentMarkerRegion.latitudeDelta =  10;
-  //     this.currentMarkerRegion.longitudeDelta =  10;
-  //   }
-  // }
 
   togglePublicVisible() {
     this.setState({ publicNodesVisible: !this.state.publicNodesVisible });
@@ -278,19 +240,10 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   render() {
-    const userRegion = [
-      {
-          latitude: this.props.userRegion.latitude,
-          longitude: this.props.userRegion.longitude,
-      },
-      {
-          latitude: this.state.latitude,
-          longitude: this.state.longitude,
-      },
-    ];
     return (
       // Map screen view (exported component)
       <View style={styles.mainView}>
+
           {
           // Main map toolbar
           <View style={styles.headerView}>
@@ -306,67 +259,25 @@ export class MainMap extends Component<IProps, IState> {
           // End main map toolbar
           }
 
+          {
             // Main map view
             <View style={styles.mapView}>
+
               <MapView
-                provider={PROVIDER_GOOGLE}
+                provider='google'
                 ref={ component => { this._map = component; } }
                 style={StyleSheet.absoluteFillObject}
                 showsUserLocation={true}
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
                 onPress={this.clearSelectedNode}
-                customMapStyle={mapStyle}
+                // customMapStyle={mapStyle}
               >
-              {/* {
-                this.state.nodeSelected &&
-                <MapDirections userRegion={this.props.userRegion} {...this.props}/>
-              } */}
-
-              {/* {
-                this.props.navigation.getParam('onDirections') &&
-              <MapViewDirections
-                origin={userRegion[0]}
-                destination={userRegion[userRegion.length - 1]}
-                waypoints={userRegion.slice(1, -1)}
-                apikey={GOOGLE_MAPS_APIKEY}
-                mode={'transit'}
-                strokeWidth={3}
-                strokeColor='hotpink'
-                onStart={(params) => {
-                  console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
-                }}
-                onReady={(result) => {
-                  console.log('ready', (result),
-                  this.setState({
-                    distance: result.distance,
-                    minutesAway: result.timeAway,
-                  }));
-                }}
-                onError={(error) => {
-                  console.log('error', error);
-                }}
-              />
-              }} */}
 
               {/* Map markers  */}
-
-              {/* {
-                this.props.navigation.getParam('onDirections') &&
-                userRegion.map((coordinate, index) =>
-                <Marker key={`coordinate_${index}`} coordinate={coordinate} /> )}
-
-              } */}
-
-              <PublicPlaces
-              publicPlaceList={this.props.publicPlaceList}
-              minutesAway={this.state.minutesAway}
-              distance={this.state.distance}
-              functions={ {'onNodeSelected': this.onNodeSelected} }
-              visible={this.state.publicNodesVisible} />
-
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
               <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
-              <PrivatePlaces privatePlaceList={this.props.privatePlaceList} minutesAway={this.state.minutesAway} distance={this.state.distance} functions={ {'onNodeSelected': this.onNodeSelected} } />
+              <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 
               </MapView>
@@ -404,16 +315,13 @@ export class MainMap extends Component<IProps, IState> {
           // Node selected view
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
-          <Node
+            <Node
             nodeId={this.state.selectedNode.data.node_id}
             nodeType={ this.state.selectedNode.nodeType }
-            origin={userRegion[0]}
-            destination={userRegion[userRegion.length - 1]}
             title={this.state.selectedNode.data.title}
             description={this.state.selectedNode.data.description}
-            distance={this.state.distance}
-            minutesAway={this.state.minutesAway}
-            onDirections={this.props.onDirections}
+            origin={this.props.userRegion}
+            destination={this.props.userRegion}
             navigation={this.props.navigation} />
           </View>
           // End node selected view
@@ -501,12 +409,10 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 // End Redux setup functions
-
 // Local styles
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    overflow: 'hidden',
   },
   headerView: {
     flex: 1,
@@ -528,20 +434,21 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   nodeSelectedView: {
-    backgroundColor: '#rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: 0,
     flexDirection: 'column',
+    borderTopColor: 'rgba(44,55,71,0.3)',
+    borderTopWidth: 1,
     marginTop: 0,
     position: 'absolute',
     bottom: 0,
     left: 0,
     height: '35%',
     width: '100%',
-    zIndex: 2,
+    zIndex: 1,
   },
   mapView: {
     flex: 14,
-    overflow: 'hidden',
   },
   createNodeButton: {
   },

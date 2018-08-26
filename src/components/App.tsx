@@ -49,7 +49,7 @@ import ApiService from '../services/ApiService';
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
 
 // SET GLOBAL PROPS //
-import { setCustomText} from 'react-native-global-props';
+import { setCustomText } from 'react-native-global-props';
 
 const customTextProps = {
   style: {
@@ -64,7 +64,8 @@ const InternalStack = StackNavigator({
   Finder: { screen: Finder,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      title: navigation.indexs,
+      headerTitleStyle: {color: 'white'},
+      title: 'Node Finder',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -78,7 +79,8 @@ const InternalStack = StackNavigator({
   Nodes: { screen: NodeList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      title: navigation.indexs,
+      headerTitleStyle: {color: 'white'},
+      title: 'Nodes',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -91,7 +93,8 @@ const InternalStack = StackNavigator({
     Groups: { screen: GroupList,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
-        title: navigation.indexs,
+        headerTitleStyle: {color: 'white'},
+        title: 'Groups',
         headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
@@ -104,7 +107,8 @@ const InternalStack = StackNavigator({
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      title: navigation.indexs,
+      headerTitleStyle: {color: 'white'},
+      title: 'Drop Pin',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -117,7 +121,8 @@ const InternalStack = StackNavigator({
     CreateMeetup: { screen: CreateMeetup,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-        title: navigation.indexs,
+        headerTitleStyle: {color: 'white'},
+        title: 'Create Meetup',
         headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
@@ -130,7 +135,8 @@ const InternalStack = StackNavigator({
     GroupEditor: { screen: GroupEditor,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-        title: navigation.indexs,
+        headerTitleStyle: {color: 'white'},
+        title: 'Group Editor',
         headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
@@ -143,14 +149,16 @@ const InternalStack = StackNavigator({
   ContactList: { screen: ContactList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      title: navigation.indexs,
+      headerTitleStyle: {color: 'white'},
+      title: 'Contact List',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => { navigation.goBack(undefined); } } />,
       }),
     },
     PlaceSearch: { screen: PlaceSearch,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
-        title: navigation.indexs,
+        headerTitleStyle: {color: 'white'},
+        title: 'Places Nearby',
         headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {

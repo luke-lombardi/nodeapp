@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Switch, Text } from 'react-native';
-
+import { View, StyleSheet, Text } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
-
+import { Switch } from 'react-native-switch';
 import Logger from '../services/Logger';
-
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-
-import { Input, Button} from 'react-native-elements';
+import { Input, Button, Slider} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
 
@@ -26,6 +22,7 @@ interface IState {
   isLoading: boolean;
   uuid: string;
   public: boolean;
+  value: any;
 }
 
 export class CreateNode extends Component<IProps, IState> {
@@ -43,6 +40,7 @@ export class CreateNode extends Component<IProps, IState> {
       isLoading: false,
       uuid: '',
       public: false,
+      value: 43200,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -62,6 +60,8 @@ export class CreateNode extends Component<IProps, IState> {
 
     this.setState({userRegion: userRegion});
     this.setState({uuid: uuid});
+
+    console.log('user region', userRegion);
   }
 
   componentWillUnmount() {
@@ -92,7 +92,7 @@ export class CreateNode extends Component<IProps, IState> {
           </View>
           <View style={styles.inputView}>
             <Input
-              placeholder='Whats here?'
+              placeholder='Title'
               leftIcon={
                 <Icon
                   name='question-circle'
@@ -106,7 +106,14 @@ export class CreateNode extends Component<IProps, IState> {
             />
 
             <Input
-              placeholder='Why should I go here?'
+              placeholder='Description'
+              leftIcon={
+                <Icon
+                  name='question-circle'
+                  size={20}
+                  color='rgba(44,55,71,0.3)'
+                />
+              }
               containerStyle={styles.inputPadding}
               inputStyle={styles.descriptionInput}
               onChangeText={(description) => this.setState({description: description})}
@@ -114,30 +121,64 @@ export class CreateNode extends Component<IProps, IState> {
               onSubmitEditing={this.submitCreateNode}
               value={this.state.description}
               multiline={true}
-              numberOfLines={6}
+              numberOfLines={2}
             />
-            <Text style={styles.switchText}>Public?</Text>
+            </View>
+            <View style={styles.switchView}>
+              <Text style={styles.switchText}>Pin Visibility</Text>
+              <Text style={this.state.public ? styles.publicText : styles.publicTextInactive}>Public</Text>
+              <Text style={this.state.public ? styles.privateText : styles.privateTextInactive}>Private</Text>
             <Switch
-              onTintColor={'black'}
+              circleBorderWidth={1}
+              backgroundActive={'green'}
+              backgroundInactive={'gray'}
+              circleSize={30}
               style={styles.switch}
               value={this.state.public}
+              // renderInsideCircle={() =>
+              //   // <Icon
+              //   //   size={10}
+              //   //   style={styles.switchIcon}
+              //   //   name={this.state.public ? 'lock' : 'unlock'}
+              //   // />}
               onValueChange={ () => {this.setState({public: !this.state.public});
             }
           }
             />
-
+          <Slider
+            style={styles.slider}
+            value={this.state.value}
+            thumbTouchSize={{width: 40, height: 40}}
+            onValueChange={(value) => this.setState({value: value})}
+            minimumValue={3600}
+            maximumValue={86400}
+            minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
+            maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
+            thumbTintColor={'red'}
+            />
+            <Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{(this.state.value / 3600).toFixed(1)} Hours</Text>
+            </Text>
           </View>
 
-          <Button style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
+          <Button
+            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
             loadingStyle={styles.loading}
-            title='Create New Node'
+            icon={
+              <Icon
+                name='arrow-right'
+                size={30}
+                color='white'
+              />
+            }
+            title=''
           />
-
-        </View>
-      </View>
+          </View>
+          </View>
     );
   }
 
@@ -158,6 +199,7 @@ export class CreateNode extends Component<IProps, IState> {
 
     if (newUuid !== undefined) {
       await this.nodeService.storeNode(newUuid);
+      console.log('successfully created node', newUuid);
     } else {
       Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
     }
@@ -194,10 +236,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   map: {
-    borderRadius: 10,
   },
   inputView: {
-    flex: 2,
+    flex: 1,
   },
   nodeForm: {
     flex: 6,
@@ -208,8 +249,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   descriptionInput: {
-    padding: 10,
-    height: 100,
+    //height: 50,
   },
   fullWidthButton: {
     backgroundColor: 'blue',
@@ -226,14 +266,66 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
   },
+  switchView: {
+    flex: 2,
+    alignItems: 'center',
+  },
   switch: {
-    paddingTop: 20,
-    margin: 10,
+    fontSize: 18,
     alignSelf: 'center',
   },
   switchText: {
-    paddingTop: 20,
-    margin: 10,
+    paddingTop: 10,
+    paddingBottom: 20,
+    paddingLeft: 10,
+    fontSize: 20,
+    color: 'gray',
     alignSelf: 'center',
+  },
+  sliderText: {
+    fontSize: 20,
+    alignSelf: 'center',
+    color: 'gray',
+  },
+  hourText: {
+    fontSize: 20,
+    alignSelf: 'center',
+    color: 'black',
+  },
+  switchIcon: {
+  },
+  slider: {
+    top: 70,
+    width: 300,
+  },
+  publicText: {
+    position: 'absolute',
+    alignContent: 'flex-end',
+    fontSize: 14,
+    top: 65,
+    left: 105,
+    color: 'gray',
+  },
+  publicTextInactive: {
+    position: 'absolute',
+    alignContent: 'flex-end',
+    fontSize: 14,
+    top: 65,
+    left: 105,
+  },
+  privateText: {
+    position: 'absolute',
+    alignContent: 'flex-start',
+    fontSize: 14,
+    top: 65,
+    right: 105,
+  },
+  privateTextInactive: {
+    position: 'absolute',
+    alignContent: 'flex-start',
+    fontSize: 14,
+    top: 65,
+    right: 105,
+    color: 'gray',
   },
 });

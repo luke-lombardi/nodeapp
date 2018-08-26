@@ -19,7 +19,6 @@ export default class PublicPeople extends Component<IProps, IState> {
 
     render() {
         return (
-
             this.props.visible &&
             this.props.publicPersonList.map(marker => (
             <Marker

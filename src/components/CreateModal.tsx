@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import {  Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 import Modal from 'react-native-modal';
 
@@ -40,6 +40,10 @@ export default class CreateModal extends Component<IProps, IState> {
         return (
             <Modal
                     isVisible={this.state.visibleModal}
+                    animationIn={'slideInUp'}
+                    animationInTiming={300}
+                    animationOut={'slideOutDown'}
+                    animationOutTiming={300}
                     onSwipe={() => { this.props.functions.closeCreateModal(); } }
                     onBackdropPress={() => { this.props.functions.closeCreateModal(); } }
                     swipeDirection='down'
@@ -98,7 +102,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                         }}
                                         onPress={() => {
                                             this.props.functions.closeCreateModal();
-                                            this.props.functions.navigateToPage('ContactList');
+                                            this.props.functions.navigateToPage('ContactList', {action: 'share_pin'});
                                         } }
                                         loading={false}
                                         disabled={false}

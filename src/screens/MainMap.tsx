@@ -320,6 +320,7 @@ export class MainMap extends Component<IProps, IState> {
             nodeType={ this.state.selectedNode.nodeType }
             title={this.state.selectedNode.data.title}
             description={this.state.selectedNode.data.description}
+            ttl={this.state.selectedNode.data.ttl}
             origin={this.props.userRegion}
             destination={this.props.userRegion}
             navigation={this.props.navigation} />

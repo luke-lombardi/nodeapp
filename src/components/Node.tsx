@@ -8,6 +8,7 @@ interface IProps {
   description: string;
   nodeId: string;
   nodeType: string;
+  ttl: number;
   navigation: any;
   origin: any;
   destination: any;
@@ -76,12 +77,13 @@ export default class Node extends Component<IProps, IState> {
           </Text> */}
 
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.nodeTitle}>
-            {this.props.title}
+            {this.props.title} (expires in { (this.props.ttl / 3600).toFixed(1) } hours)
           </Text>
 
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.description}>
             {this.props.description}
           </Text>
+
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
             <Button
@@ -123,7 +125,9 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.sharePin}
             />
+
           </View>
+
           </View>
         </Card>
       </View>

@@ -51,15 +51,21 @@ def get_new_uuid(rds):
 
 
 def insert_node(rds, node_id, node_data):
-    public = node_data.get("public", False)
+    private = node_data.get("private", True)
     prefix = "private:"
 
-    if public:
+    if not private:
         prefix = "public:"
     
     key_name = prefix+str(node_id)
 
-    rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+    ttl = node_data.get("ttl", None)
+    if ttl:
+        ttl = ttl * 3600
+    else:
+        ttl = DEFAULT_NODE_TTL
+
+    rds.setex(name=key_name, value=json.dumps(node_data), time=ttl)
 
     return key_name
 
@@ -89,7 +95,8 @@ def run():
             "lat": 43.13232,
             "lng": 43.333,
             "type": "static",
-            "public": False,
+            "private": False,
+            "ttl": 24,
         }
     }
     

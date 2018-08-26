@@ -28,9 +28,10 @@ interface NodeData {
   rank: number;
   node_id: string;
   type: string;
-  public: boolean;
+  private: boolean;
   color: string;
   speed: number;
+  ttl: number;
 }
 
 interface Node {
@@ -178,22 +179,23 @@ export default class LocationService {
         currentNode.data.longDelta = '0.000183';
         currentNode.data.title = nodeListArray[key].title;
         currentNode.data.description = nodeListArray[key].description;
+        currentNode.data.ttl = nodeListArray[key].ttl;
         currentNode.data.distance_in_meters = orderedList[i].distance;
         currentNode.data.distance_in_miles = milesToNode;
         currentNode.data.bearing = arrowBearing;
         currentNode.data.rank = i;
         currentNode.data.node_id = nodeListArray[key].node_id;
-        currentNode.data.public = nodeListArray[key].public;
+        currentNode.data.private = nodeListArray[key].private;
         currentNode.data.type = nodeListArray[key].type;
         currentNode.data.color = nodeListArray[key].color;
 
-        if (currentNode.data.type === 'person' && currentNode.data.public) {
+        if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);
-        } else if (currentNode.data.type === 'place' && currentNode.data.public) {
+        } else if (currentNode.data.type === 'place' && !currentNode.data.private) {
           orderedPublicPlaceList.push(currentNode);
-        } else if (currentNode.data.type === 'person' && !currentNode.data.public) {
+        } else if (currentNode.data.type === 'person' && currentNode.data.private) {
           orderedPrivatePersonList.push(currentNode);
-        } else if (currentNode.data.type === 'place' && !currentNode.data.public) {
+        } else if (currentNode.data.type === 'place' && currentNode.data.private) {
           orderedPrivatePlaceList.push(currentNode);
         }
       }

@@ -21,8 +21,8 @@ interface IState {
   userRegion: any;
   isLoading: boolean;
   uuid: string;
-  public: boolean;
-  value: any;
+  private: boolean;
+  ttl: number;
 }
 
 export class CreateNode extends Component<IProps, IState> {
@@ -39,8 +39,8 @@ export class CreateNode extends Component<IProps, IState> {
       userRegion: {},
       isLoading: false,
       uuid: '',
-      public: false,
-      value: 43200,
+      private: true,
+      ttl: 12.0,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -117,48 +117,40 @@ export class CreateNode extends Component<IProps, IState> {
               containerStyle={styles.inputPadding}
               inputStyle={styles.descriptionInput}
               onChangeText={(description) => this.setState({description: description})}
-              enablesReturnKeyAutomatically={true}
-              onSubmitEditing={this.submitCreateNode}
+              // enablesReturnKeyAutomatically={true}
+              // onSubmitEditing={this.submitCreateNode}
               value={this.state.description}
-              multiline={true}
-              numberOfLines={2}
             />
             </View>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>Pin Visibility</Text>
-              <Text style={this.state.public ? styles.publicText : styles.publicTextInactive}>Public</Text>
-              <Text style={this.state.public ? styles.privateText : styles.privateTextInactive}>Private</Text>
+              <Text style={this.state.private ? styles.publicText : styles.publicTextInactive}>Public</Text>
+              <Text style={this.state.private ? styles.privateText : styles.privateTextInactive}>Private</Text>
             <Switch
               circleBorderWidth={1}
               backgroundActive={'green'}
               backgroundInactive={'gray'}
               circleSize={30}
               style={styles.switch}
-              value={this.state.public}
-              // renderInsideCircle={() =>
-              //   // <Icon
-              //   //   size={10}
-              //   //   style={styles.switchIcon}
-              //   //   name={this.state.public ? 'lock' : 'unlock'}
-              //   // />}
-              onValueChange={ () => {this.setState({public: !this.state.public});
+              value={this.state.private}
+              onValueChange={ () => {this.setState({private: !this.state.private});
             }
           }
             />
           <Slider
             style={styles.slider}
-            value={this.state.value}
+            value={this.state.ttl}
             thumbTouchSize={{width: 40, height: 40}}
-            onValueChange={(value) => this.setState({value: value})}
-            minimumValue={3600}
-            maximumValue={86400}
+            onValueChange={(ttl) => this.setState({ttl: ttl})}
+            minimumValue={1}
+            maximumValue={24}
             minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
             maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
             thumbTintColor={'red'}
             />
             <Text>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{(this.state.value / 3600).toFixed(1)} Hours</Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} Hours</Text>
             </Text>
           </View>
 
@@ -188,8 +180,9 @@ export class CreateNode extends Component<IProps, IState> {
       'description': this.state.description,
       'lat': this.state.userRegion.latitude,
       'lng': this.state.userRegion.longitude,
-      'public': this.state.public,
+      'private': this.state.private,
       'type': 'place',
+      'ttl': this.state.ttl,
     };
 
     console.log('Submitted node request');
@@ -197,7 +190,7 @@ export class CreateNode extends Component<IProps, IState> {
     await this.setState({isLoading: true});
     let newUuid = await this.apiService.CreateNodeAsync(nodeData);
 
-    if (newUuid !== undefined) {
+    if (newUuid !== undefined && nodeData.private === true) {
       await this.nodeService.storeNode(newUuid);
       console.log('successfully created node', newUuid);
     } else {

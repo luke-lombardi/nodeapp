@@ -15,7 +15,6 @@ import GroupList from '../screens/GroupList';
 import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
-import CreateMeetup from '../screens/CreateMeetup';
 import PlaceSearch from '../screens/PlaceSearch';
 import GroupEditor from '../screens/GroupEditor';
 

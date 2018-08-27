@@ -5,14 +5,13 @@
 
     description:
 
-
-
 '''
 
 import redis
 import json
 import logging
 import boto3
+import pprint
 
 from uuid import uuid4
 from random import randint
@@ -83,67 +82,81 @@ def send_texts_to_new_members(people_to_invite, group_id):
         if not error_msg:
             person['response'] = True
 
-    return [person for person in people_to_invite if person['response'] == True]
+    return [ person for person in people_to_invite if person['response'] == True ]
 
 
 # Generate unique ids for each member in the group - these will be associated with their private UUIDs when they join
 def create_uuids_for_new_members(rds, people_to_invite):
-    members = {}
+    members = []
 
     for idx, person in enumerate(people_to_invite):
         # print(person)
         member_id = get_new_uuid(rds, 'group_member:')
-        members[member_id] = None
+        members.append(member_id)
         people_to_invite[idx]['member_id'] = member_id
 
     return (members, people_to_invite)
 
 
-# Updates the new member list w/ those whose lambda text calls have actually responded
-def set_members(rds, group_id, group_data, members, people_to_invite):
-    current_group_data = json.loads(rds.get(name=group_id))
+def update_group(rds, group_id, current_group_data, new_members, new_people_to_invite):
+    for member_id in new_members:
+        current_group_data['members'][member_id] = None
 
-    members = {member['member_id']: None for member in members}
-    
-    # add the owner as well
-    owner_uuid = group_data['owner']
-    group_owner_id = get_new_uuid(rds, 'group_member:')
-    members[group_owner_id] = owner_uuid
-
-    # set the key so group members can pull owners location as well
-    rds.setex(name=group_owner_id, value=owner_uuid, time=DEFAULT_GROUP_TTL)
-
-    current_group_data['members'] = members
-    current_group_data['people'] = people_to_invite
-
-    # update the group with member data
+    # Update the group with new member data
     rds.setex(name=group_id, value=json.dumps(current_group_data), time=DEFAULT_GROUP_TTL)
 
     current_group_data = json.loads(rds.get(name=group_id))
-    logger.info('Current group data: ' + str(current_group_data))
+    logger.info('Updated group data: ' + str(current_group_data))
+
+
+def remove_members(current_group_data, people_to_remove):
+    for member_id in people_to_remove:
+        current_group_data['members'].pop(member_id, None)
+        
+        current_people = current_group_data.get('people', [])
+        idx = -1
+        for idx, person in enumerate(current_people):
+            if person['member_id'] == member_id:
+                break
+        
+        if idx >= 0:
+            del current_people[idx]
+
+    return current_group_data
 
 
 def lambda_handler(event, context):
+    pp = pprint.PrettyPrinter(indent=4)
+
     rds = connect_to_cache()
     
     if not rds:
         return
     
     logger.info('Event payload: ' + str(event))
+
     # First, we have to create a list of 'mirror' UUIDs to associate w/ user UUIDS in our group
-    people_to_invite = event.get('people_to_invite', [])
-    members, people_to_invite = create_uuids_for_new_members(rds, people_to_invite)
+    people_to_invite = event.get('people', [])
+    people_to_remove = event.get('people_to_remove', [])
 
-    # Second, we have to create the actual group in the cache
-    group_id = get_new_uuid(rds, 'group:')
-    group_data = event.get('group_data', {})
-    insert_group(rds, group_id, group_data)
+    # Filter out the people w/ valid member UUIDs, find people we need to invite
+    new_people_to_invite = [person for person in people_to_invite if not person.get('member_id', None)]
+    new_members, new_people_to_invite = create_uuids_for_new_members(rds, new_people_to_invite)
+
+    group_id = event.get('group_id', None)
+
+    if not group_id:
+        return None
     
-    logging.info('Create a new group: %s', group_id)
+    # add the new group members to the 'people' list object
+    current_group_data = json.loads(rds.get(name=group_id))
+    current_group_data['people'].extend(new_people_to_invite)
 
-    # Third, we have to send texts to each group member w/ a group ID and their member ID
-    members = send_texts_to_members(people_to_invite, group_id)
-    set_members(rds, group_id, group_data, members, people_to_invite)     # then, update the cache with members whose requests worked
+    if people_to_remove:
+        current_group_data = remove_members(current_group_data, people_to_remove)
+    
+    new_people_to_invite = send_texts_to_new_members(new_people_to_invite, group_id)
+    update_group(rds, group_id, current_group_data, new_members, new_people_to_invite)     # Then, update the cache with members whose requests worked
 
     return group_id
 
@@ -169,7 +182,8 @@ def run():
             },
         ]
     }
-    
+
+
     test_context = {
     }
 

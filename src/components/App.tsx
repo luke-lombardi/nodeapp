@@ -92,7 +92,7 @@ const InternalStack = StackNavigator({
     },
     Groups: { screen: GroupList,
       navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
         headerTitleStyle: {color: 'white'},
         title: 'Groups',
         headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
@@ -156,7 +156,7 @@ const InternalStack = StackNavigator({
     },
     PlaceSearch: { screen: PlaceSearch,
       navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, color: 'white' },
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10 },
         headerTitleStyle: {color: 'white'},
         title: 'Places Nearby',
         headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>

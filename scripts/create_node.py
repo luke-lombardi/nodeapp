@@ -59,7 +59,7 @@ def insert_node(rds, node_id, node_data):
     
     key_name = prefix+str(node_id)
 
-    ttl = node_data.get("ttl", None)
+    ttl = int(node_data.get("ttl", None))
     if ttl:
         ttl = ttl * 3600
     else:

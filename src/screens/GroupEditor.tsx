@@ -23,6 +23,7 @@ interface IState {
   uuid: string;
   public: boolean;
   peopleInGroup: any;
+  peopleToRemove: any;
   editing: boolean;
   value: any;
   groupData: any;
@@ -53,6 +54,7 @@ export class GroupEditor extends Component<IProps, IState> {
             'title': 'Add someone to the group',
         },
       ],
+      peopleToRemove: [],
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -118,19 +120,17 @@ export class GroupEditor extends Component<IProps, IState> {
         };
 
         newGroup.push(newPerson);
+        await this.setState({peopleInGroup: newGroup});
 
-        // Edit the actual group data to be passed to API
+        // Edit the group data to be passed
         let groupData = this.state.groupData;
         let groupMembers = groupData.people;
 
-        // Remove group member
-        groupMembers.push(newPerson);
-        groupData.people = groupMembers;
-
-        await this.setState({peopleInGroup: newGroup});
-        await this.setState({groupData: groupData});
-        console.log('ADDED NEW MEMBER');
-        console.log(groupData);
+        if (groupMembers) {
+          groupMembers.push(newPerson);
+          groupData.people = groupMembers;
+          await this.setState({groupData: groupData});
+        }
     } else {
         console.log('Contact already added');
     }
@@ -151,17 +151,16 @@ export class GroupEditor extends Component<IProps, IState> {
     let newGroup = this.state.peopleInGroup;
     newGroup.splice(index, 1);
 
-    // Edit the actual group data to be passed to API
+    // Edit the group data to be passed
     let groupData = this.state.groupData;
-    let groupMembers = groupData.people;
 
-    // Remove group member
-    groupMembers.splice(index - 1, 1);
-    groupData.people = groupMembers;
+    let peopleToRemove = this.state.peopleToRemove;
+    peopleToRemove.push(groupData.people[index - 1].member_id);
 
-    await this.setState({peopleInGroup: newGroup});
+    // Remove group member from list
+    groupData.people_to_remove = peopleToRemove;
     await this.setState({groupData: groupData});
-
+    await this.setState({peopleInGroup: newGroup});
   }
 
   _renderPeopleInGroup(item) {
@@ -303,8 +302,22 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   private async submitEditGroup() {
+    // let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+    console.log('Submitted group update request');
     console.log(this.state.groupData);
-    console.log('edit action');
+
+    await this.setState({isLoading: true});
+    let newGroupData = await this.apiService.UpdateGroupAsync(this.state.groupData);
+    await this.setState({isLoading: false});
+
+    if (newGroupData !== undefined) {
+      console.log('NEW GROUP DATA');
+      console.log(newGroupData);
+      await this.setState({editing: true});
+    } else {
+      Logger.info('CreateNode.submitEditGroup - invalid response from update group.');
+    }
   }
 
   private async submitDeleteGroup() {

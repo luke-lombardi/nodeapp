@@ -112,25 +112,6 @@ export default class CreateModal extends Component<IProps, IState> {
                                         iconRight
                                 />
                         </View>
-                        <View style={styles.scrollableModalContent1}>
-                            <Button style={styles.fullWidthButton}
-                                        buttonStyle={styles.buttonStyle}
-                                        titleStyle={{
-                                            'color': 'black',
-                                        }}
-                                        // onPress={this.submitCreateNode}
-                                        loading={false}
-                                        disabled={false}
-                                        // loadingStyle={}
-                                        title='New Meetup'
-                                        onPress={() => {
-                                            this.props.functions.closeCreateModal();
-                                            this.props.functions.navigateToPage('CreateMeetup');
-                                        } }
-                                        icon={{name: 'calendar', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                                        iconRight
-                                />
-                        </View>
                         </ScrollView>
                     </View>
                 </Modal>

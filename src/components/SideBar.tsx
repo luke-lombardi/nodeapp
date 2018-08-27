@@ -113,22 +113,6 @@ export class SideBar extends Component<IProps> {
                 }}
                 />
 
-                <ListItem
-                  scaleProps={{
-                    friction: 90,
-                    tension: 100,
-                    activeScale: 0.95,
-                  }}
-                  containerStyle={styles.navItem}
-                  // badge={{ value: nodeList.length, textStyle: { color: 'black' }, containerStyle: { marginTop: -20 } }}
-                  key='createMeetup'
-                  title='Meetups'
-                  leftIcon={{name: 'calendar', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => {
-                    this.resetNavigation('CreateMeetup');
-                }}
-                />
-
         </View>
       );
     }

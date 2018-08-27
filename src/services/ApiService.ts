@@ -153,6 +153,28 @@ export default class ApiService {
         return newGroup;
     }
 
+    // Updates an existing group
+    async UpdateGroupAsync(groupData: any) {
+      let requestBody = groupData;
+
+      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/updateGroup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.UpdateGroupAsync - Unable to get group data');
+
+        return undefined;
+      }
+
+      let newGroupData = await response.json();
+      return newGroupData;
+  }
+
     // Creates a new group
     async JoinGroupAsync(groupData: any) {
       let requestBody = groupData;

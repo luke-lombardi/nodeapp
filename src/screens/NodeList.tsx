@@ -93,9 +93,9 @@ export class NodeList extends Component<IProps, IState> {
         />
         <FlatList
          data={
-           this.state.selectedIndex === 0 ?
-           this.props.publicPlaceList :
-           this.props.privatePlaceList
+           this.state.selectedIndex === 1 ?
+           this.props.privatePlaceList :
+           this.props.publicPlaceList
           }
          renderItem={this._renderItem}
          extraData={this.state}
@@ -103,7 +103,7 @@ export class NodeList extends Component<IProps, IState> {
         />
 
         {
-          this.props.privatePlaceList.length === 0 &&
+          this.props.privatePlaceList.length === 0 && this.state.selectedIndex === 1 &&
           <Text style={styles.null}>No nodes have been created yet</Text>
         }
      </View>

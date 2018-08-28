@@ -15,7 +15,6 @@ interface IProps {
 }
 
 interface IState {
-
 }
 
 export default class Node extends Component<IProps, IState> {
@@ -32,7 +31,7 @@ export default class Node extends Component<IProps, IState> {
   handleGetDirections = () => {
     const { origin, destination } = this.props;
     const data = {
-       source: {
+      source: {
         latitude: origin.latitude,
         longitude: origin.longitude,
       },

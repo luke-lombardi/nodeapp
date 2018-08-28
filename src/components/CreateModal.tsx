@@ -124,12 +124,11 @@ const styles = StyleSheet.create({
     bottomModal: {
         justifyContent: 'flex-end',
         margin: 0,
+        bottom: 0,
     },
     scrollableModal: {
-        position: 'absolute',
         height: '40%',
         width: '100%',
-        bottom: 0,
     },
     scrollableModalContent1: {
         width: '100%',

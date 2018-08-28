@@ -14,6 +14,7 @@ interface IState {
     description: string;
     savedTitle: any;
     savedDescription: any;
+    privacy: boolean;
 }
 
 export class Settings extends Component<IProps, IState> {
@@ -23,8 +24,9 @@ export class Settings extends Component<IProps, IState> {
     this.state = {
         name: '',
         description: '',
-        savedTitle: '',
-        savedDescription: '',
+        savedTitle: 'Name',
+        savedDescription: 'Description',
+        privacy: false,
     };
     this.saveSettings = this.saveSettings.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -92,7 +94,7 @@ export class Settings extends Component<IProps, IState> {
             />
                 </View>
             <View style={styles.switchContainer}>
-            <Text style={styles.switchText}>Toggle Description</Text>
+            <Text style={styles.switchText}>Enable Privacy</Text>
             <Switch
               circleBorderWidth={1}
               backgroundActive={'green'}
@@ -100,7 +102,7 @@ export class Settings extends Component<IProps, IState> {
               circleSize={30}
               style={styles.switch}
               value={'true'}
-              onValueChange={ () => {this.setState({name: name});
+              onValueChange={ () => {this.setState({privacy: true});
             }
           }
             />

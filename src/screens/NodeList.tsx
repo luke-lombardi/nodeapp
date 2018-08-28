@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { ListItem, ButtonGroup } from 'react-native-elements';
 // import LinearGradient from 'react-native-linear-gradient';
 
 // import Logger from '../services/Logger';
@@ -12,11 +12,27 @@ interface IProps {
     navigation: any;
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
+    publicPersonList: Array<any>;
+    publicPlaceList: Array<any>;
 }
 
-export class NodeList extends Component<IProps> {
+interface IState {
+  selectedIndex: number;
+}
+
+export class NodeList extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
+
+    this.state = {
+      selectedIndex: 2,
+    };
+
+    this.updateIndex = this.updateIndex.bind(this);
+  }
+
+  updateIndex (selectedIndex) {
+    this.setState({selectedIndex});
   }
 
   _onTouchNode(node: any) {
@@ -64,10 +80,23 @@ export class NodeList extends Component<IProps> {
   )
 
   render() {
+    const buttons = ['Public', 'Private'];
+    const { selectedIndex } = this.state;
     return (
       <View>
+        <ButtonGroup
+          buttonStyle={styles.button}
+          containerStyle={styles.buttonContainer}
+          onPress={this.updateIndex}
+          selectedIndex={selectedIndex}
+          buttons={buttons}
+        />
         <FlatList
-         data={this.props.privatePlaceList}
+         data={
+           this.state.selectedIndex === 0 ?
+           this.props.publicPlaceList :
+           this.props.privatePlaceList
+          }
          renderItem={this._renderItem}
          extraData={this.state}
          keyExtractor={item => item.node_id}
@@ -88,6 +117,8 @@ function mapStateToProps(state: IStoreState): IProps {
   return {
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
+    publicPersonList: state.publicPersonList,
+    publicPlaceList: state.publicPlaceList,
   };
 }
 
@@ -104,11 +135,22 @@ const styles = StyleSheet.create({
     minHeight: 80,
     maxHeight: 80,
     margin: 10,
+    marginTop: 10,
+    marginBottom: 5,
     borderRadius: 20,
   },
   null: {
     fontSize: 22,
     marginTop: 25,
     alignSelf: 'center',
+  },
+  button: {
+
+  },
+  buttonContainer: {
+    top: -10,
+    height: 80,
+    alignSelf: 'center',
+    width: '100%',
   },
 });

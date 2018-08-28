@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Switch } from 'react-native';
 import { Button } from 'react-native-elements';
+
 // import Icon from 'react-native-vector-icons/FontAwesome';
 interface IProps {
   functions: any;

@@ -59,7 +59,6 @@ export default class Node extends Component<IProps, IState> {
   }
 
   sharePin() {
-    console.log('sharing pin 99999');
     this.props.navigation.navigate('ContactList', {action: 'share_pin'});
   }
 
@@ -113,7 +112,6 @@ export default class Node extends Component<IProps, IState> {
               onPress={this.goToFinder}
             />
 
-            {this.props.nodeType === 'privatePlace' ?
             <Button
               icon={{
                 name: 'share',
@@ -127,9 +125,6 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.sharePin}
               />
-              :
-              undefined
-            }
 
           </View>
 

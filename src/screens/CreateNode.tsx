@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   descriptionInput: {
-    //height: 50,
+    height: 50,
   },
   fullWidthButton: {
     backgroundColor: 'blue',

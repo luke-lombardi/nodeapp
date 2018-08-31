@@ -67,6 +67,7 @@ interface IState {
   selectedNode: any;
   publicNodesVisible: boolean;
   createModalVisible: boolean;
+  destination: any;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -90,6 +91,10 @@ export class MainMap extends Component<IProps, IState> {
       selectedNode: {},
       publicNodesVisible: true,
       createModalVisible: false,
+      destination: {
+        latitude: '',
+        longitude: '',
+      },
     };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
@@ -195,10 +200,15 @@ export class MainMap extends Component<IProps, IState> {
     );
 
     if (marker) {
-      console.log('Found marker');
       marker.nodeType = nodeType;
-      this.setState({selectedNode: marker});
-      this.setState({nodeSelected: true});
+      this.setState({
+        selectedNode: marker,
+        nodeSelected: true,
+        destination: {
+            latitude: marker.data.latitude,
+            longitude: marker.data.longitude,
+        },
+      });
     }
   }
 
@@ -316,14 +326,15 @@ export class MainMap extends Component<IProps, IState> {
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
             <Node
-            nodeId={this.state.selectedNode.data.node_id}
-            nodeType={ this.state.selectedNode.nodeType }
-            title={this.state.selectedNode.data.title}
-            description={this.state.selectedNode.data.description}
-            ttl={this.state.selectedNode.data.ttl}
-            origin={this.props.userRegion}
-            destination={this.props.userRegion}
-            navigation={this.props.navigation} />
+              nodeId={this.state.selectedNode.data.node_id}
+              nodeType={ this.state.selectedNode.nodeType }
+              title={this.state.selectedNode.data.title}
+              description={this.state.selectedNode.data.description}
+              ttl={this.state.selectedNode.data.ttl}
+              origin={this.props.userRegion}
+              destination={this.state.destination}
+              navigation={this.props.navigation}
+            />
           </View>
           // End node selected view
         }

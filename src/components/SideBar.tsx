@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text, Linking } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -48,6 +48,7 @@ export class SideBar extends Component<IProps> {
     render() {
          return (
         <View style={styles.view}>
+
                 <ListItem
                   scaleProps={{
                     friction: 90,
@@ -113,6 +114,25 @@ export class SideBar extends Component<IProps> {
                 }}
                 />
 
+                <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                }}
+                  containerStyle={styles.navItem}
+                  key='settings'
+                  title='Settings'
+                  leftIcon={{name: 'settings', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => { this.resetNavigation('Settings');
+                }}
+              />
+
+        <Text style={styles.version}>v1.0.0</Text>
+        <Text
+        onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}
+        style={styles.legal}>Legal</Text>
+
         </View>
       );
     }
@@ -146,5 +166,17 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+  },
+  version: {
+    position: 'absolute',
+    paddingRight: '5%',
+    alignSelf: 'flex-end',
+    bottom: 10,
+  },
+  legal: {
+    alignSelf: 'flex-start',
+    paddingLeft: '5%',
+    position: 'absolute',
+    bottom: 10,
   },
 });

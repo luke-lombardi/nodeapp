@@ -25,7 +25,7 @@ interface IState {
   peopleInGroup: any;
   peopleToRemove: any;
   editing: boolean;
-  value: any;
+  ttl: any;
   groupData: any;
 }
 
@@ -46,7 +46,7 @@ export class GroupEditor extends Component<IProps, IState> {
       uuid: '',
       public: false,
       editing: false,
-      value: 3600,
+      ttl: 12.0,
       groupData: {},
       peopleInGroup: [
         {
@@ -101,6 +101,7 @@ export class GroupEditor extends Component<IProps, IState> {
         peopleInGroup: this.state.peopleInGroup.concat(groupData.people),
         editing: true,
         groupData: groupData,
+        ttl: groupData.ttl,
       });
     }
 
@@ -249,18 +250,18 @@ export class GroupEditor extends Component<IProps, IState> {
         <View style={styles.configView}>
         <Slider
             style={styles.slider}
-            value={this.state.value}
+            value={this.state.ttl}
             thumbTouchSize={{width: 40, height: 40}}
-            onValueChange={(value) => this.setState({value: value})}
-            minimumValue={3600}
-            maximumValue={86400}
+            onValueChange={(ttl) => this.setState({ttl: ttl})}
+            minimumValue={1.0}
+            maximumValue={24.0}
             minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
             maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
             thumbTintColor={'red'}
             />
             <Text>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{(this.state.value / 3600).toFixed(1)} Hours</Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{(this.state.ttl).toFixed(1)} Hours</Text>
             </Text>
         </View>
 
@@ -278,7 +279,7 @@ export class GroupEditor extends Component<IProps, IState> {
         'public': false,
         'type': 'group',
         'owner': 'private:' + currentUUID,
-        'ttl': this.state.value,
+        'ttl': this.state.ttl,
         'members': {},
       },
       'people_to_invite': this.state.peopleInGroup.slice(1),

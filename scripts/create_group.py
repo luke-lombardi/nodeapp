@@ -57,7 +57,14 @@ def get_new_uuid(rds, prefix):
 
 # Create the actual group in the cache
 def insert_group(rds, group_id, group_data):
-    rds.setex(name=group_id, value=json.dumps(group_data), time=DEFAULT_GROUP_TTL)
+    ttl = int(group_data.get("ttl", None))
+    if ttl:
+        ttl = ttl * 3600
+        group_data['ttl'] = ttl
+    else:
+        ttl = DEFAULT_GROUP_TTL
+
+    rds.setex(name=group_id, value=json.dumps(group_data), time=ttl)
     return group_id
 
 

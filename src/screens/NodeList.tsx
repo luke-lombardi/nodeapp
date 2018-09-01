@@ -18,21 +18,37 @@ interface IProps {
 
 interface IState {
   selectedIndex: number;
+  data: Array<any>;
+  isRefreshing: boolean;
 }
 
 export class NodeList extends Component<IProps, IState> {
+
   constructor(props: IProps) {
     super(props);
 
     this.state = {
-      selectedIndex: 2,
+      selectedIndex: 0,
+      data: this.props.publicPlaceList,
+      isRefreshing: false,
     };
 
     this.updateIndex = this.updateIndex.bind(this);
+    this.onRefresh = this.onRefresh.bind(this);
   }
 
   updateIndex (selectedIndex) {
-    this.setState({selectedIndex});
+    if (selectedIndex === 0) {
+      this.setState({
+        selectedIndex,
+        data: this.props.publicPlaceList,
+      });
+    } else if (selectedIndex === 1) {
+      this.setState({
+        selectedIndex,
+        data: this.props.privatePlaceList,
+      });
+    }
   }
 
   _onTouchNode(node: any) {
@@ -42,14 +58,12 @@ export class NodeList extends Component<IProps, IState> {
       latitudeDelta: parseFloat(node.data.latDelta),
       longitudeDelta: parseFloat(node.data.longDelta),
     };
-
     let nodeType = node.data.type;
     if (nodeType === 'place') {
       nodeType = 'privatePlace';
     } else if (nodeType === 'person') {
       nodeType = 'privatePerson';
     }
-
     this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
   }
 
@@ -79,6 +93,16 @@ export class NodeList extends Component<IProps, IState> {
     />
   )
 
+  async onRefresh() {
+    this.setState({isRefreshing: true});
+    let newList = await this.props.privatePlaceList && this.props.publicPlaceList;
+    if (newList) {
+      this.setState({isRefreshing: false});
+    } else {
+      return;
+    }
+  }
+
   render() {
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
@@ -92,18 +116,20 @@ export class NodeList extends Component<IProps, IState> {
           buttons={buttons}
         />
         <FlatList
-         data={
-           this.state.selectedIndex === 1 ?
-           this.props.privatePlaceList :
-           this.props.publicPlaceList
-          }
+         data={this.state.data}
          renderItem={this._renderItem}
          extraData={this.state}
          keyExtractor={item => item.node_id}
+         refreshing={this.state.isRefreshing ? true : false}
+         onRefresh={this.onRefresh}
         />
 
         {
-          this.props.privatePlaceList.length === 0 && this.state.selectedIndex === 1 &&
+          this.state.selectedIndex === 1 && this.props.privatePlaceList.length === 0 &&
+          <Text style={styles.null}>No nodes have been created yet</Text>
+        }
+        {
+          this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
           <Text style={styles.null}>No nodes have been created yet</Text>
         }
      </View>

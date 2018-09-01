@@ -10,9 +10,13 @@ import { Input, Button, Slider} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
+import { bindActionCreators } from 'redux';
+import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
 interface IProps {
   navigation: any;
+  userRegion: any;
+  UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
@@ -44,35 +48,26 @@ export class CreateNode extends Component<IProps, IState> {
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
-
     this.submitCreateNode = this.submitCreateNode.bind(this);
-
     this.apiService = new ApiService({});
     this.nodeService = new NodeService({});
   }
 
   componentWillMount() {
-    console.log('component will mount');
-
-    let userRegion = this.props.navigation.getParam('userRegion', {});
+    let userRegion = this.props.userRegion;
     let uuid = this.props.navigation.getParam('uuid', '');
-
     this.setState({userRegion: userRegion});
     this.setState({uuid: uuid});
-
-    console.log('user region', userRegion);
-  }
-
-  componentWillUnmount() {
-    console.log('component will unmount');
-  }
-
-  componentDidMount() {
-    console.log('component mounted');
   }
 
   render() {
+    // in case user region is undefined
+    const defaultRegion = {
+      latitude: 40.71150601477085,
+      longitude: -73.96408881229375,
+      latitudeDelta: 0.00183,
+      longitudeDelta: 0.0018149999999999998,
+    };
     return (
       <View style={styles.container}>
         <View style={styles.nodeForm}>
@@ -85,7 +80,7 @@ export class CreateNode extends Component<IProps, IState> {
                 style={[StyleSheet.absoluteFillObject, styles.map]}
                 showsUserLocation={true}
                 followsUserLocation={true}
-                initialRegion={this.state.userRegion}
+                initialRegion={this.state.userRegion !== {} ? this.state.userRegion : defaultRegion}
               >
               </MapView>
            }
@@ -207,12 +202,14 @@ export class CreateNode extends Component<IProps, IState> {
  function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
+    userRegion: state.userRegion,
   };
 }
 
 // @ts-ignore
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
+    UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }
 

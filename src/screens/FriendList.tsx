@@ -47,7 +47,7 @@ export class FriendList extends Component<IProps> {
       onPress={() => this._onTouchNode(item)}
       containerStyle={styles.friendListItem}
       leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-      // rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
+      rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
       title={ item.data.title ? item.data.title : item.node_id }
       subtitle={ 'Status: ' + (item.data.status === 'inactive' ? 'pending' : 'active')  }
     />

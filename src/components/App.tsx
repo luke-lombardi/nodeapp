@@ -17,7 +17,7 @@ import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
-import Settings from '../screens/Settings';
+import Profile from '../screens/Profile';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -148,11 +148,11 @@ const InternalStack = StackNavigator({
           )) } />,
         }),
       },
-      Settings: { screen: Settings,
+      Profile: { screen: Profile,
         navigationOptions: ({navigation}) => ({
           headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
           headerTitleStyle: {color: 'white'},
-          title: 'Settings',
+          title: 'Profile',
           headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
             navigation.dispatch(NavigationActions.reset(
             {

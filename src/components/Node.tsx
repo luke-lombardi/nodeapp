@@ -75,7 +75,7 @@ export default class Node extends Component<IProps, IState> {
           </Text> */}
 
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.nodeTitle}>
-            {this.props.title} (expires in { (this.props.ttl / 3600).toFixed(1) } hours)
+            {this.props.title} { (this.props.ttl > 0) ? ' (expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours)' : undefined }
           </Text>
 
           <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.description}>

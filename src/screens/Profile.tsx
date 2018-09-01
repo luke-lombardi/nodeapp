@@ -17,7 +17,7 @@ interface IState {
     privacy: boolean;
 }
 
-export class Settings extends Component<IProps, IState> {
+export class Profile extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
@@ -152,7 +152,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styles = StyleSheet.create({
     inputContainer: {

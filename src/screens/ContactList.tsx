@@ -188,8 +188,9 @@ export class ContactList extends Component<IProps, IState> {
         let newRelation = await this.apiService.AddFriendAsync(inviteData);
 
         if (newRelation !== undefined) {
+          let newFriendId = newRelation.their_id;
           Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
-          await this.nodeService.storeRelation(newRelation);
+          await this.nodeService.storeNode(newFriendId);
         } else {
           Logger.info('ContactList.selectContact - unable to invite friend');
           // Logger.info('ContactList.selectContact - invalid response from add friend.');

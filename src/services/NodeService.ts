@@ -139,27 +139,27 @@ export default class NodeService {
     }
 
     // Stores a new group ID in async storage
-    public async storeRelation(newRelation) {
-        let trackedRelations = await AsyncStorage.getItem('trackedRelations');
-        if (trackedRelations !== null) {
-            trackedRelations = JSON.parse(trackedRelations);
+    public async storeFriend(newFriendId) {
+        let trackedFriends = await AsyncStorage.getItem('trackedFriends');
+        if (trackedFriends !== null) {
+            trackedFriends = JSON.parse(trackedFriends);
         } else {
             // @ts-ignore
-            trackedRelations = {};
+            trackedFriends = [];
         }
 
-        let relation = trackedRelations[newRelation.relation_id];
+        let index = trackedFriends.indexOf(newFriendId);
 
-        if (relation === undefined) {
-            Logger.info(`NodeService.storeRelation - this is a new relation: ${JSON.stringify(newRelation)}`);
+        if (index < 0) {
+            Logger.info(`NodeService.storeFriend - this is a new friend: ${JSON.stringify(newFriendId)}`);
 
             // @ts-ignore
-            trackedRelations[newRelation.relation_id] = newRelation;
+            trackedFriends.push(newFriendId);
 
-            await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
-            Logger.info(`NodeService.storeRelation: now tracking ${JSON.stringify(trackedRelations)}`);
+            await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
+            Logger.info(`NodeService.storeFriend: now tracking ${JSON.stringify(trackedFriends)}`);
         } else {
-            Logger.info(`NodeService.storeRelation: you already are tracking this relation.`);
+            Logger.info(`NodeService.storeFriend: you already are tracking this person.`);
         }
     }
 
@@ -273,11 +273,11 @@ export default class NodeService {
       let nodes = await this.apiService.getNodes();
       if (nodes) {
         let orderedNodes = await this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
-        console.log(orderedNodes);
         await this.props.publicPersonListUpdated({nodeList: orderedNodes.publicPersonList});
         await this.props.publicPlaceListUpdated({nodeList: orderedNodes.publicPlaceList});
         await this.props.privatePersonListUpdated({nodeList: orderedNodes.privatePersonList});
         await this.props.privatePlaceListUpdated({nodeList: orderedNodes.privatePlaceList});
+        await this.props.friendListUpdated({friendList: orderedNodes.friendList});
       }
     }
 

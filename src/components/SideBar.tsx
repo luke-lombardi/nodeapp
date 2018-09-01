@@ -15,6 +15,7 @@ interface IProps {
     navigation?: any;
     nodeList: Array<any>;
     groupList: Array<any>;
+    friendList: Array<any>;
     privatePlaceList: Array<any>;
 }
 
@@ -90,12 +91,12 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  key='people'
-                  title='People'
+                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
+                  key='friends'
+                  title='Friends'
                   leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.privatePlaceList.length === 0 ?
-                    this.resetNavigation('CreateNode') :
-                    this.resetNavigation('Nodes');
+                  onPress={ () => {
+                    this.resetNavigation('Friends');
                 }}
                 />
 
@@ -144,6 +145,7 @@ export class SideBar extends Component<IProps> {
 export function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
+    friendList: state.friendList,
     groupList: state.groupList,
     privatePlaceList: state.privatePlaceList,
   };

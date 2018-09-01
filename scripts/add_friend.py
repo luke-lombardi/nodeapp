@@ -109,7 +109,8 @@ def lambda_handler(event, context):
     
     response = {
         'relation_id': '',
-        'friend_id': '',
+        'your_id': '',
+        'their_id': '',
         'error_msg': ''
     }
     
@@ -136,7 +137,7 @@ def lambda_handler(event, context):
         # If the node was created and inserted properly, add it to the response body
         if ret:
             logger.info('Cache insert success: %s' % (ret))
-            response['friend_id'] = from_user_friend_id
+            response['your_id'] = from_user_friend_id
         else:
             response['error_msg'] = ERROR_MSG['CACHE_ERROR']
             logger.info('Error inserting into cache, response was: %s' % (ret))
@@ -160,6 +161,7 @@ def lambda_handler(event, context):
     if ret:
         logger.info('Cache insert success: %s' % (ret))
         response['relation_id'] = relation_id
+        response['their_id'] = to_user_friend_id
     else:
         logger.info('Error inserting into cache, response was: %s' % (ret))
         return response

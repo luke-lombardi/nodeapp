@@ -40,7 +40,7 @@ def connect_to_cache():
         return None
 
 
-def update_relation(rds, relation_id, friend_id, user_uuid):
+def update_relation(rds, relation_id, your_id, user_uuid):
     try:
         current_relation_data = json.loads(rds.get(name=relation_id))
     except:
@@ -50,20 +50,30 @@ def update_relation(rds, relation_id, friend_id, user_uuid):
     member_list = current_relation_data['members'].keys()
     logger.info('Member list: %s' % (member_list))
 
-    if friend_id in member_list:
-        logger.info('Member found in %s... accepting relation' % (member_list))
+    member_found = False
+    their_id = None
 
-        current_relation_data['members'][friend_id] = True
+    for member in member_list:
+        if your_id == member:
 
-        rds.set(name=relation_id, value=json.dumps(current_relation_data))
-        rds.set(name=friend_id, value=user_uuid)
-    
-        current_relation_data = json.loads(rds.get(name=relation_id))
-        logger.info('Current relation data: ' + str(current_relation_data))
-    
-        return True
+            member_found = True
+
+            logger.info('Member found in %s... accepting relation' % (member_list))
+
+            current_relation_data['members'][your_id] = True
+
+            rds.set(name=relation_id, value=json.dumps(current_relation_data))
+            rds.set(name=your_id, value=user_uuid)
+        
+            current_relation_data = json.loads(rds.get(name=relation_id))
+            logger.info('Current relation data: ' + str(current_relation_data))
+        else:
+            their_id = member
+
+    if member_found:
+        return their_id
     else:
-        return False
+        return None
 
 
 def lambda_handler(event, context):
@@ -74,7 +84,8 @@ def lambda_handler(event, context):
     
     response = {
         'relation_id': '',
-        'friend_id': '',
+        'their_id': '',
+        'your_id': '',
         'error_msg': ''
     }
 
@@ -85,16 +96,17 @@ def lambda_handler(event, context):
         return response
     
     relation_id = event.get('relation_id', '')
-    friend_id = event.get('friend_id', '')
+    your_id = event.get('your_id', '')
     user_uuid = event.get('user_uuid', '')
 
     logger.info('Accepting friend invite: %s '  % relation_id)
 
-    ret = update_relation(rds, relation_id, friend_id, user_uuid)
-    if ret:
+    their_id = update_relation(rds, relation_id, your_id, user_uuid)
+    if their_id:
         logger.info('Success, returning relation ID %s ' % (relation_id))
         response['relation_id'] = relation_id
-        response['friend_id'] = friend_id
+        response['your_id'] = your_id
+        response['their_id'] = their_id
         return response
     else:
         response['error_msg'] = ERROR_MSG['CACHE_ERROR']
@@ -102,8 +114,8 @@ def lambda_handler(event, context):
 
 def run():
     test_event = {
-        "relation_id": "relation:0931cbfa-724a-4ce6-80ce-cb6f7950b493",
-        "friend_id": "friend:aab574a7-af12-40c7-a1f2-1789cfc727e4",
+        "relation_id": "relation:59fde047-07f8-475e-9263-f351176681c2",
+        "your_id": "friend:bc09fa49-2ce7-45b0-b6f5-250e218e2664",
         "user_uuid": "private:4b4808fc-dec7-41de-bd7f-1327cab4e139"
     }
     

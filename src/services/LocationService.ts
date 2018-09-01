@@ -131,7 +131,15 @@ export default class LocationService {
 
       // @ts-ignore
       let newNodeList = nodeListArray.map((val, index, arr) => {
-        return { latitude: parseFloat(val.lat), longitude: parseFloat(val.lng) };
+        let nodeCoords = { latitude: parseFloat(val.lat), longitude: parseFloat(val.lng) };
+
+        if (val.status === 'inactive') {
+          Logger.info(`Inactive: ${JSON.stringify(val)}`);
+          nodeCoords.latitude = 0.0;
+          nodeCoords.longitude = 0.0;
+        }
+
+        return nodeCoords;
       });
 
       let orderedList = geolib.orderByDistance({latitude: userRegion.latitude, longitude: userRegion.longitude}, newNodeList);
@@ -140,6 +148,7 @@ export default class LocationService {
       let orderedPublicPlaceList = [];
       let orderedPrivatePersonList = [];
       let orderedPrivatePlaceList = [];
+      let orderedFriendList = [];
 
       for (let i = 0; i < orderedList.length; i++) {
         let key = orderedList[i].key;
@@ -150,10 +159,16 @@ export default class LocationService {
         currentNode.node_id = nodeListArray[key].node_id;
         currentNode.data = {} as NodeData;
 
-        let bearing = geolib.getBearing(
-          { latitude: nodeListArray[key].lat, longitude: nodeListArray[key].lng },
-          { latitude: userRegion.latitude, longitude: userRegion.longitude },
-        );
+        let bearing = 0.0;
+
+        try {
+          bearing = geolib.getBearing(
+            { latitude: nodeListArray[key].lat, longitude: nodeListArray[key].lng },
+            { latitude: userRegion.latitude, longitude: userRegion.longitude },
+          );
+        } catch (error) {
+          Logger.info(`Unable to calculate bearing for node: ${JSON.stringify(currentNode)}`);
+        }
 
         // Logger.info('Ordering node: ' + nodeListArray[key].title);
         // Logger.info('Figure out the bearing...');
@@ -197,7 +212,10 @@ export default class LocationService {
           orderedPrivatePersonList.push(currentNode);
         } else if (currentNode.data.type === 'place' && currentNode.data.private) {
           orderedPrivatePlaceList.push(currentNode);
+        } else if (currentNode.data.type === 'friend') {
+          orderedFriendList.push(currentNode);
         }
+
       }
 
       let nodes = {
@@ -205,6 +223,7 @@ export default class LocationService {
         'publicPlaceList': orderedPublicPlaceList,
         'privatePersonList': orderedPrivatePersonList,
         'privatePlaceList': orderedPrivatePlaceList,
+        'friendList': orderedFriendList,
       };
 
       return nodes;

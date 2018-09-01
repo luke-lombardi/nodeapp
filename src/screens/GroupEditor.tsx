@@ -131,7 +131,6 @@ export class GroupEditor extends Component<IProps, IState> {
         console.log('Contact already added');
     }
 
-    console.log(this.state.peopleInGroup);
   }
 
   _addPerson() {
@@ -146,11 +145,6 @@ export class GroupEditor extends Component<IProps, IState> {
 
     let newGroup = this.state.peopleInGroup;
     newGroup.splice(index, 1);
-
-    console.log('REMOVING PERSON');
-    console.log(index);
-    console.log('item');
-    console.log(item);
 
     // Edit the group data to be passed
     let groupData = this.state.groupData;
@@ -276,9 +270,11 @@ export class GroupEditor extends Component<IProps, IState> {
     );
   }
 
+  // Creates a new group
   private async submitSaveGroup() {
     let currentUUID = await AsyncStorage.getItem('user_uuid');
 
+    // Build group creation request body
     let groupData = {
       'group_data': {
         'title': this.state.title,
@@ -291,13 +287,14 @@ export class GroupEditor extends Component<IProps, IState> {
       'people_to_invite': this.state.peopleInGroup.slice(1),
     };
 
-    console.log('Submitted group request');
-    console.log(groupData);
-
+    Logger.info(`GroupEditor.submitSaveGroup - submitted group creation request: ${JSON.stringify(groupData)}`);
     await this.setState({isLoading: true});
+
+    // Send request to create the new group
     let newGroupId = await this.apiService.CreateGroupAsync(groupData);
     await this.setState({isLoading: false});
 
+    // If we received a response from the API, store the new group ID
     if (newGroupId !== undefined) {
       await this.nodeService.storeGroup(newGroupId);
       await this.setState({editing: true});
@@ -308,30 +305,38 @@ export class GroupEditor extends Component<IProps, IState> {
     this.props.navigation.navigate('Map', {updateNodes: true});
   }
 
+  // Edits an existing group
   private async submitEditGroup() {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+    // Update group setting fields from state variables
     let groupData = this.state.groupData;
     groupData.ttl = this.state.ttl;
     groupData.title = this.state.title;
 
-    await this.setState({groupData: groupData});
+    // Set the new group data in state
+    await this.setState({
+      groupData: groupData,
+      isLoading: true,
+    });
 
-    console.log('Submitted group update request');
-    console.log(this.state.groupData);
+    Logger.info(`GroupEditor.submitEditGroup - submitted group update request: ${JSON.stringify(this.state.groupData)}`);
 
-    await this.setState({isLoading: true});
+    // Send request to update the group settings
     let newGroupData = await this.apiService.UpdateGroupAsync(this.state.groupData);
     await this.setState({isLoading: false});
 
+    // If we received a response from the API
     if (newGroupData !== undefined) {
-      console.log('NEW GROUP DATA');
-      console.log(newGroupData);
+      Logger.info(`GroupEditor.submitEditGroup - got response: ${JSON.stringify(newGroupData)}`);
+
       await this.setState({editing: true});
     } else {
       Logger.info('CreateNode.submitEditGroup - invalid response from update group.');
     }
   }
 
+  // Deletes an existing group
   private async submitDeleteGroup() {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
 
@@ -340,11 +345,7 @@ export class GroupEditor extends Component<IProps, IState> {
     await this.setState({isLoading: false});
 
     if (result !== undefined) {
-      // console.log('DELETE RESULT');
-      // console.log(result);
-
       if (result.group_id !== '' && result.group_id !== undefined) {
-        // console.log('Removing group from ASYNC');
         await this.nodeService.deleteGroup(result.group_id);
         await this.setState({editing: false});
 

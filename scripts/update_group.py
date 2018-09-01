@@ -158,11 +158,15 @@ def lambda_handler(event, context):
     if not group_id:
         return None
     
+    # update the TTL
     new_ttl = int(event.get("ttl", None))
     if new_ttl:
         new_ttl = new_ttl * 3600
     else:
         new_ttl = DEFAULT_GROUP_TTL
+
+    # update the title
+    new_title = event.get('title', '')
     
     logger.info('Setting new group TTL to %d seconds ' % (new_ttl))
 
@@ -170,6 +174,10 @@ def lambda_handler(event, context):
     current_group_data = json.loads(rds.get(name=group_id))
     current_group_data['people'].extend(new_people_to_invite)
     current_group_data['ttl'] = new_ttl
+
+    if new_title != '':
+        current_group_data['title'] = new_title
+
 
     if people_to_remove:
         current_group_data = remove_members(current_group_data, people_to_remove)

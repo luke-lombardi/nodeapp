@@ -147,16 +147,28 @@ export class GroupEditor extends Component<IProps, IState> {
     let newGroup = this.state.peopleInGroup;
     newGroup.splice(index, 1);
 
+    console.log('REMOVING PERSON');
+    console.log(index);
+    console.log('item');
+    console.log(item);
+
     // Edit the group data to be passed
     let groupData = this.state.groupData;
 
-    let peopleToRemove = this.state.peopleToRemove;
-    peopleToRemove.push(groupData.people[index - 1].member_id);
+    if (groupData.people !== undefined) {
+      console.log('group data');
+      console.log(groupData.people);
 
-    // Remove group member from list
-    groupData.people_to_remove = peopleToRemove;
-    await this.setState({groupData: groupData});
+      let peopleToRemove = this.state.peopleToRemove;
+      peopleToRemove.push(groupData.people[index - 1].member_id);
+
+      // Remove group member from list
+      groupData.people_to_remove = peopleToRemove;
+      await this.setState({groupData: groupData});
+    }
+
     await this.setState({peopleInGroup: newGroup});
+
   }
 
   _renderPeopleInGroup(item) {
@@ -300,6 +312,7 @@ export class GroupEditor extends Component<IProps, IState> {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
     let groupData = this.state.groupData;
     groupData.ttl = this.state.ttl;
+    groupData.title = this.state.title;
 
     await this.setState({groupData: groupData});
 

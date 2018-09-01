@@ -9,6 +9,7 @@ import { UserLoggedInActionCreator } from '../actions/AuthActions';
 import { ListItem } from 'react-native-elements';
 
 import { NavigationActions } from 'react-navigation';
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
     navigation?: any;
@@ -19,6 +20,7 @@ interface IProps {
 
 export class SideBar extends Component<IProps> {
   resetAction: any;
+  private readonly configGlobal = ConfigGlobalLoader.config;
 
     constructor(props: IProps) {
         super(props);
@@ -128,7 +130,7 @@ export class SideBar extends Component<IProps> {
                 }}
               />
 
-        <Text style={styles.version}>v1.0.0</Text>
+        <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}
         style={styles.legal}>Legal</Text>

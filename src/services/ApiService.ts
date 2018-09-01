@@ -200,6 +200,28 @@ export default class ApiService {
       return newGroupData;
   }
 
+  // Deletes an existing group
+    async DeleteGroupAsync(groupData: any) {
+      let requestBody = groupData;
+
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/deleteGroup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      let result = await response.json();
+      return result;
+    }
+
     // Creates a new group
     async JoinGroupAsync(groupData: any) {
       let requestBody = groupData;

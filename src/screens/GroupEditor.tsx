@@ -101,7 +101,7 @@ export class GroupEditor extends Component<IProps, IState> {
         peopleInGroup: this.state.peopleInGroup.concat(groupData.people),
         editing: true,
         groupData: groupData,
-        ttl: groupData.ttl,
+        ttl: (groupData.ttl / 3600.0),
       });
     }
 
@@ -322,7 +322,29 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   private async submitDeleteGroup() {
-    console.log('delete action');
+    // let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+    console.log('Submitted group delete request');
+    console.log(this.state.groupData);
+
+    await this.setState({isLoading: true});
+    let result = await this.apiService.DeleteGroupAsync(this.state.groupData);
+    await this.setState({isLoading: false});
+
+    if (result !== undefined) {
+      console.log('DELETE RESULT');
+      console.log(result);
+
+      if (result.group_id !== '' && result.group_id !== undefined) {
+        console.log('Removing group from ASYNC');
+        await this.nodeService.deleteGroup(result.group_id);
+        await this.setState({editing: false});
+
+        this.props.navigation.navigate('Map', {updateNodes: true});
+      }
+    } else {
+      Logger.info('CreateNode.submitDeleteGroup - invalid response from delete group.');
+    }
   }
 
 }

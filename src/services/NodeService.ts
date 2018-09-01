@@ -134,6 +134,29 @@ export default class NodeService {
 
     }
 
+    // Delete a group ID from async storage
+    public async deleteGroup(groupId) {
+            let trackedGroups = await AsyncStorage.getItem('trackedGroups');
+            if (trackedGroups !== null) {
+                trackedGroups = JSON.parse(trackedGroups);
+            } else {
+              // @ts-ignore
+              trackedGroups = [];
+            }
+
+            let index = trackedGroups.indexOf(groupId);
+
+            if (index >= 0) {
+                // @ts-ignore
+                trackedGroups.splice(index, 1);
+
+                await AsyncStorage.setItem('trackedGroups', JSON.stringify(trackedGroups));
+                Logger.info(`NodeService.storeGroup: rnow tracking ${trackedGroups}`);
+            } else {
+                Logger.info(`NodeService.storeGroup: you are not tracking this group.`);
+            }
+    }
+
     // Private implementation functions
 
     // Monitors the cache for updates to the node list

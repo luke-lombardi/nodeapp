@@ -56,6 +56,11 @@ def get_nodes(rds, node_ids_to_get):
                 logging.info('Node %s exists but is mirrored, getting data', node_id)
                 node_id = get_mirrored_node_id(rds, node_id)
                 logging.info('Found mirror node: %s, getting data', node_id)
+            elif 'friend' in node_id:
+                node_type = 'friend'
+                logging.info('Node %s exists but is mirrored, getting data', node_id)
+                node_id = get_mirrored_node_id(rds, node_id)
+                logging.info('Found mirror node: %s, getting data', node_id)
             
             logging.info('Node %s exists, getting data', node_id)
             node_data = json.loads(rds.get(node_id))

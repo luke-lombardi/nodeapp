@@ -1,5 +1,5 @@
 {
-    "jsVersion": "1.0.1",
+    "jsVersion": "v1.0.1",
     "buildEnvironment": "RELEASE",
     "apiServicesUrlBase": "https://api.smartshare.io",
     "nodeCheckIntervalMs": 5000,

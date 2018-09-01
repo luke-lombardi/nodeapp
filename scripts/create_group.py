@@ -57,6 +57,7 @@ def get_new_uuid(rds, prefix):
 
 # Create the actual group in the cache
 def insert_group(rds, group_id, group_data):
+
     ttl = int(group_data.get("ttl", None))
     if ttl:
         ttl = ttl * 3600
@@ -118,14 +119,22 @@ def set_members(rds, group_id, group_data, members, people_to_invite):
     group_owner_id = get_new_uuid(rds, 'group_member:')
     members[group_owner_id] = owner_uuid
 
+    ttl = int(group_data.get("ttl", None))
+    if ttl:
+        ttl = ttl * 3600
+    else:
+        ttl = DEFAULT_GROUP_TTL
+
+    logger.info('Setting initial group TTL to: %d seconds.' % (ttl))
+
     # set the key so group members can pull owners location as well
-    rds.setex(name=group_owner_id, value=owner_uuid, time=DEFAULT_GROUP_TTL)
+    rds.setex(name=group_owner_id, value=owner_uuid, time=ttl)
 
     current_group_data['members'] = members
     current_group_data['people'] = people_to_invite
 
     # update the group with member data
-    rds.setex(name=group_id, value=json.dumps(current_group_data), time=DEFAULT_GROUP_TTL)
+    rds.setex(name=group_id, value=json.dumps(current_group_data), time=ttl)
 
     current_group_data = json.loads(rds.get(name=group_id))
     logger.info('Current group data: ' + str(current_group_data))

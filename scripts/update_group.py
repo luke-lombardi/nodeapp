@@ -108,7 +108,7 @@ def update_group(rds, group_id, current_group_data, new_members, new_people_to_i
     for member_id in new_members:
         current_group_data['members'][member_id] = None
 
-    ttl = current_group_data['group_data']['ttl']
+    ttl = current_group_data['ttl']
 
     # Update the group with new member data
     rds.setex(name=group_id, value=json.dumps(current_group_data), time=ttl)
@@ -156,8 +156,7 @@ def lambda_handler(event, context):
     if not group_id:
         return None
     
-    new_group_data = event.get('group_data', None)
-    new_ttl = int(new_group_data.get("ttl", None))
+    new_ttl = int(event.get("ttl", None))
     if new_ttl:
         new_ttl = new_ttl * 3600
     else:
@@ -166,7 +165,7 @@ def lambda_handler(event, context):
     # add the new group members to the 'people' list object
     current_group_data = json.loads(rds.get(name=group_id))
     current_group_data['people'].extend(new_people_to_invite)
-    current_group_data['group_data']['ttl'] = new_ttl
+    current_group_data['ttl'] = new_ttl
 
     if people_to_remove:
         current_group_data = remove_members(current_group_data, people_to_remove)

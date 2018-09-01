@@ -262,8 +262,30 @@ export default class ApiService {
         return undefined;
       }
 
-      let newFriendInvite = await response.json();
-      return newFriendInvite;
+      let newRelation = await response.json();
+      return newRelation;
+    }
+
+    // Creates a new group
+    async AcceptFriendAsync(inviteData: any) {
+      let requestBody = inviteData;
+
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/acceptFriend', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.AcceptFriendAsync - Unable to accept friend request');
+
+        return undefined;
+      }
+
+      let newRelation = await response.json();
+      return newRelation;
     }
 
     // Updates the users location node

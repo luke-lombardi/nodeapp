@@ -30,17 +30,22 @@ export interface IGroupListUpdated {
     readonly groupList: Array<any>;
 }
 
+export interface IFriendListUpdated {
+    readonly friendList: Array<any>;
+}
+
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
   readonly currentGroupList?: () => any;
+  readonly currentFriendList?: () => any;
 
   readonly publicPersonListUpdated?: (props: IPublicPersonListUpdated) => Promise<void>;
   readonly publicPlaceListUpdated?: (props: IPublicPlaceListUpdated) => Promise<void>;
   readonly privatePersonListUpdated?: (props: IPrivatePersonListUpdated) => Promise<void>;
   readonly privatePlaceListUpdated?: (props: IPrivatePlaceListUpdated) => Promise<void>;
   readonly groupListUpdated?: (props: IGroupListUpdated) => Promise<void>;
-
+  readonly friendListUpdated?: (props: IFriendListUpdated) => Promise<void>;
 }
 
 export default class NodeService {
@@ -131,7 +136,31 @@ export default class NodeService {
         } else {
             Logger.info(`NodeService.storeGroup: you already are tracking this group.`);
         }
+    }
 
+    // Stores a new group ID in async storage
+    public async storeRelation(newRelation) {
+        let trackedRelations = await AsyncStorage.getItem('trackedRelations');
+        if (trackedRelations !== null) {
+            trackedRelations = JSON.parse(trackedRelations);
+        } else {
+            // @ts-ignore
+            trackedRelations = {};
+        }
+
+        let relation = trackedRelations[newRelation.relation_id];
+
+        if (relation === undefined) {
+            Logger.info(`NodeService.storeRelation - this is a new relation: ${JSON.stringify(newRelation)}`);
+
+            // @ts-ignore
+            trackedRelations[newRelation.relation_id] = newRelation;
+
+            await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
+            Logger.info(`NodeService.storeRelation: now tracking ${JSON.stringify(trackedRelations)}`);
+        } else {
+            Logger.info(`NodeService.storeRelation: you already are tracking this relation.`);
+        }
     }
 
     // Delete a group ID from async storage

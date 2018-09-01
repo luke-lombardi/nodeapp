@@ -297,9 +297,30 @@ export class App extends Component<IProps, IState> {
         if (newGroupId !== undefined) {
           await this.nodeService.storeGroup(newGroupId);
         } else {
-          Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
+          Logger.info('App.handleLink - invalid response from JoinGroupAsync.');
         }
 
+      } else if (action === 'add_friend') {
+        console.log(splitLinkData);
+        let relationId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'relation_id': relationId,
+          'friend_id': memberId,
+        };
+
+        let newRelation = await this.apiService.AcceptFriendAsync(groupData);
+
+        if (newRelation !== undefined) {
+          Logger.info(`App.handleLink -  response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
+          await this.nodeService.storeRelation(newRelation);
+        } else {
+          Logger.info('App.handleLink - invalid response from AcceptFriendAsync.');
+        }
       }
 
     }

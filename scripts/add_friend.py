@@ -5,7 +5,6 @@
 
     description:
 
-Insert a
 
 '''
 
@@ -20,7 +19,7 @@ from random import randint
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-DEFAULT_GROUP_TTL = 3600
+DEFAULT_INVITE_TTL = 3600 * 72
 
 lambda_client = boto3.client('lambda', 
                         aws_access_key_id='AKIAJTWJKPPNEIBU4BSQ', 
@@ -53,18 +52,29 @@ def get_new_uuid(rds, prefix):
         new_uuid = prefix + str(uuid4())
     return new_uuid
 
-
 # Create the actual group in the cache
-def insert_invite(rds, invite_id, invite_data):
-    rds.setex(name=invite_id, value=json.dumps(invite_data), time=DEFAULT_GROUP_TTL)
-    return invite_id
+def insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id):
+    relation_data = {
+        'members': {
+            from_user_friend_id: True,
+            to_user_friend_id: False
+        }
+    }
 
+    logger.info('Inserting this relation data into cache: %s' % (relation_data))
+    ret = rds.setex(name=relation_id, value=json.dumps(relation_data), time=DEFAULT_INVITE_TTL)
+    return ret
 
-# Sends joining info to each new friend
-def send_text(person_to_invite, invite_id):
+def create_mirror_node(rds, private_uuid, friend_id):
+    ret = rds.set(name=friend_id, value=private_uuid)
+    return ret
+
+# Sends a text to the recipient of the friend request
+def send_text(person_to_invite, relation_id, to_user_friend_id):
     logger.info('Sending text to friend...')
 
-    person_to_invite['invite_id'] = invite_id
+    person_to_invite['relation_id'] = relation_id
+    person_to_invite['friend_id'] = to_user_friend_id
     person_to_invite['action'] = 'send_friend_invite'
     person_to_invite['response'] = False
     
@@ -85,35 +95,88 @@ def send_text(person_to_invite, invite_id):
     return person_to_invite
 
 
+
 def lambda_handler(event, context):
+    ERROR_MSG = {
+        'CACHE_ERROR': 'Could not connect to cache',
+        'INVALID_GROUP_ID': 'Please specify a valid group ID',
+    }
+
     rds = connect_to_cache()
     
     if not rds:
         return
     
+    response = {
+        'relation_id': '',
+        'friend_id': '',
+        'error_msg': ''
+    }
+    
     logger.info('Event payload: ' + str(event))
-    # First, we have to create a list of 'mirror' UUIDs to associate w/ user UUIDS in our group
+
+    # Grab the details of the person we are inviting
     person_to_invite = event.get('person_to_invite', {})
 
-    # Second, we have to create the actual group in the cache
-    invite_id = get_new_uuid(rds, 'invite:')
+    # Get a new ID for the relationship
+    relation_id = get_new_uuid(rds, 'relation:')
+
     invite_data = event.get('invite_data', {})
-    insert_invite(rds, invite_id, invite_data)
+
+    logging.info('Received invite data: %s', invite_data)
+
+    from_user = invite_data.get('from', None)
+
+    # If there is a valid 'from' user id, then create a new mirror node for them
+    if from_user:
+        logger.info('Invite is from: %s, creating new ID for them' % (from_user))
+        from_user_friend_id = get_new_uuid(rds, 'friend:')
+        ret = create_mirror_node(rds, from_user, from_user_friend_id)
+
+        # If the node was created and inserted properly, add it to the response body
+        if ret:
+            logger.info('Cache insert success: %s' % (ret))
+            response['friend_id'] = from_user_friend_id
+        else:
+            response['error_msg'] = ERROR_MSG['CACHE_ERROR']
+            logger.info('Error inserting into cache, response was: %s' % (ret))
+            return response
     
-    logging.info('Create a new invite: %s', invite_id)
+    # Create an ID/mirror node for the receipient user
+    to_user = None
+    to_user_friend_id = get_new_uuid(rds, 'friend:')
 
-    # Third, we have to send texts to each group member w/ a group ID and their member ID
-    members = send_text(person_to_invite, invite_id)
+    # Insert it into the cache
+    ret = create_mirror_node(rds, to_user, to_user_friend_id)
+    if ret:
+        logger.info('Cache insert success: %s' % (ret))
+    else:
+        response['error_msg'] = ERROR_MSG['CACHE_ERROR']
+        logger.info('Error inserting into cache, response was: %s' % (ret))
+        return response
+    
+    # Add the relation to the cache
+    ret = insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id)
+    if ret:
+        logger.info('Cache insert success: %s' % (ret))
+        response['relation_id'] = relation_id
+    else:
+        logger.info('Error inserting into cache, response was: %s' % (ret))
+        return response
 
-    return invite_id
+    logging.info('Create a new relation: %s', relation_id)
+
+    # Last, we have to a text to recipient friend
+    members = send_text(person_to_invite, relation_id, to_user_friend_id)
+
+    return response
 
 
 def run():
     test_event = {
         "invite_data": {
-            "type": "friend",
-            "host": "private:7d8b17e8-e944-4869-b3e5-0730bed5ed89",
-            "rcpt": None,
+            "from": "private:7d8b17e8-e944-4869-b3e5-0730bed5ed89",
+            "to": None,
             "ttl": None,
         },
         "person_to_invite": {

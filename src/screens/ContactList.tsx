@@ -4,7 +4,11 @@ import { View, FlatList, StyleSheet, Text, AsyncStorage, Alert } from 'react-nat
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+
 import ApiService from '../services/ApiService';
+import NodeService from '../services/NodeService';
+
+import Logger from '../services/Logger';
 
 import Contacts from 'react-native-contacts';
 
@@ -26,6 +30,8 @@ interface IState {
 export class ContactList extends Component<IProps, IState> {
   // @ts-ignore
   private apiService: ApiService;
+  private nodeService: NodeService;
+
   private action: any;
 
   constructor(props: IProps) {
@@ -47,14 +53,15 @@ export class ContactList extends Component<IProps, IState> {
     this.selectContact = this.selectContact.bind(this);
     this.searchContact = this.searchContact.bind(this);
     this._renderItem = this._renderItem.bind(this);
+
     this.apiService = new ApiService({});
+    this.nodeService = new NodeService({});
 
     }
 
     componentWillMount() {
         this.getContacts();
         this.action = this.props.navigation.getParam('action', '');
-        console.log('got action', this.action);
     }
 
     getContacts() {
@@ -132,7 +139,6 @@ export class ContactList extends Component<IProps, IState> {
           'invite_data': {
             'type': 'friend',
             'host': 'private:' + userUuid,
-            'rcpt': undefined,
             'ttl': undefined,
           },
           'person_to_invite': {
@@ -157,26 +163,6 @@ export class ContactList extends Component<IProps, IState> {
         console.log(newInviteId);
 
         this.props.navigation.goBack(undefined);
-
-      // if (this.action === 'share_pin') {
-      //   console.log('sending text to your boy');
-
-      //   let contactInfo = {
-      //     phone: item.phoneNumbers[0].number,
-      //     name: item.givenName,
-      //     user_uuid: await AsyncStorage.getItem('user_uuid'),
-      //   };
-
-      //   console.log('got contact info', contactInfo);
-
-      //   let result = await this.apiService.sendText(contactInfo);
-
-      //   if (result !== undefined) {
-      //     console.log('sending text to your boy', result);
-      //     // await this.nodeService.storeInvite(newInviteId);
-      //   } else {
-      //     console.log('unable to send text', result);
-      //   }
 
       } else if (this.action === 'add_friend') {
         Alert.alert(`Successfully invited ${item.givenName}!`);
@@ -188,10 +174,8 @@ export class ContactList extends Component<IProps, IState> {
 
         let inviteData = {
           'invite_data': {
-            'type': 'friend',
-            'host': 'private:' + userUuid,
-            'rcpt': undefined,
-            'ttl': undefined,
+            'from': 'private:' + userUuid,
+            'to': undefined,
           },
           'person_to_invite': {
             'name': name,
@@ -199,33 +183,24 @@ export class ContactList extends Component<IProps, IState> {
           },
         };
 
-        console.log(inviteData);
+        Logger.info(`ContactList.selectContact - Sending friend request ${inviteData}`);
 
-        let newInviteId = await this.apiService.AddFriendAsync(inviteData);
+        let newRelation = await this.apiService.AddFriendAsync(inviteData);
 
-        if (newInviteId !== undefined) {
-          console.log('storing invite');
-          // await this.nodeService.storeInvite(newInviteId);
+        if (newRelation !== undefined) {
+          Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
+          await this.nodeService.storeRelation(newRelation);
         } else {
-          console.log('unable to invite friend');
+          Logger.info('ContactList.selectContact - unable to invite friend');
           // Logger.info('ContactList.selectContact - invalid response from add friend.');
         }
 
-        console.log('GOT IT');
-        console.log(newInviteId);
-
         this.props.navigation.goBack(undefined);
+
       } else if (this.action === 'add_friend_to_group') {
         this.props.navigation.state.params.returnData(item);
         this.props.navigation.goBack(undefined);
-      } else if (this.action === 'meetup_invite') {
-        this.props.navigation.navigate('CreateMeetup', {
-          contact: item,
-          selectedPlace: this.state.selectedPlace,
-          selectedDate: this.state.selectedDate,
-          date: this.state.date,
-          selectedPlaceAddress: this.state.selectedPlaceAddress,
-        });
+
       }
     }
   }

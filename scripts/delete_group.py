@@ -26,10 +26,7 @@ lambda_client = boto3.client('lambda',
                         aws_secret_access_key='KDKllzMvgIbauYz+tntMXClYlozEEAYFymKQqHDF', 
                         region_name='us-east-1')
 
-ERROR_MSG = {
-    'CACHE_ERROR': 'Could not connect to cache',
-    'INVALID_GROUP_ID': 'Please specify a valid group ID',
-}
+
 
 def is_cache_connected(rds):
     try:
@@ -65,6 +62,11 @@ def delete_group(rds, group_id):
 
 
 def lambda_handler(event, context):
+    ERROR_MSG = {
+        'CACHE_ERROR': 'Could not connect to cache',
+        'INVALID_GROUP_ID': 'Please specify a valid group ID',
+    }
+
     rds = connect_to_cache()
     
     response = {

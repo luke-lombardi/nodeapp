@@ -138,7 +138,7 @@ export default class NodeService {
         }
     }
 
-    // Stores a new group ID in async storage
+    // Stores a new friend ID in async storage
     public async storeFriend(newFriendId) {
         let trackedFriends = await AsyncStorage.getItem('trackedFriends');
         if (trackedFriends !== null) {
@@ -156,10 +156,16 @@ export default class NodeService {
             // @ts-ignore
             trackedFriends.push(newFriendId);
 
+            Logger.info(`NodeService.storeFriend - Current tracked friends: ${JSON.stringify(trackedFriends)}`);
+
             await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
             Logger.info(`NodeService.storeFriend: now tracking ${JSON.stringify(trackedFriends)}`);
+
+            return false;
         } else {
             Logger.info(`NodeService.storeFriend: you already are tracking this person.`);
+
+            return true;
         }
     }
 

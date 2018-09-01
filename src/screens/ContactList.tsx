@@ -168,6 +168,7 @@ export class ContactList extends Component<IProps, IState> {
         Alert.alert(`Successfully invited ${item.givenName}!`);
 
         let phoneNumber = item.phoneNumbers[0].number;
+
         let name = item.givenName + ' ' + item.familyName;
 
         let userUuid = await AsyncStorage.getItem('user_uuid');
@@ -189,11 +190,16 @@ export class ContactList extends Component<IProps, IState> {
 
         if (newRelation !== undefined) {
           let newFriendId = newRelation.their_id;
-          Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
-          await this.nodeService.storeNode(newFriendId);
+
+          let exists = await this.nodeService.storeFriend(newFriendId);
+
+          if (!exists) {
+            Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
+            await this.nodeService.storeNode(newFriendId);
+          }
+
         } else {
           Logger.info('ContactList.selectContact - unable to invite friend');
-          // Logger.info('ContactList.selectContact - invalid response from add friend.');
         }
 
         this.props.navigation.goBack(undefined);

@@ -294,6 +294,8 @@ export class App extends Component<IProps, IState> {
     }
 
     async handleLink(event) {
+      console.log('EVENT');
+      console.log(event);
       // parse the user_uuid as a string from the URL
       let linkData = event.url.replace(/.*?:\/\//g, '');
       let splitLinkData = linkData.split('/');
@@ -322,7 +324,6 @@ export class App extends Component<IProps, IState> {
         }
 
       } else if (action === 'add_friend') {
-        console.log(splitLinkData);
         let relationId = splitLinkData[1];
         let memberId = splitLinkData[2];
 
@@ -339,7 +340,13 @@ export class App extends Component<IProps, IState> {
         if (newRelation !== undefined) {
           let newFriendId = newRelation.their_id;
           Logger.info(`App.handleLink -  response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
-          await this.nodeService.storeFriend(newFriendId);
+
+          let exists = await this.nodeService.storeFriend(newFriendId);
+          if (!exists) {
+            Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
+            await this.nodeService.storeNode(newFriendId);
+          }
+
         } else {
           Logger.info('App.handleLink - invalid response from AcceptFriendAsync.');
         }

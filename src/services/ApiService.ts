@@ -60,7 +60,7 @@ export default class ApiService {
        trackedGroups = JSON.parse(trackedGroups);
        let groupMembers = [];
        let groups = this.props.currentGroupList();
-       //  console.log('Getting group members....');
+
        if (groups) {
            // @ts-ignore
            groups.forEach(function (group, index) {

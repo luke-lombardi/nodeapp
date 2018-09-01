@@ -56,8 +56,8 @@ def get_nodes(rds, node_ids_to_get):
             if 'group_member' in node_id:
                 node_type = 'group_member'
                 logger.info('Node %s exists but is mirrored, getting data', node_id)
-                node_id = get_mirrored_node_id(rds, node_id)
-                logger.info('Found mirror node: %s, getting data', node_id)
+                real_node_id = get_mirrored_node_id(rds, node_id)
+                logger.info('Found mirror node: %s, getting data', real_node_id)
             elif 'friend' in node_id:
                 node_type = 'friend'
                 logger.info('Node %s exists but is mirrored, getting data', node_id)

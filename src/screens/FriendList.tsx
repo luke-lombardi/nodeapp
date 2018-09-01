@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 // import Logger from '../services/Logger';
@@ -19,9 +19,22 @@ export class FriendList extends Component<IProps> {
 
   }
 
-  _onTouchNode(group: any) {
-    console.log(group);
-    this.props.navigation.navigate('MainMap', {action: 'edit_group', group_data: group});
+  _onTouchNode(node: any) {
+    if (node.data.status === 'inactive') {
+      Alert.alert(`This invite is still pending.`);
+      return;
+    }
+
+    let region = {
+      latitude: parseFloat(node.data.latitude),
+      longitude: parseFloat(node.data.longitude),
+      latitudeDelta: parseFloat(node.data.latDelta),
+      longitudeDelta: parseFloat(node.data.longDelta),
+    };
+
+    let nodeType = 'friend';
+
+    this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
   }
 
   _renderItem = ({item}) => (
@@ -35,7 +48,8 @@ export class FriendList extends Component<IProps> {
       containerStyle={styles.friendListItem}
       leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
       // rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
-      title={ item.title ? item.title : item.node_id }
+      title={ item.data.title ? item.data.title : item.node_id }
+      subtitle={ 'Status: ' + (item.data.status === 'inactive' ? 'pending' : 'active')  }
     />
   )
 

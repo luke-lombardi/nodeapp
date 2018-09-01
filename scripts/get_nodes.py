@@ -76,7 +76,8 @@ def get_nodes(rds, node_ids_to_get):
                 current_ttl = rds.ttl(node_id)
                 nodes[node_id] = node_data
                 nodes[node_id]['ttl'] = current_ttl
-            
+                nodes[node_id]['status'] = 'active'
+
             if node_type:
                 nodes[node_id]['type'] = node_type
 

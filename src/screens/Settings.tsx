@@ -47,7 +47,8 @@ export class Settings extends Component<IProps, IState> {
         let savedTitle = storage.savedTitle;
         let savedDescription = storage.savedDescription;
         console.log('got title', savedTitle);
-        this.setState({
+
+        await this.setState({
           savedDescription: savedDescription,
           savedTitle: savedTitle,
         });
@@ -73,8 +74,6 @@ export class Settings extends Component<IProps, IState> {
               containerStyle={styles.inputPadding}
               inputStyle={styles.descriptionInput}
               onChangeText={(name) => this.setState({name: name})}
-              // enablesReturnKeyAutomatically={true}
-              // onSubmitEditing={this.submitCreateNode}
               value={this.state.name}
             />
             <Input
@@ -89,8 +88,6 @@ export class Settings extends Component<IProps, IState> {
               containerStyle={styles.inputPadding}
               inputStyle={styles.descriptionInput}
               onChangeText={(description) => this.setState({description: description})}
-              // enablesReturnKeyAutomatically={true}
-              // onSubmitEditing={this.submitCreateNode}
               value={this.state.description}
             />
                 </View>
@@ -128,6 +125,8 @@ private async saveSettings() {
       'savedDescription': this.state.description,
     };
 
+    console.log(userSettings);
+
     let savedSettings = await AsyncStorage.setItem('userSettings', JSON.stringify(userSettings));
 
     if (savedSettings !== null) {
@@ -135,6 +134,7 @@ private async saveSettings() {
     } else {
       console.log('unable to save settings');
     }
+
     this.props.navigation.navigate('Map', {updateNodes: true});
   }
 }

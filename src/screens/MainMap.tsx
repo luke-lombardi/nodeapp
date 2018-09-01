@@ -11,8 +11,9 @@ import Pulse from 'react-native-pulse';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
+import { UserPositionChangedActionCreator } from '../actions/MapActions';
+import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
 import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
@@ -23,7 +24,9 @@ import NodeService,
     IPublicPersonListUpdated,
     IPublicPlaceListUpdated,
     IPrivatePersonListUpdated,
-    IPrivatePlaceListUpdated }
+    IPrivatePlaceListUpdated,
+    IFriendListUpdated,
+  }
   from '../services/NodeService';
 
 // @ts-ignore
@@ -37,6 +40,8 @@ import PublicPlaces from './markers/PublicPlaces';
 import PrivatePlaces from './markers/PrivatePlaces';
 import PublicPeople from './markers/PublicPeople';
 import PrivatePeople from './markers/PrivatePeople';
+import Friends from './markers/Friends';
+
 import SleepUtil from '../services/SleepUtil';
 
 // import mapStyle from '../config/mapStyle.json';
@@ -47,6 +52,7 @@ interface IProps {
     publicPlaceList: Array<any>;
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
+    friendList: Array<any>;
 
     userRegion: any;
 
@@ -55,6 +61,7 @@ interface IProps {
     PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
     PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
     PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    FriendListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
     UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
@@ -108,6 +115,7 @@ export class MainMap extends Component<IProps, IState> {
     this.gotNewPublicPlaceList = this.gotNewPublicPlaceList.bind(this);
     this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
     this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
+    this.gotNewFriendList = this.gotNewFriendList.bind(this);
 
     this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
@@ -121,6 +129,7 @@ export class MainMap extends Component<IProps, IState> {
         publicPlaceListUpdated: this.gotNewPublicPlaceList,
         privatePersonListUpdated: this.gotNewPrivatePersonList,
         privatePlaceListUpdated: this.gotNewPrivatePlaceList,
+        friendListUpdated: this.gotNewFriendList,
         currentUserRegion: this.props.userRegion,
     });
 
@@ -239,6 +248,9 @@ export class MainMap extends Component<IProps, IState> {
       case 'privatePlace':
         nodeListToSearch = this.props.privatePlaceList;
         break;
+      case 'friend':
+        nodeListToSearch = this.props.friendList;
+        break;
       default:
         break;
     }
@@ -289,6 +301,7 @@ export class MainMap extends Component<IProps, IState> {
               <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
+              <Friends friendList={this.props.friendList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 
               </MapView>
 
@@ -368,6 +381,10 @@ export class MainMap extends Component<IProps, IState> {
     await this.props.PublicPersonListUpdated(props.nodeList);
   }
 
+  private async gotNewFriendList(props: IFriendListUpdated) {
+    await this.props.FriendListUpdated(props.friendList);
+  }
+
   private navigateToPage(pageName: string) {
     let params = undefined;
 
@@ -405,6 +422,7 @@ function mapStateToProps(state: IStoreState): IProps {
     publicPlaceList: state.publicPlaceList,
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
+    friendList: state.friendList,
     userRegion: state.userRegion,
   };
 }
@@ -415,6 +433,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
     PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
+    FriendListUpdated: bindActionCreators(FriendListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }

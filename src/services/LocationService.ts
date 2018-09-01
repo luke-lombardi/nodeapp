@@ -32,6 +32,7 @@ interface NodeData {
   color: string;
   speed: number;
   ttl: number;
+  status: string;
 }
 
 interface Node {
@@ -203,6 +204,8 @@ export default class LocationService {
         currentNode.data.private = nodeListArray[key].private;
         currentNode.data.type = nodeListArray[key].type;
         currentNode.data.color = nodeListArray[key].color;
+        currentNode.data.status = nodeListArray[key].status;
+
 
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);

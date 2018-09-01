@@ -58,12 +58,19 @@ export class NodeList extends Component<IProps, IState> {
       latitudeDelta: parseFloat(node.data.latDelta),
       longitudeDelta: parseFloat(node.data.longDelta),
     };
-    let nodeType = node.data.type;
-    if (nodeType === 'place') {
+
+    let nodeType = undefined;
+
+    if (node.data.type === 'place' && node.data.private) {
       nodeType = 'privatePlace';
-    } else if (nodeType === 'person') {
+    } else if (node.data.type === 'person' && node.data.private) {
       nodeType = 'privatePerson';
+    } else if (node.data.type === 'place' && !node.data.private) {
+      nodeType = 'publicPlace';
+    } else if (node.data.type === 'person' && !node.data.private) {
+      nodeType = 'publicPerson';
     }
+
     this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
   }
 
@@ -74,12 +81,6 @@ export class NodeList extends Component<IProps, IState> {
       tension: 100,
       activeScale: 0.95,
     }}
-    // linearGradientProps={{
-    //   colors: ['#FF9800', '#F44336'],
-    //   start: [1, 0],
-    //   end: [0.2, 0],
-    // }}
-    // ViewComponent={LinearGradient}
       onPress={() => this._onTouchNode(item)}
       containerStyle={styles.nodeListItem}
       leftIcon={

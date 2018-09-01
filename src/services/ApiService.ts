@@ -1,5 +1,7 @@
 import * as HttpStatus from 'http-status-codes';
 import Logger from './Logger';
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+
 // @ts-ignore
 import { AsyncStorage } from 'react-native';
 
@@ -11,6 +13,7 @@ interface IProps {
 export default class ApiService {
     // @ts-ignore
     private readonly props: IProps;
+    private readonly configGlobal = ConfigGlobalLoader.config;
 
     constructor(props: IProps) {
         this.props = props;
@@ -22,7 +25,7 @@ export default class ApiService {
 
     // Get all nodes, both private and public, and update the redux store
     public async getNodes() {
-     let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getPublicNodes', {
+     let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getPublicNodes', {
           method: 'GET',
       });
 
@@ -61,15 +64,15 @@ export default class ApiService {
        if (groups) {
            // @ts-ignore
            groups.forEach(function (group, index) {
-               groupMembers = groupMembers.concat(group.members);
-              //  console.log(groupMembers);
+              groupMembers = groupMembers.concat(group.members);
+              // console.log(groupMembers);
            });
         }
         nodesToGet.node_ids = nodesToGet.node_ids.concat(groupMembers);
       }
 
       Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
-      response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getNodes', {
+      response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getNodes', {
           method: 'POST',
           headers: {'Content-Type': 'text/plain'},
           body: JSON.stringify(nodesToGet),
@@ -79,6 +82,28 @@ export default class ApiService {
       let nodeList = await response.json();
       return nodeList;
     }
+
+    public async getFriends() {
+      // This gets the currently tracked private friends in ASYNC storage
+      let trackedFriends = await AsyncStorage.getItem('trackedFriends');
+
+      // If we are tracking any nodes, add them to request body
+      if (trackedFriends !== null) {
+        trackedFriends = JSON.parse(trackedFriends);
+        // @ts-ignore
+      }
+
+      Logger.info(`Fetching these friends: ${JSON.stringify(trackedFriends)}`);
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getGroups', {
+          method: 'POST',
+          headers: {'Content-Type': 'text/plain'},
+          body: JSON.stringify(trackedFriends),
+      });
+
+      // TODO: add error handling here
+      let friendList = await response.json();
+      return friendList;
+  }
 
     public async getGroups() {
         // This gets the currently tracked private groups in ASYNC storage
@@ -96,7 +121,7 @@ export default class ApiService {
         }
 
         Logger.info(`Fetching these groups: ${JSON.stringify(groupsToGet)}`);
-        let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/getGroups', {
+        let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getGroups', {
             method: 'POST',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify(groupsToGet),
@@ -113,7 +138,7 @@ export default class ApiService {
         'node_data': nodeData,
       };
 
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createNode', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/createNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -135,7 +160,7 @@ export default class ApiService {
       async CreateGroupAsync(groupData: any) {
         let requestBody = groupData;
 
-        let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/createGroup', {
+        let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/createGroup', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -157,7 +182,7 @@ export default class ApiService {
     async UpdateGroupAsync(groupData: any) {
       let requestBody = groupData;
 
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/updateGroup', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/updateGroup', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -179,7 +204,7 @@ export default class ApiService {
     async JoinGroupAsync(groupData: any) {
       let requestBody = groupData;
 
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/joinGroup', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/joinGroup', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -201,7 +226,7 @@ export default class ApiService {
     async AddFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/addFriend', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/addFriend', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -221,7 +246,7 @@ export default class ApiService {
 
     // Updates the users location node
     async PostLocationAsync(nodeData: any) {
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/postNode', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/postNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -245,7 +270,7 @@ export default class ApiService {
         'contact_info': contactInfo,
       };
 
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/sendText', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/sendText', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -264,27 +289,4 @@ export default class ApiService {
       return result;
     }
 
-    async createMeetup(meetupInfo: any) {
-      let requestBody = {
-        'meetup_info': meetupInfo,
-      };
-
-      let response = await fetch('https://jwrp1u6t8e.execute-api.us-east-1.amazonaws.com/dev/sendText', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          });
-
-      if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.sendText - Unable to create meetup');
-        console.log('could not create meetup', response);
-        return undefined;
-      }
-
-      let result = await response.json();
-      console.log('successfully created meetup', response);
-      return result;
-    }
   }

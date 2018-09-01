@@ -85,7 +85,9 @@ export class CreateNode extends Component<IProps, IState> {
                 style={[StyleSheet.absoluteFillObject, styles.map]}
                 showsUserLocation={true}
                 followsUserLocation={true}
-                initialRegion={this.state.userRegion}
+                initialRegion={
+                  this.state.userRegion ? this.state.userRegion : undefined
+                }
               >
               </MapView>
            }

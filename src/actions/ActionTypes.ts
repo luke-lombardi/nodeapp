@@ -6,6 +6,7 @@ import { IPrivatePersonListUpdated } from './NodeActions';
 import { IPrivatePlaceListUpdated } from './NodeActions';
 
 import { IGroupListUpdated } from './GroupActions';
+import { IFriendListUpdated } from './FriendActions';
 
 import { IUserPositionChanged } from './MapActions';
 
@@ -25,6 +26,9 @@ type ActionTypes =
   | IUserPositionChanged
 
   | IGroupListUpdated
+
+  | IFriendListUpdated
+
   ;
 
 export default ActionTypes;

@@ -1,6 +1,7 @@
 import Logger from './Logger';
 import SleepUtil from './SleepUtil';
 import DeferredPromise from './DeferredPromise';
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 // @ts-ignore
 import { AsyncStorage } from 'react-native';
@@ -44,6 +45,8 @@ interface IProps {
 
 export default class NodeService {
     private readonly props: IProps;
+    private readonly configGlobal = ConfigGlobalLoader.config;
+
     private stopping: boolean = false;
     private monitoring: boolean = false;
     private checkNowTrigger: DeferredPromise;
@@ -143,7 +146,7 @@ export default class NodeService {
 
             await this.GetNodeListAsync();
 
-            const sleepPromise = SleepUtil.SleepAsync(5000);
+            const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.nodeCheckIntervalMs);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
             Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
@@ -160,7 +163,7 @@ export default class NodeService {
 
             await this.GetGroupListAsync();
 
-            const sleepPromise = SleepUtil.SleepAsync(5000);
+            const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.groupCheckIntervalMs);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
             Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');

@@ -21,6 +21,12 @@ enum ActionTypeKeys {
   GROUP_LIST_UPDATED = 'GROUP_LIST_UPDATED',
 
   //
+  // Friend Actions
+  //
+
+  FRIEND_LIST_UPDATED = 'FRIEND_LIST_UPDATED',
+
+  //
   // Map Actions
   //
 

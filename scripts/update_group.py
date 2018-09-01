@@ -110,6 +110,8 @@ def update_group(rds, group_id, current_group_data, new_members, new_people_to_i
 
     ttl = current_group_data['ttl']
 
+    logger.info('update_group: Setting new group TTL to %d seconds ' % (ttl))
+
     # Update the group with new member data
     rds.setex(name=group_id, value=json.dumps(current_group_data), time=ttl)
 
@@ -161,6 +163,8 @@ def lambda_handler(event, context):
         new_ttl = new_ttl * 3600
     else:
         new_ttl = DEFAULT_GROUP_TTL
+    
+    logger.info('Setting new group TTL to %d seconds ' % (new_ttl))
 
     # add the new group members to the 'people' list object
     current_group_data = json.loads(rds.get(name=group_id))

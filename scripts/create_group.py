@@ -120,10 +120,6 @@ def set_members(rds, group_id, group_data, members, people_to_invite):
     members[group_owner_id] = owner_uuid
 
     ttl = int(group_data.get("ttl", None))
-    if ttl:
-        ttl = ttl * 3600
-    else:
-        ttl = DEFAULT_GROUP_TTL
 
     logger.info('Setting initial group TTL to: %d seconds.' % (ttl))
 

@@ -73,8 +73,6 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   componentWillMount() {
-    console.log('component will mount');
-
     let userRegion = this.props.navigation.getParam('userRegion', {});
     let uuid = this.props.navigation.getParam('uuid', '');
 
@@ -89,10 +87,7 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('component mounted');
-
     if (this.action === 'edit_group') {
-      console.log('editing the group');
       let groupData = this.props.navigation.getParam('group_data', '');
 
       // TODO: distinguish between group owners and group members (use owner_uuid in response)
@@ -165,7 +160,6 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   _renderPeopleInGroup(item) {
-      console.log(item);
     if (item.item.recordID === 'add_button') {
         return(<ListItem
             scaleProps={{
@@ -304,6 +298,10 @@ export class GroupEditor extends Component<IProps, IState> {
 
   private async submitEditGroup() {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
+    let groupData = this.state.groupData;
+    groupData.ttl = this.state.ttl;
+
+    await this.setState({groupData: groupData});
 
     console.log('Submitted group update request');
     console.log(this.state.groupData);
@@ -324,19 +322,16 @@ export class GroupEditor extends Component<IProps, IState> {
   private async submitDeleteGroup() {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
 
-    console.log('Submitted group delete request');
-    console.log(this.state.groupData);
-
     await this.setState({isLoading: true});
     let result = await this.apiService.DeleteGroupAsync(this.state.groupData);
     await this.setState({isLoading: false});
 
     if (result !== undefined) {
-      console.log('DELETE RESULT');
-      console.log(result);
+      // console.log('DELETE RESULT');
+      // console.log(result);
 
       if (result.group_id !== '' && result.group_id !== undefined) {
-        console.log('Removing group from ASYNC');
+        // console.log('Removing group from ASYNC');
         await this.nodeService.deleteGroup(result.group_id);
         await this.setState({editing: false});
 

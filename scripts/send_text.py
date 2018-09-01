@@ -95,15 +95,17 @@ def send_text(contact_info, rds):
 
     elif action == 'share_pin':
         pass
+
     elif action == 'send_friend_invite':
         name = contact_info["name"]
         phone = contact_info["phone"]
-        invite_id = contact_info["invite_id"]
-    
+        relation_id = contact_info["relation_id"]
+        friend_id = contact_info["friend_id"]
+
         message = client.messages.create(
             to=phone,
             from_="+12037179852",
-            body="Hello %s, you were invited to become friends with a guy: \n fyb://add_friend/%s" % (name, invite_id))
+            body="Hello %s, you were invited to become friends with a guy: \n fyb://add_friend/%s/%s" % (name, relation_id, friend_id))
 
     if message:
         logging.info("Sent a message to {} at {}".format(name, phone))

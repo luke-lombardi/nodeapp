@@ -9,16 +9,19 @@ import { UserLoggedInActionCreator } from '../actions/AuthActions';
 import { ListItem } from 'react-native-elements';
 
 import { NavigationActions } from 'react-navigation';
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
     navigation?: any;
     nodeList: Array<any>;
     groupList: Array<any>;
+    friendList: Array<any>;
     privatePlaceList: Array<any>;
 }
 
 export class SideBar extends Component<IProps> {
   resetAction: any;
+  private readonly configGlobal = ConfigGlobalLoader.config;
 
     constructor(props: IProps) {
         super(props);
@@ -88,12 +91,12 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  key='people'
-                  title='People'
+                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
+                  key='friends'
+                  title='Friends'
                   leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.privatePlaceList.length === 0 ?
-                    this.resetNavigation('CreateNode') :
-                    this.resetNavigation('Nodes');
+                  onPress={ () => {
+                    this.resetNavigation('Friends');
                 }}
                 />
 
@@ -128,7 +131,7 @@ export class SideBar extends Component<IProps> {
                 }}
               />
 
-        <Text style={styles.version}>v1.0.0</Text>
+        <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}
         style={styles.legal}>Legal</Text>
@@ -142,6 +145,7 @@ export class SideBar extends Component<IProps> {
 export function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
+    friendList: state.friendList,
     groupList: state.groupList,
     privatePlaceList: state.privatePlaceList,
   };

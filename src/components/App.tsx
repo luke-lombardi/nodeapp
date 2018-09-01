@@ -12,10 +12,10 @@ import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
 import GroupList from '../screens/GroupList';
+import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
-import PlaceSearch from '../screens/PlaceSearch';
 import GroupEditor from '../screens/GroupEditor';
 import Settings from '../screens/Settings';
 
@@ -32,6 +32,7 @@ import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
 import { GroupListUpdatedActionCreator } from '../actions/GroupActions';
+import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
 
 // Services
 import NodeService,
@@ -41,6 +42,7 @@ import NodeService,
     IPrivatePersonListUpdated,
     IPrivatePlaceListUpdated,
     IGroupListUpdated,
+    IFriendListUpdated,
   }
   from '../services/NodeService';
 
@@ -104,19 +106,33 @@ const InternalStack = StackNavigator({
           )) } />,
         }),
       },
-  CreateNode: { screen: CreateNode,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: {color: 'white'},
-      title: 'Drop Pin',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+    Friends: { screen: FriendList,
+        navigationOptions: ({navigation}) => ({
+          headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+          headerTitleStyle: {color: 'white'},
+          title: 'Friends',
+          headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+            navigation.dispatch(NavigationActions.reset(
+            {
+              index: 0,
+              actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+            },
+            )) } />,
+          }),
         },
-        )) } />,
-      }),
+    CreateNode: { screen: CreateNode,
+      navigationOptions: ({navigation}) => ({
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+        headerTitleStyle: {color: 'white'},
+        title: 'Drop Pin',
+        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          navigation.dispatch(NavigationActions.reset(
+          {
+            index: 0,
+            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          },
+          )) } />,
+        }),
     },
     GroupEditor: { screen: GroupEditor,
       navigationOptions: ({navigation}) => ({
@@ -154,20 +170,6 @@ const InternalStack = StackNavigator({
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => { navigation.goBack(undefined); } } />,
       }),
     },
-    PlaceSearch: { screen: PlaceSearch,
-      navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10 },
-        headerTitleStyle: {color: 'white'},
-        title: 'Places Nearby',
-        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(NavigationActions.reset(
-          {
-            index: 0,
-            actions: [ NavigationActions.navigate({ routeName: 'CreateMeetup' }) ],
-          },
-          )) } />,
-        }),
-      },
   },
 {
   initialRouteName: 'Map',
@@ -212,6 +214,7 @@ interface IProps {
   PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   GroupListUpdated: (groupList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
@@ -220,6 +223,7 @@ interface IProps {
   privatePersonList: Array<any>;
   privatePlaceList: Array<any>;
   groupList: Array<any>;
+  friendList: Array<any>;
 
   challengeSettings: any;
   userRegion: any;
@@ -248,6 +252,7 @@ export class App extends Component<IProps, IState> {
       this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
       this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
 
+      this.gotNewFriendList = this.gotNewFriendList.bind(this);
       this.gotNewGroupList = this.gotNewGroupList.bind(this);
 
       this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
@@ -266,6 +271,7 @@ export class App extends Component<IProps, IState> {
           privatePersonListUpdated: this.gotNewPrivatePersonList,
           privatePlaceListUpdated: this.gotNewPrivatePlaceList,
           groupListUpdated: this.gotNewGroupList,
+          friendListUpdated: this.gotNewFriendList,
           currentUserRegion: this.getUserRegion,
           currentGroupList: this.getGroupList,
       });
@@ -288,6 +294,8 @@ export class App extends Component<IProps, IState> {
     }
 
     async handleLink(event) {
+      console.log('EVENT');
+      console.log(event);
       // parse the user_uuid as a string from the URL
       let linkData = event.url.replace(/.*?:\/\//g, '');
       let splitLinkData = linkData.split('/');
@@ -312,9 +320,36 @@ export class App extends Component<IProps, IState> {
         if (newGroupId !== undefined) {
           await this.nodeService.storeGroup(newGroupId);
         } else {
-          Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
+          Logger.info('App.handleLink - invalid response from JoinGroupAsync.');
         }
 
+      } else if (action === 'add_friend') {
+        let relationId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'relation_id': relationId,
+          'your_id': memberId,
+        };
+
+        let newRelation = await this.apiService.AcceptFriendAsync(groupData);
+
+        if (newRelation !== undefined) {
+          let newFriendId = newRelation.their_id;
+          Logger.info(`App.handleLink -  response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
+
+          let exists = await this.nodeService.storeFriend(newFriendId);
+          if (!exists) {
+            Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
+            await this.nodeService.storeNode(newFriendId);
+          }
+
+        } else {
+          Logger.info('App.handleLink - invalid response from AcceptFriendAsync.');
+        }
       }
 
     }
@@ -374,6 +409,9 @@ export class App extends Component<IProps, IState> {
       await this.props.GroupListUpdated(props.groupList);
     }
 
+    private async gotNewFriendList(props: IFriendListUpdated) {
+      await this.props.FriendListUpdated(props.friendList);
+    }
 }
 
 // @ts-ignore
@@ -385,6 +423,7 @@ function mapStateToProps(state: IStoreState): IProps {
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
     groupList: state.groupList,
+    friendList: state.friendList,
     userRegion: state.userRegion,
   };
 }
@@ -397,6 +436,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
     GroupListUpdated: bindActionCreators(GroupListUpdatedActionCreator, dispatch),
+    FriendListUpdated: bindActionCreators(FriendListUpdatedActionCreator, dispatch),
   };
 }
 

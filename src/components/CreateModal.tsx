@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     scrollableModal: {
-        height: '40%',
+        height: '32%',
         width: '100%',
     },
     scrollableModalContent1: {

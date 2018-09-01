@@ -41,17 +41,18 @@ export class Settings extends Component<IProps, IState> {
       let response = await AsyncStorage.getItem('userSettings');
       let storage = JSON.parse(response);
 
-      let savedTitle = storage.savedTitle;
-      let savedDescription = storage.savedDescription;
-
-      if (savedTitle && savedDescription !== null) {
+      if (storage !== null) {
+        console.log('STORAGE');
+        console.log(storage);
+        let savedTitle = storage.savedTitle;
+        let savedDescription = storage.savedDescription;
         console.log('got title', savedTitle);
         this.setState({
           savedDescription: savedDescription,
           savedTitle: savedTitle,
         });
-        return;
       }
+        return;
     }
 
     render() {
@@ -101,7 +102,7 @@ export class Settings extends Component<IProps, IState> {
               backgroundInactive={'gray'}
               circleSize={30}
               style={styles.switch}
-              value={'true'}
+              value={true}
               onValueChange={ () => {this.setState({privacy: true});
             }
           }

@@ -73,8 +73,6 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   componentWillMount() {
-    console.log('component will mount');
-
     let userRegion = this.props.navigation.getParam('userRegion', {});
     let uuid = this.props.navigation.getParam('uuid', '');
 
@@ -89,10 +87,7 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('component mounted');
-
     if (this.action === 'edit_group') {
-      console.log('editing the group');
       let groupData = this.props.navigation.getParam('group_data', '');
 
       // TODO: distinguish between group owners and group members (use owner_uuid in response)
@@ -101,7 +96,7 @@ export class GroupEditor extends Component<IProps, IState> {
         peopleInGroup: this.state.peopleInGroup.concat(groupData.people),
         editing: true,
         groupData: groupData,
-        ttl: groupData.ttl,
+        ttl: (groupData.ttl / 3600.0),
       });
     }
 
@@ -136,7 +131,6 @@ export class GroupEditor extends Component<IProps, IState> {
         console.log('Contact already added');
     }
 
-    console.log(this.state.peopleInGroup);
   }
 
   _addPerson() {
@@ -155,17 +149,23 @@ export class GroupEditor extends Component<IProps, IState> {
     // Edit the group data to be passed
     let groupData = this.state.groupData;
 
-    let peopleToRemove = this.state.peopleToRemove;
-    peopleToRemove.push(groupData.people[index - 1].member_id);
+    if (groupData.people !== undefined) {
+      console.log('group data');
+      console.log(groupData.people);
 
-    // Remove group member from list
-    groupData.people_to_remove = peopleToRemove;
-    await this.setState({groupData: groupData});
+      let peopleToRemove = this.state.peopleToRemove;
+      peopleToRemove.push(groupData.people[index - 1].member_id);
+
+      // Remove group member from list
+      groupData.people_to_remove = peopleToRemove;
+      await this.setState({groupData: groupData});
+    }
+
     await this.setState({peopleInGroup: newGroup});
+
   }
 
   _renderPeopleInGroup(item) {
-      console.log(item);
     if (item.item.recordID === 'add_button') {
         return(<ListItem
             scaleProps={{
@@ -270,9 +270,11 @@ export class GroupEditor extends Component<IProps, IState> {
     );
   }
 
+  // Creates a new group
   private async submitSaveGroup() {
     let currentUUID = await AsyncStorage.getItem('user_uuid');
 
+    // Build group creation request body
     let groupData = {
       'group_data': {
         'title': this.state.title,
@@ -285,13 +287,14 @@ export class GroupEditor extends Component<IProps, IState> {
       'people_to_invite': this.state.peopleInGroup.slice(1),
     };
 
-    console.log('Submitted group request');
-    console.log(groupData);
-
+    Logger.info(`GroupEditor.submitSaveGroup - submitted group creation request: ${JSON.stringify(groupData)}`);
     await this.setState({isLoading: true});
+
+    // Send request to create the new group
     let newGroupId = await this.apiService.CreateGroupAsync(groupData);
     await this.setState({isLoading: false});
 
+    // If we received a response from the API, store the new group ID
     if (newGroupId !== undefined) {
       await this.nodeService.storeGroup(newGroupId);
       await this.setState({editing: true});
@@ -302,27 +305,55 @@ export class GroupEditor extends Component<IProps, IState> {
     this.props.navigation.navigate('Map', {updateNodes: true});
   }
 
+  // Edits an existing group
   private async submitEditGroup() {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
 
-    console.log('Submitted group update request');
-    console.log(this.state.groupData);
+    // Update group setting fields from state variables
+    let groupData = this.state.groupData;
+    groupData.ttl = this.state.ttl;
+    groupData.title = this.state.title;
 
-    await this.setState({isLoading: true});
+    // Set the new group data in state
+    await this.setState({
+      groupData: groupData,
+      isLoading: true,
+    });
+
+    Logger.info(`GroupEditor.submitEditGroup - submitted group update request: ${JSON.stringify(this.state.groupData)}`);
+
+    // Send request to update the group settings
     let newGroupData = await this.apiService.UpdateGroupAsync(this.state.groupData);
     await this.setState({isLoading: false});
 
+    // If we received a response from the API
     if (newGroupData !== undefined) {
-      console.log('NEW GROUP DATA');
-      console.log(newGroupData);
+      Logger.info(`GroupEditor.submitEditGroup - got response: ${JSON.stringify(newGroupData)}`);
+
       await this.setState({editing: true});
     } else {
       Logger.info('CreateNode.submitEditGroup - invalid response from update group.');
     }
   }
 
+  // Deletes an existing group
   private async submitDeleteGroup() {
-    console.log('delete action');
+    // let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+    await this.setState({isLoading: true});
+    let result = await this.apiService.DeleteGroupAsync(this.state.groupData);
+    await this.setState({isLoading: false});
+
+    if (result !== undefined) {
+      if (result.group_id !== '' && result.group_id !== undefined) {
+        await this.nodeService.deleteGroup(result.group_id);
+        await this.setState({editing: false});
+
+        this.props.navigation.navigate('Map', {updateNodes: true});
+      }
+    } else {
+      Logger.info('CreateNode.submitDeleteGroup - invalid response from delete group.');
+    }
   }
 
 }

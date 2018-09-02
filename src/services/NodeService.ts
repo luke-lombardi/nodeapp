@@ -169,6 +169,52 @@ export default class NodeService {
         }
     }
 
+    // Delete a node ID from async storage
+    public async deleteNode(nodeId) {
+        let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+        if (trackedNodes !== null) {
+            trackedNodes = JSON.parse(trackedNodes);
+        } else {
+          // @ts-ignore
+          trackedNodes = [];
+        }
+
+        let index = trackedNodes.indexOf(nodeId);
+
+        if (index >= 0) {
+            // @ts-ignore
+            trackedNodes.splice(index, 1);
+
+            await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
+            Logger.info(`NodeService.deleteNode: removed node: ${trackedNodes}`);
+        } else {
+            Logger.info(`NodeService.deleteNode: you are not tracking this node.`);
+        }
+    }
+
+    // Delete a friend ID from async storage
+    public async deleteFriend(friendId) {
+        let trackedFriends = await AsyncStorage.getItem('trackedFriends');
+        if (trackedFriends !== null) {
+            trackedFriends = JSON.parse(trackedFriends);
+        } else {
+          // @ts-ignore
+          trackedFriends = [];
+        }
+
+        let index = trackedFriends.indexOf(friendId);
+
+        if (index >= 0) {
+            // @ts-ignore
+            trackedFriends.splice(index, 1);
+
+            await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
+            Logger.info(`NodeService.deleteFriend: removed friend: ${trackedFriends}`);
+        } else {
+            Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
+        }
+    }
+
     // Delete a group ID from async storage
     public async deleteGroup(groupId) {
             let trackedGroups = await AsyncStorage.getItem('trackedGroups');

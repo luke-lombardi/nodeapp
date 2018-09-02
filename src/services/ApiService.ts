@@ -222,7 +222,7 @@ export default class ApiService {
       return result;
     }
 
-    // Creates a new group
+    // Joins a new group
     async JoinGroupAsync(groupData: any) {
       let requestBody = groupData;
 
@@ -235,7 +235,7 @@ export default class ApiService {
           });
 
       if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
+        Logger.info('ApiService.JoinGroupAsync - Unable to join gorup');
 
         return undefined;
       }

@@ -62,7 +62,7 @@ def insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id):
     }
 
     logger.info('Inserting this relation data into cache: %s' % (relation_data))
-    ret = rds.setex(name=relation_id, value=json.dumps(relation_data), time=DEFAULT_INVITE_TTL)
+    ret = rds.set(name=relation_id, value=json.dumps(relation_data))
     return ret
 
 def create_mirror_node(rds, private_uuid, friend_id):

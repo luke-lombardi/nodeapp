@@ -294,8 +294,6 @@ export class App extends Component<IProps, IState> {
     }
 
     async handleLink(event) {
-      console.log('EVENT');
-      console.log(event);
       // parse the user_uuid as a string from the URL
       let linkData = event.url.replace(/.*?:\/\//g, '');
       let splitLinkData = linkData.split('/');

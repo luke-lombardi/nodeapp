@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text, Alert } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { ListItem, Icon } from 'react-native-elements';
+import Swipeout from 'react-native-swipeout';
 
 // import Logger from '../services/Logger';
+
+import NodeService from '../services/NodeService';
+
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
@@ -14,9 +18,15 @@ interface IProps {
 }
 
 export class FriendList extends Component<IProps> {
+  private nodeService: NodeService;
+
   constructor(props: IProps) {
     super(props);
 
+    this._renderItem = this._renderItem.bind(this);
+    this.removeFriend = this.removeFriend.bind(this);
+
+    this.nodeService = new NodeService({});
   }
 
   _onTouchNode(node: any) {
@@ -37,21 +47,79 @@ export class FriendList extends Component<IProps> {
     this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
   }
 
-  _renderItem = ({item}) => (
-    <ListItem
-      scaleProps={{
-        friction: 90,
-        tension: 100,
-        activeScale: 0.95,
-      }}
-      onPress={() => this._onTouchNode(item)}
-      containerStyle={styles.friendListItem}
-      leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-      rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
-      title={ item.data.title ? item.data.title : item.node_id }
-      subtitle={ 'Status: ' + (item.data.status === 'inactive' ? 'pending' : 'active')  }
-    />
-  )
+  _renderItem(item) {
+    let row = item.item;
+
+    let swipeBtns = [{
+      component: (
+        <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              backgroundColor: '#ffffff',
+              borderLeftWidth: 1,
+              borderLeftColor: 'rgba(44,55,71,0.3)',
+            }}
+        >
+        <Icon
+          name='trash-2'
+          type='feather'
+          size={30}
+          color='rgba(44,55,71,1.0)'
+        />
+        </View>
+      ),
+      onPress: () => { this.removeFriend(row); },
+    },
+    {
+      component: (
+        <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              backgroundColor: '#ffffff',
+              borderLeftWidth: 1,
+              borderLeftColor: 'rgba(44,55,71,0.3)',
+            }}
+        >
+        <Icon
+          name='eye'
+          type='feather'
+          size={30}
+          color='rgba(44,55,71,1.0)'
+        />
+        </View>
+      ),      underlayColor: 'white',
+      onPress: () => { this._onTouchNode(row); },
+    },
+  ];
+
+    return (
+      <Swipeout right={swipeBtns}
+        autoClose={true}
+        backgroundColor='#ffffff'
+      >
+
+        <ListItem
+          // scaleProps={{
+          //   friction: 90,
+          //   tension: 100,
+          //   activeScale: 0.95,
+          // }}
+          containerStyle={styles.friendListItem}
+          leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+          rightIcon={{name: 'chevron-left', color: 'rgba(51, 51, 51, 0.8)'}}
+          title={ row.data.title ? row.data.title : row.node_id }
+          subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+        />
+
+      </Swipeout>
+    );
+  }
 
   render() {
     return (
@@ -69,6 +137,13 @@ export class FriendList extends Component<IProps> {
         }
      </View>
     );
+  }
+
+  private async removeFriend(row: any): Promise<any> {
+    // TODO: call deleteRelation endpoint to remove friend from cache
+    let friendId = row.node_id;
+    await this.nodeService.deleteFriend(friendId);
+    await this.nodeService.deleteNode(friendId);
   }
 }
 

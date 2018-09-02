@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Marker }   from 'react-native-maps';
+import { Image }   from 'react-native';
 // import { StyleSheet } from 'react-native';
 
 interface IProps {
@@ -25,12 +26,14 @@ export default class PrivatePlaces extends Component<IProps, IState> {
                 title={marker.data.title}
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 pinColor={'red'}
-                image={require('../../../assets/images/gift.png')}
                 anchor={{ x: 0.5, y: 0.5 }}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePlace'); }}
                 // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                 key={marker.node_id}
             >
+
+            <Image source={require('../../../assets/images/private_place.png')} style={{ width: 35, height: 35 }} />
+
             {/* <Callout tooltip={true} style={styles.callout}>
             <View style={styles.card}>
             <View style={{flex: 1}}>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Marker}   from 'react-native-maps';
+import { Marker }   from 'react-native-maps';
+import { Image }   from 'react-native';
 
 interface IProps {
     publicPlaceList: any;
@@ -24,11 +25,13 @@ export default class PublicPlaces extends Component<IProps, IState> {
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 title={marker.data.title}
-                image={require('../../../assets/images/gift.png')}
                 anchor={{ x: 0.5, y: 0.5 }}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPlace'); }}
                 key={marker.node_id}
-            />
+            >
+
+            <Image source={require('../../../assets/images/public_place.png')} style={{ width: 35, height: 35 }} />
+            </Marker>
         )));
     }
 

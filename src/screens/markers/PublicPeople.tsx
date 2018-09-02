@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {Marker}   from 'react-native-maps';
+import { Marker }   from 'react-native-maps';
+import { Image }   from 'react-native';
 
 interface IProps {
     publicPersonList: any;
@@ -25,13 +26,16 @@ export default class PublicPeople extends Component<IProps, IState> {
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 title={marker.data.title}
                 pinColor={'purple'}
-                image={require('../../../assets/images/gift.png')}
                 anchor={{ x: 0.5, y: 0.5 }}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPerson'); }}
                 // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                 description={marker.data.description}
                 key={marker.node_id}
-            />
+            >
+
+            <Image source={require('../../../assets/images/public_person.png')} style={{ width: 35, height: 35 }} />
+
+            </Marker>
         )));
     }
 

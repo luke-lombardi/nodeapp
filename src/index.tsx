@@ -6,6 +6,7 @@ import ConfigureStore from './store/ConfigureStore';
 
 import Logger, { LogLevel } from './services/Logger';
 import { YellowBox } from 'react-native';
+import codePush from 'react-native-code-push';
 
 console.disableYellowBox = true;
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
@@ -15,9 +16,13 @@ const store = ConfigureStore();
 
 class MobileApp extends Component {
 
+    // CODEPUSH BUILD COMMAND:
+    // code-push release-react fyb ios --entryFile /Users/beta9/fyb/artifacts/index.js
+
   componentWillMount() {
+
     Logger.CreateLogger({
-      logzToken: 'oPnvyWXcbTWyjQ',  // <-- Put Logz.io (looks like an MD5 hash) here
+      logzToken: 'WyJyaJmkFiduXkqHFVDccOXYWdfxjNFE',  // <-- Put Logz.io (looks like an MD5 hash) here
       toConsole: __DEV__,
       level: LogLevel.Info,
       sendIntervalMs: 60000,
@@ -31,6 +36,7 @@ class MobileApp extends Component {
     });
 
     Logger.info(` MobileApp - Starting up`);
+
   }
 
   render() {
@@ -42,4 +48,6 @@ class MobileApp extends Component {
   }
 }
 
-AppRegistry.registerComponent('MobileApp', () => MobileApp);
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+
+AppRegistry.registerComponent('MobileApp', () => codePush(codePushOptions)(MobileApp));

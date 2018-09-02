@@ -7,6 +7,7 @@
 
 #import "AppDelegate.h"
 
+#import <CodePush/CodePush.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
@@ -38,7 +39,11 @@
   
   [GMSServices provideAPIKey:@"AIzaSyApY7xHHBkSDZMtGz-Fp6Qfp_aScW3Ovyc"];
   
+  #ifdef DEBUG
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"artifacts/index" fallbackResource:nil];
+  #else
+    jsCodeLocation = [CodePush bundleURL];
+  #endif
   
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"MobileApp"

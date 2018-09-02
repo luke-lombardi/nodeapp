@@ -10,7 +10,7 @@ interface IProps {
 }
 
 interface IState {
-    name: string;
+    title: string;
     description: string;
     savedTitle: any;
     savedDescription: any;
@@ -22,18 +22,19 @@ export class Profile extends Component<IProps, IState> {
     super(props);
 
     this.state = {
-        name: '',
+        title: '',
         description: '',
         savedTitle: 'Name',
         savedDescription: 'Description',
         privacy: false,
     };
+
     this.saveSettings = this.saveSettings.bind(this);
-    this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
     this.getSettings = this.getSettings.bind(this);
 }
 
-    componentWillMount() {
+    componentDidMount() {
       this.getSettings();
     }
 
@@ -42,15 +43,14 @@ export class Profile extends Component<IProps, IState> {
       let storage = JSON.parse(response);
 
       if (storage !== null) {
-        console.log('STORAGE');
-        console.log(storage);
         let savedTitle = storage.savedTitle;
         let savedDescription = storage.savedDescription;
-        console.log('got title', savedTitle);
 
         await this.setState({
           savedDescription: savedDescription,
           savedTitle: savedTitle,
+          title: savedTitle,
+          description: savedDescription,
         });
       }
         return;
@@ -63,7 +63,7 @@ export class Profile extends Component<IProps, IState> {
             containerStyle={styles.card}>
             <View style={styles.inputContainer}>
             <Input
-              placeholder={this.state.savedTitle !== null ? this.state.savedTitle : 'Display Name'}
+              placeholder={this.state.savedTitle !== null ? undefined : 'Display Name'}
               leftIcon={
                 <Icon
                   name='settings'
@@ -73,8 +73,8 @@ export class Profile extends Component<IProps, IState> {
               }
               containerStyle={styles.inputPadding}
               inputStyle={styles.descriptionInput}
-              onChangeText={(name) => this.setState({name: name})}
-              value={this.state.name}
+              onChangeText={(title) => this.setState({title: title})}
+              value={this.state.title}
             />
             <Input
               placeholder={this.state.savedDescription !== null ? this.state.savedDescription : 'Display Description'}
@@ -121,11 +121,9 @@ export class Profile extends Component<IProps, IState> {
 private async saveSettings() {
     let userSettings = {
       'userUuid': await AsyncStorage.getItem('user_uuid'),
-      'savedTitle': this.state.name,
+      'savedTitle': this.state.title,
       'savedDescription': this.state.description,
     };
-
-    console.log(userSettings);
 
     let savedSettings = await AsyncStorage.setItem('userSettings', JSON.stringify(userSettings));
 

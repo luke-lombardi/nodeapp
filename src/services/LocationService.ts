@@ -253,13 +253,26 @@ export default class LocationService {
         return ;
       }
 
+      let storedSettings = await AsyncStorage.getItem('userSettings');
+      storedSettings = JSON.parse(storedSettings);
+
+      let savedTitle = 'Anonymous';
+      let savedDescription = '';
+
+      if (storedSettings !== null) {
+        // @ts-ignore
+        savedTitle = storedSettings.savedTitle;
+        // @ts-ignore
+        savedDescription = storedSettings.savedDescription;
+      }
+
       let requestBody = {
         'node_id': currentUUID,
         'node_data': {
           'lat': userRegion.latitude,
           'lng': userRegion.longitude,
-          'title': 'test',
-          'description': 'test2',
+          'title': savedTitle,
+          'description': savedDescription,
           'public': false,
           'type': 'person',
         },
@@ -267,8 +280,6 @@ export default class LocationService {
 
       let response = await this.apiService.PostLocationAsync(requestBody);
 
-      // console.log('RESPONSE FROM POST LOCATION');
-      // console.log(response);
       return response;
     }
 

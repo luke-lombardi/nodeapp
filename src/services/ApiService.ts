@@ -24,7 +24,7 @@ export default class ApiService {
 
     // Get all nodes, both private and public, and update the redux store
     public async getNodes() {
-     let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getPublicNodes', {
+     let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getPublicNodes', {
           method: 'GET',
       });
 
@@ -71,7 +71,7 @@ export default class ApiService {
       }
 
       Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
-      response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getNodes', {
+      response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getNodes', {
           method: 'POST',
           headers: {'Content-Type': 'text/plain'},
           body: JSON.stringify(nodesToGet),
@@ -98,7 +98,7 @@ export default class ApiService {
         }
 
         Logger.info(`Fetching these groups: ${JSON.stringify(groupsToGet)}`);
-        let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getGroups', {
+        let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getGroups', {
             method: 'POST',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify(groupsToGet),
@@ -115,7 +115,7 @@ export default class ApiService {
         'node_data': nodeData,
       };
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/createNode', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/createNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export default class ApiService {
       async CreateGroupAsync(groupData: any) {
         let requestBody = groupData;
 
-        let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/createGroup', {
+        let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/createGroup', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ export default class ApiService {
     async UpdateGroupAsync(groupData: any) {
       let requestBody = groupData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/updateGroup', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/updateGroup', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ export default class ApiService {
     async DeleteGroupAsync(groupData: any) {
       let requestBody = groupData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/deleteGroup', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/deleteGroup', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ export default class ApiService {
     async JoinGroupAsync(groupData: any) {
       let requestBody = groupData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/joinGroup', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/joinGroup', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -225,7 +225,7 @@ export default class ApiService {
     async AddFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/addFriend', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/addFriend', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -247,7 +247,7 @@ export default class ApiService {
     async AcceptFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/acceptFriend', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/acceptFriend', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -267,7 +267,7 @@ export default class ApiService {
 
     // Updates the users location node
     async PostLocationAsync(nodeData: any) {
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/postNode', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/postNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -291,7 +291,7 @@ export default class ApiService {
         'contact_info': contactInfo,
       };
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/sendText', {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/sendText', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

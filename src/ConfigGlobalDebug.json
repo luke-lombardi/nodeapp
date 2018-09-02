@@ -1,7 +1,8 @@
 {
     "jsVersion": "v1.0.1 DEBUG",
     "buildEnvironment": "STAGING",
-    "apiServicesUrlBase": "https://api.smartshare.io",
+    "apiStage": "dev",
+    "apiServicesUrlBase": "https://api.smartshare.io/",
     "nodeCheckIntervalMs": 5000,
     "groupCheckIntervalMs": 5000
 }

@@ -3,6 +3,7 @@ import globalConfigRelease from '../ConfigGlobalRelease.json';
 
 export interface ConfigGlobal {
     readonly apiServicesUrlBase: string;
+    readonly apiStage: string;
 
     readonly nodeCheckIntervalMs: number;
     readonly groupCheckIntervalMs: number;

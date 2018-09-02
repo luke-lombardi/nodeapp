@@ -494,6 +494,7 @@
 		5B897EE75A41454CB42A11F4 /* emoji_smile_normal.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = emoji_smile_normal.png; path = ../assets/images/emoji_smile_normal.png; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5F022A987EA248CEA9EAAF53 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		60DA1FDE8EC75A8BA2EEB1D4 /* Pods-FYB.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FYB.staging.xcconfig"; path = "Pods/Target Support Files/Pods-FYB/Pods-FYB.staging.xcconfig"; sourceTree = "<group>"; };
 		6FC96E3847194C9B9F3E61ED /* libRNSimpleCompass.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleCompass.a; sourceTree = "<group>"; };
 		77EA891D532C491585AFAE2D /* libRNAWSCognito.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAWSCognito.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -835,6 +836,7 @@
 			children = (
 				A7AC8846F5E90B11B3D93E01 /* Pods-FYB.debug.xcconfig */,
 				2347A56E18E85480BBC760AF /* Pods-FYB.release.xcconfig */,
+				60DA1FDE8EC75A8BA2EEB1D4 /* Pods-FYB.staging.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1023,11 +1025,11 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = TN6X9LR957;
+						DevelopmentTeam = 7DA27ZHP58;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = TN6X9LR957;
+						DevelopmentTeam = 7DA27ZHP58;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
@@ -1699,7 +1701,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1732,7 +1734,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1767,7 +1769,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1804,7 +1806,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = FYB;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1823,7 +1825,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1845,7 +1847,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = FYB;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1896,7 +1898,7 @@
 		};
 		2CE592CF213B548F002FE8C2 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2347A56E18E85480BBC760AF /* Pods-FYB.release.xcconfig */;
+			baseConfigurationReference = 60DA1FDE8EC75A8BA2EEB1D4 /* Pods-FYB.staging.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1904,7 +1906,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1926,7 +1928,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.fyb0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = FYB;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1941,7 +1943,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = 7DA27ZHP58;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",

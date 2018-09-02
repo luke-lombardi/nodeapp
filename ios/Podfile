@@ -1,6 +1,6 @@
 platform :ios, '11.0'
 
-target 'FYB' do
+target 'Smartshare' do
 pod "yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
 pod 'react-native-google-maps', path: '../node_modules/react-native-maps'  # If you need GoogleMaps support on iOS
 pod 'GoogleMaps'

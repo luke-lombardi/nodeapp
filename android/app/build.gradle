@@ -73,10 +73,11 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "artifacts/index.js"
+    entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -98,7 +99,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.mobileapp"
+        applicationId "com.smartshare"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -137,10 +138,16 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-camera')
-    compile project(':react-native-maps')
-    compile project(':react-native-aws-cognito-js')
     compile project(':react-native-vector-icons')
+    compile project(':react-native-simple-compass')
+    compile project(':react-native-randombytes')
+    compile project(':react-native-maps')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-geocoder')
+    compile project(':react-native-contacts')
+    compile project(':react-native-code-push')
+    compile project(':react-native-camera')
+    compile project(':react-native-aws-cognito-js')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

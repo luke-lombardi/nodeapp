@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">MobileApp</string>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">ls</string>
+    <string name="app_name">Smartshare</string>
 </resources>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Marker}   from 'react-native-maps';
+import { Marker }   from 'react-native-maps';
+import { Image }   from 'react-native';
 
 interface IProps {
     friendList: any;
@@ -31,7 +32,12 @@ export default class Friends extends Component<IProps, IState> {
                 // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
                 description={marker.data.description}
                 key={marker.node_id}
-            /> :
+            >
+
+            <Image source={require('../../../assets/images/public_person.png')} style={{ width: 35, height: 35 }} />
+
+            </Marker>
+             :
             undefined
         )));
     }

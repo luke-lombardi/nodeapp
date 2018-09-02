@@ -14,7 +14,7 @@ YellowBox.ignoreWarnings(['Class RCTCxxModule']);
 
 const store = ConfigureStore();
 
-class MobileApp extends Component {
+class Smartshare extends Component {
 
     // CODEPUSH BUILD COMMAND:
     // code-push release-react fyb ios --entryFile /Users/beta9/fyb/artifacts/index.js
@@ -26,7 +26,7 @@ class MobileApp extends Component {
       toConsole: __DEV__,
       level: LogLevel.Info,
       sendIntervalMs: 60000,
-      logzType: `mobileapp-${Platform.OS}`,
+      logzType: `Smartshare-${Platform.OS}`,
       bufferSize: 1000,
       deviceId: '',
       bundleId: '',
@@ -35,7 +35,7 @@ class MobileApp extends Component {
       logRNErrors: true,
     });
 
-    Logger.info(` MobileApp - Starting up`);
+    Logger.info(`Smartshare - Starting up`);
 
   }
 
@@ -50,4 +50,4 @@ class MobileApp extends Component {
 
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
 
-AppRegistry.registerComponent('MobileApp', () => codePush(codePushOptions)(MobileApp));
+AppRegistry.registerComponent('Smartshare', () => codePush(codePushOptions)(Smartshare));

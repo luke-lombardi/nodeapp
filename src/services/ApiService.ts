@@ -20,7 +20,6 @@ export default class ApiService {
         Logger.info(`ApiService.constructor -  Initialized api service`);
 
         this.getNodes = this.getNodes.bind(this);
-
     }
 
     // Get all nodes, both private and public, and update the redux store
@@ -82,28 +81,6 @@ export default class ApiService {
       let nodeList = await response.json();
       return nodeList;
     }
-
-    public async getFriends() {
-      // This gets the currently tracked private friends in ASYNC storage
-      let trackedFriends = await AsyncStorage.getItem('trackedFriends');
-
-      // If we are tracking any nodes, add them to request body
-      if (trackedFriends !== null) {
-        trackedFriends = JSON.parse(trackedFriends);
-        // @ts-ignore
-      }
-
-      Logger.info(`Fetching these friends: ${JSON.stringify(trackedFriends)}`);
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + '/dev/getGroups', {
-          method: 'POST',
-          headers: {'Content-Type': 'text/plain'},
-          body: JSON.stringify(trackedFriends),
-      });
-
-      // TODO: add error handling here
-      let friendList = await response.json();
-      return friendList;
-  }
 
     public async getGroups() {
         // This gets the currently tracked private groups in ASYNC storage

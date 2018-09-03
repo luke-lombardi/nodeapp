@@ -969,7 +969,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = TN6X9LR957;
+						DevelopmentTeam = 7DA27ZHP58;
 						ProvisioningStyle = Manual;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
@@ -1728,9 +1728,9 @@
 			baseConfigurationReference = 2A519AAA2A4BF15D438E66DE /* Pods-Smartshare.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODEPUSH_KEY = "zICSrruj-JhwNSG5MJnWfkuC_jhPc4b048d9-4cc7-47f0-88cc-dc57fd739066";
+				CODEPUSH_KEY = "";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1758,10 +1758,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.staging;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
+				PROVISIONING_PROFILE = "fe896533-a9d4-4f77-86bb-0295baa26c30";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Staging;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1771,9 +1771,9 @@
 			baseConfigurationReference = AF339CFAB84F1DD9D764BB56 /* Pods-Smartshare.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODEPUSH_KEY = "urD5MLD2l7Y-8YNlCjlw7RdKjfVqc4b048d9-4cc7-47f0-88cc-dc57fd739066";
+				CODEPUSH_KEY = "GZ0YS9bVDivg5e-jZxmjIexbI4qSe9ec12f5-6593-41b9-8ed3-37c95b1c56d5";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TN6X9LR957;
@@ -1800,10 +1800,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.staging;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
+				PROVISIONING_PROFILE = "fe896533-a9d4-4f77-86bb-0295baa26c30";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Staging;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

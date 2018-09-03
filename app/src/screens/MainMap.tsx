@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, AsyncStorage } from 'react-native';
 import {
   StyleSheet,
 } from 'react-native';
@@ -43,6 +43,7 @@ import PrivatePeople from './markers/PrivatePeople';
 import Friends from './markers/Friends';
 
 import SleepUtil from '../services/SleepUtil';
+import ApiService from '../services/ApiService';
 
 // import mapStyle from '../config/mapStyle.json';
 interface IProps {
@@ -85,6 +86,7 @@ export class MainMap extends Component<IProps, IState> {
 
   // @ts-ignore
   private nodeService: NodeService;
+  private apiService: ApiService;
 
   constructor(props: IProps) {
     super(props);
@@ -133,6 +135,8 @@ export class MainMap extends Component<IProps, IState> {
         currentUserRegion: this.props.userRegion,
     });
 
+    this.apiService = new ApiService({});
+
     let markerRegion = this.props.navigation.getParam('region', undefined);
     this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
 
@@ -142,6 +146,11 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    let showConfirmModal = this.props.navigation.getParam('showConfirmModal', false);
+    if (showConfirmModal) {
+      console.log('!!!!!!!!Should be showing confirmation modal');
+    }
+
     if (this.currentMarkerRegion !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
 
@@ -260,6 +269,62 @@ export class MainMap extends Component<IProps, IState> {
   async closeCreateModal() {
     await this.setState({createModalVisible: false});
   }
+
+  async handleLink(linkData: any) {
+    let splitLinkData = linkData.split('/');
+
+      let action = splitLinkData[0];
+
+      if (action === 'join_group') {
+        console.log(splitLinkData);
+        let groupId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'group_id': groupId,
+          'member_id': memberId,
+        };
+
+        let newGroupId = await this.apiService.JoinGroupAsync(groupData);
+
+        if (newGroupId !== undefined) {
+          await this.nodeService.storeGroup(newGroupId);
+        } else {
+          Logger.info('App.handleLink - invalid response from JoinGroupAsync.');
+        }
+
+      } else if (action === 'add_friend') {
+        let relationId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'relation_id': relationId,
+          'your_id': memberId,
+        };
+
+        let newRelation = await this.apiService.AcceptFriendAsync(groupData);
+
+        if (newRelation !== undefined) {
+          let newFriendId = newRelation.their_id;
+          Logger.info(`App.handleLink -  response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
+
+          let exists = await this.nodeService.storeFriend(newFriendId);
+          if (!exists) {
+            Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
+            await this.nodeService.storeNode(newFriendId);
+          }
+
+        } else {
+          Logger.info('App.handleLink - invalid response from AcceptFriendAsync.');
+        }
+      }
+    }
 
   render() {
     return (

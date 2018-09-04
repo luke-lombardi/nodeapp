@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+// @ts-ignore
+import { View, StyleSheet, Text } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import Modal from 'react-native-modal';
@@ -41,27 +42,9 @@ export default class ConfirmModal extends Component<IProps, IState> {
         return (
             <Modal
                     isVisible={this.state.visibleModal}
-                    animationIn={'slideInUp'}
-                    animationInTiming={300}
-                    animationOut={'slideOutDown'}
-                    animationOutTiming={300}
-                    onSwipe={() => { this.props.functions.closeConfirmModal(); } }
-                    onBackdropPress={() => { this.props.functions.closeConfirmModal(); } }
-                    swipeDirection='down'
-                    scrollTo={this.handleScrollTo}
-                    scrollOffset={this.state.scrollOffset}
-                    scrollOffsetMax={10} // content height - ScrollView height
-                    style={styles.bottomModal}
                     >
-                    <View style={styles.scrollableModal}>
-                        <ScrollView
-                        ref={ref => (this.scrollViewRef = ref)}
-                        onScroll={this.handleOnScroll}
-                        scrollEventThrottle={10}
-                        >
-
-                        <View style={styles.scrollableModalContent1}>
-                            <Button style={styles.fullWidthButton}
+                     <View style={styles.modalContent}>
+                        <Button style={styles.fullWidthButton}
                                     buttonStyle={styles.buttonStyle}
                                     titleStyle={{
                                         'color': 'black',
@@ -76,9 +59,8 @@ export default class ConfirmModal extends Component<IProps, IState> {
                                     icon={{name: 'check-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                     iconRight
                             />
-                        </View>
-                        <View style={styles.scrollableModalContent1}>
-                            <Button style={styles.fullWidthButton}
+
+                         <Button style={styles.fullWidthButton}
                                     buttonStyle={styles.buttonStyle}
                                     titleStyle={{
                                         'color': 'black',
@@ -90,12 +72,9 @@ export default class ConfirmModal extends Component<IProps, IState> {
                                     disabled={false}
                                     // loadingStyle={}
                                     title='Cancel'
-                                    icon={{name: 'slash', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                    icon={{name: 'x', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                     iconRight
                             />
-                        </View>
-
-                        </ScrollView>
                     </View>
                 </Modal>
         );
@@ -136,5 +115,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         borderColor: 'rgba(51, 51, 51, 0.8)',
         borderWidth: 2.0,
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 22,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 4,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
     },
 });

@@ -295,10 +295,7 @@ export class App extends Component<IProps, IState> {
     async handleLink(event) {
       // parse the user_uuid as a string from the URL
       let linkData = event.url.replace(/.*?:\/\//g, '');
-      console.log('GOT LINK DATA');
-      console.log(linkData);
-
-      NavigationService.navigate('Map', { showConfirmModal: true });
+      NavigationService.navigate('Map', { showConfirmModal: true, linkData: linkData});
     }
 
     componentWillUnmount() {

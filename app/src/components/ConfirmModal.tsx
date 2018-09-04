@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-// import { Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 import Modal from 'react-native-modal';
 
 interface IProps {
     functions: any;
+    linkData: string;
 }
 
 interface IState {
@@ -58,6 +59,41 @@ export default class ConfirmModal extends Component<IProps, IState> {
                         onScroll={this.handleOnScroll}
                         scrollEventThrottle={10}
                         >
+
+                        <View style={styles.scrollableModalContent1}>
+                            <Button style={styles.fullWidthButton}
+                                    buttonStyle={styles.buttonStyle}
+                                    titleStyle={{
+                                        'color': 'black',
+                                    }}
+                                    onPress={() => {
+                                        this.props.functions.closeConfirmModal(true, this.props.linkData);
+                                    } }
+                                    loading={false}
+                                    disabled={false}
+                                    // loadingStyle={}
+                                    title='Confirm'
+                                    icon={{name: 'check-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                    iconRight
+                            />
+                        </View>
+                        <View style={styles.scrollableModalContent1}>
+                            <Button style={styles.fullWidthButton}
+                                    buttonStyle={styles.buttonStyle}
+                                    titleStyle={{
+                                        'color': 'black',
+                                    }}
+                                    onPress={() => {
+                                        this.props.functions.closeConfirmModal(false, this.props.linkData);
+                                    } }
+                                    loading={false}
+                                    disabled={false}
+                                    // loadingStyle={}
+                                    title='Cancel'
+                                    icon={{name: 'slash', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                                    iconRight
+                            />
+                        </View>
 
                         </ScrollView>
                     </View>

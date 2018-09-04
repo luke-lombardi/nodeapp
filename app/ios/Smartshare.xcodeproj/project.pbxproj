@@ -41,6 +41,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* SmartshareTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SmartshareTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2E747B1C213C481100EC738F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E747B1B213C481100EC738F /* GameKit.framework */; };
+		2ED41DCE213E1E8300BBCF27 /* libRNSnackbar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED41DCD213E1E7200BBCF27 /* libRNSnackbar.a */; };
 		32F4AB5F05E64AA0B5F3450B /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FD0795272FB34D9DAF9F92F7 /* SimpleLineIcons.ttf */; };
 		34591FE7C2E74C8B868E87FA /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 646C07DE44CF4FCB969259D0 /* libBVLinearGradient.a */; };
 		37C56F9605B34ECBB7263EFC /* world.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E90DF70971D4070AFB9249B /* world.png */; };
@@ -284,6 +285,13 @@
 			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
 			remoteInfo = RNGeocoder;
 		};
+		2ED41DCC213E1E7200BBCF27 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2ED41DC8213E1E7200BBCF27 /* RNSnackbar.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4114DC4C1C187C3A003CD988;
+			remoteInfo = RNSnackbar;
+		};
 		3DAD3E831DF850E9000B6D8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
@@ -447,6 +455,7 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E747B1A213C480900EC738F /* Smartshare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Smartshare.entitlements; path = Smartshare/Smartshare.entitlements; sourceTree = "<group>"; };
 		2E747B1B213C481100EC738F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		2ED41DC8213E1E7200BBCF27 /* RNSnackbar.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSnackbar.xcodeproj; path = "../node_modules/react-native-snackbar/ios/RNSnackbar.xcodeproj"; sourceTree = "<group>"; };
 		319C462A15AD0337CA987884 /* libPods-Smartshare.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Smartshare.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3265A043A62B42C896FF9D5E /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		3B02F78E1B4F40C3913DC91D /* gift.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = gift.png; path = ../assets/images/gift.png; sourceTree = "<group>"; };
@@ -502,6 +511,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ED41DCE213E1E8300BBCF27 /* libRNSnackbar.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -750,6 +760,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2ED41DC9213E1E7200BBCF27 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2ED41DCD213E1E7200BBCF27 /* libRNSnackbar.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -771,6 +789,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				2ED41DC8213E1E7200BBCF27 /* RNSnackbar.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -1077,6 +1096,10 @@
 					ProjectRef = FCA01797580C4560B7133D94 /* RNSimpleCompass.xcodeproj */;
 				},
 				{
+					ProductGroup = 2ED41DC9213E1E7200BBCF27 /* Products */;
+					ProjectRef = 2ED41DC8213E1E7200BBCF27 /* RNSnackbar.xcodeproj */;
+				},
+				{
 					ProductGroup = 2E9EC274213C435300C2582F /* Products */;
 					ProjectRef = B7612BD42E2D4414AE7D1865 /* RNVectorIcons.xcodeproj */;
 				},
@@ -1279,6 +1302,13 @@
 			fileType = archive.ar;
 			path = libRNGeocoder.a;
 			remoteRef = 2E9EC2B2213C435400C2582F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2ED41DCD213E1E7200BBCF27 /* libRNSnackbar.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSnackbar.a;
+			remoteRef = 2ED41DCC213E1E7200BBCF27 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {

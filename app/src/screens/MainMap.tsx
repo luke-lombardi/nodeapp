@@ -298,6 +298,9 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async confirmLink(linkData: string) {
+    // Wait briefly so the animation shows properly
+    await SleepUtil.SleepAsync(1000);
+
     await this.setState({
       confirmModalVisible: true,
       linkData: linkData,
@@ -392,6 +395,31 @@ export class MainMap extends Component<IProps, IState> {
 
           Logger.info('MainMap.handleLink - invalid response from AcceptFriendAsync.');
         }
+      // If we are adding a new node to tracked node list
+      } else if (action === 'add_node') {
+          let nodeId = splitLinkData[1];
+
+          Logger.info('MainMap.handleLink - Adding a tracked node.');
+
+          let exists = await this.nodeService.storeNode(nodeId);
+          if (!exists) {
+
+            // Show success message
+            Snackbar.show({
+              title: 'Added new node',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+
+            Logger.info(`MainMap.handleLink - this is a new node, storing: ${JSON.stringify(nodeId)}`);
+
+            return;
+          }
+
+          // Show 'already exists' message
+          Snackbar.show({
+            title: 'You have already added this node',
+            duration: Snackbar.LENGTH_SHORT,
+          });
       }
     }
 

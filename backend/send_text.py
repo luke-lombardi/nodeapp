@@ -82,6 +82,8 @@ def send_text(contact_info, rds):
     message = None
     action = contact_info.get('action', None)
 
+    logging.info("Received the following action: %s".format(action))
+
     if action == 'send_group_invite':
         name = contact_info["name"]
         phone = contact_info["phone"]
@@ -93,8 +95,16 @@ def send_text(contact_info, rds):
             from_="+12037179852",
             body="Hello %s, you were invited to join a group: \n fyb://join_group/%s/%s" % (name, group_id, member_id))
 
-    elif action == 'share_pin':
-        pass
+    elif action == 'share_node':
+        name = contact_info["name"]
+        phone = contact_info["phone"]
+        node_id = contact_info["node_id"]
+    
+        message = client.messages.create(
+            to=phone,
+            from_="+12037179852",
+            body="Hello %s, you were invited to track a node: \n fyb://add_node/%s" % (name, node_id))
+
 
     elif action == 'send_friend_invite':
         name = contact_info["name"]

@@ -13,17 +13,24 @@ interface IProps {
 interface IState {
     scrollOffset: number;
     visibleModal: boolean;
+    displayTitle: string;
 }
 
 export default class ConfirmModal extends Component<IProps, IState> {
     private scrollViewRef: any;
+    private action: string;
 
     constructor(props: IProps) {
         super(props);
         this.state = {
             scrollOffset: 0,
             visibleModal: true,
+            displayTitle: '',
         };
+
+        this.componentWillMount = this.componentWillMount.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.setDisplayText = this.setDisplayText.bind(this);
     }
 
     handleOnScroll = event => {
@@ -38,12 +45,24 @@ export default class ConfirmModal extends Component<IProps, IState> {
         }
     }
 
+    componentWillMount() {
+        // Split link data for display in the modal
+        let splitLinkData = this.props.linkData.split('/');
+        this.action = splitLinkData[0];
+
+    }
+
+    componentDidMount() {
+        this.setDisplayText();
+    }
+
     render() {
         return (
             <Modal
                     isVisible={this.state.visibleModal}
                     >
                      <View style={styles.modalContent}>
+                        <Text> {this.state.displayTitle} </Text>
                         <Button style={styles.fullWidthButton}
                                     buttonStyle={styles.buttonStyle}
                                     titleStyle={{
@@ -79,6 +98,17 @@ export default class ConfirmModal extends Component<IProps, IState> {
                 </Modal>
         );
     }
+
+    private async setDisplayText() {
+        if (this.action === 'join_group') {
+            await this.setState({displayTitle: 'Are you sure you want to join this group?'});
+        } else if (this.action === 'add_friend') {
+            await this.setState({displayTitle: 'Are you sure you want to add this friend?'});
+        } else if (this.action === 'add_node') {
+            await this.setState({displayTitle: 'Are you sure you want to track this node?'});
+        }
+    }
+
 }
 
 // @ts-ignore

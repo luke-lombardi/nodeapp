@@ -11,6 +11,8 @@ function navigate(routeName, params) {
     NavigationActions.navigate({
       routeName,
       params,
+      // @ts-ignore
+      // key: routeName,
     }),
   );
 }

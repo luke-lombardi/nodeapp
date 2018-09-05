@@ -58,7 +58,7 @@ export default class Node extends Component<IProps, IState> {
   }
 
   sharePin() {
-    this.props.navigation.navigate('ContactList', {action: 'share_pin'});
+    this.props.navigation.navigate('ContactList', {action: 'share_node', node_id: this.props.nodeId});
   }
 
   render() {

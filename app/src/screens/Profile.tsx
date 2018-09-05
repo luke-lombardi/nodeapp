@@ -133,7 +133,7 @@ private async saveSettings() {
       console.log('unable to save settings');
     }
 
-    this.props.navigation.navigate('Map', {updateNodes: true});
+    this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {updateNodes: true}});
   }
 }
 

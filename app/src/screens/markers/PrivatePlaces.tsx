@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Marker }   from 'react-native-maps';
-import { Image }   from 'react-native';
-// import { StyleSheet } from 'react-native';
+import { Marker, Callout }   from 'react-native-maps';
+import { Image, View, Text, StyleSheet }   from 'react-native';
 
 interface IProps {
     privatePlaceList: any;
@@ -34,48 +33,41 @@ export default class PrivatePlaces extends Component<IProps, IState> {
 
             <Image source={require('../../../assets/images/private_place.png')} style={{ width: 35, height: 35 }} />
 
-            {/* <Callout tooltip={true} style={styles.callout}>
+            <Callout tooltip={true} style={styles.callout}>
             <View style={styles.card}>
-            <View style={{flex: 1}}>
-            <Text style={styles.title}>{this.props.minutesAway ? this.props.minutesAway  + ' away' : ''}</Text> */}
-                {/* <Text style={styles.description}>{marker.data.description}</Text> */}
-                {/* <Text style={styles.description}>{this.props.distance ? this.props.distance + ' miles away' : ''}</Text> */}
-                {/* <Text style={styles.description}>{this.props.minutesAway ? this.props.minutesAway  + ' minutes away' : ''}</Text> */}
-            {/* </View>
-            </View> */}
-            {/* </Callout> */}
+            <Text style={styles.title}>{marker.data.title}</Text>
+            </View>
+            </Callout>
         </ Marker>
-        )));
-    }
 
+            ))
+        );
+    }
 }
 
-// const styles = StyleSheet.create({
-//     callout: {
-//         alignItems: 'center',
-//         overflow: 'hidden',
-//       },
-//       card: {
-//         width:  300,
-//         flexDirection: 'row',
-//         alignSelf: 'flex-start',
-//         backgroundColor: '#fff',
-//         borderRadius: 6,
-//         borderColor: '#007a87',
-//         borderWidth: 1,
-//         padding: 10,
-//       },
-//     title: {
-//         color: '#000',
-//         fontSize: 20,
-//         textAlign: 'center',
-//         marginBottom: 3,
-//     },
-//     description: {
-//         color: '#000',
-//         fontSize: 18,
-//         textAlign: 'center',
-//         marginBottom: 3,
-//         marginTop: 10,
-//     },
-// });
+const styles = StyleSheet.create({
+    callout: {
+        alignItems: 'center',
+        width: 100,
+        bottom: 50,
+      },
+      card: {
+        backgroundColor: '#fff',
+        borderRadius: 6,
+        borderColor: 'black',
+        borderWidth: 1,
+        padding: 10,
+      },
+    title: {
+        color: '#000',
+        fontSize: 20,
+        alignSelf: 'center',
+    },
+    description: {
+        color: '#000',
+        fontSize: 18,
+        textAlign: 'center',
+        marginBottom: 3,
+        marginTop: 10,
+    },
+});

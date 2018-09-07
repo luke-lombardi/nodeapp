@@ -5,6 +5,9 @@ pod "yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
 pod 'react-native-google-maps', path: '../node_modules/react-native-maps'  # If you need GoogleMaps support on iOS
 pod 'GoogleMaps'
 pod 'GooglePlaces'
+pod 'Fabric'
+pod 'Crashlytics'
+pod 'ReactNativeFabric', :path => '../node_modules/react-native-fabric'
 pod 'React', :path => '../node_modules/react-native', :subspecs => [
   'Core',
   'DevSupport',

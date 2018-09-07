@@ -196,7 +196,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   viewNodeList() {
-    this.props.navigation.navigate('Nodes');
+    this.props.navigation.navigate({Key: 'Nodes', routeName: 'Nodes'});
   }
 
   onNodeSelected(e, nodeType) {

@@ -20,7 +20,7 @@ export class GroupList extends Component<IProps> {
 
   _onTouchGroup(group: any) {
     console.log(group);
-    this.props.navigation.navigate('GroupEditor', {action: 'edit_group', group_data: group});
+    this.props.navigation.navigate({Key: 'GroupEditor', routeName: 'GroupEditor', params: {action: 'edit_group', group_data: group}});
   }
 
   _renderItem = ({item}) => (
@@ -40,7 +40,7 @@ export class GroupList extends Component<IProps> {
 
   render() {
     return (
-      <View>
+      <View style={styles.flatlist}>
         <FlatList
          data={this.props.groupList}
          renderItem={this._renderItem}
@@ -87,4 +87,15 @@ const styles = StyleSheet.create({
     marginTop: 25,
     alignSelf: 'center',
   },
-});
+  flatlist: {
+    marginBottom: 200,
+  },
+  button: {
+  },
+  buttonContainer: {
+    top: -10,
+    height: 80,
+    alignSelf: 'center',
+    width: '100%',
+    },
+  });

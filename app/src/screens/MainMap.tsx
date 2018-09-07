@@ -217,7 +217,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   viewNodeList() {
-    this.props.navigation.navigate('Nodes');
+    this.props.navigation.navigate({Key: 'Nodes', routeName: 'Nodes'});
   }
 
   onNodeSelected(e, nodeType) {
@@ -507,7 +507,7 @@ export class MainMap extends Component<IProps, IState> {
               description={this.state.selectedNode.data.description}
               ttl={this.state.selectedNode.data.ttl}
               origin={this.props.userRegion}
-              destination={this.state.destination}
+              destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
             />
           </View>

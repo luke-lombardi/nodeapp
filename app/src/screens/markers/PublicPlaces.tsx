@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Marker }   from 'react-native-maps';
-import { Image }   from 'react-native';
+import { Marker, Callout }   from 'react-native-maps';
+import { Image, StyleSheet, Text, View }   from 'react-native';
 
 interface IProps {
     publicPlaceList: any;
@@ -31,8 +31,40 @@ export default class PublicPlaces extends Component<IProps, IState> {
             >
 
             <Image source={require('../../../assets/images/public_place.png')} style={{ width: 35, height: 35 }} />
-            </Marker>
-        )));
-    }
+            <Callout tooltip={true} style={styles.callout}>
+            <View style={styles.card}>
+            <Text style={styles.title}>{marker.data.title}</Text>
+            </View>
+            </Callout>
+        </ Marker>
 
+            ))
+        );
+    }
 }
+
+const styles = StyleSheet.create({
+    callout: {
+        alignItems: 'center',
+      },
+      card: {
+        backgroundColor: '#fff',
+        opacity: 0.8,
+        borderRadius: 6,
+        borderColor: 'black',
+        borderWidth: 1,
+        padding: 5,
+      },
+    title: {
+        color: '#000',
+        fontSize: 20,
+        alignSelf: 'center',
+    },
+    description: {
+        color: '#000',
+        fontSize: 18,
+        textAlign: 'center',
+        marginBottom: 3,
+        marginTop: 10,
+    },
+});

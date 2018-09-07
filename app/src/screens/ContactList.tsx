@@ -91,7 +91,7 @@ export class ContactList extends Component<IProps, IState> {
         key={item.item.recordID}
         onPress={() => this.selectContact(item.item)}
         containerStyle={styles.nodeListItem}
-        leftAvatar={item.thumbnailPath ? { source: { uri: item.thumbnailPath } } : { source: require('./../../assets/images/grid_bg.jpg') }}
+        leftAvatar={item.thumbnailPath ? { source: { uri: item.thumbnailPath } } : { source: require('./../../assets/images/big-guy.png') }}
         leftIcon={ {name: 'circle', type: 'font-awesome', size: 10, color: 'rgba(51, 51, 51, 0.8)'} }
         rightIcon={ {name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'} }
         title={item.item.givenName + ' ' + item.item.familyName}

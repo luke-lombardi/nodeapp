@@ -3,7 +3,6 @@ import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
-
 import uuid from 'react-native-uuid';
 
 // @ts-ignore
@@ -19,6 +18,7 @@ import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
 import Profile from '../screens/Profile';
+import Tour from '../screens/Tour';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -93,33 +93,16 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
     },
-    Groups: { screen: GroupList,
-      navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-        headerTitleStyle: {color: 'white'},
-        title: 'Groups',
-        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(NavigationActions.reset(
-          {
-            index: 0,
-            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-          },
-          )) } />,
-        }),
-      },
-    Friends: { screen: FriendList,
-        navigationOptions: ({navigation}) => ({
-          headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, height: 100, flex: 1, flexDirection: 'column'},
-          headerTitleStyle: {color: 'white', alignSelf: 'flex-start'},
-          title: 'Friends',
-          headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-            navigation.dispatch(NavigationActions.reset(
-            {
-              index: 0,
-              actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-            },
-            )) } />,
-          }),
+  Groups: { screen: GroupList,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: {color: 'white'},
+      title: 'Groups',
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
         },
     CreateNode: { screen: CreateNode,
       navigationOptions: ({navigation}) => ({
@@ -135,12 +118,25 @@ const InternalStack = StackNavigator({
           )) } />,
         }),
     },
-    GroupEditor: { screen: GroupEditor,
+  Tour: { screen: Tour,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: {color: 'white'},
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
+    },
+  Friends: { screen: FriendList,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-        headerTitleStyle: {color: 'white'},
-        title: 'Group Editor',
-        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        headerTitleStyle: { color: 'white'},
+        title: 'Friends',
+        headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
             index: 0,
@@ -149,20 +145,48 @@ const InternalStack = StackNavigator({
           )) } />,
         }),
       },
-      Profile: { screen: Profile,
-        navigationOptions: ({navigation}) => ({
-          headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-          headerTitleStyle: {color: 'white'},
-          title: 'Profile',
-          headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-            navigation.dispatch(NavigationActions.reset(
-            {
-              index: 0,
-              actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-            },
-            )) } />,
-          }),
+  CreateNode: { screen: CreateNode,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: { color: 'white'},
+      title: 'Drop Pin',
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
         },
+        )) } />,
+      }),
+  },
+  GroupEditor: { screen: GroupEditor,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: {color: 'white'},
+      title: 'Group Editor',
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
+    },
+  Profile: { screen: Profile,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: {color: 'white'},
+      title: 'Profile',
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
+    },
   ContactList: { screen: ContactList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -182,32 +206,32 @@ const InternalStack = StackNavigator({
   },
 );
 
-const DrawerStack = DrawerNavigator({
-    Main: {
-      screen: InternalStack,
+  const DrawerStack = DrawerNavigator({
+      Main: {
+        screen: InternalStack,
+      },
     },
-  },
-  {
-    initialRouteName: 'Main',
-    contentComponent: props => <SideBar {...props} />,
-  },
-);
+    {
+      initialRouteName: 'Main',
+      contentComponent: props => <SideBar {...props} />,
+    },
+  );
 
-const DrawerNavigation = StackNavigator({
-  DrawerStack: { screen: DrawerStack },
-  }, {
-    headerMode: 'none',
-});
+  const DrawerNavigation = StackNavigator({
+    DrawerStack: { screen: DrawerStack },
+    }, {
+      headerMode: 'none',
+  });
 
 // Manifest of possible screens
 export const RootStack = StackNavigator({
-  drawerStack: { screen: DrawerNavigation },
-}, {
-  // Default config for all screens
-  headerMode: 'none',
-  title: 'Main',
-  initialRouteName: 'drawerStack',
-});
+    drawerStack: { screen: DrawerNavigation },
+  }, {
+    // Default config for all screens
+    headerMode: 'none',
+    title: 'Main',
+    initialRouteName: 'drawerStack',
+  });
 
 interface IProps {
   navigation: any;

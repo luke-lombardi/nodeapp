@@ -930,6 +930,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				0953191932B045C01996793E /* [CP] Embed Pods Frameworks */,
 				9F48BBF0BF5DE91851791C9A /* [CP] Copy Pods Resources */,
+				2CC4C440213F084E004E556E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1529,6 +1530,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		2CC4C440213F084E004E556E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 54ef42c24f06931d8436ceee3b38d50e9f3779ed 9c11224fa604cf957aaaa72a3097708a939b38a3a9e3f99ee17510fffaf4690e";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;

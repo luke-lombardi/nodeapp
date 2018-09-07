@@ -50,15 +50,16 @@ export default class Node extends Component<IProps, IState> {
         },
       ],
     };
+    console.log('did data?', data);
     getDirections(data);
   }
 
   goToFinder() {
-    this.props.navigation.navigate('Finder', {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType });
+    this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
   }
 
   sharePin() {
-    this.props.navigation.navigate('ContactList', {action: 'share_node', node_id: this.props.nodeId});
+    this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: {action: 'share_pin'}});
   }
 
   render() {

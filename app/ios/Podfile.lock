@@ -1,4 +1,7 @@
 PODS:
+  - Crashlytics (3.10.5):
+    - Fabric (~> 1.7.9)
+  - Fabric (1.7.9)
   - Google-Maps-iOS-Utils (2.1.0):
     - Google-Maps-iOS-Utils/Clustering (= 2.1.0)
     - Google-Maps-iOS-Utils/Geometry (= 2.1.0)
@@ -63,11 +66,17 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - ReactNativeFabric (0.5.1):
+    - Crashlytics
+    - Fabric
+    - React
   - ViroKit_static_lib (1.0)
   - ViroReact (1.0)
   - yoga (0.55.4.React)
 
 DEPENDENCIES:
+  - Crashlytics
+  - Fabric
   - GoogleMaps
   - GooglePlaces
   - react-native-contacts (from `../node_modules/react-native-contacts`)
@@ -85,12 +94,15 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - ReactNativeFabric (from `../node_modules/react-native-fabric`)
   - ViroKit_static_lib (from `../node_modules/react-viro/ios/dist/ViroRenderer/static_lib`)
   - ViroReact (from `../node_modules/react-viro/ios/`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Crashlytics
+    - Fabric
     - Google-Maps-iOS-Utils
     - GoogleMaps
     - GooglePlaces
@@ -104,6 +116,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  ReactNativeFabric:
+    :path: "../node_modules/react-native-fabric"
   ViroKit_static_lib:
     :path: "../node_modules/react-viro/ios/dist/ViroRenderer/static_lib"
   ViroReact:
@@ -112,6 +126,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
+  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
@@ -119,10 +135,11 @@ SPEC CHECKSUMS:
   react-native-contacts: 1a8913219e54d1fa20e817b99d9b42b9ec98558d
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
+  ReactNativeFabric: 3912bf9c714d7cc98110eadf06ca6dedef219322
   ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 08f8ed53730ebd1ddaba3b7e10ece88321b0aa7c
+PODFILE CHECKSUM: 2e6dc05f662f030c1d4260c7fa776879911a210e
 
 COCOAPODS: 1.5.3

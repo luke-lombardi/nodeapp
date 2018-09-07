@@ -44,7 +44,7 @@ export class FriendList extends Component<IProps> {
 
     let nodeType = 'friend';
 
-    this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
+    this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
   }
 
   _renderItem(item) {
@@ -105,11 +105,11 @@ export class FriendList extends Component<IProps> {
       >
 
         <ListItem
-          // scaleProps={{
-          //   friction: 90,
-          //   tension: 100,
-          //   activeScale: 0.95,
-          // }}
+          scaleProps={{
+            friction: 90,
+            tension: 100,
+            activeScale: 0.95,
+          }}
           containerStyle={styles.friendListItem}
           leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
           rightIcon={{name: 'chevron-left', color: 'rgba(51, 51, 51, 0.8)'}}
@@ -123,7 +123,7 @@ export class FriendList extends Component<IProps> {
 
   render() {
     return (
-      <View>
+      <View style={styles.flatlist}>
         <FlatList
          data={this.props.friendList}
          renderItem={this._renderItem}
@@ -172,9 +172,20 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 20,
   },
+  flatlist: {
+    marginBottom: 200,
+  },
   null: {
     fontSize: 22,
     marginTop: 25,
     alignSelf: 'center',
   },
+  button: {
+  },
+  buttonContainer: {
+    top: -10,
+    height: 80,
+    alignSelf: 'center',
+    width: '100%',
+    },
 });

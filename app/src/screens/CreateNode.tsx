@@ -193,7 +193,7 @@ export class CreateNode extends Component<IProps, IState> {
     }
 
     await this.setState({isLoading: false});
-    this.props.navigation.navigate('Map', {updateNodes: true});
+    this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {updateNodes: true}});
   }
 
 }

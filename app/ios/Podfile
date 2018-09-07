@@ -30,6 +30,8 @@ pod 'React', :path => '../node_modules/react-native', :subspecs => [
   
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
 
+  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
+
 end
 
 post_install do |installer|

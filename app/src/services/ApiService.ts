@@ -286,10 +286,7 @@ export default class ApiService {
     }
 
     // Sends a text to add a friend or share a node
-    async sendText(contactInfo: any) {
-      let requestBody = {
-        'contact_info': contactInfo,
-      };
+    async sendText(requestBody: any) {
 
       let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/sendText', {
             method: 'POST',

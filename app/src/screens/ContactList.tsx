@@ -70,7 +70,6 @@ export class ContactList extends Component<IProps, IState> {
               console.log(err);
           } else {
               this.setState({data: contacts});
-              // console.log(contacts);
           }
       });
     }
@@ -126,48 +125,56 @@ export class ContactList extends Component<IProps, IState> {
     // Private implementation functions
     private async selectContact(item) {
 
-      if (this.action === 'share_pin') {
+      if (this.action === 'share_node') {
+        let nodeId = this.props.navigation.getParam('node_id', undefined);
 
-        Alert.alert(`Successfully invited ${item.givenName}!`);
+        // If the node id is undefined, just log it and return to the map
+        if (nodeId === undefined) {
+          Logger.info(`ContactList.selectContact - Passed in invalid nodeId: ${nodeId}`);
+          this.props.navigation.goBack(undefined);
+          return;
+        }
 
-        let phoneNumber = item.phoneNumbers[0].number;
+        // Grab the contact info from the item obj.
+        let phoneNumber = item.phoneNumbers[0].number.replace(/\D/g, '');
+
         let name = item.givenName + ' ' + item.familyName;
 
+        // Grab current users UUID
         let userUuid = await AsyncStorage.getItem('user_uuid');
 
-        let inviteData = {
-          'invite_data': {
-            'type': 'friend',
-            'host': 'private:' + userUuid,
-            'ttl': undefined,
-          },
-          'person_to_invite': {
+        // Construct request payload
+        let requestData = {
+            'from': 'private:' + userUuid,
+            'node_id': nodeId,
             'name': name,
             'phone': phoneNumber,
-          },
+            'action': 'share_node',
         };
 
-        console.log(inviteData);
+        Logger.info(`ContactList.selectContact-  Sending the following request body ${JSON.stringify(requestData)}`);
 
-        let newInviteId = await this.apiService.AddFriendAsync(inviteData);
+        // Send the node sharing request to API
+        let response = await this.apiService.sendText(requestData);
 
-        if (newInviteId !== undefined) {
-          console.log('storing invite');
+        // If we got an undefined response, something went wrong
+        if (response !== undefined) {
+          Alert.alert(`Successfully shared node with ${item.givenName}`);
+          Logger.info(`ContactList.selectContact-  Got response from sendText ${JSON.stringify(response)}`);
           // await this.nodeService.storeInvite(newInviteId);
         } else {
           console.log('unable to invite friend');
           // Logger.info('ContactList.selectContact - invalid response from add friend.');
         }
 
-        console.log('GOT IT');
-        console.log(newInviteId);
+        // Regardless of success or failure, return to the map
 
         this.props.navigation.goBack(undefined);
 
+      // If we are adding a new friend
       } else if (this.action === 'add_friend') {
-        Alert.alert(`Successfully invited ${item.givenName}!`);
 
-        let phoneNumber = item.phoneNumbers[0].number;
+        let phoneNumber = item.phoneNumbers[0].number.replace(/\D/g, '');
 
         let name = item.givenName + ' ' + item.familyName;
 
@@ -188,12 +195,16 @@ export class ContactList extends Component<IProps, IState> {
 
         let newRelation = await this.apiService.AddFriendAsync(inviteData);
 
+        // If we got a valid relation ID from the API, then proceed
         if (newRelation !== undefined) {
           let newFriendId = newRelation.their_id;
 
           let exists = await this.nodeService.storeFriend(newFriendId);
 
+          // If it is a new friend, then store the friend ID
           if (!exists) {
+            Alert.alert(`Successfully invited ${item.givenName}!`);
+
             Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
             await this.nodeService.storeNode(newFriendId);
           }
@@ -204,10 +215,10 @@ export class ContactList extends Component<IProps, IState> {
 
         this.props.navigation.goBack(undefined);
 
+      // This route returns to the group editor with a new contact to invite to the group
       } else if (this.action === 'add_friend_to_group') {
         this.props.navigation.state.params.returnData(item);
         this.props.navigation.goBack(undefined);
-
       }
     }
   }

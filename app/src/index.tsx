@@ -16,9 +16,6 @@ const store = ConfigureStore();
 
 class Smartshare extends Component {
 
-    // CODEPUSH BUILD COMMAND:
-    // code-push release-react fyb ios --entryFile /Users/beta9/fyb/artifacts/index.js
-
   componentWillMount() {
 
     Logger.CreateLogger({

@@ -71,7 +71,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                     loading={false}
                                     disabled={false}
                                     // loadingStyle={}
-                                    title='Drop a Pin'
+                                    title='Create a Node'
                                     icon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                     iconRight
                             />

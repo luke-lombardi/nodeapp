@@ -99,7 +99,7 @@ export default class NodeService {
     }
 
     // Stores a new node in async storage
-    public async storeNode(newUuid) {
+    public async storeNode(newNodeId) {
         let trackedNodes = await AsyncStorage.getItem('trackedNodes');
         if (trackedNodes !== null) {
           trackedNodes = JSON.parse(trackedNodes);
@@ -108,11 +108,21 @@ export default class NodeService {
           trackedNodes = [];
         }
 
-        // @ts-ignore
-        trackedNodes.push(newUuid);
+        let index = trackedNodes.indexOf(newNodeId);
 
-        await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
-        Logger.info(`CreateNode.storeNode: now tracking ${newUuid}`);
+        if (index < 0) {
+            // @ts-ignore
+            trackedNodes.push(newNodeId);
+            Logger.info(`NodeService.storeNode: now tracking ${trackedNodes}`);
+
+            await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
+
+            return false;
+        } else {
+            Logger.info(`NodeService.storeNode: you already are tracking this node.`);
+            return true;
+        }
+
     }
 
     // Stores a new group ID in async storage

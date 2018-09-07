@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
+import NavigationService from '../services/NavigationService';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
 import uuid from 'react-native-uuid';
 
@@ -46,7 +47,7 @@ import NodeService,
   }
   from '../services/NodeService';
 
-import ApiService from '../services/ApiService';
+// import ApiService from '../services/ApiService';
 
 import LocationService, { IUserPositionChanged } from '../services/LocationService';
 
@@ -67,7 +68,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
-      title: 'Node Finderssss',
+      title: 'Node Finder',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -103,8 +104,19 @@ const InternalStack = StackNavigator({
           index: 0,
           actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
         },
-        )) } />,
-      }),
+    CreateNode: { screen: CreateNode,
+      navigationOptions: ({navigation}) => ({
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+        headerTitleStyle: { color: 'white'},
+        title: 'Create Node',
+        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          navigation.dispatch(NavigationActions.reset(
+          {
+            index: 0,
+            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          },
+          )) } />,
+        }),
     },
   Tour: { screen: Tour,
     navigationOptions: ({navigation}) => ({
@@ -185,14 +197,14 @@ const InternalStack = StackNavigator({
     },
   },
   {
-    initialRouteName: 'Map',
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      title: navigation.indexs,
-      headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
-    }),
-    },
-  );
+  initialRouteName: 'Map',
+  navigationOptions: ({navigation}) => ({
+    headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+    title: navigation.indexs,
+    headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
+  }),
+  },
+);
 
   const DrawerStack = DrawerNavigator({
       Main: {
@@ -222,6 +234,8 @@ export const RootStack = StackNavigator({
   });
 
 interface IProps {
+  navigation: any;
+
   PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
@@ -249,7 +263,7 @@ export class App extends Component<IProps, IState> {
 
     // monitoring services
     private nodeService: NodeService;
-    private apiService: ApiService;
+    // private apiService: ApiService;
 
     private locationService: LocationService;
 
@@ -291,10 +305,6 @@ export class App extends Component<IProps, IState> {
 
       this.nodeService.StartMonitoring();
 
-      this.apiService = new ApiService({
-        currentGroupList: this.getGroupList,
-      });
-
       // The location service monitors the users location and calculates distance to nodes
       // This is an async loop that runs forever, so do not await it
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
@@ -309,60 +319,7 @@ export class App extends Component<IProps, IState> {
     async handleLink(event) {
       // parse the user_uuid as a string from the URL
       let linkData = event.url.replace(/.*?:\/\//g, '');
-      let splitLinkData = linkData.split('/');
-
-      let action = splitLinkData[0];
-
-      if (action === 'join_group') {
-        console.log(splitLinkData);
-        let groupId = splitLinkData[1];
-        let memberId = splitLinkData[2];
-
-        let currentUUID = await AsyncStorage.getItem('user_uuid');
-
-        let groupData = {
-          'user_uuid': currentUUID,
-          'group_id': groupId,
-          'member_id': memberId,
-        };
-
-        let newGroupId = await this.apiService.JoinGroupAsync(groupData);
-
-        if (newGroupId !== undefined) {
-          await this.nodeService.storeGroup(newGroupId);
-        } else {
-          Logger.info('App.handleLink - invalid response from JoinGroupAsync.');
-        }
-
-      } else if (action === 'add_friend') {
-        let relationId = splitLinkData[1];
-        let memberId = splitLinkData[2];
-
-        let currentUUID = await AsyncStorage.getItem('user_uuid');
-
-        let groupData = {
-          'user_uuid': currentUUID,
-          'relation_id': relationId,
-          'your_id': memberId,
-        };
-
-        let newRelation = await this.apiService.AcceptFriendAsync(groupData);
-
-        if (newRelation !== undefined) {
-          let newFriendId = newRelation.their_id;
-          Logger.info(`App.handleLink -  response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
-
-          let exists = await this.nodeService.storeFriend(newFriendId);
-          if (!exists) {
-            Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
-            await this.nodeService.storeNode(newFriendId);
-          }
-
-        } else {
-          Logger.info('App.handleLink - invalid response from AcceptFriendAsync.');
-        }
-      }
-
+      NavigationService.navigate('Map', { showConfirmModal: true, linkData: linkData});
     }
 
     componentWillUnmount() {
@@ -373,8 +330,12 @@ export class App extends Component<IProps, IState> {
     render() {
       return (
         <View style={{flex: 1}}>
-           <StatusBar barStyle='light-content'/>
-          <RootStack />
+          <StatusBar barStyle='light-content'/>
+          <RootStack
+            ref={navigatorRef => {
+                NavigationService.setTopLevelNavigator(navigatorRef);
+             }}
+           />
         </View>
       );
     }

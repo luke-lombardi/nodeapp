@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, AsyncStorage } from 'react-native';
 import {
   StyleSheet,
 } from 'react-native';
@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import MapView from 'react-native-maps';
 import Pulse from 'react-native-pulse';
+import Snackbar from 'react-native-snackbar';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -34,6 +35,7 @@ import Logger from '../services/Logger';
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
 import CreateModal from '../components/CreateModal';
+import ConfirmModal from '../components/ConfirmModal';
 
 // Import various types of map markers
 import PublicPlaces from './markers/PublicPlaces';
@@ -43,6 +45,7 @@ import PrivatePeople from './markers/PrivatePeople';
 import Friends from './markers/Friends';
 
 import SleepUtil from '../services/SleepUtil';
+import ApiService from '../services/ApiService';
 
 // import mapStyle from '../config/mapStyle.json';
 interface IProps {
@@ -74,7 +77,9 @@ interface IState {
   selectedNode: any;
   publicNodesVisible: boolean;
   createModalVisible: boolean;
+  confirmModalVisible: boolean;
   destination: any;
+  linkData: string;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -85,6 +90,7 @@ export class MainMap extends Component<IProps, IState> {
 
   // @ts-ignore
   private nodeService: NodeService;
+  private apiService: ApiService;
 
   constructor(props: IProps) {
     super(props);
@@ -98,15 +104,18 @@ export class MainMap extends Component<IProps, IState> {
       selectedNode: {},
       publicNodesVisible: true,
       createModalVisible: false,
+      confirmModalVisible: false,
       destination: {
         latitude: '',
         longitude: '',
       },
+      linkData: undefined,
     };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.closeCreateModal = this.closeCreateModal.bind(this);
+    this.closeConfirmModal = this.closeConfirmModal.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -122,6 +131,8 @@ export class MainMap extends Component<IProps, IState> {
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.confirmLink = this.confirmLink.bind(this);
+    this.handleLink = this.handleLink.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -133,6 +144,8 @@ export class MainMap extends Component<IProps, IState> {
         currentUserRegion: this.props.userRegion,
     });
 
+    this.apiService = new ApiService({});
+
     let markerRegion = this.props.navigation.getParam('region', undefined);
     this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
 
@@ -142,6 +155,14 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    let showConfirmModal = this.props.navigation.getParam('showConfirmModal', false);
+    if (showConfirmModal) {
+      let linkData = this.props.navigation.getParam('linkData', undefined);
+      if (linkData !== undefined) {
+        this.confirmLink(linkData);
+      }
+    }
+
     if (this.currentMarkerRegion !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
 
@@ -254,12 +275,153 @@ export class MainMap extends Component<IProps, IState> {
       default:
         break;
     }
+
     return nodeListToSearch;
   }
 
   async closeCreateModal() {
-    await this.setState({createModalVisible: false});
+    await this.setState({
+      createModalVisible: false,
+      linkData: undefined,
+    });
   }
+
+  async closeConfirmModal(userConfirmation: boolean, linkData: string) {
+    await this.setState({confirmModalVisible: false});
+
+    if (userConfirmation) {
+      Logger.info(`MainMap.closeConfirmModal: User accepted link: ${linkData}`);
+      this.handleLink(linkData);
+    } else {
+      Logger.info(`MainMap.closeConfirmModal: User rejected link: ${linkData}`);
+    }
+  }
+
+  async confirmLink(linkData: string) {
+    // Wait briefly so the animation shows properly
+    await SleepUtil.SleepAsync(1000);
+
+    await this.setState({
+      confirmModalVisible: true,
+      linkData: linkData,
+    });
+  }
+
+  async handleLink(linkData: string) {
+    Logger.info(`MainMap.handleLink: handling the following link data: ${linkData}`);
+
+    let splitLinkData = linkData.split('/');
+
+      let action = splitLinkData[0];
+
+      if (action === 'join_group') {
+        let groupId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'group_id': groupId,
+          'member_id': memberId,
+        };
+
+        let newGroupId = await this.apiService.JoinGroupAsync(groupData);
+
+        if (newGroupId !== undefined) {
+          await this.nodeService.storeGroup(newGroupId);
+
+          // Show success message
+          Snackbar.show({
+            title: 'Joined new group',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+
+        } else {
+
+          // Show failure message
+          Snackbar.show({
+            title: 'Problem joining group',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+          Logger.info('MainMap.handleLink - invalid response from JoinGroupAsync.');
+        }
+
+      } else if (action === 'add_friend') {
+        let relationId = splitLinkData[1];
+        let memberId = splitLinkData[2];
+
+        let currentUUID = await AsyncStorage.getItem('user_uuid');
+
+        let groupData = {
+          'user_uuid': currentUUID,
+          'relation_id': relationId,
+          'your_id': memberId,
+        };
+
+        let newRelation = await this.apiService.AcceptFriendAsync(groupData);
+
+        if (newRelation !== undefined) {
+          let newFriendId = newRelation.their_id;
+          Logger.info(`MainMap.handleLink - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
+
+          let exists = await this.nodeService.storeFriend(newFriendId);
+          if (!exists) {
+
+            // Show success message
+            Snackbar.show({
+              title: 'Added new friend',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+
+            Logger.info(`MainMap.handleLink - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
+            await this.nodeService.storeNode(newFriendId);
+
+            return;
+          }
+
+            // Show 'already exists' message
+            Snackbar.show({
+              title: 'You have already added this friend',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+
+        } else {
+          // Show success message
+          Snackbar.show({
+            title: 'Problem adding new friend',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+
+          Logger.info('MainMap.handleLink - invalid response from AcceptFriendAsync.');
+        }
+      // If we are adding a new node to tracked node list
+      } else if (action === 'add_node') {
+          let nodeId = splitLinkData[1];
+
+          Logger.info('MainMap.handleLink - Adding a tracked node.');
+
+          let exists = await this.nodeService.storeNode(nodeId);
+          if (!exists) {
+
+            // Show success message
+            Snackbar.show({
+              title: 'Added new node',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+
+            Logger.info(`MainMap.handleLink - this is a new node, storing: ${JSON.stringify(nodeId)}`);
+
+            return;
+          }
+
+          // Show 'already exists' message
+          Snackbar.show({
+            title: 'You have already added this node',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+      }
+    }
 
   render() {
     return (
@@ -358,6 +520,16 @@ export class MainMap extends Component<IProps, IState> {
             'closeCreateModal': this.closeCreateModal,
             'navigateToPage': this.navigateToPage,
           }}/>
+        }
+
+        {
+          this.state.confirmModalVisible &&
+          <ConfirmModal functions={{
+            'closeConfirmModal': this.closeConfirmModal,
+            'navigateToPage': this.navigateToPage,
+          }}
+          linkData={this.state.linkData}
+          />
         }
 
      </View>

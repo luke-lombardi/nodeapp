@@ -116,10 +116,13 @@ export class NodeList extends Component<IProps, IState> {
           selectedIndex={selectedIndex}
           buttons={buttons}
         />
+      <View style={styles.flatlist}>
         <FlatList
          data={this.state.data}
          renderItem={this._renderItem}
          extraData={this.state}
+         onEndReachedThreshold={0}
+         showsVerticalScrollIndicator={true}
          keyExtractor={item => item.node_id}
          refreshing={this.state.isRefreshing ? true : false}
          onRefresh={this.onRefresh}
@@ -133,6 +136,7 @@ export class NodeList extends Component<IProps, IState> {
           this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
           <Text style={styles.null}>No nodes have been created yet</Text>
         }
+        </View>
      </View>
     );
   }
@@ -158,6 +162,9 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 
 const styles = StyleSheet.create({
+  flatlist: {
+    marginBottom: 200,
+  },
   nodeListItem: {
     minHeight: 80,
     maxHeight: 80,

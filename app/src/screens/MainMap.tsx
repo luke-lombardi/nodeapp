@@ -345,7 +345,7 @@ export class MainMap extends Component<IProps, IState> {
               description={this.state.selectedNode.data.description}
               ttl={this.state.selectedNode.data.ttl}
               origin={this.props.userRegion}
-              destination={this.state.destination}
+              destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
             />
           </View>

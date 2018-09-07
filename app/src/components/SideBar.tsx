@@ -131,6 +131,20 @@ export class SideBar extends Component<IProps> {
                 }}
               />
 
+               <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                }}
+                  containerStyle={styles.navItem}
+                  key='tour'
+                  title='Help'
+                  leftIcon={{name: 'help-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => { this.resetNavigation('Tour');
+                }}
+              />
+
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}

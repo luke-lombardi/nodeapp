@@ -135,7 +135,7 @@ export class GroupEditor extends Component<IProps, IState> {
 
   _addPerson() {
       let params = {action: 'add_friend_to_group', returnData: this.returnData.bind(this)};
-      this.props.navigation.navigate('ContactList', params);
+      this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params});
   }
 
   async _removePerson(item) {
@@ -302,7 +302,7 @@ export class GroupEditor extends Component<IProps, IState> {
       Logger.info('CreateNode.submitCreateGroup - invalid response from create group.');
     }
 
-    this.props.navigation.navigate('Map', {updateNodes: true});
+    this.props.navigation.navigate({key: 'Map', routeName: 'Map', params: {updateNodes: true}});
   }
 
   // Edits an existing group
@@ -349,7 +349,7 @@ export class GroupEditor extends Component<IProps, IState> {
         await this.nodeService.deleteGroup(result.group_id);
         await this.setState({editing: false});
 
-        this.props.navigation.navigate('Map', {updateNodes: true});
+        this.props.navigation.navigate({key: 'Map', routeName: 'Map', params: {updateNodes: true}});
       }
     } else {
       Logger.info('CreateNode.submitDeleteGroup - invalid response from delete group.');

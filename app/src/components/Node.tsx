@@ -50,6 +50,7 @@ export default class Node extends Component<IProps, IState> {
         },
       ],
     };
+    console.log('did data?', data);
     getDirections(data);
   }
 

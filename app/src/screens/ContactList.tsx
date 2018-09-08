@@ -157,22 +157,22 @@ export class ContactList extends Component<IProps, IState> {
 
         Logger.info(`ContactList.selectContact-  Sending the following request body ${JSON.stringify(requestData)}`);
 
+        let messageText = '';
+
         // Send the node sharing request to API
         let response = await this.apiService.sendText(requestData);
 
         // If we got an undefined response, something went wrong
         if (response !== undefined) {
-          Alert.alert(`Successfully shared node with ${item.givenName}`);
+          messageText = 'Shared node with ' + item.givenName;
           Logger.info(`ContactList.selectContact-  Got response from sendText ${JSON.stringify(response)}`);
-          // await this.nodeService.storeInvite(newInviteId);
         } else {
-          console.log('unable to invite friend');
-          // Logger.info('ContactList.selectContact - invalid response from add friend.');
+          messageText = 'Error sharing node';
+          Logger.info('ContactList.selectContact - invalid response from add friend.');
         }
 
         // Regardless of success or failure, return to the map
-
-        this.props.navigation.goBack(undefined);
+        this.props.navigation.navigate({key: 'Map', routeName: 'Map', params: { showMessage: true, messageText: messageText }});
 
       // If we are adding a new friend
       } else if (this.action === 'add_friend') {
@@ -194,9 +194,11 @@ export class ContactList extends Component<IProps, IState> {
           },
         };
 
-        Logger.info(`ContactList.selectContact - Sending friend request ${inviteData}`);
+        Logger.info(`ContactList.selectContact - Sending friend request ${JSON.stringify(inviteData)}`);
 
         let newRelation = await this.apiService.AddFriendAsync(inviteData);
+
+        let messageText = '';
 
         // If we got a valid relation ID from the API, then proceed
         if (newRelation !== undefined) {
@@ -206,17 +208,17 @@ export class ContactList extends Component<IProps, IState> {
 
           // If it is a new friend, then store the friend ID
           if (!exists) {
-            Alert.alert(`Successfully invited ${item.givenName}!`);
-
             Logger.info(`ContactList.selectContact - Got response ${JSON.stringify(newRelation)}`);
             await this.nodeService.storeNode(newFriendId);
+            messageText = 'Sent invite to ' + item.givenName;
           }
 
         } else {
           Logger.info('ContactList.selectContact - unable to invite friend');
+          messageText = 'Could not send invite';
         }
 
-        this.props.navigation.goBack(undefined);
+        this.props.navigation.navigate({key: 'Map', routeName: 'Map', params: { showMessage: true, messageText: messageText }});
 
       // This route returns to the group editor with a new contact to invite to the group
       } else if (this.action === 'add_friend_to_group') {

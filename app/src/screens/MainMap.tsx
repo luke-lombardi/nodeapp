@@ -155,14 +155,31 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+
+    // If I've been invited to join a group, add a friend, or track a new node, show confirmation modal
     let showConfirmModal = this.props.navigation.getParam('showConfirmModal', false);
     if (showConfirmModal) {
+      // Grab the data from the text message containing the type of action (join group, add friend, track node)
       let linkData = this.props.navigation.getParam('linkData', undefined);
       if (linkData !== undefined) {
         this.confirmLink(linkData);
       }
     }
 
+    // If there is any message to display, then show a snackbar at the bottom of the map
+    let showMessage = this.props.navigation.getParam('showMessage', true);
+    if (showMessage) {
+      let messageText = this.props.navigation.getParam('messageText', undefined);
+      if (messageText !== undefined) {
+          // Show success message
+          Snackbar.show({
+            title: messageText,
+            duration: Snackbar.LENGTH_SHORT,
+          });
+      }
+    }
+
+    // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
     if (this.currentMarkerRegion !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
 
@@ -170,6 +187,7 @@ export class MainMap extends Component<IProps, IState> {
         m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude,
       );
 
+      // If we found the node in the list, move the map location to the node location
       if (selectedNode) {
         this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
         this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
@@ -186,6 +204,7 @@ export class MainMap extends Component<IProps, IState> {
       }
     }
 
+    // If we are unable to find the user region, wait until we get it
     if (this.props.userRegion.latitude === undefined) {
       this.waitForUserPosition();
     } else {
@@ -249,6 +268,7 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
+  // Sets public node visibility
   togglePublicVisible() {
     this.setState({ publicNodesVisible: !this.state.publicNodesVisible });
   }

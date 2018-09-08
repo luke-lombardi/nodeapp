@@ -104,6 +104,9 @@ const InternalStack = StackNavigator({
           index: 0,
           actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
         },
+      )) } />,
+      }),
+    },
     CreateNode: { screen: CreateNode,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -145,20 +148,6 @@ const InternalStack = StackNavigator({
           )) } />,
         }),
       },
-  CreateNode: { screen: CreateNode,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: { color: 'white'},
-      title: 'Drop Pin',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-        },
-        )) } />,
-      }),
-  },
   GroupEditor: { screen: GroupEditor,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},

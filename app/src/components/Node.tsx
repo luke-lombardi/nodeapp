@@ -24,7 +24,7 @@ export default class Node extends Component<IProps, IState> {
     };
 
     this.goToFinder = this.goToFinder.bind(this);
-    this.sharePin = this.sharePin.bind(this);
+    this.shareNode = this.shareNode.bind(this);
     this.handleGetDirections = this.handleGetDirections.bind(this);
   }
 
@@ -58,8 +58,8 @@ export default class Node extends Component<IProps, IState> {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
   }
 
-  sharePin() {
-    this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: {action: 'share_pin'}});
+  shareNode() {
+    this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: { action: 'share_node', nodeId: this.props.nodeId } });
   }
 
   render() {
@@ -123,7 +123,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={this.sharePin}
+              onPress={this.shareNode}
               />
 
           </View>

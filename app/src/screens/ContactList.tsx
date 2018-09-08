@@ -125,8 +125,11 @@ export class ContactList extends Component<IProps, IState> {
     // Private implementation functions
     private async selectContact(item) {
 
+      console.log('ACTION');
+      console.log(this.action);
+
       if (this.action === 'share_node') {
-        let nodeId = this.props.navigation.getParam('node_id', undefined);
+        let nodeId = this.props.navigation.getParam('nodeId', undefined);
 
         // If the node id is undefined, just log it and return to the map
         if (nodeId === undefined) {

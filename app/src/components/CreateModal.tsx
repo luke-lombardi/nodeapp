@@ -102,7 +102,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                         }}
                                         onPress={() => {
                                             this.props.functions.closeCreateModal();
-                                            this.props.functions.navigateToPage('ContactList', {action: 'share_pin'});
+                                            this.props.functions.navigateToPage('ContactList', {action: 'share_node'});
                                         } }
                                         loading={false}
                                         disabled={false}

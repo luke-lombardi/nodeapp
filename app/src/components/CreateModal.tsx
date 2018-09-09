@@ -76,7 +76,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                     iconRight
                             />
                         </View>
-                        <View style={styles.scrollableModalContent1}>
+                        {/* <View style={styles.scrollableModalContent1}>
                             <Button style={styles.fullWidthButton}
                                         buttonStyle={styles.buttonStyle}
                                         titleStyle={{
@@ -93,7 +93,7 @@ export default class CreateModal extends Component<IProps, IState> {
                                         icon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                                         iconRight
                             />
-                        </View>
+                        </View> */}
                         <View style={styles.scrollableModalContent1}>
                             <Button style={styles.fullWidthButton}
                                         buttonStyle={styles.buttonStyle}

@@ -51,9 +51,9 @@ export default class Friends extends Component<IProps, IState> {
 
 const styles = StyleSheet.create({
     callout: {
+        position: 'relative',
+        flex: 1,
         alignItems: 'center',
-        width: 100,
-        bottom: 50,
       },
       card: {
         backgroundColor: '#fff',

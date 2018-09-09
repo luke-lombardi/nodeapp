@@ -31,6 +31,7 @@
     "moment": "^2.22.1",
     "nanomatch": "^1.2.13",
     "posix-character-classes": "^1.0.0",
+    "pushy-react-native": "^1.0.3",
     "react": "16.3.1",
     "react-native": "^0.55.3",
     "react-native-app-intro": "^1.1.5",

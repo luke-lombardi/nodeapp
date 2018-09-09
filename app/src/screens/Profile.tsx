@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, AsyncStorage } from 'react-native';
 import { Input, Icon, Button, Card } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-import { Switch } from 'react-native-switch';
+// import { Switch } from 'react-native-switch';
 
 interface IProps {
     navigation: any;
@@ -62,6 +62,7 @@ export class Profile extends Component<IProps, IState> {
             <Card
             containerStyle={styles.card}>
             <View style={styles.inputContainer}>
+            <Text style={{marginBottom: 40}}>Update Your Display Name</Text>
             <Input
               placeholder={this.state.savedTitle !== null ? undefined : 'Display Name'}
               leftIcon={
@@ -90,7 +91,7 @@ export class Profile extends Component<IProps, IState> {
               onChangeText={(description) => this.setState({description: description})}
               value={this.state.description}
             />
-                </View>
+                {/* </View>
             <View style={styles.switchContainer}>
             <Text style={styles.switchText}>Enable Privacy</Text>
             <Switch
@@ -103,7 +104,7 @@ export class Profile extends Component<IProps, IState> {
               onValueChange={ () => {this.setState({privacy: true});
             }
           }
-            />
+            /> */}
 
             <Button
                 style={styles.button}
@@ -156,18 +157,17 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: '100%',
         alignItems: 'center',
-        padding: 20,
+        padding: 25,
     },
     settings: {
         alignItems: 'center',
-        marginTop: 20,
-        marginBottom: 20,
+
     },
     button: {
         alignSelf: 'center',
         position: 'absolute',
         width: 200,
-        top: 70,
+        top: 60,
     },
     switch: {
         padding: 20,
@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     card: {
-        marginTop: '10%',
+        margin: '25%',
         width: '90%',
-        height: '90%',
+        height: '70%',
     },
     inputPadding: {
         marginTop: 10,

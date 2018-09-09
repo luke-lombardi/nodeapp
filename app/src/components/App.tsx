@@ -4,6 +4,7 @@ import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-naviga
 import NavigationService from '../services/NavigationService';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
 import uuid from 'react-native-uuid';
+import Pushy from 'pushy-react-native';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -279,6 +280,8 @@ export class App extends Component<IProps, IState> {
       this.componentWillUnmount = this.componentWillUnmount.bind(this);
       this.handleLink = this.handleLink.bind(this);
 
+      this.registerPushy = this.registerPushy.bind(this);
+
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService(
         {
@@ -298,11 +301,45 @@ export class App extends Component<IProps, IState> {
       // This is an async loop that runs forever, so do not await it
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
       this.locationService.StartMonitoring();
+
+      this.registerPushy();
     }
 
     componentDidMount() {
       // listen for incoming URL
       Linking.addEventListener('url', this.handleLink);
+      Pushy.listen();
+      // Register the device for push notifications
+      Pushy.register().then(async (deviceToken) => {
+        // Display an alert with device token
+        console.log('got device token', deviceToken);
+        alert('Pushy device token: ' + deviceToken);
+
+        // Send the token to your backend server via an HTTP GET request
+        //await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
+        // Succeeded, optionally do something to alert the user
+        }).catch((err) => {
+        // Handle registration errors
+        console.error(err);
+      });
+    }
+
+    registerPushy() {
+      console.log('register pushy....');
+      // Handle push notifications
+      Pushy.setNotificationListener(async (data) => {
+        // Print notification payload data
+        console.log('Received notification: ' + JSON.stringify(data));
+
+        // Notification title
+        let notificationTitle = 'MyApp';
+
+        // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
+        let notificationText = data.message || 'Test notification';
+
+        // Display basic system notification
+        Pushy.notify(notificationTitle, notificationText);
+      });
     }
 
     async handleLink(event) {

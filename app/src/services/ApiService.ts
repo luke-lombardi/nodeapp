@@ -221,7 +221,7 @@ export default class ApiService {
       return newGroup;
   }
 
-    // Creates a new group
+    // Invites a new friend
     async AddFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 
@@ -243,7 +243,7 @@ export default class ApiService {
       return newRelation;
     }
 
-    // Creates a new group
+    // Accepts a friend request
     async AcceptFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 

@@ -63,7 +63,7 @@ def update_relation(rds, relation_id, your_id, user_uuid):
             current_relation_data['members'][your_id] = True
 
             rds.set(name=relation_id, value=json.dumps(current_relation_data))
-            rds.set(name=your_id, value=user_uuid)
+            rds.set(name=your_id, value='private:' + user_uuid)
         
             current_relation_data = json.loads(rds.get(name=relation_id))
             logger.info('Current relation data: ' + str(current_relation_data))
@@ -89,12 +89,15 @@ def lambda_handler(event, context):
         'error_msg': ''
     }
 
+    logger.info('Event payload: %s' % (event))
+
     rds = connect_to_cache()
     
     if not rds:
         response['error_msg'] = ERROR_MSG['CACHE_ERROR']
         return response
     
+
     relation_id = event.get('relation_id', '')
     your_id = event.get('your_id', '')
     user_uuid = event.get('user_uuid', '')

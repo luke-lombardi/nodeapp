@@ -53,7 +53,7 @@ def update_group(rds, group_id, member_id, user_uuid):
     if member_id in member_list:
         current_group_data['members'][member_id] = user_uuid
         rds.setex(name=group_id, value=json.dumps(current_group_data), time=DEFAULT_GROUP_TTL)
-        rds.setex(name=member_id, value=user_uuid, time=DEFAULT_GROUP_TTL)
+        rds.setex(name=member_id, value='private:' + user_uuid, time=DEFAULT_GROUP_TTL)
         current_group_data = json.loads(rds.get(name=group_id))
 
         logger.info('Current group data: ' + str(current_group_data))
@@ -66,6 +66,8 @@ def update_group(rds, group_id, member_id, user_uuid):
 def lambda_handler(event, context):
     rds = connect_to_cache()
     
+    logger.info('Event payload: %s' % (event))
+
     if not rds:
         return
     

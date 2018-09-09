@@ -387,16 +387,14 @@ export class MainMap extends Component<IProps, IState> {
 
           let exists = await this.nodeService.storeFriend(newFriendId);
           if (!exists) {
+            Logger.info(`MainMap.handleLink - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
+            await this.nodeService.storeNode(newFriendId);
 
-            // Show success message
+            // Show 'added new friend' message
             Snackbar.show({
               title: 'Added new friend',
               duration: Snackbar.LENGTH_SHORT,
             });
-
-            Logger.info(`MainMap.handleLink - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
-            await this.nodeService.storeNode(newFriendId);
-
             return;
           }
 

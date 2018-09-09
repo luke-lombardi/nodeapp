@@ -17,7 +17,7 @@ export default class ApiService {
 
     constructor(props: IProps) {
         this.props = props;
-        Logger.info(`ApiService.constructor -  Initialized api service`);
+        Logger.trace(`ApiService.constructor -  Initialized api service`);
 
         this.getNodes = this.getNodes.bind(this);
     }

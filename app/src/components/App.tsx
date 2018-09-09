@@ -277,6 +277,7 @@ export class App extends Component<IProps, IState> {
       this.getGroupList = this.getGroupList.bind(this);
 
       this.componentDidMount = this.componentDidMount.bind(this);
+      this.componentWillMount = this.componentWillMount.bind(this);
       this.componentWillUnmount = this.componentWillUnmount.bind(this);
       this.handleLink = this.handleLink.bind(this);
 
@@ -307,21 +308,27 @@ export class App extends Component<IProps, IState> {
 
     componentDidMount() {
       // listen for incoming URL
-      Linking.addEventListener('url', this.handleLink);
       Pushy.listen();
       // Register the device for push notifications
       Pushy.register().then(async (deviceToken) => {
         // Display an alert with device token
         console.log('got device token', deviceToken);
-        alert('Pushy device token: ' + deviceToken);
+        // alert('Pushy device token: ' + deviceToken);
 
         // Send the token to your backend server via an HTTP GET request
-        //await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
+        // await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
         // Succeeded, optionally do something to alert the user
         }).catch((err) => {
         // Handle registration errors
         console.error(err);
       });
+
+      // This handles the case where a user clicked a link and the app was closed
+      Linking.getInitialURL().then((url) => {
+        if (url) {
+            this.handleLink({ url });
+        }
+       });
     }
 
     registerPushy() {
@@ -343,9 +350,23 @@ export class App extends Component<IProps, IState> {
     }
 
     async handleLink(event) {
-      // parse the user_uuid as a string from the URL
-      let linkData = event.url.replace(/.*?:\/\//g, '');
-      NavigationService.navigate('Map', { showConfirmModal: true, linkData: linkData});
+      let linkData = undefined;
+
+      try {
+        // Parse the user_uuid as a string from the URL
+        linkData = event.url.replace(/.*?:\/\//g, '');
+      } catch (error) {
+        linkData = event.replace(/.*?:\/\//g, '');
+      }
+
+      if (linkData !== undefined) {
+        NavigationService.navigate('Map', { showConfirmModal: true, linkData: linkData});
+      }
+    }
+
+    componentWillMount() {
+      // listen for incoming URL
+      Linking.addEventListener('url', this.handleLink);
     }
 
     componentWillUnmount() {

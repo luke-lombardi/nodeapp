@@ -49,7 +49,7 @@ export default class LocationService {
 
     constructor(props: IProps) {
         this.props = props;
-        Logger.info(`LocationService.constructor -  Initialized location service`);
+        Logger.trace(`LocationService.constructor -  Initialized location service`);
 
         this.updateBearing = this.updateBearing.bind(this);
         this.StartMonitoring = this.StartMonitoring.bind(this);
@@ -205,7 +205,6 @@ export default class LocationService {
         currentNode.data.type = nodeListArray[key].type;
         currentNode.data.color = nodeListArray[key].color;
         currentNode.data.status = nodeListArray[key].status;
-
 
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);

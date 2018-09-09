@@ -74,7 +74,7 @@ export default class NodeService {
 
         this.CheckNow = this.CheckNow.bind(this);
 
-        Logger.info(`NodeService.constructor -  Initialized node service`);
+        Logger.trace(`NodeService.constructor -  Initialized node service`);
     }
 
     // Public interface functions
@@ -85,7 +85,7 @@ export default class NodeService {
 
         // Start the monitoring loops - don't await this because it runs forever
         this.MonitorNodeListAsync();
-        this.MonitorGroupListAsync();
+        // this.MonitorGroupListAsync();
     }
 
     public CheckNow() {
@@ -268,6 +268,7 @@ export default class NodeService {
     }
 
     // Monitors the cache for updates to the group list
+    // @ts-ignore
     private async MonitorGroupListAsync() {
         while (true) {
             if (this.stopping) return;

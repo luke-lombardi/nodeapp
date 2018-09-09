@@ -45,11 +45,12 @@ export default class PublicPlaces extends Component<IProps, IState> {
 
 const styles = StyleSheet.create({
     callout: {
+        position: 'relative',
+        flex: 1,
         alignItems: 'center',
       },
       card: {
         backgroundColor: '#fff',
-        opacity: 0.8,
         borderRadius: 6,
         borderColor: 'black',
         borderWidth: 1,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, ActivityIndicator } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 
@@ -17,11 +17,19 @@ interface IProps {
     friendList: Array<any>;
 }
 
-export class FriendList extends Component<IProps> {
+interface IState {
+  isLoading: boolean;
+}
+
+export class FriendList extends Component<IProps, IState> {
   private nodeService: NodeService;
 
   constructor(props: IProps) {
     super(props);
+
+    this.state = {
+      isLoading: false,
+    },
 
     this._renderItem = this._renderItem.bind(this);
     this.removeFriend = this.removeFriend.bind(this);
@@ -132,6 +140,13 @@ export class FriendList extends Component<IProps> {
         />
 
         {
+          this.state.isLoading &&
+          <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size='large' color='#0000ff' />
+        </View>
+        }
+
+        {
           this.props.friendList.length === 0 &&
           <Text style={styles.null}>No friends have been added yet</Text>
         }
@@ -140,10 +155,16 @@ export class FriendList extends Component<IProps> {
   }
 
   private async removeFriend(row: any): Promise<any> {
+    let initialLength = this.props.friendList.length;
+    this.setState({isLoading: true});
     // TODO: call deleteRelation endpoint to remove friend from cache
     let friendId = row.node_id;
     await this.nodeService.deleteFriend(friendId);
     await this.nodeService.deleteNode(friendId);
+    if (this.props.friendList.length !== initialLength) {
+      this.setState({isLoading: false});
+    }
+    this.setState({isLoading: false});
   }
 }
 
@@ -187,5 +208,15 @@ const styles = StyleSheet.create({
     height: 80,
     alignSelf: 'center',
     width: '100%',
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      margin: '50%',
+    },
+    horizontal: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: 10,
     },
 });

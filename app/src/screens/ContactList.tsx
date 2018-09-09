@@ -75,9 +75,17 @@ export class ContactList extends Component<IProps, IState> {
     }
 
     searchContact() {
-      return this.state.data.filter(
-        item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.givenName || item.familyName),
+      let match = this.state.data.filter(
+        item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.givenName),
       );
+
+      if (match.length === 0) {
+        match = this.state.data.filter(
+          item => new RegExp(`\\b${this.state.query}`, 'gi').test(item.familyName),
+        );
+      }
+
+      return match;
     }
 
     _renderItem(item) {

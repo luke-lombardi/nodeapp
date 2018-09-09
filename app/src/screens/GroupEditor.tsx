@@ -19,6 +19,7 @@ interface IProps {
 interface IState {
   title: string;
   userRegion: any;
+  isRemoving: boolean;
   isLoading: boolean;
   uuid: string;
   public: boolean;
@@ -43,6 +44,7 @@ export class GroupEditor extends Component<IProps, IState> {
       title: '',
       userRegion: {},
       isLoading: false,
+      isRemoving: false,
       uuid: '',
       public: false,
       editing: false,
@@ -139,6 +141,7 @@ export class GroupEditor extends Component<IProps, IState> {
   }
 
   async _removePerson(item) {
+    await this.setState({isRemoving: true});
     let index = this.state.peopleInGroup.findIndex(
         n => n.recordID === item.recordID,
     );
@@ -162,6 +165,7 @@ export class GroupEditor extends Component<IProps, IState> {
     }
 
     await this.setState({peopleInGroup: newGroup});
+    await this.setState({isRemoving: false});
 
   }
 
@@ -240,7 +244,7 @@ export class GroupEditor extends Component<IProps, IState> {
             <View style={styles.buttonView}>
                 <Button style={styles.bottomButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'red'}}
                     onPress={this.submitDeleteGroup}
-                    loading={false}
+                    loading={this.state.isRemoving}
                     disabled={this.state.editing ? false : true}
                     loadingStyle={styles.loading}
                     title='Delete'
@@ -340,9 +344,9 @@ export class GroupEditor extends Component<IProps, IState> {
   private async submitDeleteGroup() {
     // let currentUUID = await AsyncStorage.getItem('user_uuid');
 
-    await this.setState({isLoading: true});
+    await this.setState({isRemoving: true});
     let result = await this.apiService.DeleteGroupAsync(this.state.groupData);
-    await this.setState({isLoading: false});
+    await this.setState({isRemoving: false});
 
     if (result !== undefined) {
       if (result.group_id !== '' && result.group_id !== undefined) {

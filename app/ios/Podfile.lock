@@ -27,7 +27,7 @@ PODS:
     - GoogleMaps/Base (= 2.5.0)
   - React (0.55.4):
     - React/Core (= 0.55.4)
-  - react-native-contacts (2.2.2):
+  - react-native-contacts (2.2.3):
     - React
   - react-native-google-maps (0.21.0):
     - Google-Maps-iOS-Utils (= 2.1.0)
@@ -70,6 +70,8 @@ PODS:
     - Crashlytics
     - Fabric
     - React
+  - RNSnackbar (0.5.1):
+    - React
   - ViroKit_static_lib (1.0)
   - ViroReact (1.0)
   - yoga (0.55.4.React)
@@ -95,6 +97,7 @@ DEPENDENCIES:
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - ReactNativeFabric (from `../node_modules/react-native-fabric`)
+  - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - ViroKit_static_lib (from `../node_modules/react-viro/ios/dist/ViroRenderer/static_lib`)
   - ViroReact (from `../node_modules/react-viro/ios/`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -118,6 +121,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   ReactNativeFabric:
     :path: "../node_modules/react-native-fabric"
+  RNSnackbar:
+    :path: "../node_modules/react-native-snackbar"
   ViroKit_static_lib:
     :path: "../node_modules/react-viro/ios/dist/ViroRenderer/static_lib"
   ViroReact:
@@ -136,10 +141,11 @@ SPEC CHECKSUMS:
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
   ReactNativeFabric: 3912bf9c714d7cc98110eadf06ca6dedef219322
+  RNSnackbar: 30ae0274ca33ea8b7b72a74b6402366a1ce27dd7
   ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 2e6dc05f662f030c1d4260c7fa776879911a210e
+PODFILE CHECKSUM: e102a43e2606e262ab60f77ce764580d3a6e2ec6
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.5.2

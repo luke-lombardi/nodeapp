@@ -205,12 +205,11 @@ const InternalStack = StackNavigator({
         headerTitleStyle: { color: 'white'},
         title: 'Chat',
         headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(NavigationActions.reset(
+          navigation.dispatch(
           {
-            index: 0,
-            actions: [ NavigationActions.navigate({ routeName: 'Chat' }) ],
+            type: 'Navigation/BACK',
           },
-          )) } />,
+          ) } />,
           headerRight: <Icon name='edit' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
             navigation.dispatch(NavigationActions.reset(
               {
@@ -233,17 +232,19 @@ const InternalStack = StackNavigator({
               },
               )) } />,
           headerRight: <Button color={'white'}
-          onPress={() => alert('Submit')}
+          onPress={() => navigation.getParam('messageBody') && navigation.navigate('Chat')}
           title='Submit'
         />,
-          }),
-        },
-       InternalStack: { screen: InternalStack },
+        }),
+      },
   });
 
   const DrawerStack = DrawerNavigator({
       Main: {
         screen: InternalStack,
+      },
+      Chat: {
+        screen: ChatStack,
       },
     },
     {

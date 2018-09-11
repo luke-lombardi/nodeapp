@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
-import { View, Button, StyleSheet, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 
 interface IProps {
   navigation: any;
 }
 
 interface IState {
+  messageBody: any;
 }
 
 export default class CreateMessage extends Component<IProps, IState> {
-
     constructor(props: IProps) {
         super(props);
         this.state = {
-
+          messageBody: '',
         };
         this.submitMessage = this.submitMessage.bind(this);
     }
 
     async submitMessage() {
       alert('submitted your message');
+      this.props.navigation.setParams({messageBody: this.state.messageBody});
     }
 
     render() {
@@ -27,7 +28,7 @@ export default class CreateMessage extends Component<IProps, IState> {
           <KeyboardAvoidingView behavior='padding'>
           <View style={styles.footer}>
             <TextInput
-                // value={this.state.typing}
+                value={this.state.messageBody}
                 // onChangeText={text => this.setState({typing: text})}
                 style={styles.input}
                 underlineColorAndroid='transparent'

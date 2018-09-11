@@ -63,10 +63,6 @@ export default class Node extends Component<IProps, IState> {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
   }
 
-  goToChat() {
-    this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', stack: 'ChatStack', params: { nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
-  }
-
   shareNode() {
     this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: { action: 'share_node', nodeId: this.props.nodeId } });
   }

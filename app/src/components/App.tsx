@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
-import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+import { View, StatusBar, AsyncStorage, Linking, Button } from 'react-native';
 import uuid from 'react-native-uuid';
 import Pushy from 'pushy-react-native';
 
@@ -20,6 +20,8 @@ import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
 import Profile from '../screens/Profile';
 import Tour from '../screens/Tour';
+import Chat from '../screens/Chat';
+import CreateMessage from '../components/CreateMessage';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -108,20 +110,20 @@ const InternalStack = StackNavigator({
       )) } />,
       }),
     },
-    CreateNode: { screen: CreateNode,
-      navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-        headerTitleStyle: { color: 'white'},
-        title: 'Create Node',
-        headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(NavigationActions.reset(
-          {
-            index: 0,
-            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-          },
-          )) } />,
-        }),
-    },
+  CreateNode: { screen: CreateNode,
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: { color: 'white'},
+      title: 'Create Node',
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
+      }),
+  },
   Tour: { screen: Tour,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -192,13 +194,57 @@ const InternalStack = StackNavigator({
     headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
     title: navigation.indexs,
     headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
-  }),
+    }),
   },
 );
+
+  const ChatStack = StackNavigator({
+    Chat: { screen: Chat,
+      navigationOptions: ({navigation}) => ({
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+        headerTitleStyle: { color: 'white'},
+        title: 'Chat',
+        headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          navigation.dispatch(
+          {
+            type: 'Navigation/BACK',
+          },
+          ) } />,
+          headerRight: <Icon name='edit' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+            navigation.dispatch(NavigationActions.reset(
+              {
+                index: 0,
+                actions: [ NavigationActions.navigate({ routeName: 'CreateMessage' }) ],
+              },
+              )) } />,
+        }),
+      },
+      CreateMessage: { screen: CreateMessage,
+        navigationOptions: ({navigation}) => ({
+          headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+          headerTitleStyle: {color: 'white'},
+          title: 'Compose Message',
+          headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+            navigation.dispatch(NavigationActions.reset(
+              {
+                index: 0,
+                actions: [ NavigationActions.navigate({ routeName: 'Chat' }) ],
+              },
+              )) } />,
+          headerRight: <Button color={'white'}
+          onPress={() => navigation.getParam('messageBody') && navigation.navigate('Chat')}
+          title='Submit'
+        />,
+        }),
+      },
+  });
 
   const DrawerStack = DrawerNavigator({
       Main: {
         screen: InternalStack,
+      },
+      Chat: {
+        screen: ChatStack,
       },
     },
     {
@@ -216,6 +262,7 @@ const InternalStack = StackNavigator({
 // Manifest of possible screens
 export const RootStack = StackNavigator({
     drawerStack: { screen: DrawerNavigation },
+    ChatStack: { screen: ChatStack},
   }, {
     // Default config for all screens
     headerMode: 'none',
@@ -302,26 +349,26 @@ export class App extends Component<IProps, IState> {
       this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
       this.locationService.StartMonitoring();
 
-      this.registerPushy();
+      // this.registerPushy();
     }
 
     componentDidMount() {
       // listen for incoming URL
       Linking.addEventListener('url', this.handleLink);
-      Pushy.listen();
-      // Register the device for push notifications
-      Pushy.register().then(async (deviceToken) => {
-        // Display an alert with device token
-        console.log('got device token', deviceToken);
-        alert('Pushy device token: ' + deviceToken);
+      // Pushy.listen();
+      // // Register the device for push notifications
+      // Pushy.register().then(async (deviceToken) => {
+      //   // Display an alert with device token
+      //   console.log('got device token', deviceToken);
+      //   alert('Pushy device token: ' + deviceToken);
 
-        // Send the token to your backend server via an HTTP GET request
-        //await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
-        // Succeeded, optionally do something to alert the user
-        }).catch((err) => {
-        // Handle registration errors
-        console.error(err);
-      });
+      //   // Send the token to your backend server via an HTTP GET request
+      //   //await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
+      //   // Succeeded, optionally do something to alert the user
+      //   }).catch((err) => {
+      //   // Handle registration errors
+      //   console.error(err);
+      // });
     }
 
     registerPushy() {

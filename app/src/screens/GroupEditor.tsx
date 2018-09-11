@@ -408,6 +408,7 @@ const styles = StyleSheet.create({
     flex: 4,
     padding: 10,
     margin: 20,
+    marginBottom: 200,
   },
   configView: {
     flex: 2,

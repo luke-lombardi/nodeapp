@@ -285,6 +285,46 @@ export default class ApiService {
       return response;
     }
 
+    // Posts a new message to a node
+    async PostMessageAsync(messageData: any) {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/postMessage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageData),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
+    // Posts a new message to a node
+    async GetMessagesAsync(requestBody: any) {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getMessages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
     // Sends a text to add a friend or share a node
     async sendText(requestBody: any) {
 

@@ -24,6 +24,8 @@ export default class Node extends Component<IProps, IState> {
     };
 
     this.goToFinder = this.goToFinder.bind(this);
+    this.goToChat = this.goToChat.bind(this);
+
     this.shareNode = this.shareNode.bind(this);
     this.handleGetDirections = this.handleGetDirections.bind(this);
   }
@@ -56,6 +58,10 @@ export default class Node extends Component<IProps, IState> {
 
   goToFinder() {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
+  }
+
+  goToChat() {
+    this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', stack: 'ChatStack', params: { nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
   }
 
   shareNode() {
@@ -98,7 +104,7 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.handleGetDirections}
             />
-             <Button
+             {/* <Button
               icon={{
                 name: 'camera',
                 type: 'feather',
@@ -110,6 +116,20 @@ export default class Node extends Component<IProps, IState> {
               buttonStyle={styles.transparentButton}
               title=''
               onPress={this.goToFinder}
+            /> */}
+
+             <Button
+              icon={{
+                name: 'message-circle',
+                type: 'feather',
+                size: 50,
+                color: 'rgba(44,55,71,0.8)',
+              }}
+              style={styles.middleButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={this.goToChat}
             />
 
             <Button
@@ -192,7 +212,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(44,55,71,0.1)',
   },
-  cameraButton: {
+  middleButton: {
     width: '70%',
     height: '100%',
     alignSelf: 'center',

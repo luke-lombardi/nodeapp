@@ -250,6 +250,8 @@ export default class LocationService {
       if (currentUUID === undefined) {
         Logger.info('LocationService.postLocation - No UUID is defined, not posting location.');
         return ;
+      } else {
+        Logger.info(`LocationService.postLocation - Posting w/ the following UUID: ${currentUUID}`);
       }
 
       let storedSettings = await AsyncStorage.getItem('userSettings');

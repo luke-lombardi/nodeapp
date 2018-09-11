@@ -49,7 +49,7 @@ export default class LocationService {
 
     constructor(props: IProps) {
         this.props = props;
-        Logger.info(`LocationService.constructor -  Initialized location service`);
+        Logger.trace(`LocationService.constructor -  Initialized location service`);
 
         this.updateBearing = this.updateBearing.bind(this);
         this.StartMonitoring = this.StartMonitoring.bind(this);
@@ -206,7 +206,6 @@ export default class LocationService {
         currentNode.data.color = nodeListArray[key].color;
         currentNode.data.status = nodeListArray[key].status;
 
-
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);
         } else if (currentNode.data.type === 'place' && !currentNode.data.private) {
@@ -251,6 +250,8 @@ export default class LocationService {
       if (currentUUID === undefined) {
         Logger.info('LocationService.postLocation - No UUID is defined, not posting location.');
         return ;
+      } else {
+        Logger.info(`LocationService.postLocation - Posting w/ the following UUID: ${currentUUID}`);
       }
 
       let storedSettings = await AsyncStorage.getItem('userSettings');

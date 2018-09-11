@@ -17,7 +17,7 @@ export default class ApiService {
 
     constructor(props: IProps) {
         this.props = props;
-        Logger.info(`ApiService.constructor -  Initialized api service`);
+        Logger.trace(`ApiService.constructor -  Initialized api service`);
 
         this.getNodes = this.getNodes.bind(this);
     }
@@ -273,6 +273,46 @@ export default class ApiService {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(nodeData),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
+    // Posts a new message to a node
+    async PostMessageAsync(messageData: any) {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/postMessage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageData),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
+    // Posts a new message to a node
+    async GetMessagesAsync(requestBody: any) {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getMessages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
           });
 
       if (response.status !== HttpStatus.OK) {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
-import { View, StatusBar, AsyncStorage, Linking, Button } from 'react-native';
+import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
 import uuid from 'react-native-uuid';
 import Pushy from 'pushy-react-native';
 
@@ -224,17 +224,13 @@ const InternalStack = StackNavigator({
           headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
           headerTitleStyle: {color: 'white'},
           title: 'Compose Message',
-          headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
             navigation.dispatch(NavigationActions.reset(
               {
                 index: 0,
                 actions: [ NavigationActions.navigate({ routeName: 'Chat' }) ],
               },
-              )) } />,
-          headerRight: <Button color={'white'}
-          onPress={() => navigation.getParam('messageBody') && navigation.navigate('Chat')}
-          title='Submit'
-        />,
+            )) } />,
         }),
       },
   });

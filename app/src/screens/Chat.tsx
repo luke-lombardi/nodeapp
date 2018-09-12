@@ -5,8 +5,6 @@ import { ListItem } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
-import ApiService from '../services/ApiService';
-
 interface IProps {
     navigation: any;
 }
@@ -16,8 +14,9 @@ interface IState {
 }
 
 export class Chat extends Component<IProps, IState> {
+  private action: any;
+  private messageBody: any;
   // @ts-ignore
-  private apiService: ApiService;
 
   private nodeId: string;
 
@@ -29,11 +28,26 @@ export class Chat extends Component<IProps, IState> {
     };
 
     this._renderItem = this._renderItem.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.updateList = this.updateList.bind(this);
     this.setMessages = this.setMessages.bind(this);
 
-    this.componentDidMount = this.componentDidMount.bind(this);
+    }
 
-    this.apiService = new ApiService({});
+    componentDidMount() {
+      this.action = this.props.navigation.getParam('action', '');
+
+      if (this.action === 'new_message') {
+        this.updateList();
+      }
+      return;
+    }
+
+    updateList() {
+      this.messageBody = this.props.navigation.getParam('messageBody', '');
+      let newList = this.state.data.push(this.messageBody);
+      this.setState({data: newList});
+      console.log('newList', this.state.data);
     }
 
     _renderItem = ({item}) => (
@@ -114,9 +128,6 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);
 
 const styles = StyleSheet.create({
-  searchBar: {
-    position: 'absolute',
-  },
   nodeListItem: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',

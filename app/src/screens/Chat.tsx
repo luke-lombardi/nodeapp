@@ -18,30 +18,20 @@ export class Chat extends Component<IProps, IState> {
   private messageBody: any;
   // @ts-ignore
 
+  private nodeId: string;
+
   constructor(props: IProps) {
     super(props);
 
     this.state = {
-        data: [
-          {
-            name: 'eli mernit',
-            message: 'MFW I open the basket of envelopes for the first time lmaooo',
-            submitted: '5 minutes ago',
-            location: 'Bronx, NY',
-            id: 1,
-          },
-          {
-            name: 'eli mernit',
-            message: 'jw if anyone knows good bud around here',
-            submitted: '12 minutes ago',
-            location: 'Bronx, NY',
-            id: 2,
-          },
-        ],
+        data: [],
     };
+
     this._renderItem = this._renderItem.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.updateList = this.updateList.bind(this);
+    this.setMessages = this.setMessages.bind(this);
+
     }
 
     componentDidMount() {
@@ -77,11 +67,31 @@ export class Chat extends Component<IProps, IState> {
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}>{item.submitted}</Text>
+          <Text style={styles.ratingText}>{item.timestamp}</Text>
           </View>
         }
       />
     )
+
+    componentDidMount() {
+      this.nodeId = 'private:042bd76f-3e74-4b1d-8c15-5576375ee77d'; // this.props.navigation.getParam('nodeId', '');
+      console.log('NODE ID');
+      console.log(this.nodeId);
+      this.setMessages();
+    }
+
+    async setMessages() {
+      let currentUUID = await AsyncStorage.getItem('user_uuid');
+      let requestBody = {
+        'node_id': this.nodeId,
+        'user_uuid': currentUUID,
+      };
+
+      let messages = await this.apiService.GetMessagesAsync(requestBody);
+      if (messages !== undefined) {
+        await this.setState({data: messages});
+      }
+    }
 
     render() {
       return (
@@ -89,7 +99,7 @@ export class Chat extends Component<IProps, IState> {
           <FlatList
            data={this.state.data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.id}
+           keyExtractor={item => item.timestamp}
           />
 
           {

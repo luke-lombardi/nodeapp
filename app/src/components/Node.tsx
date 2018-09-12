@@ -103,7 +103,7 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.handleGetDirections}
             />
-             <Button
+             {/* <Button
               icon={{
                 name: 'message-circle',
                 type: 'feather',
@@ -111,6 +111,20 @@ export default class Node extends Component<IProps, IState> {
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.cameraButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={this.goToFinder}
+            /> */}
+
+             <Button
+              icon={{
+                name: 'message-circle',
+                type: 'feather',
+                size: 50,
+                color: 'rgba(44,55,71,0.8)',
+              }}
+              style={styles.middleButton}
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
@@ -197,7 +211,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(44,55,71,0.1)',
   },
-  cameraButton: {
+  middleButton: {
     width: '70%',
     height: '100%',
     alignSelf: 'center',

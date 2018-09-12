@@ -100,7 +100,7 @@ export class SideBar extends Component<IProps> {
                 }}
                 />
 
-                  <ListItem
+                  {/* <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,
@@ -115,7 +115,7 @@ export class SideBar extends Component<IProps> {
                     this.resetNavigation('GroupEditor') :
                     this.resetNavigation('Groups');
                 }}
-                />
+                /> */}
 
                 <ListItem
                   scaleProps={{
@@ -131,7 +131,7 @@ export class SideBar extends Component<IProps> {
                 }}
               />
 
-               <ListItem
+               {/* <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,
@@ -143,7 +143,7 @@ export class SideBar extends Component<IProps> {
                   leftIcon={{name: 'help-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.resetNavigation('Tour');
                 }}
-              />
+              /> */}
 
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text

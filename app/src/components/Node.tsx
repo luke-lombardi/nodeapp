@@ -51,12 +51,11 @@ export default class Node extends Component<IProps, IState> {
         },
       ],
     };
-    console.log('did data?', data);
     getDirections(data);
   }
 
   goToChat() {
-    this.props.navigation.navigate({key: 'Chat', routeName: 'Chat', params: {action: 'join_chat', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
+    this.props.navigation.navigate({key: 'Chat', routeName: 'Chat', params: { action: 'join_chat', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
   }
 
   goToFinder() {

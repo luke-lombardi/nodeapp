@@ -4,6 +4,7 @@ import { View, FlatList, StyleSheet, Text, AsyncStorage, Alert } from 'react-nat
 import { ListItem } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+import ApiService from '../services/ApiService';
 
 interface IProps {
     navigation: any;
@@ -11,44 +12,40 @@ interface IProps {
 
 interface IState {
     data: any;
+    isLoading: boolean;
 }
 
 export class Chat extends Component<IProps, IState> {
-  private action: any;
-  private messageBody: any;
-  // @ts-ignore
+  private apiService: ApiService;
 
+  // @ts-ignore
+  private userUuid: string;
   private nodeId: string;
+  private action: any;
 
   constructor(props: IProps) {
     super(props);
 
     this.state = {
         data: [],
+        isLoading: false,
     };
+
+    this.apiService = new ApiService({});
 
     this._renderItem = this._renderItem.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
-    this.updateList = this.updateList.bind(this);
+    // this.updateList = this.updateList.bind(this);
     this.setMessages = this.setMessages.bind(this);
-
+    this.postMessages = this.postMessages.bind(this);
     }
 
-    componentDidMount() {
-      this.action = this.props.navigation.getParam('action', '');
-
-      if (this.action === 'new_message') {
-        this.updateList();
-      }
-      return;
-    }
-
-    updateList() {
-      this.messageBody = this.props.navigation.getParam('messageBody', '');
-      let newList = this.state.data.push(this.messageBody);
-      this.setState({data: newList});
-      console.log('newList', this.state.data);
-    }
+    // updateList() {
+    //   this.messageBody = this.props.navigation.getParam('messageBody', '');
+    //   let newList = this.state.data.push(this.messageBody);
+    //   this.setState({data: newList});
+    //   console.log('newList', this.state.data);
+    // }
 
     _renderItem = ({item}) => (
       <ListItem
@@ -74,13 +71,48 @@ export class Chat extends Component<IProps, IState> {
     )
 
     componentDidMount() {
-      this.nodeId = 'private:042bd76f-3e74-4b1d-8c15-5576375ee77d'; // this.props.navigation.getParam('nodeId', '');
-      console.log('NODE ID');
-      console.log(this.nodeId);
+      this.action = this.props.navigation.getParam('action', '');
+      console.log('ACTION ID');
+      console.log(this.action);
+
+      if (this.action === 'join_chat') {
+        this.nodeId = this.props.navigation.getParam('nodeId', '');
+        console.log('NODE ID');
+        console.log(this.nodeId);
+      }
+
+      if (this.action === 'new_message') {
+        this.postMessages();
+      }
       this.setMessages();
     }
 
+    async postMessages() {
+
+      const nodeType = this.props.navigation.getParam('nodeType', '');
+      const nodeId = this.props.navigation.getParam('nodeId', '');
+      const userUuid = await AsyncStorage.getItem('user_uuid');
+      // let nodeId = 'private:4317f67a-ae7a-4347-8184-992967623882';
+      let messageBody = this.props.navigation.getParam('messageBody', '');
+      // let userUuid =  '05e9c779-de02-4a8a-9fad-097e2f153f62';
+
+      let requestBody = {
+        node_id: nodeType + ':' + nodeId,
+        message: messageBody,
+        user_uuid: userUuid,
+      };
+
+      console.log('got message body', requestBody);
+
+      let response = await this.apiService.PostMessageAsync(requestBody);
+      if (response !== undefined) {
+        console.log('got response!', response);
+        await this.setMessages();
+      }
+    }
+
     async setMessages() {
+      console.log('set messages');
       let currentUUID = await AsyncStorage.getItem('user_uuid');
       let requestBody = {
         'node_id': this.nodeId,
@@ -88,6 +120,8 @@ export class Chat extends Component<IProps, IState> {
       };
 
       let messages = await this.apiService.GetMessagesAsync(requestBody);
+      console.log('set messages---->', messages);
+
       if (messages !== undefined) {
         await this.setState({data: messages});
       }
@@ -155,6 +189,6 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   flatlist: {
-    marginBottom: 200,
+    marginBottom: 0,
   },
 });

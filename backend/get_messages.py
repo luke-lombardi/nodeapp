@@ -81,7 +81,7 @@ def lambda_handler(event, context):
         messages = get_messages(rds, node_id, user_uuid)
 
     if messages:
-        messages.sort(key=operator.itemgetter('timestamp'))
+        messages.sort(key=operator.itemgetter('timestamp'), reverse=True)
 
     return messages
 

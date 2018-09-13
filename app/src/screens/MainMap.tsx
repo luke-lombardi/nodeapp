@@ -503,6 +503,7 @@ export class MainMap extends Component<IProps, IState> {
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
                 onPress={this.clearSelectedNode}
+                // @ts-ignore
                 customMapStyle={mapStyle}
               >
 

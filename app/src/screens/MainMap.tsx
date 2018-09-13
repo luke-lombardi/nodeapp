@@ -190,13 +190,15 @@ export class MainMap extends Component<IProps, IState> {
 
       // If we found the node in the list, move the map location to the node location
       if (selectedNode) {
-        this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
-        this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
-        selectedNode.nodeType = this.selectedNodeType;
-
         try {
-          this.setState( {selectedNode: selectedNode} );
-          this.setState({nodeSelected: true});
+          this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
+          this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
+          selectedNode.nodeType = this.selectedNodeType;
+
+          this.setState({
+            selectedNode: selectedNode,
+            nodeSelected: true,
+          } );
         } catch (error) {
           // If we got here, we unmounted
           console.log(error);

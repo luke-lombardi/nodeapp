@@ -205,18 +205,20 @@ const InternalStack = StackNavigator({
         headerTitleStyle: { color: 'white'},
         title: 'Chat',
         headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(
+          navigation.dispatch(NavigationActions.navigate(
           {
-            type: 'Navigation/BACK',
+            routeName: 'Map',
+            params: {},
+            action: NavigationActions.navigate({ routeName: 'Map' }),
           },
-          ) } />,
+          )) } />,
           headerRight: <Icon name='edit' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
             navigation.dispatch(NavigationActions.reset(
               {
                 index: 0,
                 actions: [ NavigationActions.navigate({ routeName: 'CreateMessage' }) ],
               },
-              )) } />,
+          )) } />,
         }),
       },
       CreateMessage: { screen: CreateMessage,
@@ -351,20 +353,20 @@ export class App extends Component<IProps, IState> {
 
     componentDidMount() {
       // listen for incoming URL
-      Pushy.listen();
-      // Register the device for push notifications
-      Pushy.register().then(async (deviceToken) => {
-        // Display an alert with device token
-        console.log('got device token', deviceToken);
-        // alert('Pushy device token: ' + deviceToken);
+      // Pushy.listen();
+      // // Register the device for push notifications
+      // Pushy.register().then(async (deviceToken) => {
+      //   // Display an alert with device token
+      //   console.log('got device token', deviceToken);
+      //   // alert('Pushy device token: ' + deviceToken);
 
-        // Send the token to your backend server via an HTTP GET request
-        // await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
-        // Succeeded, optionally do something to alert the user
-        }).catch((err) => {
-        // Handle registration errors
-        console.error(err);
-      });
+      //   // Send the token to your backend server via an HTTP GET request
+      //   // await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
+      //   // Succeeded, optionally do something to alert the user
+      //   }).catch((err) => {
+      //   // Handle registration errors
+      //   console.error(err);
+      // });
 
       // This handles the case where a user clicked a link and the app was closed
       Linking.getInitialURL().then((url) => {

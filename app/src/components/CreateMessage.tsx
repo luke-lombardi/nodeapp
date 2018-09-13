@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface IProps {
   navigation: any;
+  nodeType: any;
+  nodeId: any;
 }
 
 interface IState {
@@ -20,16 +22,32 @@ export default class CreateMessage extends Component<IProps, IState> {
           isLoading: false,
         };
         this.submitMessage = this.submitMessage.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
     }
 
-    submitMessage() {
+    componentWillMount() {
+      const nodeType = this.props.navigation.getParam('nodeType');
+      const nodeId = this.props.navigation.getParam('nodeId');
+
+      console.log('got stuff', nodeType, nodeId);
+    }
+
+    async submitMessage() {
+      const nodeType = this.props.navigation.getParam('nodeType');
+      const nodeId = this.props.navigation.getParam('nodeId');
+
       this.setState({
         isLoading: true,
         messageBody: this.state.messageBody,
       });
 
+      let userUuid = await AsyncStorage.getItem('user_uuid');
+
       this.props.navigation.navigate('Chat', {
         messageBody: this.state.messageBody, action: 'new_message',
+        params: {
+          userUuid: userUuid, nodeType: nodeType, nodeId: nodeId,
+        },
       });
 
       this.setState({isLoading: false});

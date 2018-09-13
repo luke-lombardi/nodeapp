@@ -47,7 +47,8 @@ import Friends from './markers/Friends';
 import SleepUtil from '../services/SleepUtil';
 import ApiService from '../services/ApiService';
 
-// import mapStyle from '../config/mapStyle.json';
+import mapStyle from '../config/mapStyle.json';
+
 interface IProps {
     navigation: any;
 
@@ -193,8 +194,13 @@ export class MainMap extends Component<IProps, IState> {
         this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
         selectedNode.nodeType = this.selectedNodeType;
 
-        this.setState({selectedNode: selectedNode});
-        this.setState({nodeSelected: true});
+        try {
+          this.setState( {selectedNode: selectedNode} );
+          this.setState({nodeSelected: true});
+        } catch (error) {
+          // If we got here, we unmounted
+          console.log(error);
+        }
 
         setTimeout(() => {
           try {
@@ -495,7 +501,7 @@ export class MainMap extends Component<IProps, IState> {
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
                 onPress={this.clearSelectedNode}
-                // customMapStyle={mapStyle}
+                customMapStyle={mapStyle}
               >
 
               {/* Map markers  */}

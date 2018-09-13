@@ -72,7 +72,7 @@ export default class MapToolbar extends Component<IProps, IState> {
 const styles = StyleSheet.create({
   toolbarView: {
     height: 50,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255,255,255,1.0)',
     padding: 0,
     flexDirection: 'row',
     borderBottomColor: 'rgba(44,55,71,0.3)',

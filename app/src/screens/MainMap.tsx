@@ -197,7 +197,12 @@ export class MainMap extends Component<IProps, IState> {
         this.setState({nodeSelected: true});
 
         setTimeout(() => {
-          this._map.animateToRegion(this.currentMarkerRegion, 10);
+          try {
+            this._map.animateToRegion(this.currentMarkerRegion, 10);
+          } catch (error) {
+            // If we got here, we unmounted
+            console.log(error);
+          }
         }, 5);
 
         return;
@@ -209,7 +214,12 @@ export class MainMap extends Component<IProps, IState> {
       this.waitForUserPosition();
     } else {
       setTimeout(() => {
-        this._map.animateToRegion(this.props.userRegion, 10);
+        try {
+          this._map.animateToRegion(this.props.userRegion, 10);
+        } catch (error) {
+          // If we got here, we unmounted
+          console.log(error);
+        }
       }, 5);
     }
 
@@ -224,15 +234,27 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async waitForUserPosition() {
+
     while (this.props.userRegion.latitude === undefined) {
       await SleepUtil.SleepAsync(1);
     }
-    this._map.animateToRegion(this.props.userRegion, 100);
+
+    try {
+      this._map.animateToRegion(this.props.userRegion, 100);
+    } catch (error) {
+      // If we get this, we unmounted
+      console.log(error);
+    }
   }
 
   zoomToUserLocation() {
-    this._map.animateToRegion(this.props.userRegion, 100);
-    this.clearSelectedNode({nativeEvent: {action: ''}});
+    try {
+      this._map.animateToRegion(this.props.userRegion, 100);
+      this.clearSelectedNode({nativeEvent: {action: ''}});
+    } catch (error) {
+      // If we get this, we unmounted
+      console.log(error);
+    }
   }
 
   viewNodeList() {

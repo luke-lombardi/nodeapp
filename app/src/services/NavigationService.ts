@@ -17,9 +17,23 @@ function navigate(routeName, params) {
   );
 }
 
+function reset(routeName, params) {
+  _navigator.dispatch(
+    NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: routeName, params} ),
+      ],
+      // @ts-ignore
+      // key: routeName,
+    }),
+  );
+}
+
 // add other navigation functions that you need and export them
 
 export default {
   navigate,
+  reset,
   setTopLevelNavigator,
 };

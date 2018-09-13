@@ -17,8 +17,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-DEFAULT_NODE_TTL = 3600
-
 def is_cache_connected(rds):
     try:
         response = rds.client_list()

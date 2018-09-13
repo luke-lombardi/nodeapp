@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-elements';
 import getDirections from 'react-native-google-maps-directions';
+import NavigationService from '../services/NavigationService';
 
 interface IProps {
   title: string;
@@ -55,7 +56,9 @@ export default class Node extends Component<IProps, IState> {
   }
 
   goToChat() {
-    this.props.navigation.navigate({key: 'Chat', routeName: 'Chat', params: { action: 'join_chat', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
+    NavigationService.reset('Chat', {
+      action: 'join_chat', nodeId: this.props.nodeId,
+    });
   }
 
   goToFinder() {

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, AsyncStorage } from 'react-native';
+
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import NavigationService from '../services/NavigationService';
 
 interface IProps {
   navigation: any;
@@ -15,26 +18,20 @@ interface IState {
 }
 
 export default class CreateMessage extends Component<IProps, IState> {
+
     constructor(props: IProps) {
         super(props);
         this.state = {
           messageBody: '',
           isLoading: false,
         };
+
         this.submitMessage = this.submitMessage.bind(this);
-        this.componentWillMount = this.componentWillMount.bind(this);
-    }
-
-    componentWillMount() {
-      const nodeType = this.props.navigation.getParam('nodeType');
-      const nodeId = this.props.navigation.getParam('nodeId');
-
-      console.log('got stuff', nodeType, nodeId);
+        // this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     async submitMessage() {
-      const nodeType = this.props.navigation.getParam('nodeType');
-      const nodeId = this.props.navigation.getParam('nodeId');
+      let nodeId = this.props.navigation.getParam('nodeId');
 
       this.setState({
         isLoading: true,
@@ -43,11 +40,11 @@ export default class CreateMessage extends Component<IProps, IState> {
 
       let userUuid = await AsyncStorage.getItem('user_uuid');
 
-      this.props.navigation.navigate('Chat', {
-        messageBody: this.state.messageBody, action: 'new_message',
-        params: {
-          userUuid: userUuid, nodeType: nodeType, nodeId: nodeId,
-        },
+      NavigationService.reset('Chat', {
+        messageBody: this.state.messageBody,
+        action: 'new_message',
+        userUuid: userUuid,
+        nodeId: nodeId,
       });
 
       this.setState({isLoading: false});

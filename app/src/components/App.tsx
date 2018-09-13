@@ -187,41 +187,8 @@ const InternalStack = StackNavigator({
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => { navigation.goBack(undefined); } } />,
       }),
     },
-  },
-  {
-  initialRouteName: 'Map',
-  navigationOptions: ({navigation}) => ({
-    headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-    title: navigation.indexs,
-    headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
-    }),
-  },
-);
-
-  const ChatStack = StackNavigator({
-    Chat: { screen: Chat,
-      navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-        headerTitleStyle: { color: 'white'},
-        title: 'Chat',
-        headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(NavigationActions.navigate(
-          {
-            routeName: 'Map',
-            params: {},
-            action: NavigationActions.navigate({ routeName: 'Map' }),
-          },
-          )) } />,
-          headerRight: <Icon name='edit' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-            navigation.dispatch(NavigationActions.reset(
-              {
-                index: 0,
-                actions: [ NavigationActions.navigate({ routeName: 'CreateMessage' }) ],
-              },
-          )) } />,
-        }),
-      },
-      CreateMessage: { screen: CreateMessage,
+  Chat: { screen: Chat },
+  CreateMessage : { screen: CreateMessage,
         navigationOptions: ({navigation}) => ({
           headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
           headerTitleStyle: {color: 'white'},
@@ -234,15 +201,21 @@ const InternalStack = StackNavigator({
               },
             )) } />,
         }),
-      },
-  });
+    },
+  },
+  {
+  initialRouteName: 'Map',
+  navigationOptions: ({navigation}) => ({
+    headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+    title: navigation.indexs,
+    headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
+    }),
+  },
+);
 
   const DrawerStack = DrawerNavigator({
       Main: {
         screen: InternalStack,
-      },
-      Chat: {
-        screen: ChatStack,
       },
     },
     {
@@ -260,7 +233,6 @@ const InternalStack = StackNavigator({
 // Manifest of possible screens
 export const RootStack = StackNavigator({
     drawerStack: { screen: DrawerNavigation },
-    ChatStack: { screen: ChatStack},
   }, {
     // Default config for all screens
     headerMode: 'none',

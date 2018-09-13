@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { NavigationActions } from 'react-navigation';
+
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, AsyncStorage, Alert } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { ListItem, Icon } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
@@ -16,12 +18,34 @@ interface IState {
 }
 
 export class Chat extends Component<IProps, IState> {
+
   private apiService: ApiService;
 
   // @ts-ignore
   private userUuid: string;
   private nodeId: string;
   private action: any;
+
+  // TODO: figure out a smarter way to do this
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return {
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+        headerTitleStyle: { color: 'white'},
+        title: 'Chat',
+        headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+          navigation.dispatch(NavigationActions.navigate(
+                {
+                  routeName: 'Map',
+                  params: {},
+                  action: NavigationActions.navigate({ routeName: 'Map' }),
+                })); }
+               } />,
+          headerRight: <Icon name='edit' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+            params.goToCreateMessage();
+           } } />,
+          };
+    }
 
   constructor(props: IProps) {
     super(props);
@@ -35,9 +59,16 @@ export class Chat extends Component<IProps, IState> {
 
     this._renderItem = this._renderItem.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+
     // this.updateList = this.updateList.bind(this);
     this.setMessages = this.setMessages.bind(this);
-    this.postMessages = this.postMessages.bind(this);
+    this.postMessage = this.postMessage.bind(this);
+
+    this.goToCreateMessage = this.goToCreateMessage.bind(this);
+    }
+
+    goToCreateMessage() {
+      this.props.navigation.navigate({key: 'CreateMessage', routeName: 'CreateMessage', params: { nodeId: this.nodeId }});
     }
 
     // updateList() {
@@ -70,49 +101,47 @@ export class Chat extends Component<IProps, IState> {
       />
     )
 
-    componentDidMount() {
+    componentDidMount () {
+      // Set params for nav stack
+      this.props.navigation.setParams({ goToCreateMessage: this.goToCreateMessage });
+
+      // Grab navigation params
       this.action = this.props.navigation.getParam('action', '');
-      console.log('ACTION ID');
-      console.log(this.action);
+      this.nodeId = this.props.navigation.getParam('nodeId', '');
 
-      if (this.action === 'join_chat') {
-        this.nodeId = this.props.navigation.getParam('nodeId', '');
-        console.log('NODE ID');
-        console.log(this.nodeId);
-      }
-
+      // If we are returning from the CreateMessage screen, post the users message
       if (this.action === 'new_message') {
-        this.postMessages();
+        this.postMessage();
       }
+
+      // Updates the message data for the node
       this.setMessages();
     }
 
-    async postMessages() {
-
-      const nodeType = this.props.navigation.getParam('nodeType', '');
-      const nodeId = this.props.navigation.getParam('nodeId', '');
+    // Sends a new message to the API
+    async postMessage() {
+      const nodeId = this.props.navigation.getParam('nodeId', undefined);
       const userUuid = await AsyncStorage.getItem('user_uuid');
-      // let nodeId = 'private:4317f67a-ae7a-4347-8184-992967623882';
-      let messageBody = this.props.navigation.getParam('messageBody', '');
-      // let userUuid =  '05e9c779-de02-4a8a-9fad-097e2f153f62';
+      let messageBody = this.props.navigation.getParam('messageBody', undefined);
 
       let requestBody = {
-        node_id: nodeType + ':' + nodeId,
+        node_id:  nodeId,
         message: messageBody,
         user_uuid: userUuid,
       };
 
-      console.log('got message body', requestBody);
+      console.log('Sending request body', requestBody);
 
       let response = await this.apiService.PostMessageAsync(requestBody);
       if (response !== undefined) {
-        console.log('got response!', response);
+        console.log('Response: ', response);
         await this.setMessages();
       }
     }
 
     async setMessages() {
-      console.log('set messages');
+      console.log('Setting messages...');
+
       let currentUUID = await AsyncStorage.getItem('user_uuid');
       let requestBody = {
         'node_id': this.nodeId,
@@ -120,7 +149,7 @@ export class Chat extends Component<IProps, IState> {
       };
 
       let messages = await this.apiService.GetMessagesAsync(requestBody);
-      console.log('set messages---->', messages);
+      console.log(messages);
 
       if (messages !== undefined) {
         await this.setState({data: messages});
@@ -140,6 +169,7 @@ export class Chat extends Component<IProps, IState> {
             this.state.data.length === 0 &&
             <Text style={styles.null}>No messages yet!</Text>
           }
+
         </View>
 
       );

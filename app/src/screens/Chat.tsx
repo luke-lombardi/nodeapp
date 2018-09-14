@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
   },
   null: {
     fontSize: 22,
-    marginTop: 25,
+    color: 'gray',
+    top: 250,
     alignSelf: 'center',
   },
   titleText: {

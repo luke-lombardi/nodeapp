@@ -84,7 +84,7 @@ export class SideBar extends Component<IProps> {
                   }}
                 />
 
-                  <ListItem
+                <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,
@@ -95,9 +95,10 @@ export class SideBar extends Component<IProps> {
                   key='friends'
                   title='Friends'
                   leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => {
+                  onPress={ () => { this.props.friendList.length === 0 ?
+                    this.props.navigation.navigate('ContactList', {action: 'add_friend'}) :
                     this.resetNavigation('Friends');
-                }}
+                  }}
                 />
 
                   {/* <ListItem

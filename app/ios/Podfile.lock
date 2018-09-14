@@ -27,6 +27,8 @@ PODS:
     - GoogleMaps/Base (= 2.5.0)
   - React (0.55.4):
     - React/Core (= 0.55.4)
+  - react-native-blur (0.8.0):
+    - React
   - react-native-contacts (2.2.3):
     - React
   - react-native-google-maps (0.21.0):
@@ -81,6 +83,7 @@ DEPENDENCIES:
   - Fabric
   - GoogleMaps
   - GooglePlaces
+  - react-native-blur (from `../node_modules/react-native-blur`)
   - react-native-contacts (from `../node_modules/react-native-contacts`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -113,6 +116,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   React:
     :path: "../node_modules/react-native"
+  react-native-blur:
+    :path: "../node_modules/react-native-blur"
   react-native-contacts:
     :path: "../node_modules/react-native-contacts"
   react-native-google-maps:
@@ -137,6 +142,7 @@ SPEC CHECKSUMS:
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
   React: aa2040dbb6f317b95314968021bd2888816e03d5
+  react-native-blur: c35c1f6c2c76db7108bde7ed343bd2b01d64e0c0
   react-native-contacts: 1a8913219e54d1fa20e817b99d9b42b9ec98558d
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
@@ -146,6 +152,6 @@ SPEC CHECKSUMS:
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: e102a43e2606e262ab60f77ce764580d3a6e2ec6
+PODFILE CHECKSUM: 6002445c6529022a3df58fed81291ac08299293c
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.5.2

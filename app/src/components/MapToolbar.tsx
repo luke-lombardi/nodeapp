@@ -19,6 +19,12 @@ export default class MapToolbar extends Component<IProps, IState> {
   render() {
     return (
     <View style={styles.toolbarView}>
+
+          <Switch
+            style={styles.center}
+            value={!this.props.publicNodesVisible}
+            onValueChange={ () => { this.props.functions.toggleSwitch(); } }
+          />
           <Button
             icon={{
               name: 'refresh',
@@ -44,12 +50,6 @@ export default class MapToolbar extends Component<IProps, IState> {
             // @ts-ignore
             onPress={this.props.functions.zoomToUserLocation}
           />
-          <Switch
-            style={styles.switch}
-            value={this.props.publicNodesVisible}
-            onValueChange={ () => { this.props.functions.toggleSwitch(); } }
-          />
-
           <Button
             icon={{
               name: 'list',
@@ -101,13 +101,6 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: 0,
   },
-  walletButton: {
-    width: '100%',
-    height: '100%',
-    left: 20,
-    marginTop: 5,
-    padding: 0,
-  },
   buttonContainer: {
     backgroundColor: 'rgba(44,55,71,0.0)',
     padding: 0,
@@ -123,10 +116,13 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRightWidth: 1,
     borderRightColor: 'rgba(44,55,71,0.3)',
+    borderLeftWidth: 1,
+    borderLeftColor: 'rgba(44,55,71,0.3)',
     position: 'absolute',
-    right: 0,
+    right: 70,
   },
   center: {
+    marginTop: 10,
     backgroundColor: 'rgba(44,55,71,0.0)',
     padding: 0,
     width: '10%',
@@ -134,7 +130,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderRightColor: 'rgba(44,55,71,0.3)',
     position: 'absolute',
-    right: '45%',
+    right: 25,
   },
   transparentButton: {
     backgroundColor: 'rgba(44,55,71,0.0)',

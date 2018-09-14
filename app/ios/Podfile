@@ -32,6 +32,8 @@ pod 'React', :path => '../node_modules/react-native', :subspecs => [
 
   pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
 
+  pod 'react-native-blur', :path => '../node_modules/react-native-blur'
+
 end
 
 post_install do |installer|

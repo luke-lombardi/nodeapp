@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
+    backgroundColor: '#ffffff',
     shadowColor: 'black',
     shadowOpacity: 0.4,
     shadowRadius: 5,

@@ -1,0 +1,43 @@
+{
+	"node_id": "61db0dac-d9a2-4d0b-b28c-5eaf37679fd6",
+	"location":
+	{
+		"coords":
+		{
+			"speed": -1,
+			"longitude": -73.96414360506022,
+			"floor": None,
+			"latitude": 40.71154204479654,
+			"accuracy": 65,
+			"altitude_accuracy": 10,
+			"altitude": 17.2,
+			"heading": -1
+		},
+		"extras":
+		{},
+		"is_moving": False,
+		"event": "motionchange",
+		"odometer": 5.9,
+		"uuid": "1ACDFD82-8C75-402A-9258-C3FD7DC000FD",
+		"activity":
+		{
+			"type": "unknown",
+			"confidence": 100
+		},
+		"battery":
+		{
+			"level": 0.8600000143051147,
+			"is_charging": True
+		},
+		"timestamp": "2018-09-15T21:47:10.561Z"
+	},
+	"node_data":
+	{
+		"lng": 1,
+		"title": "Anonymous",
+		"lat": 0,
+		"description": "",
+		"type": "person",
+		"public": False
+	}
+}

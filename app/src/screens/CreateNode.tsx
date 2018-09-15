@@ -246,7 +246,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   switch: {
-    fontSize: 18,
     alignSelf: 'flex-start',
   },
   switchText: {

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, AsyncStorage, Alert } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import { ListItem, SearchBar } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -25,6 +27,7 @@ interface IState {
     selectedDate: boolean;
     selectedPlaceAddress: any;
     nodeId: string;
+    isLoading: boolean;
 }
 
 export class ContactList extends Component<IProps, IState> {
@@ -46,6 +49,7 @@ export class ContactList extends Component<IProps, IState> {
         selectedDate: this.props.navigation.getParam('selectedDate'),
         selectedPlaceAddress: this.props.navigation.getParam('selectedPlaceAddress'),
         nodeId: this.props.navigation.getParam('nodeId', ''),
+        isLoading: false,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -125,6 +129,9 @@ export class ContactList extends Component<IProps, IState> {
             this.state.data.length === 0 &&
             <Text style={styles.null}>Unable to access contacts</Text>
           }
+
+          <Spinner visible={this.state.isLoading} textContent={'Loading...'} textStyle={{color: 'rgba(44,55,71,1.0)'}} />
+
         </View>
 
       );
@@ -167,8 +174,10 @@ export class ContactList extends Component<IProps, IState> {
 
         let messageText = '';
 
+        await this.setState({isLoading: true});
         // Send the node sharing request to API
         let response = await this.apiService.sendText(requestData);
+        await this.setState({isLoading: false});
 
         // If we got an undefined response, something went wrong
         if (response !== undefined) {
@@ -204,7 +213,9 @@ export class ContactList extends Component<IProps, IState> {
 
         Logger.info(`ContactList.selectContact - Sending friend request ${JSON.stringify(inviteData)}`);
 
+        await this.setState({isLoading: true});
         let newRelation = await this.apiService.AddFriendAsync(inviteData);
+        await this.setState({isLoading: false});
 
         let messageText = '';
 

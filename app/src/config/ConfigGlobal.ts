@@ -7,6 +7,7 @@ export interface ConfigGlobal {
 
     readonly nodeCheckIntervalMs: number;
     readonly groupCheckIntervalMs: number;
+    readonly messageCheckIntervalMs: number;
 
     readonly jsVersion: string;
     readonly buildEnvironment: string;

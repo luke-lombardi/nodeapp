@@ -322,7 +322,7 @@ export default class Logger {
     }
   }
 
-  private appStateChange(currentAppState: string) {
+  private async appStateChange(currentAppState: string) {
     this.log(LogLevel.Info, `AppState - Changed: ${currentAppState}`);
   }
 

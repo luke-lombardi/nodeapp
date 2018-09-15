@@ -49,11 +49,12 @@ interface IProps {
 }
 
 export default class NodeService {
+    public monitoring: boolean = false;
+
     private readonly props: IProps;
     private readonly configGlobal = ConfigGlobalLoader.config;
 
     private stopping: boolean = false;
-    private monitoring: boolean = false;
     private checkNowTrigger: DeferredPromise;
 
     private locationService: LocationService;

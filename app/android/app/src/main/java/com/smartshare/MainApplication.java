@@ -3,6 +3,7 @@ package com.smartshare;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.azendoo.reactnativesnackbar.SnackbarPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactlibrary.RNSimpleCompassPackage;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BlurViewPackage(),
             new SnackbarPackage(),
             new VectorIconsPackage(),
             new RNSimpleCompassPackage(),

@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, AsyncStorage } from 'react-native';
+import { BlurView } from 'react-native-blur';
+
 import {
   StyleSheet,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
 import MapView from 'react-native-maps';
-import Pulse from 'react-native-pulse';
 import Snackbar from 'react-native-snackbar';
-
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
 import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
-
 import NodeService,
   {
     IPublicPersonListUpdated,
@@ -34,7 +32,6 @@ import NodeService,
 import Logger from '../services/Logger';
 import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
-import CreateModal from '../components/CreateModal';
 import ConfirmModal from '../components/ConfirmModal';
 
 // Import various types of map markers
@@ -47,7 +44,7 @@ import Friends from './markers/Friends';
 import SleepUtil from '../services/SleepUtil';
 import ApiService from '../services/ApiService';
 
-import mapStyle from '../config/mapStyle.json';
+import { mapStyle } from '../config/map';
 
 interface IProps {
     navigation: any;
@@ -134,6 +131,7 @@ export class MainMap extends Component<IProps, IState> {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.confirmLink = this.confirmLink.bind(this);
     this.handleLink = this.handleLink.bind(this);
+    this.openCreateModal = this.openCreateModal.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -239,6 +237,12 @@ export class MainMap extends Component<IProps, IState> {
     if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
+  }
+
+  async openCreateModal() {
+    this.state.createModalVisible ?
+    await this.setState({createModalVisible: false}) :
+    await this.setState({createModalVisible: true});
   }
 
   async waitForUserPosition() {
@@ -516,31 +520,47 @@ export class MainMap extends Component<IProps, IState> {
 
               </MapView>
 
-              <TouchableOpacity
-                style={{
-                    borderWidth: 1,
-                    borderColor: 'rgba(44,55,71,0.3)',
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    width: 80,
-                    height: 80,
-                    backgroundColor: 'rgba(255,255,255,0.9)',
-                    borderRadius: 100,
-                    position: 'absolute',
-                    bottom: '5%',
-                  }}
-                onPress={() => { this.setState({createModalVisible: true}); }}
-              >
-              <Pulse color='white' numPulses={2} diameter={210} speed={20} duration={2000} />
+              <ActionButton
+                  backdrop={<BlurView
+                    style={styles.absolute}
+                    blurType='dark'
+                    blurAmount={5}
+                  />}
+                  onPress={this.openCreateModal}
+                  size={72}
+                  spacing={40}
+                  degrees={90}
+                  buttonColor='rgba(231,76,60,1)'>
+                <ActionButton.Item
+                  style={styles.buttonItem}
+                  buttonColor='gray'
+                  textStyle={{fontSize: 22, color: 'white'}}
+                  textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
+                  title='Drop Pin'
+                  onPress={() =>
+                    this.props.navigation.navigate('CreateNode')
+                  }>
+                  <Icon name='md-cube' style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+                <ActionButton.Item
+                  style={styles.buttonItem}
+                  buttonColor='gray'
+                  textStyle={{fontSize: 22, color: 'white'}}
+                  textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
+                  title='Add Friend'
+                  onPress={() =>
+                    this.props.navigation.navigate('ContactList', {action: 'add_friend'})
+                  }>
+                  <Icon name='md-person-add' style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+              </ActionButton>
 
-              <Icon
-                name='plus-circle'
-                size={35}
-                color='rgba(44,55,71,1.0)'
-              />
-              </TouchableOpacity>
-
+              {/* <Tour
+                style={styles.tour}
+                functions={{
+                'closeCreateModal': this.closeCreateModal,
+                'navigateToPage': this.navigateToPage,
+              }}/> */}
             </View>
           // End map view
         }
@@ -561,14 +581,6 @@ export class MainMap extends Component<IProps, IState> {
             />
           </View>
           // End node selected view
-        }
-
-        {
-          this.state.createModalVisible &&
-          <CreateModal functions={{
-            'closeCreateModal': this.closeCreateModal,
-            'navigateToPage': this.navigateToPage,
-          }}/>
         }
 
         {
@@ -665,25 +677,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
+    zIndex: 2,
+  },
+  mapView: {
+    zIndex: 1,
+    flex: 14,
   },
   headerView: {
     flex: 1,
     position: 'relative',
     zIndex: 2,
-  },
-  walletView: {
-    backgroundColor: '#rgba(255, 255, 255, 0.9)',
-    padding: 0,
-    flexDirection: 'column',
-    borderBottomColor: 'rgba(44,55,71,0.3)',
-    borderBottomWidth: 1,
-    marginTop: 5,
-    position: 'relative',
-    top: 0,
-    left: 0,
-    height: '35%',
-    width: '100%',
-    zIndex: 1,
   },
   nodeSelectedView: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -699,9 +702,16 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 1,
   },
-  mapView: {
-    flex: 14,
+  actionButtonIcon: {
+    fontSize: 22,
+    height: 22,
+    color: 'white',
   },
-  createNodeButton: {
+  buttonItem: {
+    width: 100,
+  },
+  absolute: {
+    position: 'absolute',
+    top: 0, left: 0, bottom: 0, right: 0,
   },
 });

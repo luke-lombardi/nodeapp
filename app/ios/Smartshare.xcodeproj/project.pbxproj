@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -28,7 +27,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		16543E78B1A04CC8A5D009F4 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A06D858E1A344E4ABDBD131 /* FontAwesome.ttf */; };
 		28D31EF73AAB4355A95D814C /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE22B697808A47FAAD146FF7 /* MaterialCommunityIcons.ttf */; };
-		2CDE50DB21449FB9000ACB06 /*  .swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE50DA21449FB9000ACB06 /*  .swift */; };
+		2CDE50DB21449FB9000ACB06 /* .swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE50DA21449FB9000ACB06 /* .swift */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -452,7 +451,7 @@
 		251A5DE16FB04F7E92C67503 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		2A06D858E1A344E4ABDBD131 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		2A519AAA2A4BF15D438E66DE /* Pods-Smartshare.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smartshare.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare.debug.xcconfig"; sourceTree = "<group>"; };
-		2CDE50DA21449FB9000ACB06 /*  .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " .swift"; sourceTree = "<group>"; };
+		2CDE50DA21449FB9000ACB06 /* .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " .swift"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Smartshare-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smartshare-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Smartshare-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Smartshare-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -656,7 +655,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				2CDE50DA21449FB9000ACB06 /*  .swift */,
+				2CDE50DA21449FB9000ACB06 /* .swift */,
 			);
 			name = Smartshare;
 			sourceTree = "<group>";
@@ -1617,7 +1616,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CDE50DB21449FB9000ACB06 /*  .swift in Sources */,
+				2CDE50DB21449FB9000ACB06 /* .swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

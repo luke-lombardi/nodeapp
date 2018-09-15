@@ -53,13 +53,19 @@ export default class CreateMessage extends Component<IProps, IState> {
     render() {
         return (
           <View style={styles.footer}>
+            <View style={styles.container}>
             <TextInput
                 value={this.state.messageBody}
                 onChangeText={text => this.setState({messageBody: text})}
+                blurOnSubmit
+                multiline
+                keyboardAppearance={'dark'}
                 style={styles.input}
+                maxLength={280}
                 underlineColorAndroid='transparent'
                 placeholder='Type yer message...'
             />
+            </View>
             <Button
               style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
               onPress={this.submitMessage}
@@ -83,8 +89,13 @@ export default class CreateMessage extends Component<IProps, IState> {
 // @ts-ignore
 const styles = StyleSheet.create({
   footer: {
-      flexDirection: 'column',
+      flex: 1,
+      padding: 0,
       backgroundColor: '#eee',
+    },
+    container: {
+      flex: 6,
+      alignSelf: 'stretch',
     },
     input: {
       paddingHorizontal: 20,
@@ -101,17 +112,21 @@ const styles = StyleSheet.create({
     },
     fullWidthButton: {
       backgroundColor: 'blue',
-      height: 75,
+      height: 70,
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
       position: 'absolute',
-      top: 470,
+      bottom: 0,
       padding: 0,
     },
     loading: {
       alignSelf: 'center',
       width: 300,
       height: 50,
+    },
+    footerButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
 });

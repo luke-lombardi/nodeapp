@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, AsyncStorage } from 'react-native';
-import { Input, Icon, Button, Card } from 'react-native-elements';
+import { View, TextInput, StyleSheet, Text, AsyncStorage } from 'react-native';
+import { Button, Card } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 // import { Switch } from 'react-native-switch';
@@ -59,52 +59,29 @@ export class Profile extends Component<IProps, IState> {
     render() {
       return (
         <View style={styles.settings}>
-            <Card
-            containerStyle={styles.card}>
+          <Card containerStyle={styles.card}>
             <View style={styles.inputContainer}>
-            <Text style={{marginBottom: 40}}>Update Your Display Name</Text>
-            <Input
-              placeholder={this.state.savedTitle !== null ? undefined : 'Display Name'}
-              leftIcon={
-                <Icon
-                  name='settings'
-                  size={20}
-                  color='rgba(44,55,71,0.3)'
-                />
-              }
-              containerStyle={styles.inputPadding}
-              inputStyle={styles.descriptionInput}
+            <Text style={styles.settingsHeader}>Display Name</Text>
+            <TextInput
               onChangeText={(title) => this.setState({title: title})}
-              value={this.state.title}
-            />
-            <Input
-              placeholder={this.state.savedDescription !== null ? this.state.savedDescription : 'Display Description'}
-              leftIcon={
-                <Icon
-                  name='settings'
-                  size={20}
-                  color='rgba(44,55,71,0.3)'
-                />
-              }
-              containerStyle={styles.inputPadding}
-              inputStyle={styles.descriptionInput}
+              blurOnSubmit
+              keyboardAppearance={'dark'}
+              style={styles.input}
+              maxLength={100}
+              underlineColorAndroid='transparent'
+              placeholder={this.state.savedTitle !== null ? this.state.savedTitle : 'Display Name'}
+              placeholderTextColor={'lightgray'}
+          />
+            <TextInput
               onChangeText={(description) => this.setState({description: description})}
-              value={this.state.description}
-            />
-                {/* </View>
-            <View style={styles.switchContainer}>
-            <Text style={styles.switchText}>Enable Privacy</Text>
-            <Switch
-              circleBorderWidth={1}
-              backgroundActive={'green'}
-              backgroundInactive={'gray'}
-              circleSize={30}
-              style={styles.switch}
-              value={true}
-              onValueChange={ () => {this.setState({privacy: true});
-            }
-          }
-            /> */}
+              blurOnSubmit
+              keyboardAppearance={'dark'}
+              style={styles.input}
+              maxLength={100}
+              underlineColorAndroid='transparent'
+              placeholder={this.state.savedDescription !== null ? this.state.savedDescription : 'Display Description'}
+              placeholderTextColor={'lightgray'}
+          />
 
             <Button
                 style={styles.button}
@@ -154,44 +131,41 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 
 const styles = StyleSheet.create({
-    inputContainer: {
-        width: '100%',
-        alignItems: 'center',
-        padding: 25,
-    },
-    settings: {
-        alignItems: 'center',
-
-    },
-    button: {
-        alignSelf: 'center',
-        position: 'absolute',
-        width: 200,
-        top: 60,
-    },
-    switch: {
-        padding: 20,
-    },
-    switchContainer: {
-        top: 40,
-        alignItems: 'center',
-    },
-    switchText: {
-        marginBottom: 20,
-        fontSize: 16,
-        color: 'gray',
-        alignSelf: 'center',
-    },
-    card: {
-        margin: '25%',
-        width: '90%',
-        height: '70%',
-    },
-    inputPadding: {
-        marginTop: 10,
-        width: '100%',
-      },
-      descriptionInput: {
-        height: 50,
-      },
+  inputContainer: {
+    alignItems: 'center',
+    padding: 25,
+  },
+  settings: {
+    marginTop: 100,
+    alignItems: 'center',
+  },
+  settingsHeader: {
+    fontSize: 22,
+    color: 'gray',
+  },
+  button: {
+    marginTop: 30,
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '100%',
+  },
+  card: {
+    // backgroundColor: '#fffaf0',
+    margin: '10%',
+    width: '90%',
+    height: '75%',
+  },
+  inputPadding: {
+    marginTop: 10,
+    width: '100%',
+  },
+  descriptionInput: {
+    height: 50,
+  },
+  input: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingTop: 20,
+    fontSize: 26,
+  },
 });

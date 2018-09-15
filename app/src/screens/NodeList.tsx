@@ -108,7 +108,7 @@ export class NodeList extends Component<IProps, IState> {
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
     return (
-      <View>
+      <View style={{width: '100%'}}>
         <ButtonGroup
           buttonStyle={styles.button}
           containerStyle={styles.buttonContainer}
@@ -175,7 +175,8 @@ const styles = StyleSheet.create({
   },
   null: {
     fontSize: 22,
-    marginTop: 25,
+    color: 'gray',
+    top: 200,
     alignSelf: 'center',
   },
   button: {

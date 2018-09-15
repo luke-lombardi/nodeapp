@@ -19,7 +19,6 @@ import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
 import Profile from '../screens/Profile';
-import Tour from '../screens/Tour';
 import Chat from '../screens/Chat';
 import CreateMessage from '../components/CreateMessage';
 
@@ -114,7 +113,7 @@ const InternalStack = StackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: { color: 'white'},
-      title: 'Create Node',
+      title: 'Drop Node',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -124,19 +123,6 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
   },
-  Tour: { screen: Tour,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: {color: 'white'},
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
-        },
-        )) } />,
-      }),
-    },
   Friends: { screen: FriendList,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -184,7 +170,13 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Contact List',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => { navigation.goBack(undefined); } } />,
+      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        navigation.dispatch(NavigationActions.reset(
+        {
+          index: 0,
+          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+        },
+        )) } />,
       }),
     },
   Chat: { screen: Chat },

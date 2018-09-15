@@ -4,10 +4,9 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActionButton from 'react-native-circular-action-menu';
-// import { Crashlytics } from 'react-native-fabric';
 
 interface IProps {
-    navigation: any;
+  functions: any;
 }
 
 interface IState {
@@ -16,20 +15,24 @@ interface IState {
 export class Tour extends Component<IProps, IState> {
   render() {
     return(
-      <View style={{flex: 1, backgroundColor: '#f3f3f3'}}>
+      <View style={styles.container}>
         {/*Rest of App come ABOVE the action button component!*/}
-        <ActionButton buttonColor='rgba(231,76,60,1)'>
+        <ActionButton
+          buttonColor='rgba(231,76,60,1)'>
           <ActionButton.Item
-          buttonColor='#9b59b6' title='Add Friend' textStyle={{color: 'black'}} onPress={() => console.log("notes tapped!")}>
+            buttonColor='#9b59b6' title='Drop Node' textStyle={{color: 'black'}}
+            onPress={() => {
+            this.props.functions.closeCreateModal();
+            this.props.functions.navigateToPage('CreateNode');
+          }}>
             <Icon
             name='md-create' style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#3498db' title='Notifications' onPress={() => {
-            // Crashlytics.crash();
+          <ActionButton.Item buttonColor='#1abc9c' title='Add Friend'
+            onPress={() => {
+              this.props.functions.closeCreateModal();
+              this.props.functions.navigateToPage('ContactList', {action: 'share_node'});
           }}>
-            <Icon name='md-notifications-off' style={styles.actionButtonIcon} />
-          </ActionButton.Item>
-          <ActionButton.Item buttonColor='#1abc9c' title='All Tasks' onPress={() => {}}>
             <Icon name='md-done-all' style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
@@ -43,6 +46,11 @@ export class Tour extends Component<IProps, IState> {
       fontSize: 20,
       height: 22,
       color: 'white',
+    },
+    container: {
+      flex: 14,
+      bottom: 40,
+      backgroundColor: 'transparent',
     },
   });
 

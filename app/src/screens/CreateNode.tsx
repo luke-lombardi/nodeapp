@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Switch, Text, TextInput } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
-import { Switch } from 'react-native-switch';
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-import { Input, Button, Slider} from 'react-native-elements';
+import { Button, Slider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
@@ -43,7 +42,7 @@ export class CreateNode extends Component<IProps, IState> {
       userRegion: {},
       isLoading: false,
       uuid: '',
-      private: true,
+      private: false,
       ttl: 12.0,
     };
 
@@ -86,52 +85,43 @@ export class CreateNode extends Component<IProps, IState> {
            }
           </View>
           <View style={styles.inputView}>
-            <Input
-              placeholder='Title'
-              leftIcon={
-                <Icon
-                  name='question-circle'
-                  size={20}
-                  color='rgba(44,55,71,0.3)'
-                />
-              }
-                containerStyle={styles.inputPadding}
-                onChangeText={(title) => this.setState({title: title})}
-                value={this.state.title}
-            />
+            <TextInput
+                  onChangeText={(title) => this.setState({title: title})}
+                  value={this.state.title}
+                  blurOnSubmit
+                  multiline
+                  keyboardAppearance={'dark'}
+                  style={styles.input}
+                  maxLength={280}
+                  underlineColorAndroid='transparent'
+                  placeholder='Title'
+              />
 
-            <Input
-              placeholder='Description'
-              leftIcon={
-                <Icon
-                  name='question-circle'
-                  size={20}
-                  color='rgba(44,55,71,0.3)'
-                />
-              }
-              containerStyle={styles.inputPadding}
-              inputStyle={styles.descriptionInput}
+            <TextInput
               onChangeText={(description) => this.setState({description: description})}
               // enablesReturnKeyAutomatically={true}
               // onSubmitEditing={this.submitCreateNode}
               value={this.state.description}
-            />
+              blurOnSubmit
+              multiline
+              keyboardAppearance={'dark'}
+              style={styles.input}
+              maxLength={280}
+              underlineColorAndroid='transparent'
+              placeholder='Description'
+          />
             </View>
             <View style={styles.switchView}>
-              <Text style={styles.switchText}>Pin Visibility</Text>
-              <Text style={this.state.private ? styles.publicText : styles.publicTextInactive}>Public</Text>
-              <Text style={this.state.private ? styles.privateText : styles.privateTextInactive}>Private</Text>
+              <Text style={styles.switchText}>Visibility</Text>
+              <Text style={styles.privateText}>Private</Text>
+
             <Switch
-              circleBorderWidth={1}
-              backgroundActive={'green'}
-              backgroundInactive={'gray'}
-              circleSize={30}
               style={styles.switch}
               value={this.state.private}
               onValueChange={ () => {this.setState({private: !this.state.private});
-            }
-          }
+            }}
             />
+          <View style={styles.sliderContainer}>
           <Slider
             style={styles.slider}
             value={this.state.ttl}
@@ -143,10 +133,11 @@ export class CreateNode extends Component<IProps, IState> {
             maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
             thumbTintColor={'red'}
             />
-            <Text>
+            <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} Hours</Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} hours</Text>
             </Text>
+            </View>
           </View>
 
           <Button
@@ -234,13 +225,6 @@ const styles = StyleSheet.create({
     flex: 6,
     alignSelf: 'stretch',
   },
-  inputPadding: {
-    marginTop: 20,
-    marginLeft: 15,
-  },
-  descriptionInput: {
-    height: 50,
-  },
   fullWidthButton: {
     backgroundColor: 'blue',
     height: 70,
@@ -258,64 +242,57 @@ const styles = StyleSheet.create({
   },
   switchView: {
     flex: 2,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 20,
   },
   switch: {
     fontSize: 18,
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
   },
   switchText: {
-    paddingTop: 10,
     paddingBottom: 20,
-    paddingLeft: 10,
-    fontSize: 20,
+    fontSize: 24,
     color: 'gray',
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
+  },
+  sliderContainer: {
+    maxWidth: 300,
+    alignItems: 'flex-start',
+    marginTop: -15,
   },
   sliderText: {
-    fontSize: 20,
     alignSelf: 'center',
+    fontSize: 24,
     color: 'gray',
   },
   hourText: {
-    fontSize: 20,
+    fontSize: 24,
     alignSelf: 'center',
     color: 'black',
   },
   switchIcon: {
   },
   slider: {
+    marginTop: 5,
+    alignSelf: 'center',
     top: 70,
-    width: 300,
+    width: 220,
   },
-  publicText: {
-    position: 'absolute',
-    alignContent: 'flex-end',
-    fontSize: 14,
-    top: 65,
-    left: 105,
-    color: 'gray',
-  },
-  publicTextInactive: {
-    position: 'absolute',
-    alignContent: 'flex-end',
-    fontSize: 14,
-    top: 65,
-    left: 105,
+  sliderTextContainer: {
+    marginBottom: 10,
   },
   privateText: {
     position: 'absolute',
     alignContent: 'flex-start',
-    fontSize: 14,
-    top: 65,
-    right: 105,
-  },
-  privateTextInactive: {
-    position: 'absolute',
-    alignContent: 'flex-start',
-    fontSize: 14,
-    top: 65,
-    right: 105,
+    marginTop: 55,
+    marginLeft: 65,
+    fontSize: 20,
     color: 'gray',
+  },
+  input: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingTop: 20,
+    fontSize: 26,
   },
 });

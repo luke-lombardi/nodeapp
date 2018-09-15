@@ -7,6 +7,7 @@ import { ListItem, Icon } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
+import moment from 'moment';
 
 interface IProps {
     navigation: any;
@@ -80,11 +81,11 @@ export class Chat extends Component<IProps, IState> {
 
     _renderItem = ({item}) => (
       <ListItem
-        scaleProps={{
-          friction: 90,
-          tension: 100,
-          activeScale: 0.95,
-        }}
+        // scaleProps={{
+        //   friction: 90,
+        //   tension: 100,
+        //   activeScale: 0.95,
+        // }}
         // onPress={() => this._onTouchGroup(item)}
         containerStyle={styles.nodeListItem}
         rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
@@ -95,7 +96,7 @@ export class Chat extends Component<IProps, IState> {
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}>{item.timestamp}</Text>
+          <Text style={styles.ratingText}>{moment(new Date()).from(item.timestamp)}</Text>
           </View>
         }
       />
@@ -200,7 +201,8 @@ const styles = StyleSheet.create({
   },
   null: {
     fontSize: 22,
-    marginTop: 25,
+    color: 'gray',
+    top: 250,
     alignSelf: 'center',
   },
   titleText: {

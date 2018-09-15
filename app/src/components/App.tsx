@@ -339,7 +339,7 @@ export class App extends Component<IProps, IState> {
 
     async checkPermissions() {
 
-      let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification', 'backgroundRefresh']);
+      let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification']);
 
       if (permission !== 'authorized') {
 
@@ -347,7 +347,7 @@ export class App extends Component<IProps, IState> {
         await Permissions.request('location');
         await Permissions.request('contacts');
         await Permissions.request('notification');
-        await Permissions.request('backgroundRefresh');
+        // await Permissions.request('backgroundRefresh');
       }
     }
 

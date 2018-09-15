@@ -204,6 +204,9 @@ export class Chat extends Component<IProps, IState> {
         let messages = await this.apiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
+          console.log('messages');
+          console.log(messages);
+
           try {
             await this.setState({data: messages});
           } catch (error) {

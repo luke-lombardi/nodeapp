@@ -1,6 +1,6 @@
 {
   "name": "Smartshare",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "scripts": {
     "ios:start": "npm run build && react-native run-ios && npm run safewatch",

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Marker, Callout }   from 'react-native-maps';
-import { Image, View, Text, StyleSheet }   from 'react-native';
+import { Image, Text, StyleSheet }   from 'react-native';
 
 interface IProps {
     privatePlaceList: any;

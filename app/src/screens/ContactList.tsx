@@ -117,7 +117,9 @@ export class ContactList extends Component<IProps, IState> {
         <SearchBar
           onChangeText={query => this.setState({query})}
           lightTheme
-          placeholder='Search here...' />
+          inputStyle={{fontFamily: 'Avenir'}}
+          inputContainerStyle={{borderRadius: 10}}
+          placeholder='Search Contacts...' />
           <FlatList
           data={this.state.query ? this.searchContact() : this.state.data}
           renderItem={this._renderItem}

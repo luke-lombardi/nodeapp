@@ -544,7 +544,7 @@ export class MainMap extends Component<IProps, IState> {
                   textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
                   title='Drop Pin'
                   onPress={() =>
-                    this.props.navigation.navigate('CreateNode')
+                    this.navigateToPage('CreateNode')
                   }>
                   <Icon name='md-cube' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
@@ -555,18 +555,11 @@ export class MainMap extends Component<IProps, IState> {
                   textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
                   title='Add Friend'
                   onPress={() =>
-                    this.props.navigation.navigate('ContactList', {action: 'add_friend'})
+                    this.navigateToPage('ContactList')
                   }>
                   <Icon name='md-person-add' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
               </ActionButton>
-
-              {/* <Tour
-                style={styles.tour}
-                functions={{
-                'closeCreateModal': this.closeCreateModal,
-                'navigateToPage': this.navigateToPage,
-              }}/> */}
             </View>
           // End map view
         }
@@ -628,6 +621,9 @@ export class MainMap extends Component<IProps, IState> {
     let params = undefined;
 
     switch (pageName) {
+      case 'Nodes':
+        params = {};
+        break;
       case 'GroupEditor':
         params = {action: 'create_group', userRegion: this.props.userRegion};
         break;
@@ -648,7 +644,7 @@ export class MainMap extends Component<IProps, IState> {
         console.log('Page not found');
     }
 
-    this.props.navigation.navigate(pageName, params);
+    this.props.navigation.navigate({key: pageName, routeName: pageName, params: params});
   }
 
 }

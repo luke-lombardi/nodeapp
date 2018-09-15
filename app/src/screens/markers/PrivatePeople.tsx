@@ -31,10 +31,8 @@ export default class PrivatePeople extends Component<IProps, IState> {
                 description={marker.data.description}
                 key={marker.node_id}
                 >
-                <Callout tooltip={true} style={styles.callout}>
-                <View style={styles.card}>
+                <Callout tooltip={false} style={styles.callout}>
                 <Text style={styles.title}>{marker.data.title}</Text>
-                </View>
                 </Callout>
             </ Marker>
                 ))
@@ -57,7 +55,7 @@ export default class PrivatePeople extends Component<IProps, IState> {
           },
         title: {
             color: '#000',
-            fontSize: 20,
+            fontSize: 25,
             alignSelf: 'center',
         },
         description: {

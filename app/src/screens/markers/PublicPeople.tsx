@@ -35,10 +35,8 @@ export default class PublicPeople extends Component<IProps, IState> {
 
             <Image source={require('../../../assets/images/public_person.png')} style={{ width: 35, height: 35 }} />
 
-            <Callout tooltip={true} style={styles.callout}>
-            <View style={styles.card}>
+            <Callout tooltip={false} style={styles.callout}>
             <Text style={styles.title}>{marker.data.title}</Text>
-            </View>
             </Callout>
         </ Marker>
 
@@ -48,28 +46,21 @@ export default class PublicPeople extends Component<IProps, IState> {
 }
 
 const styles = StyleSheet.create({
-    callout: {
-        position: 'relative',
-        flex: 1,
-        alignItems: 'center',
-      },
-      card: {
-        backgroundColor: '#fff',
-        borderRadius: 6,
-        borderColor: 'black',
-        borderWidth: 1,
-        padding: 10,
-      },
-    title: {
-        color: '#000',
-        fontSize: 20,
-        alignSelf: 'center',
-    },
-    description: {
-        color: '#000',
-        fontSize: 18,
-        textAlign: 'center',
-        marginBottom: 3,
-        marginTop: 10,
-    },
+  callout: {
+    position: 'relative',
+    flex: 1,
+    alignItems: 'center',
+  },
+  title: {
+    color: '#000',
+    fontSize: 25,
+    alignSelf: 'center',
+  },
+  description: {
+    color: '#000',
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 3,
+    marginTop: 10,
+  },
 });

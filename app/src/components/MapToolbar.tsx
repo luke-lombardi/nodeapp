@@ -60,7 +60,8 @@ export default class MapToolbar extends Component<IProps, IState> {
             containerStyle={styles.floatRight}
             buttonStyle={styles.transparentButton}
             title=''
-            onPress={() => { this.props.functions.navigateToPage('Nodes'); }}
+            onPress={() => { this.props.functions.navigateToPage('Nodes');
+            }}
           />
 
       </View>

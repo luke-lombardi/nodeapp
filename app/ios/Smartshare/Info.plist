@@ -62,18 +62,30 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>We need permission to use your camera</string>
-	<key>NSContactsUsageDescription</key>
-	<string>We need permission to access your contact list</string>
+  <key>NSBluetoothPeripheralUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSCalendarsUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSCameraUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSContactsUsageDescription</key>
+  <string>We need your permission to access the contact list.</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>We need your permission to access location.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Location Always And When In Use Usage Description</string>
-	<key>NSLocationAlwaysUsageDescription</key>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSAppleMusicUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSMotionUsageDescription</key>
+  <string>We need your permission.</string>
+  <key>NSLocationAlwaysUsageDescription</key>
 	<string>This app requires background tracking</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need permission to access your location</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Motion updates increase battery efficiency by intelligently toggling location-services when device is detected to be moving</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

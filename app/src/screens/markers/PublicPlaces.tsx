@@ -31,10 +31,8 @@ export default class PublicPlaces extends Component<IProps, IState> {
             >
 
             <Image source={require('../../../assets/images/public_place.png')} style={{ width: 50, height: 50 }} />
-            <Callout tooltip={true} style={styles.callout}>
-            <View style={styles.card}>
+            <Callout tooltip={false} style={styles.callout}>
             <Text style={styles.title}>{marker.data.title}</Text>
-            </View>
             </Callout>
         </ Marker>
 
@@ -45,6 +43,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
 
 const styles = StyleSheet.create({
     callout: {
+        backgroundColor: '#fff',
         position: 'relative',
         flex: 1,
         alignItems: 'center',
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
       },
     title: {
         color: '#000',
-        fontSize: 20,
+        fontSize: 25,
         alignSelf: 'center',
     },
     description: {

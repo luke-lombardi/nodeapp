@@ -33,10 +33,8 @@ export default class PrivatePlaces extends Component<IProps, IState> {
 
             <Image source={require('../../../assets/images/private_place.png')} style={{ width: 50, height: 50 }} />
 
-            <Callout tooltip={true} style={styles.callout}>
-            <View style={styles.card}>
+            <Callout tooltip={false} style={styles.callout}>
             <Text style={styles.title}>{marker.data.title}</Text>
-            </View>
             </Callout>
         </ Marker>
 
@@ -60,7 +58,7 @@ const styles = StyleSheet.create({
       },
     title: {
         color: '#000',
-        fontSize: 20,
+        fontSize: 25,
         alignSelf: 'center',
     },
     description: {

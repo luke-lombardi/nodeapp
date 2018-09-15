@@ -3,6 +3,7 @@ import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+import Permissions from 'react-native-permissions';
 
 // Location services, and user notifications
 import Pushy from 'pushy-react-native';
@@ -79,7 +80,7 @@ const InternalStack = StackNavigator({
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
         )) } />,
       }),
@@ -90,11 +91,11 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Nodes',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
         )) } />,
       }),
@@ -104,11 +105,11 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Groups',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
       )) } />,
       }),
@@ -118,11 +119,11 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: { color: 'white'},
       title: 'Drop Node',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
         )) } />,
       }),
@@ -132,11 +133,11 @@ const InternalStack = StackNavigator({
         headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
         headerTitleStyle: { color: 'white'},
         title: 'Friends',
-        headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
             index: 0,
-            actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+            actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
           },
           )) } />,
         }),
@@ -146,11 +147,11 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Group Editor',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
         )) } />,
       }),
@@ -160,11 +161,11 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Profile',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
         )) } />,
       }),
@@ -174,11 +175,11 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Contact List',
-      headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map' }) ],
+          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
         },
         )) } />,
       }),
@@ -189,11 +190,11 @@ const InternalStack = StackNavigator({
           headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
           headerTitleStyle: {color: 'white'},
           title: 'Compose Message',
-          headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+          headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
             navigation.dispatch(NavigationActions.reset(
               {
                 index: 0,
-                actions: [ NavigationActions.navigate({ routeName: 'Chat' }) ],
+                actions: [ NavigationActions.navigate({ routeName: 'Chat', key: 'Chat' }) ],
               },
             )) } />,
         }),
@@ -300,6 +301,7 @@ export class App extends Component<IProps, IState> {
 
       // Link handling
       this.handleLink = this.handleLink.bind(this);
+      this.checkPermissions = this.checkPermissions.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService(
@@ -320,6 +322,7 @@ export class App extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+      this.checkPermissions();
       Pushy.listen();
 
       // This handles the case where a user clicked a link and the app was closed
@@ -332,6 +335,20 @@ export class App extends Component<IProps, IState> {
        RNSimpleCompass.start(3, this.updateBearing);
 
        this.registerPushy();
+    }
+
+    async checkPermissions() {
+
+      let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification', 'backgroundRefresh']);
+
+      if (permission !== 'authorized') {
+
+        await Permissions.request('camera');
+        await Permissions.request('location');
+        await Permissions.request('contacts');
+        await Permissions.request('notification');
+        await Permissions.request('backgroundRefresh');
+      }
     }
 
     registerPushy() {

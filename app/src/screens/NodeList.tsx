@@ -71,7 +71,7 @@ export class NodeList extends Component<IProps, IState> {
       nodeType = 'publicPerson';
     }
 
-    this.props.navigation.navigate('Map', {region: region, nodeType: nodeType});
+    this.props.navigation.navigate({key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
   }
 
   _renderItem = ({item}) => (
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 10,
     marginBottom: 5,
-    borderRadius: 20,
+    borderRadius: 10,
   },
   null: {
     fontSize: 22,
@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
     top: -10,
     height: 80,
     alignSelf: 'center',
-    width: '100%',
+    width: '110%',
   },
 });

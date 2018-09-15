@@ -82,11 +82,14 @@ export default class Node extends Component<IProps, IState> {
             {this.props.minutesAway ? this.props.minutesAway + ' minutes away' : ''}
           </Text> */}
 
-          <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.nodeTitle}>
-            {this.props.title} { (this.props.ttl > 0) ? ' (expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours)' : undefined }
+          <Text numberOfLines={1} style={styles.nodeTitle}>
+            {this.props.title}
+          </Text>
+          <Text numberOfLines={1} style={styles.durationTitle}>
+          { (this.props.ttl > 0) ? ' Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text>
 
-          <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.description}>
+          <Text numberOfLines={1} style={styles.description}>
             {this.props.description}
           </Text>
 
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   nodeCard: {
-    height: '85%',
+    height: '90%',
     width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(53,53,53,0.1)',
@@ -178,13 +181,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 3 },
   },
   nodeTitle: {
+    fontWeight: 'bold',
     fontSize: 24,
     alignSelf: 'center',
-    marginBottom: 10,
+  },
+  durationTitle: {
+    marginTop: 10,
+    fontWeight: 'bold',
+    fontSize: 14,
+    alignSelf: 'center',
   },
   description: {
+    paddingLeft: 10,
     alignSelf: 'center',
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 15,
   },
   distance: {
     fontSize: 14,

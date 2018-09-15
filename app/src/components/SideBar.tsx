@@ -17,6 +17,7 @@ interface IProps {
     groupList: Array<any>;
     friendList: Array<any>;
     privatePlaceList: Array<any>;
+    publicPlaceList: Array<any>;
 }
 
 export class SideBar extends Component<IProps> {
@@ -78,7 +79,7 @@ export class SideBar extends Component<IProps> {
                   key='nodes'
                   title='Nodes'
                   leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.privatePlaceList.length === 0 ?
+                  onPress={ () => { this.props.privatePlaceList.length && this.props.publicPlaceList.length === 0 ?
                     this.resetNavigation('CreateNode') :
                     this.resetNavigation('Nodes');
                   }}
@@ -163,6 +164,7 @@ export function mapStateToProps(state: IStoreState): IProps {
     friendList: state.friendList,
     groupList: state.groupList,
     privatePlaceList: state.privatePlaceList,
+    publicPlaceList: state.publicPlaceList,
   };
 }
 

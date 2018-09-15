@@ -36,10 +36,8 @@ export default class Friends extends Component<IProps, IState> {
 
             <Image source={require('../../../assets/images/public_person.png')} style={{ width: 35, height: 35 }} />
 
-            <Callout tooltip={true} style={styles.callout}>
-            <View style={styles.card}>
+            <Callout tooltip={false} style={styles.callout}>
             <Text style={styles.title}>{marker.data.title}</Text>
-            </View>
             </Callout>
         </ Marker>
         : undefined
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
       },
     title: {
         color: '#000',
-        fontSize: 20,
+        fontSize: 25,
         alignSelf: 'center',
     },
     description: {

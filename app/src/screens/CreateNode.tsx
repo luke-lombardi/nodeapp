@@ -11,6 +11,7 @@ import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
+import { mapStyle } from '../config/map';
 
 interface IProps {
   navigation: any;
@@ -79,6 +80,7 @@ export class CreateNode extends Component<IProps, IState> {
                 style={[StyleSheet.absoluteFillObject, styles.map]}
                 showsUserLocation={true}
                 followsUserLocation={true}
+                customMapStyle={mapStyle}
                 initialRegion={this.state.userRegion !== {} ? this.state.userRegion : defaultRegion}
               >
               </MapView>
@@ -113,7 +115,16 @@ export class CreateNode extends Component<IProps, IState> {
             </View>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>Visibility</Text>
-              <Text style={styles.privateText}>Private</Text>
+              <Text style={{
+                position: 'absolute',
+                // fontWeight: this.state.private ? 'bold' : 'normal',
+                alignContent: 'flex-start',
+                marginTop: 55,
+                marginLeft: 65,
+                fontSize: 20,
+                color: this.state.private ? 'black' : 'gray'}}>
+                Private
+                </Text>
 
             <Switch
               style={styles.switch}
@@ -219,6 +230,8 @@ const styles = StyleSheet.create({
   map: {
   },
   inputView: {
+    marginTop: 10,
+    marginBottom: 10,
     flex: 1,
   },
   nodeForm: {
@@ -246,6 +259,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   switch: {
+    height: 50,
     fontSize: 18,
     alignSelf: 'flex-start',
   },
@@ -286,13 +300,14 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
     marginTop: 55,
     marginLeft: 65,
-    fontSize: 20,
+    fontSize: 24,
     color: 'gray',
   },
   input: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    paddingTop: 20,
-    fontSize: 26,
+    paddingTop: 25,
+    fontSize: 24,
+    color: 'black',
   },
 });

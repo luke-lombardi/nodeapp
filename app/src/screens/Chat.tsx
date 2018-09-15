@@ -31,18 +31,19 @@ export class Chat extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, paddingRight: 10},
         headerTitleStyle: { color: 'white'},
         title: 'Chat',
-        headerLeft: <Icon name='x' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
           navigation.dispatch(NavigationActions.navigate(
                 {
+                  key: 'Map',
                   routeName: 'Map',
                   params: {},
-                  action: NavigationActions.navigate({ routeName: 'Map' }),
+                  action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
                 })); }
                } />,
-          headerRight: <Icon name='edit' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+          headerRight: <Icon name='edit' type='feather' containerStyle={{padding: 5}} size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
             params.goToCreateMessage();
            } } />,
           };
@@ -59,7 +60,7 @@ export class Chat extends Component<IProps, IState> {
     this.apiService = new ApiService({});
 
     this._renderItem = this._renderItem.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillMount = this.componentWillMount.bind(this);
 
     // this.updateList = this.updateList.bind(this);
     this.setMessages = this.setMessages.bind(this);
@@ -79,7 +80,7 @@ export class Chat extends Component<IProps, IState> {
     //   console.log('newList', this.state.data);
     // }
 
-    _renderItem = ({item}) => (
+    _renderItem = ({item, index}) => (
       <ListItem
         // scaleProps={{
         //   friction: 90,
@@ -87,8 +88,16 @@ export class Chat extends Component<IProps, IState> {
         //   activeScale: 0.95,
         // }}
         // onPress={() => this._onTouchGroup(item)}
-        containerStyle={styles.nodeListItem}
-        rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
+        containerStyle={{
+          minHeight: 100,
+          maxHeight: 120,
+          backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
+        }}
+        // rightIcon={{
+        //   name: 'arrow-up-right',
+        //   type: 'feather',
+        //   color: 'rgba(51, 51, 51, 0.8)',
+        // }}
         title={
           <View style={styles.titleView}>
           <Text style={styles.titleText}>{item.message}</Text>
@@ -102,7 +111,7 @@ export class Chat extends Component<IProps, IState> {
       />
     )
 
-    componentDidMount () {
+    componentWillMount () {
       // Set params for nav stack
       this.props.navigation.setParams({ goToCreateMessage: this.goToCreateMessage });
 
@@ -154,6 +163,7 @@ export class Chat extends Component<IProps, IState> {
 
       if (messages !== undefined) {
         await this.setState({data: messages});
+        console.log(messages);
       }
     }
 

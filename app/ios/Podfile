@@ -3,6 +3,8 @@ platform :ios, '11.0'
 target 'Smartshare' do
 pod "yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
 pod 'react-native-google-maps', path: '../node_modules/react-native-maps'  # If you need GoogleMaps support on iOS
+pod 'RNBackgroundGeolocation', :path => '../node_modules/react-native-background-geolocation'
+pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
 pod 'GoogleMaps'
 pod 'GooglePlaces'
 pod 'Fabric'
@@ -34,6 +36,8 @@ pod 'React', :path => '../node_modules/react-native', :subspecs => [
   pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
 
   pod 'react-native-blur', :path => '../node_modules/react-native-blur'
+
+
 
 end
 

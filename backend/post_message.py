@@ -11,12 +11,13 @@ import redis
 import json
 import logging
 import datetime
+import hashlib
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-DEFAULT_NODE_TTL = 3600
+RECENT_MESSAGE_TTL = 2
 
 def is_cache_connected(rds):
     try:
@@ -49,12 +50,33 @@ def post_message(rds, node_id, message, user_uuid):
 
         node_uuid = node_id.split(':')[1]
         messages_exist = rds.exists('messages:' + node_uuid)
-
+        
+        # TODO add a uuid here to hash on
         new_message = {
             "message": message,
             "user": "private:" + user_uuid,
-            "timestamp": datetime.datetime.now().isoformat()
+            "timestamp": datetime.datetime.now().isoformat(),
         }
+
+        # Calculate message hash to prevent duplicate messages
+        str_to_hash = new_message['message'] +  new_message['user']
+        message_hash = hashlib.sha1(str_to_hash.encode('utf-8')).hexdigest()
+        message_exists = rds.exists('message:' + node_uuid + ':' + message_hash)
+        if message_exists:
+            logging.info('User has recently posted this message, not sending: %s' % (message_hash, ))
+            return False
+        else:
+            rds.setex(name='message:' + node_uuid + ':' + message_hash, value=True, time=messages_ttl)
+
+        # Handle the case where a user recently posted a message
+        recent_message = rds.exists('recent_message:' + node_uuid + ':' + user_uuid)
+        if recent_message:
+            logging.info('User has recently posted a message, not sending')
+            return False
+        else:
+            rds.setex(name='recent_message:' + node_uuid + ':' + user_uuid, value=True, time=RECENT_MESSAGE_TTL)
+
+
 
         if not messages_exist:
             logging.info('No messages yet, posting message')

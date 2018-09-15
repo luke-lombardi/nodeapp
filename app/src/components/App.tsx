@@ -2,14 +2,18 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
-import { View, StatusBar, AsyncStorage, Linking, Alert } from 'react-native';
-import uuid from 'react-native-uuid';
-import Pushy from 'pushy-react-native';
+import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
 import Permissions from 'react-native-permissions';
+
+// Location services, and user notifications
+import Pushy from 'pushy-react-native';
+import BackgroundGeolocation from 'react-native-background-geolocation';
+import RNSimpleCompass from 'react-native-simple-compass';
 
 // @ts-ignore
 import Logger from '../services/Logger';
 
+// Screen imports
 import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
@@ -28,13 +32,12 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+// Redux action imports
 import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
-
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
-
 import { GroupListUpdatedActionCreator } from '../actions/GroupActions';
 import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
 
@@ -52,7 +55,8 @@ import NodeService,
 
 // import ApiService from '../services/ApiService';
 
-import LocationService, { IUserPositionChanged } from '../services/LocationService';
+import LocationService from '../services/LocationService';
+import AuthService from '../services/AuthService';
 
 // SET GLOBAL PROPS //
 import { setCustomText } from 'react-native-global-props';
@@ -261,19 +265,24 @@ interface IState {
 
 export class App extends Component<IProps, IState> {
 
-    // monitoring services
+    // Private services
     private nodeService: NodeService;
     // private apiService: ApiService;
-
+    // @ts-ignore
     private locationService: LocationService;
+    private authService: AuthService;
+    private bearing;
 
     constructor(props: IProps) {
       super(props);
 
-      // Setting the UUID serves as a simple 'account' for each user.
-      // It does not contain any real information, but it temporarily bound to the phone
-      this.setUUID();
+      // Location tracking methods
+      this.onLocation = this.onLocation.bind(this);
+      this.setupLocationTracking = this.setupLocationTracking.bind(this);
+      this.setupPushNotifications = this.setupPushNotifications.bind(this);
+      this.updateBearing = this.updateBearing.bind(this);
 
+      // Redux helper functions for node service
       this.gotNewPublicPersonList = this.gotNewPublicPersonList.bind(this);
       this.gotNewPublicPlaceList = this.gotNewPublicPlaceList.bind(this);
       this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
@@ -282,15 +291,16 @@ export class App extends Component<IProps, IState> {
       this.gotNewFriendList = this.gotNewFriendList.bind(this);
       this.gotNewGroupList = this.gotNewGroupList.bind(this);
 
-      this.gotNewUserPosition = this.gotNewUserPosition.bind(this);
       this.getUserRegion = this.getUserRegion.bind(this);
       this.getGroupList = this.getGroupList.bind(this);
 
+      // Component methods
       this.componentDidMount = this.componentDidMount.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
       this.componentWillUnmount = this.componentWillUnmount.bind(this);
+
+      // Link handling
       this.handleLink = this.handleLink.bind(this);
-      this.registerPushy = this.registerPushy.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
@@ -306,34 +316,14 @@ export class App extends Component<IProps, IState> {
           currentGroupList: this.getGroupList,
       });
 
-      this.nodeService.StartMonitoring();
+      this.authService = new AuthService({});
+      this.locationService = new LocationService({});
 
-      // The location service monitors the users location and calculates distance to nodes
-      // This is an async loop that runs forever, so do not await it
-      this.locationService = new LocationService({userPositionChanged: this.gotNewUserPosition});
-      this.locationService.StartMonitoring();
-
-      // this.registerPushy();
     }
 
     componentDidMount() {
       this.checkPermissions();
-
-      // listen for incoming URL
-      // Pushy.listen();
-      // // Register the device for push notifications
-      // Pushy.register().then(async (deviceToken) => {
-      //   // Display an alert with device token
-      //   console.log('got device token', deviceToken);
-      //   // alert('Pushy device token: ' + deviceToken);
-
-      //   // Send the token to your backend server via an HTTP GET request
-      //   // await fetch('https://your.api.hostname/register/device?token=' + deviceToken);
-      //   // Succeeded, optionally do something to alert the user
-      //   }).catch((err) => {
-      //   // Handle registration errors
-      //   console.error(err);
-      // });
+      Pushy.listen();
 
       // This handles the case where a user clicked a link and the app was closed
       Linking.getInitialURL().then((url) => {
@@ -341,6 +331,10 @@ export class App extends Component<IProps, IState> {
             this.handleLink({ url });
         }
        });
+
+       RNSimpleCompass.start(3, this.updateBearing);
+
+       this.registerPushy();
     }
 
     async checkPermissions() {
@@ -358,23 +352,20 @@ export class App extends Component<IProps, IState> {
     }
 
     registerPushy() {
-      console.log('register pushy....');
       // Handle push notifications
       Pushy.setNotificationListener(async (data) => {
         // Print notification payload data
         console.log('Received notification: ' + JSON.stringify(data));
-
         // Notification title
-        let notificationTitle = 'MyApp';
-
+        let notificationTitle = 'Smartshare';
         // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
         let notificationText = data.message || 'Test notification';
-
         // Display basic system notification
         Pushy.notify(notificationTitle, notificationText);
       });
     }
 
+    // Handle a link clicked from a text message
     async handleLink(event) {
       let linkData = undefined;
 
@@ -390,14 +381,163 @@ export class App extends Component<IProps, IState> {
       }
     }
 
+    // Before the component mounts, we have to set up:
+    // 1. Background location tracking
+    // 2. Deep link handling
+
     componentWillMount() {
-      // listen for incoming URL
+      // Listen for incoming URL
       Linking.addEventListener('url', this.handleLink);
+
+      // This handler fires whenever bgGeo receives a location update.
+      BackgroundGeolocation.on('location', this.onLocation, this.onError);
+
+      // This handler fires when movement states changes (stationary->moving; moving->stationary)
+      BackgroundGeolocation.on('motionchange', this.onMotionChange);
+
+      // This event fires when a change in motion activity is detected
+      BackgroundGeolocation.on('activitychange', this.onActivityChange);
+
+      // This event fires when the user toggles location-services authorization
+      BackgroundGeolocation.on('providerchange', this.onProviderChange);
+
+      // Set up background location tracking
+      this.setupLocationTracking();
     }
 
     componentWillUnmount() {
-      // stop listening for URL
+      // Stop listening for URL
       Linking.removeEventListener('url', this.handleLink);
+
+      // Stop background location tracking
+      RNSimpleCompass.stop();
+      BackgroundGeolocation.removeListeners();
+    }
+
+    // Location listeners and helper methods
+
+    async setupLocationTracking() {
+      let storedSettings = await AsyncStorage.getItem('userSettings');
+      storedSettings = JSON.parse(storedSettings);
+
+      let savedTitle = 'Anonymous';
+      let savedDescription = '';
+
+      if (storedSettings !== null) {
+        // @ts-ignore
+        savedTitle = storedSettings.savedTitle;
+        // @ts-ignore
+        savedDescription = storedSettings.savedDescription;
+      }
+
+      let currentUUID = await this.authService.getUUID();
+      Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
+
+      // Get pushy device token
+      let deviceToken = await this.setupPushNotifications();
+
+      Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
+
+      // Create request object for postNode API endpoint
+      let params = {
+        'node_id': currentUUID,
+        'node_data': {
+          'lat': undefined,
+          'lng': undefined,
+          'title': savedTitle,
+          'description': savedDescription,
+          'public': false,
+          'type': 'person',
+          'device_token': deviceToken,
+        },
+      };
+
+      BackgroundGeolocation.ready({
+        // Geolocation Config
+        desiredAccuracy: 0,
+        distanceFilter: 10,
+        // Activity Recognition
+        stopTimeout: 1,
+        // Application config
+        debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
+        logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+        stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
+        startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
+        allowIdenticalLocations: true,
+        url: 'https://api.smartshare.io/dev/postNode',
+        batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
+        autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
+        headers: {},
+        params: params,
+      }, (state) => {
+        Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
+
+        if (!state.enabled) {
+          // Start tracking location
+          BackgroundGeolocation.start(function() {
+            Logger.info(`BackgroundGeolocation - started`);
+          });
+        }
+      });
+    }
+
+    async setupPushNotifications() {
+      let deviceToken = await Pushy.register();
+      return deviceToken;
+    }
+
+    async updateBearing(degree) {
+      let userRegion = {
+        latitude:       this.props.userRegion.latitude,
+        longitude:      this.props.userRegion.longitude,
+        speed:          this.props.userRegion.speed,
+        latitudeDelta:  0.00122 * 1.5,
+        longitudeDelta: 0.00121 * 1.5,
+        bearing: degree,
+    };
+
+      this.bearing = degree;
+      this.props.UserPositionChanged(userRegion);
+    }
+
+    async onLocation(location) {
+      console.log('- [event] location: ', location);
+
+      let userRegion = {
+            latitude:       location.coords.latitude,
+            longitude:      location.coords.longitude,
+            speed:          location.coords.speed,
+            latitudeDelta:  0.00122 * 1.5,
+            longitudeDelta: 0.00121 * 1.5,
+            bearing: this.bearing,
+      };
+
+      await this.props.UserPositionChanged(userRegion);
+
+      if (!this.nodeService.monitoring) {
+        Logger.info('App.onLocation - got first location, starting to monitor nodes');
+        this.nodeService.StartMonitoring();
+      }
+
+    }
+
+    onError(error) {
+      console.warn('- [event] location error ', error);
+    }
+
+    // @ts-ignore
+    onActivityChange(activity) {
+      // console.log('- [event] activitychange: ', activity);  // eg: 'on_foot', 'still', 'in_vehicle'
+    }
+
+    // @ts-ignore
+    onProviderChange(provider) {
+      // console.log('- [event] providerchange: ', provider);
+    }
+
+    // @ts-ignore
+    onMotionChange(location) {
+      // console.log('- [event] motionchange: ', location.isMoving, location);
     }
 
     render() {
@@ -422,17 +562,8 @@ export class App extends Component<IProps, IState> {
     }
 
     // Private implementation functions
-    private async setUUID() {
-      let currentUUID = await AsyncStorage.getItem('user_uuid');
-      if (currentUUID === null) {
-        let newUUID = uuid.v4();
-        await AsyncStorage.setItem('user_uuid', newUUID);
-      }
-    }
 
-    private async gotNewUserPosition(props: IUserPositionChanged) {
-      await this.props.UserPositionChanged(props.userRegion);
-    }
+    // Either get or set the users UUID (creates it on first run)
 
     private async gotNewPublicPersonList(props: IPublicPersonListUpdated) {
       await this.props.PublicPersonListUpdated(props.nodeList);

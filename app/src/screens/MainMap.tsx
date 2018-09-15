@@ -7,17 +7,23 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+// Redux imports
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
+
+// Redux actions
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
 import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
+
+// Services
 import NodeService,
   {
     IPublicPersonListUpdated,
@@ -27,6 +33,9 @@ import NodeService,
     IFriendListUpdated,
   }
   from '../services/NodeService';
+
+import SleepUtil from '../services/SleepUtil';
+import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -40,9 +49,6 @@ import PrivatePlaces from './markers/PrivatePlaces';
 import PublicPeople from './markers/PublicPeople';
 import PrivatePeople from './markers/PrivatePeople';
 import Friends from './markers/Friends';
-
-import SleepUtil from '../services/SleepUtil';
-import ApiService from '../services/ApiService';
 
 import { mapStyle } from '../config/map';
 

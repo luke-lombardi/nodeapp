@@ -3,6 +3,7 @@ import { View, StyleSheet, TextInput, AsyncStorage } from 'react-native';
 
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import NavigationService from '../services/NavigationService';
 
@@ -27,13 +28,12 @@ export default class CreateMessage extends Component<IProps, IState> {
         };
 
         this.submitMessage = this.submitMessage.bind(this);
-        // this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     async submitMessage() {
       let nodeId = this.props.navigation.getParam('nodeId');
 
-      this.setState({
+      await this.setState({
         isLoading: true,
         messageBody: this.state.messageBody,
       });
@@ -46,8 +46,6 @@ export default class CreateMessage extends Component<IProps, IState> {
         userUuid: userUuid,
         nodeId: nodeId,
       });
-
-      this.setState({isLoading: false});
     }
 
     render() {
@@ -81,6 +79,9 @@ export default class CreateMessage extends Component<IProps, IState> {
               }
               title=''
             />
+
+            <Spinner visible={this.state.isLoading} textContent={'Loading...'} textStyle={{color: 'rgba(44,55,71,1.0)'}} />
+
           </View>
         );
     }

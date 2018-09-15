@@ -1,17 +1,12 @@
 import Logger from './Logger';
+// @ts-ignore
 import SleepUtil from './SleepUtil';
 import ApiService from '../services/ApiService';
 import { AsyncStorage } from 'react-native';
-import RNSimpleCompass from 'react-native-simple-compass';
 import geolib from 'geolib';
-
-export interface IUserPositionChanged {
-  readonly userRegion: any;
-}
 
 // @ts-ignore
 interface IProps {
-  readonly userPositionChanged?: (props: IUserPositionChanged) => Promise<void>;
 }
 
 // Node object interfaces
@@ -44,51 +39,14 @@ interface Node {
 export default class LocationService {
     // @ts-ignore
     private readonly props: IProps;
+    // @ts-ignore
     private apiService: ApiService;
-    private bearing: number;
 
     constructor(props: IProps) {
         this.props = props;
         Logger.trace(`LocationService.constructor -  Initialized location service`);
 
-        this.updateBearing = this.updateBearing.bind(this);
-        this.StartMonitoring = this.StartMonitoring.bind(this);
         this.apiService = new ApiService({});
-    }
-
-    public async StartMonitoring() {
-      const degreeUpdateRate = 1; // Number of degrees changed before the callback is triggered
-      RNSimpleCompass.start(degreeUpdateRate, this.updateBearing);
-      let hitCount = 0;
-
-      while (true) {
-        let options = { enableHighAccuracy: true, timeout: 1000, maximumAge: 100 };
-        let position = await this.getCurrentPositonAsync(options);
-        let userRegion = {
-              // @ts-ignore
-              latitude:       position.coords.latitude,
-              // @ts-ignore
-              longitude:      position.coords.longitude,
-              // @ts-ignore
-              speed:          position.coords.speed,
-              latitudeDelta:  0.00122 * 1.5,
-              longitudeDelta: 0.00121 * 1.5,
-              // @ts-ignore
-              bearing: this.bearing,
-        };
-
-        await this.props.userPositionChanged({userRegion: userRegion});
-
-        if (hitCount >= 10) {
-          await this.postLocation(userRegion);
-          hitCount = 0;
-        }
-
-        await SleepUtil.SleepAsync(1000);
-        hitCount += 1;
-        RNSimpleCompass.stop();
-
-     }
     }
 
     public async orderNodes(userRegion: any, nodeList: any): Promise<any> {
@@ -233,55 +191,11 @@ export default class LocationService {
 
     // Private implementation functions
 
-    private async updateBearing(degree) {
-      this.bearing = degree;
-    }
-
     // Async wrapper for getPosition
-    private async getCurrentPositonAsync(options: any) {
-      return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, options);
-      });
-    }
-
-    // Sends the users current position to the cache
-    private async postLocation(userRegion: any): Promise<any> {
-      let currentUUID = await AsyncStorage.getItem('user_uuid');
-      if (currentUUID === undefined) {
-        Logger.info('LocationService.postLocation - No UUID is defined, not posting location.');
-        return ;
-      } else {
-        Logger.info(`LocationService.postLocation - Posting w/ the following UUID: ${currentUUID}`);
-      }
-
-      let storedSettings = await AsyncStorage.getItem('userSettings');
-      storedSettings = JSON.parse(storedSettings);
-
-      let savedTitle = 'Anonymous';
-      let savedDescription = '';
-
-      if (storedSettings !== null) {
-        // @ts-ignore
-        savedTitle = storedSettings.savedTitle;
-        // @ts-ignore
-        savedDescription = storedSettings.savedDescription;
-      }
-
-      let requestBody = {
-        'node_id': currentUUID,
-        'node_data': {
-          'lat': userRegion.latitude,
-          'lng': userRegion.longitude,
-          'title': savedTitle,
-          'description': savedDescription,
-          'public': false,
-          'type': 'person',
-        },
-      };
-
-      let response = await this.apiService.PostLocationAsync(requestBody);
-
-      return response;
-    }
+    // private async getCurrentPositonAsync(options: any) {
+    //   return new Promise((resolve, reject) => {
+    //     navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    //   });
+    // }
 
 }

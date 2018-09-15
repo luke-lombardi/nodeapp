@@ -1,8 +1,9 @@
 {
     "jsVersion": "v1.0.5",
     "buildEnvironment": "RELEASE",
-    "apiStage": "prod",
+    "apiStage": "dev",
     "apiServicesUrlBase": "https://api.smartshare.io/",
     "nodeCheckIntervalMs": 5000,
-    "groupCheckIntervalMs": 5000
+    "groupCheckIntervalMs": 5000,
+    "messageCheckIntervalMs": 3000
 }

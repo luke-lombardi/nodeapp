@@ -44,6 +44,9 @@
 		2DCD954D1E0B4F2C00145EB5 /* SmartshareTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SmartshareTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2E747B1C213C481100EC738F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E747B1B213C481100EC738F /* GameKit.framework */; };
+		2E8CD0EA214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */; };
+		2E8CD0F7214DA68B004137D1 /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8CD0F6214DA678004137D1 /* libRNSimpleCompass.a */; };
+		2ED289B9214D81CF00582FC3 /* NativeSleep.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED289B7214D81CF00582FC3 /* NativeSleep.m */; };
 		32F4AB5F05E64AA0B5F3450B /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FD0795272FB34D9DAF9F92F7 /* SimpleLineIcons.ttf */; };
 		34591FE7C2E74C8B868E87FA /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 646C07DE44CF4FCB969259D0 /* libBVLinearGradient.a */; };
 		37C56F9605B34ECBB7263EFC /* world.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E90DF70971D4070AFB9249B /* world.png */; };
@@ -66,7 +69,6 @@
 		C0D2435FD84F4B46921F9D9A /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06655D09E8CE4AB2BC3651DB /* Ionicons.ttf */; };
 		D32142E87C3B468D9A7F4529 /* gift.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B02F78E1B4F40C3913DC91D /* gift.png */; };
 		D79EC3661EF8467DACD464C8 /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = 03B6342F1CED4469BD8994D0 /* home.png */; };
-		E05320E98CDA4294B4003EDE /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93404586E32E482096CCCC99 /* libRNSimpleCompass.a */; };
 		E0AA4F32B32A42F19955E9B9 /* private_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 54DF5CFCFD0449F499B39910 /* private_person.png */; };
 		E201B26497F24E26A98E45BF /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 909A34D3F23F4800BAE66432 /* EvilIcons.ttf */; };
 		E9539205D168491EA08D8FB4 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 251A5DE16FB04F7E92C67503 /* libRNVectorIcons.a */; };
@@ -245,6 +247,13 @@
 			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		2E8CD0F5214DA678004137D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E8CD0F1214DA678004137D1 /* RNSimpleCompass.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSimpleCompass;
+		};
 		2E9EC27C213C435300C2582F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B7612BD42E2D4414AE7D1865 /* RNVectorIcons.xcodeproj */;
@@ -272,13 +281,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
 			remoteInfo = RNCamera;
-		};
-		2E9EC29B213C435400C2582F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FCA01797580C4560B7133D94 /* RNSimpleCompass.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNSimpleCompass;
 		};
 		2E9EC2A6213C435400C2582F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -467,6 +469,10 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E747B1A213C480900EC738F /* Smartshare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Smartshare.entitlements; path = Smartshare/Smartshare.entitlements; sourceTree = "<group>"; };
 		2E747B1B213C481100EC738F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
+		2E8CD0F1214DA678004137D1 /* RNSimpleCompass.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleCompass.xcodeproj; path = "../node_modules/react-native-simple-compass/ios/RNSimpleCompass.xcodeproj"; sourceTree = "<group>"; };
+		2ED289B7214D81CF00582FC3 /* NativeSleep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeSleep.m; path = Smartshare/NativeSleep.m; sourceTree = "<group>"; };
+		2ED289B8214D81CF00582FC3 /* NativeSleep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NativeSleep.h; path = Smartshare/NativeSleep.h; sourceTree = "<group>"; };
 		319C462A15AD0337CA987884 /* libPods-Smartshare.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Smartshare.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3265A043A62B42C896FF9D5E /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		3B02F78E1B4F40C3913DC91D /* gift.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = gift.png; path = ../assets/images/gift.png; sourceTree = "<group>"; };
@@ -506,7 +512,6 @@
 		EE22B697808A47FAAD146FF7 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		F4A161CDC53845FCBA5141EE /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		F4F45E3B39194F16AFBF7245 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		FCA01797580C4560B7133D94 /* RNSimpleCompass.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleCompass.xcodeproj; path = "../node_modules/react-native-simple-compass/ios/RNSimpleCompass.xcodeproj"; sourceTree = "<group>"; };
 		FD0795272FB34D9DAF9F92F7 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -524,6 +529,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C7065A9214DA6C800CC2AB2 /* libReactNativePermissions.a in Frameworks */,
+				2E8CD0F7214DA68B004137D1 /* libRNSimpleCompass.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -543,7 +549,6 @@
 				70E2CE7DEA58425CAD211CDB /* libRNGeocoder.a in Frameworks */,
 				34591FE7C2E74C8B868E87FA /* libBVLinearGradient.a in Frameworks */,
 				2E747B1C213C481100EC738F /* GameKit.framework in Frameworks */,
-				E05320E98CDA4294B4003EDE /* libRNSimpleCompass.a in Frameworks */,
 				E9539205D168491EA08D8FB4 /* libRNVectorIcons.a in Frameworks */,
 				4CA24CF95357D54A30EDBF3A /* libPods-Smartshare.a in Frameworks */,
 				0402D80B81014975AB2ABF7E /* libPushyRN.a in Frameworks */,
@@ -658,6 +663,9 @@
 		13B07FAE1A68108700A75B9A /* Smartshare */ = {
 			isa = PBXGroup;
 			children = (
+				2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */,
+				2ED289B8214D81CF00582FC3 /* NativeSleep.h */,
+				2ED289B7214D81CF00582FC3 /* NativeSleep.m */,
 				2E747B1A213C480900EC738F /* Smartshare.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -721,6 +729,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2E8CD0F2214DA678004137D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2E8CD0F6214DA678004137D1 /* libRNSimpleCompass.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2E9EC243213C435300C2582F /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -766,14 +782,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2E9EC295213C435400C2582F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				2E9EC29C213C435400C2582F /* libRNSimpleCompass.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		2E9EC2A2213C435400C2582F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -813,6 +821,7 @@
 			isa = PBXGroup;
 			children = (
 				2C706576214DA6B800CC2AB2 /* ReactNativePermissions.xcodeproj */,
+				2E8CD0F1214DA678004137D1 /* RNSimpleCompass.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -829,7 +838,6 @@
 				0AA6519DDDE14E718FD4A0E3 /* CodePush.xcodeproj */,
 				5AB19F514761481A82B12FE7 /* RNGeocoder.xcodeproj */,
 				F4A161CDC53845FCBA5141EE /* BVLinearGradient.xcodeproj */,
-				FCA01797580C4560B7133D94 /* RNSimpleCompass.xcodeproj */,
 				B7612BD42E2D4414AE7D1865 /* RNVectorIcons.xcodeproj */,
 				A92B2A166AF84C788A458B73 /* PushyRN.xcodeproj */,
 			);
@@ -1126,8 +1134,8 @@
 					ProjectRef = 5AB19F514761481A82B12FE7 /* RNGeocoder.xcodeproj */;
 				},
 				{
-					ProductGroup = 2E9EC295213C435400C2582F /* Products */;
-					ProjectRef = FCA01797580C4560B7133D94 /* RNSimpleCompass.xcodeproj */;
+					ProductGroup = 2E8CD0F2214DA678004137D1 /* Products */;
+					ProjectRef = 2E8CD0F1214DA678004137D1 /* RNSimpleCompass.xcodeproj */;
 				},
 				{
 					ProductGroup = 2E9EC274213C435300C2582F /* Products */;
@@ -1292,6 +1300,13 @@
 			remoteRef = 2DF0FFEC2056DD460020B375 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		2E8CD0F6214DA678004137D1 /* libRNSimpleCompass.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSimpleCompass.a;
+			remoteRef = 2E8CD0F5214DA678004137D1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		2E9EC27D213C435300C2582F /* libRNVectorIcons.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1318,13 +1333,6 @@
 			fileType = archive.ar;
 			path = libRNCamera.a;
 			remoteRef = 2E9EC291213C435300C2582F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		2E9EC29C213C435400C2582F /* libRNSimpleCompass.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNSimpleCompass.a;
-			remoteRef = 2E9EC29B213C435400C2582F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2E9EC2A7213C435400C2582F /* libCodePush.a */ = {
@@ -1647,8 +1655,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ED289B9214D81CF00582FC3 /* NativeSleep.m in Sources */,
 				2CDE50DB21449FB9000ACB06 /*  .swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				2E8CD0EA214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1710,6 +1720,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = TN6X9LR957;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1732,22 +1743,7 @@
 				INFOPLIST_FILE = SmartshareTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1766,6 +1762,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 7DA27ZHP58;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
@@ -1784,22 +1781,7 @@
 				INFOPLIST_FILE = SmartshareTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1824,6 +1806,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = TN6X9LR957;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
@@ -1870,6 +1853,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TN6X9LR957;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-aws-cognito-js/ios/**",
@@ -1913,6 +1897,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1931,22 +1916,7 @@
 				);
 				INFOPLIST_FILE = "Smartshare-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1970,6 +1940,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1988,22 +1959,7 @@
 				);
 				INFOPLIST_FILE = "Smartshare-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2026,6 +1982,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2044,22 +2001,7 @@
 				);
 				INFOPLIST_FILE = "Smartshare-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2082,6 +2024,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2100,22 +2043,7 @@
 				);
 				INFOPLIST_FILE = "Smartshare-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

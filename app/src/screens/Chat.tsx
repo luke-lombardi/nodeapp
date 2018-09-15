@@ -2,12 +2,24 @@ import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, AsyncStorage, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
+import Snackbar from 'react-native-snackbar';
+import Spinner from 'react-native-loading-spinner-overlay';
+
+// Redux imports
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+
+// Services
 import ApiService from '../services/ApiService';
+import AuthService from '../services/AuthService';
+
 import moment from 'moment';
+
+import SleepUtil from '../services/SleepUtil';
+import DeferredPromise from '../services/DeferredPromise';
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
     navigation: any;
@@ -19,8 +31,13 @@ interface IState {
 }
 
 export class Chat extends Component<IProps, IState> {
+  private monitoring: boolean = false;
+  private stopping: boolean = false;
+  private checkNowTrigger: DeferredPromise;
+  private readonly configGlobal = ConfigGlobalLoader.config;
 
   private apiService: ApiService;
+  private authService: AuthService;
 
   // @ts-ignore
   private userUuid: string;
@@ -47,7 +64,7 @@ export class Chat extends Component<IProps, IState> {
             params.goToCreateMessage();
            } } />,
           };
-    }
+  }
 
   constructor(props: IProps) {
     super(props);
@@ -58,12 +75,15 @@ export class Chat extends Component<IProps, IState> {
     };
 
     this.apiService = new ApiService({});
+    this.authService = new AuthService({});
 
     this._renderItem = this._renderItem.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
-    // this.updateList = this.updateList.bind(this);
-    this.setMessages = this.setMessages.bind(this);
+    this.CheckNow = this.CheckNow.bind(this);
+    this.monitorMessages = this.monitorMessages.bind(this);
     this.postMessage = this.postMessage.bind(this);
 
     this.goToCreateMessage = this.goToCreateMessage.bind(this);
@@ -72,13 +92,6 @@ export class Chat extends Component<IProps, IState> {
     goToCreateMessage() {
       this.props.navigation.navigate({key: 'CreateMessage', routeName: 'CreateMessage', params: { nodeId: this.nodeId }});
     }
-
-    // updateList() {
-    //   this.messageBody = this.props.navigation.getParam('messageBody', '');
-    //   let newList = this.state.data.push(this.messageBody);
-    //   this.setState({data: newList});
-    //   console.log('newList', this.state.data);
-    // }
 
     _renderItem = ({item, index}) => (
       <ListItem
@@ -125,13 +138,19 @@ export class Chat extends Component<IProps, IState> {
       }
 
       // Updates the message data for the node
-      this.setMessages();
+      this.monitorMessages();
+
+    }
+
+    componentWillUnmount() {
+      this.stopping = true;
     }
 
     // Sends a new message to the API
     async postMessage() {
-      const nodeId = this.props.navigation.getParam('nodeId', undefined);
-      const userUuid = await AsyncStorage.getItem('user_uuid');
+      let userUuid = await this.authService.getUUID();
+
+      let nodeId = this.props.navigation.getParam('nodeId', undefined);
       let messageBody = this.props.navigation.getParam('messageBody', undefined);
 
       let requestBody = {
@@ -140,31 +159,68 @@ export class Chat extends Component<IProps, IState> {
         user_uuid: userUuid,
       };
 
-      console.log('Sending request body', requestBody);
-
       let response = await this.apiService.PostMessageAsync(requestBody);
+
       if (response !== undefined) {
-        console.log('Response: ', response);
-        await this.setMessages();
+
+      // Check for new messages
+      await this.CheckNow();
+
+      if (this.stopping)
+        return;
+
+      // Show the success snackbar
+          Snackbar.show({
+            title: 'Updated message list',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+      // If the response was undefined, display error snackbar
+      } else {
+        Snackbar.show({
+          title: 'Error sending message, try again',
+          duration: Snackbar.LENGTH_SHORT,
+        });
       }
+
     }
 
-    async setMessages() {
-      console.log('Setting messages...');
+    async monitorMessages() {
+      if (this.monitoring) return;
 
-      let currentUUID = await AsyncStorage.getItem('user_uuid');
-      let requestBody = {
-        'node_id': this.nodeId,
-        'user_uuid': currentUUID,
-      };
+      this.monitoring = true;
 
-      let messages = await this.apiService.GetMessagesAsync(requestBody);
-      console.log(messages);
+      while (this.monitoring) {
+        if (this.stopping) return;
 
-      if (messages !== undefined) {
-        await this.setState({data: messages});
-        console.log(messages);
+        // Re-create the check-now trigger in case it was triggered last time
+        this.checkNowTrigger = new DeferredPromise();
+
+        let currentUUID = await this.authService.getUUID();
+        let requestBody = {
+          'node_id': this.nodeId,
+          'user_uuid': currentUUID,
+        };
+
+        let messages = await this.apiService.GetMessagesAsync(requestBody);
+
+        if (messages !== undefined) {
+          try {
+            await this.setState({data: messages});
+          } catch (error) {
+            // If we got here, we unmounted
+            console.log(error);
+          }
+        }
+
+        const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.messageCheckIntervalMs);
+        await Promise.race([ sleepPromise, this.checkNowTrigger ]);
       }
+
+    }
+
+    public CheckNow() {
+      console.log('NodeService.CheckNow - updating the node list');
+      this.checkNowTrigger.resolve();
     }
 
     render() {
@@ -181,6 +237,7 @@ export class Chat extends Component<IProps, IState> {
             <Text style={styles.null}>No messages yet!</Text>
           }
 
+          <Spinner visible={this.state.isLoading} textContent={'Loading...'} textStyle={{color: 'rgba(44,55,71,1.0)'}} />
         </View>
 
       );

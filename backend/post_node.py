@@ -61,9 +61,22 @@ def lambda_handler(event, context):
     
     if not rds:
         return
+
+    logging.info('Event payload: %s', event)
+
     
     node_id = event.get('node_id', 0)
     node_data = event.get('node_data', {})
+
+    node_type = node_data.get('type', 'place')
+
+    # If its a persons location node, then we have to grab the data from location obj
+    if node_type == 'person':
+        logging.info('Node type is person, grabbing location data')
+        location = event.get('location', {})
+        if location:
+            node_data['lat'] = location['coords']['latitude']
+            node_data['lng'] = location['coords']['longitude']
 
     key_name = None
     

@@ -1,0 +1,12 @@
+{
+  "BUILD": {
+    "copy template": "cp ./templates/api_template.zip ./deployment_packages/${OUTPUT_PATH}.zip",
+    "generate config_dev": "python generate_config.py ${CONFIG_PREFIX} 'DEV' ",
+    "generate config_prod": "python generate_config.py ${CONFIG_PREFIX} 'PROD' ",
+    "copy and remove config_dev": "zip -g ./deployment_packages/${OUTPUT_PATH}.zip config_DEV.py && rm config_DEV.py",
+    "copy and remove config_prod": "zip -g ./deployment_packages/${OUTPUT_PATH}.zip config_PROD.py && rm config_PROD.py",
+    "add API source": "cd ./endpoints/${CURRENT_API} && zip -rg ../../deployment_packages/${OUTPUT_PATH}.zip ./* -x build_config.json  -x config.py && cd ../../",
+    "add common modules": "zip -rg ../../deployment_packages/${OUTPUT_PATH}.zip modules"
+  },
+  "CONFIG_PREFIX": "SMARTSHARE_API"
+}

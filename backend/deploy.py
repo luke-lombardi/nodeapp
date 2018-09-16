@@ -1,0 +1,75 @@
+'''
+
+Adapted from this deployment script:
+
+# upload the deployment package to s3
+1. aws --profile aws_deploy s3 cp ./deployment_packages/${1}.zip s3://ss-lambda-pkgs/
+
+# update the function code, updates '$LATEST'
+2. aws --profile aws_deploy lambda update-function-code --function-name ${1} --region us-east-1 --s3-bucket sa-lambda-pkgs --s3-key ${1}.zip
+
+conditonal ==> if DEPLOYMENT_STAGE == PROD, then create a new version and point PROD to it:
+
+    3. version=`aws --profile aws_deploy lambda publish-version --function-name ${1} --region us-east-1 | jq -r .Version`
+    4. aws --profile aws_deploy lambda update-alias --function-name ${1} --region us-east-1  --function-version $version --name PROD
+
+'''
+
+import sys
+import json
+import subprocess
+
+
+def upload_deployment_package(endpoint):
+    print('Updating new deployment package to lambda... ')
+    deployment_package_filename = endpoint + '.zip'
+    command = 'aws --profile ss_lambda_deploy s3 cp ./deployment_packages/' + deployment_package_filename + ' s3://ss-lambda-pkgs/' + deployment_package_filename
+    rc = subprocess.call(command, shell=True)
+    if rc == 0:
+        return True
+    
+    return False
+
+def update_function_code(api, endpoint):
+    print('Updating function code for $LATEST... ')
+
+    endpointName = api + '_' + endpoint[0].capitalize() + endpoint[1:]
+    command = 'aws --profile ss_lambda_deploy lambda update-function-code --function-name ' + endpointName + \
+    ' --region us-east-1 --s3-bucket ss-lambda-pkgs --s3-key ' + endpoint + '.zip'
+
+    rc = subprocess.call(command, shell=True)
+    if rc == 0:
+        return True
+
+    return False
+
+
+def deploy_endpoint(api, endpoint):
+    result = upload_deployment_package(endpoint)
+    if result == False:
+        print('Failed to upload deployment package. ')
+        return False
+    
+    print('\nSuccess.\n----------------------------------------------------------')
+
+    result = update_function_code(api, endpoint)
+    if result == False:
+        print('Failed to update lambda function code. ')
+        return False
+
+    print('\nSuccess.\n----------------------------------------------------------')
+    
+    return True
+
+if __name__ == '__main__':
+    api = sys.argv[1]
+    endpoint = sys.argv[2]
+
+    result = deploy_endpoint(api, endpoint)
+
+    if result == False:
+        print('Failed to deploy new endpoint code')
+    else:
+        print('Lambda function deployed successfully.\n')
+
+

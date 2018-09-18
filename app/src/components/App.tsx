@@ -3,6 +3,7 @@ import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+// @ts-ignore
 import Permissions from 'react-native-permissions';
 
 // Location services, and user notifications
@@ -323,6 +324,7 @@ export class App extends Component<IProps, IState> {
 
     componentDidMount() {
       this.checkPermissions();
+
       Pushy.listen();
 
       // This handles the case where a user clicked a link and the app was closed
@@ -338,17 +340,27 @@ export class App extends Component<IProps, IState> {
     }
 
     async checkPermissions() {
+      let permission = await Permissions.check('location', { type: 'always'} );
 
-      let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification']);
-
-      if (permission !== 'authorized') {
-
-        await Permissions.request('camera');
-        await Permissions.request('location');
-        await Permissions.request('contacts');
-        await Permissions.request('notification');
-        // await Permissions.request('backgroundRefresh');
+      if (permission === 'authorized') {
+        this.setupLocationTracking();
+      } else {
+        permission = await Permissions.request('location', { type: 'always'} );
+        if (permission === 'authorized') {
+          this.setupLocationTracking();
+        }
       }
+
+      // Set up background location tracking
+      // let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification']);
+
+      // if (permission !== 'authorized') {
+
+      //   await Permissions.request('camera');
+      //   await Permissions.request('location');
+      //   await Permissions.request('contacts');
+      //   await Permissions.request('notification');
+      // }
     }
 
     registerPushy() {
@@ -400,9 +412,6 @@ export class App extends Component<IProps, IState> {
 
       // This event fires when the user toggles location-services authorization
       BackgroundGeolocation.on('providerchange', this.onProviderChange);
-
-      // Set up background location tracking
-      this.setupLocationTracking();
     }
 
     componentWillUnmount() {

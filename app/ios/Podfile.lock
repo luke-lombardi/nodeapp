@@ -1,4 +1,10 @@
 PODS:
+  - CocoaLumberjack (3.4.2):
+    - CocoaLumberjack/Default (= 3.4.2)
+    - CocoaLumberjack/Extensions (= 3.4.2)
+  - CocoaLumberjack/Default (3.4.2)
+  - CocoaLumberjack/Extensions (3.4.2):
+    - CocoaLumberjack/Default
   - Crashlytics (3.10.5):
     - Fabric (~> 1.7.9)
   - Fabric (1.7.9)
@@ -72,6 +78,13 @@ PODS:
     - Crashlytics
     - Fabric
     - React
+  - ReactNativePermissions (1.1.1):
+    - React
+  - RNBackgroundFetch (2.4.3):
+    - React
+  - RNBackgroundGeolocation (2.13.3):
+    - CocoaLumberjack (~> 3.0)
+    - React
   - RNSnackbar (0.5.1):
     - React
   - ViroKit_static_lib (1.0)
@@ -100,6 +113,9 @@ DEPENDENCIES:
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - ReactNativeFabric (from `../node_modules/react-native-fabric`)
+  - ReactNativePermissions (from `../node_modules/react-native-permissions`)
+  - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
+  - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - ViroKit_static_lib (from `../node_modules/react-viro/ios/dist/ViroRenderer/static_lib`)
   - ViroReact (from `../node_modules/react-viro/ios/`)
@@ -107,6 +123,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - CocoaLumberjack
     - Crashlytics
     - Fabric
     - Google-Maps-iOS-Utils
@@ -126,6 +143,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   ReactNativeFabric:
     :path: "../node_modules/react-native-fabric"
+  ReactNativePermissions:
+    :path: "../node_modules/react-native-permissions"
+  RNBackgroundFetch:
+    :path: "../node_modules/react-native-background-fetch"
+  RNBackgroundGeolocation:
+    :path: "../node_modules/react-native-background-geolocation"
   RNSnackbar:
     :path: "../node_modules/react-native-snackbar"
   ViroKit_static_lib:
@@ -136,6 +159,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
@@ -147,11 +171,14 @@ SPEC CHECKSUMS:
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
   ReactNativeFabric: 3912bf9c714d7cc98110eadf06ca6dedef219322
+  ReactNativePermissions: 9f2d9c45c98800795e6c2ed330e25d11a66a8169
+  RNBackgroundFetch: 8c4f77f83c398c659bce82af2f0a885079417b9e
+  RNBackgroundGeolocation: c9bbf69b9aa277f0b46754cc5f853bd26051a18f
   RNSnackbar: 30ae0274ca33ea8b7b72a74b6402366a1ce27dd7
   ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 6002445c6529022a3df58fed81291ac08299293c
+PODFILE CHECKSUM: 9def7354a7005dab9909ed8512adffba6c99b301
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.5.3

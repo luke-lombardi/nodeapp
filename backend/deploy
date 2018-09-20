@@ -20,6 +20,7 @@ import sys
 import json
 import subprocess
 
+API_NAME = 'Smartshare'
 
 def upload_deployment_package(endpoint):
     print('Updating new deployment package to lambda... ')
@@ -31,10 +32,10 @@ def upload_deployment_package(endpoint):
     
     return False
 
-def update_function_code(api, endpoint):
+def update_function_code(endpoint):
     print('Updating function code for $LATEST... ')
 
-    endpointName = api + '_' + endpoint
+    endpointName = API_NAME + '_' + endpoint
     command = 'aws --profile ss_lambda_deploy lambda update-function-code --function-name ' + endpointName + \
     ' --region us-east-1 --s3-bucket ss-lambda-pkgs --s3-key ' + endpoint + '.zip'
 
@@ -45,7 +46,7 @@ def update_function_code(api, endpoint):
     return False
 
 
-def deploy_endpoint(api, endpoint):
+def deploy_endpoint(endpoint):
     result = upload_deployment_package(endpoint)
     if result == False:
         print('Failed to upload deployment package. ')
@@ -53,7 +54,7 @@ def deploy_endpoint(api, endpoint):
     
     print('\nSuccess.\n----------------------------------------------------------')
 
-    result = update_function_code(api, endpoint)
+    result = update_function_code(endpoint)
     if result == False:
         print('Failed to update lambda function code. ')
         return False
@@ -63,10 +64,9 @@ def deploy_endpoint(api, endpoint):
     return True
 
 if __name__ == '__main__':
-    api = sys.argv[1]
-    endpoint = sys.argv[2]
+    endpoint = sys.argv[1]
 
-    result = deploy_endpoint(api, endpoint)
+    result = deploy_endpoint(endpoint)
 
     if result == False:
         print('Failed to deploy new endpoint code')

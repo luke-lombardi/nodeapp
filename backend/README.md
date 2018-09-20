@@ -12,6 +12,6 @@ This directory contains all lambda function endpoint code used by the Smartshare
 ### Build and deploy
 
 1. To build: `./build endpointName`
-2. To deploy: `./deploy SMARTSHARE_API endpointName`
+2. To deploy: `./deploy endpointName`
 
 **Note**: this will deploy the endpoint to the DEV lambda alias, to deploy to production, you must manually publish a new version in the AWS Console. Then you can point the PROD alias to that new version. This could also be automated but for safety remains a manual step.

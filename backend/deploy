@@ -34,7 +34,7 @@ def upload_deployment_package(endpoint):
 def update_function_code(api, endpoint):
     print('Updating function code for $LATEST... ')
 
-    endpointName = api + '_' + endpoint[0].capitalize() + endpoint[1:]
+    endpointName = api + '_' + endpoint
     command = 'aws --profile ss_lambda_deploy lambda update-function-code --function-name ' + endpointName + \
     ' --region us-east-1 --s3-bucket ss-lambda-pkgs --s3-key ' + endpoint + '.zip'
 

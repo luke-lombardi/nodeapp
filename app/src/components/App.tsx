@@ -343,9 +343,11 @@ export class App extends Component<IProps, IState> {
       let permission = await Permissions.check('location', { type: 'always'} );
 
       if (permission === 'authorized') {
+        console.log('hpy ot');
         this.setupLocationTracking();
       } else {
         permission = await Permissions.request('location', { type: 'always'} );
+        console.log(permission);
         if (permission === 'authorized') {
           this.setupLocationTracking();
         }

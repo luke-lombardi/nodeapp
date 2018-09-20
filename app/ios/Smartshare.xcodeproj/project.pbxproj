@@ -1002,7 +1002,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 7DA27ZHP58;
+						DevelopmentTeam = TN6X9LR957;
 						ProvisioningStyle = Manual;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
@@ -1770,7 +1770,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "zICSrruj-JhwNSG5MJnWfkuC_jhPc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1800,10 +1800,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.staging;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "fe896533-a9d4-4f77-86bb-0295baa26c30";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Staging;
+				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1818,7 +1818,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "urD5MLD2l7Y-8YNlCjlw7RdKjfVqc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TN6X9LR957;
@@ -1847,10 +1847,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.staging;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "fe896533-a9d4-4f77-86bb-0295baa26c30";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Staging;
+				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

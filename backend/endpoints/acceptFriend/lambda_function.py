@@ -9,34 +9,25 @@
 import redis
 import json
 import logging
-import boto3
+import os
 
+from modules import cache
 from uuid import uuid4
 from random import randint
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+local_env = os.environ.get('LOCAL_ENV', 0)
+
+if local_env:
+  from config_LOCAL import Config as ConfigDev
+else:
+  from config_DEV import Config as ConfigDev
+  from config_PROD import Config as ConfigProd
+
+
 DEFAULT_GROUP_TTL = 3600
-
-def is_cache_connected(rds):
-    try:
-        response = rds.client_list()
-    except redis.ConnectionError:
-        return False
-    return True
-
-
-def connect_to_cache():
-    rds = redis.StrictRedis(host='redis-11771.c10.us-east-1-4.ec2.cloud.redislabs.com', password='3VyLUrhKv8BzUWtZKtKoIFdqlMk6TVOQ', port=11771, db=0, socket_connect_timeout=5)
-
-    connected = is_cache_connected(rds)
-    if connected:
-        logging.info('Connection successful.')
-        return rds
-    else:
-        logging.info('Could not connect to redis cache.')
-        return None
 
 
 def update_relation(rds, relation_id, your_id, user_uuid):
@@ -90,12 +81,22 @@ def lambda_handler(event, context):
 
     logger.info('Event payload: %s' % (event))
 
-    rds = connect_to_cache()
-    
+    # if we are running locally, use the DEV config file
+    if not context:
+        rds = cache.connect_to_cache('DEV')
+    else:
+        # choose which config file to use based on the invoked function ARN
+        context_vars = vars(context)
+        alias = context_vars['invoked_function_arn'].split(':')[-1]
+
+        if alias == 'PROD':
+            rds = cache.connect_to_cache('PROD')
+        else:
+            rds = cache.connect_to_cache('DEV')
+
     if not rds:
-        response['error_msg'] = ERROR_MSG['CACHE_ERROR']
-        return response
-    
+        return
+
 
     relation_id = event.get('relation_id', '')
     your_id = event.get('your_id', '')

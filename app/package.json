@@ -37,6 +37,7 @@
     "react-native-action-button": "^2.8.5",
     "react-native-app-intro": "^1.1.5",
     "react-native-aws-cognito-js": "0.0.7",
+    "react-native-background-fetch": "^2.4.3",
     "react-native-background-geolocation": "^2.13.3",
     "react-native-blur": "^3.2.2",
     "react-native-camera": "^1.1.3",

@@ -67,7 +67,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>We need permission to access your contact list</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Location Always And When In Use Usage Description</string>
+	<string>We need permission to access your location</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app requires background tracking</string>
 	<key>NSLocationUsageDescription</key>

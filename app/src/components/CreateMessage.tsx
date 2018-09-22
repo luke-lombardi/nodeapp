@@ -28,6 +28,7 @@ export default class CreateMessage extends Component<IProps, IState> {
         };
 
         this.submitMessage = this.submitMessage.bind(this);
+        this.setMessageText = this.setMessageText.bind(this);
     }
 
     async submitMessage() {
@@ -48,20 +49,28 @@ export default class CreateMessage extends Component<IProps, IState> {
       });
     }
 
+    async setMessageText(text) {
+      try {
+        await this.setState({messageBody: text});
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     render() {
         return (
           <View style={styles.footer}>
             <View style={styles.container}>
             <TextInput
                 value={this.state.messageBody}
-                onChangeText={text => this.setState({messageBody: text})}
+                onChangeText={text => this.setMessageText(text)}
                 blurOnSubmit
-                multiline
+                multiline={true}
                 keyboardAppearance={'dark'}
                 style={styles.input}
                 maxLength={280}
                 underlineColorAndroid='transparent'
-                placeholder='Type yer message...'
+                placeholder='Type your message...'
             />
             </View>
             <Button
@@ -103,6 +112,7 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       paddingTop: 20,
       fontSize: 26,
+      height: '100%',
     },
     send: {
       alignSelf: 'center',

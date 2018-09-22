@@ -134,12 +134,15 @@ export class Chat extends Component<IProps, IState> {
 
       // If we are returning from the CreateMessage screen, post the users message
       if (this.action === 'new_message') {
+        console.log('posting a message');
         this.postMessage();
       }
 
+    }
+
+    componentDidMount() {
       // Updates the message data for the node
       this.monitorMessages();
-
     }
 
     componentWillUnmount() {
@@ -162,6 +165,8 @@ export class Chat extends Component<IProps, IState> {
       let response = await this.apiService.PostMessageAsync(requestBody);
 
       if (response !== undefined) {
+        // console.log('repsonse');
+        // console.log(response);
 
       // Check for new messages
       await this.CheckNow();
@@ -204,14 +209,21 @@ export class Chat extends Component<IProps, IState> {
         let messages = await this.apiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
-          console.log('messages');
-          console.log(messages);
+          // console.log('messages');
+          // console.log(messages);
 
-          try {
-            await this.setState({data: messages});
-          } catch (error) {
-            // If we got here, we unmounted
-            console.log(error);
+          if (this.stopping) {
+            return;
+          }
+
+          // @ts-ignore
+          if (messages !== false) {
+            try {
+              await this.setState({data: messages});
+            } catch (error) {
+              // If we got here, we unmounted
+              // console.log(error);
+            }
           }
         }
 
@@ -222,7 +234,7 @@ export class Chat extends Component<IProps, IState> {
     }
 
     public CheckNow() {
-      console.log('NodeService.CheckNow - updating the node list');
+      // console.log('NodeService.CheckNow - updating the node list');
       this.checkNowTrigger.resolve();
     }
 

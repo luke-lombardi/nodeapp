@@ -88,6 +88,9 @@ export default class LocationService {
         await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
       }
 
+      // Filter out nodes with invalid coords
+      nodeListArray = nodeListArray.filter((val => isNaN(parseFloat(val.lat)) !== true));
+
       // @ts-ignore
       let newNodeList = nodeListArray.map((val, index, arr) => {
         let nodeCoords = { latitude: parseFloat(val.lat), longitude: parseFloat(val.lng) };
@@ -101,7 +104,19 @@ export default class LocationService {
         return nodeCoords;
       });
 
-      let orderedList = geolib.orderByDistance({latitude: userRegion.latitude, longitude: userRegion.longitude}, newNodeList);
+      let orderedList = undefined;
+      try {
+        orderedList = geolib.orderByDistance({latitude: userRegion.latitude, longitude: userRegion.longitude}, newNodeList);
+      } catch (error) {
+        Logger.error(`LocationService.orderNodes - error ordering nodes, returning: ${error}`);
+        return {
+          'publicPersonList': [],
+          'publicPlaceList': [],
+          'privatePersonList': [],
+          'privatePlaceList': [],
+          'friendList': [],
+        };
+      }
 
       let orderedPublicPersonList = [];
       let orderedPublicPlaceList = [];

@@ -351,7 +351,7 @@ export class App extends Component<IProps, IState> {
         if (permission === 'authorized') {
           this.setupLocationTracking();
         }
-      }
+    }
 
       // Set up background location tracking
       // let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification']);
@@ -465,16 +465,19 @@ export class App extends Component<IProps, IState> {
 
       BackgroundGeolocation.ready({
         // Geolocation Config
-        desiredAccuracy: 0,
-        distanceFilter: 10,
+        desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+        distanceFilter: 0,
+        locationUpdateInterval: 1000,
+        reset: true,
         // Activity Recognition
         stopTimeout: 1,
         // Application config
         debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
         stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
+        stopOnStationary: false,   // <-- Allow the background-service to stop tracking when user stops moving
         startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-        allowIdenticalLocations: true,
+        allowIdenticalLocations: false,
         url: 'https://api.smartshare.io/dev/postNode',
         batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
         autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
@@ -490,6 +493,7 @@ export class App extends Component<IProps, IState> {
           });
         }
       });
+
     }
 
     async setupPushNotifications() {

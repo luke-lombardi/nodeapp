@@ -1002,7 +1002,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = TN6X9LR957;
+						DevelopmentTeam = 7DA27ZHP58;
 						ProvisioningStyle = Manual;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
@@ -1802,7 +1802,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "4a6f7f91-fa37-44af-9f9b-889f57a09a2a";
+				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
 				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;

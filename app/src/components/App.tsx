@@ -441,13 +441,22 @@ export class App extends Component<IProps, IState> {
         savedDescription = storedSettings.savedDescription;
       }
 
-      let currentUUID = await this.authService.getUUID();
-      Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
+      let currentUUID = null;
+      try {
+        let currentUUID = await this.authService.getUUID();
+        Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
+      } catch (err) {
+        console.log('Error when getting UUID: ', err);
+      }
 
       // Get pushy device token
-      let deviceToken = await this.setupPushNotifications();
-
-      Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
+      let deviceToken = null;
+      try {
+        deviceToken = await this.setupPushNotifications();
+        Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
+      } catch (err) {
+        console.log('Error when getting deviceToken: ', err);
+      }
 
       // Create request object for postNode API endpoint
       let params = {
@@ -485,6 +494,10 @@ export class App extends Component<IProps, IState> {
         params: params,
       }, (state) => {
         Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
+
+        // Promise API
+        // should call this function to track your location
+        BackgroundGeolocation.getCurrentPosition({samples:1, persist: false});
 
         if (!state.enabled) {
           // Start tracking location
@@ -537,6 +550,8 @@ export class App extends Component<IProps, IState> {
     }
 
     onError(error) {
+      // to get more information about error code
+      // visit to https://github.com/transistorsoft/react-native-background-geolocation/wiki/Error-Codes
       console.warn('- [event] location error ', error);
     }
 

@@ -32,6 +32,7 @@ RECENT_MESSAGE_TTL = 2
 
 
 def post_message(rds, node_id, message, user_uuid):
+    user_data = json.loads(rds.get('private:' + user_uuid).decode("utf-8"))
 
     node_exists = rds.exists(node_id)
 
@@ -48,6 +49,7 @@ def post_message(rds, node_id, message, user_uuid):
             "message": message,
             "user": "private:" + user_uuid,
             "timestamp": datetime.datetime.now().isoformat(),
+            "display_name":  user_data.get('title', '')
         }
 
         # Calculate message hash to prevent duplicate messages

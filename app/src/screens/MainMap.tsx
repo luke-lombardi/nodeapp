@@ -528,6 +528,7 @@ export class MainMap extends Component<IProps, IState> {
 
               <ActionButton
                   backdrop={<BlurView
+                    // @ts-ignore
                     style={styles.absolute}
                     blurType='dark'
                     blurAmount={5}

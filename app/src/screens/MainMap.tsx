@@ -536,7 +536,7 @@ export class MainMap extends Component<IProps, IState> {
                   size={72}
                   spacing={40}
                   degrees={90}
-                  buttonColor='rgba(231,76,60,1)'>
+                  buttonColor='rgba(1,23,58,0.8)'>
                 <ActionButton.Item
                   style={styles.buttonItem}
                   buttonColor='gray'
@@ -546,7 +546,7 @@ export class MainMap extends Component<IProps, IState> {
                   onPress={() =>
                     this.navigateToPage('CreateNode')
                   }>
-                  <Icon name='md-cube' style={styles.actionButtonIcon} />
+                  <Icon name='md-pin' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
                 <ActionButton.Item
                   style={styles.buttonItem}

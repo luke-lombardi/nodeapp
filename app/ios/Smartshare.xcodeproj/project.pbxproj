@@ -1770,7 +1770,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "zICSrruj-JhwNSG5MJnWfkuC_jhPc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1800,10 +1800,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.staging;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "a0712005-6ad9-4380-9dfd-f4196e9c1cde";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Staging;
+				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1818,7 +1818,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "urD5MLD2l7Y-8YNlCjlw7RdKjfVqc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = TN6X9LR957;
@@ -1847,10 +1847,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.staging;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "a0712005-6ad9-4380-9dfd-f4196e9c1cde";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Staging;
+				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -75,7 +75,7 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.privatePlaceList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
+                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
                   key='nodes'
                   title='Nodes'
                   leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}

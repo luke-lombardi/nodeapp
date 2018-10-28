@@ -280,6 +280,7 @@ export class App extends Component<IProps, IState> {
 
       // Location tracking methods
       this.onLocation = this.onLocation.bind(this);
+      this.getPostParams = this.getPostParams.bind(this);
       this.setupLocationTracking = this.setupLocationTracking.bind(this);
       this.setupPushNotifications = this.setupPushNotifications.bind(this);
       this.updateBearing = this.updateBearing.bind(this);
@@ -344,11 +345,9 @@ export class App extends Component<IProps, IState> {
       let permission = await Permissions.check('location', { type: 'always'} );
 
       if (permission === 'authorized') {
-        console.log('hpy ot');
         this.setupLocationTracking();
       } else {
         permission = await Permissions.request('location', { type: 'always'} );
-        console.log(permission);
         if (permission === 'authorized') {
           this.setupLocationTracking();
         }
@@ -429,49 +428,9 @@ export class App extends Component<IProps, IState> {
     // Location listeners and helper methods
 
     async setupLocationTracking() {
-      let storedSettings = await AsyncStorage.getItem('userSettings');
-      storedSettings = JSON.parse(storedSettings);
-
-      let savedTitle = 'Anonymous';
-      let savedDescription = '';
-
-      if (storedSettings !== null) {
-        // @ts-ignore
-        savedTitle = storedSettings.savedTitle;
-        // @ts-ignore
-        savedDescription = storedSettings.savedDescription;
-      }
-
-      let currentUUID = undefined;
-      try {
-        currentUUID = await this.authService.getUUID();
-        Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
-      } catch (err) {
-        console.log('Error when getting UUID: ', err);
-      }
-
-      // Get pushy device token
-      let deviceToken = undefined;
-      try {
-        deviceToken = await this.setupPushNotifications();
-        Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
-      } catch (err) {
-        console.log('Error when getting deviceToken: ', err);
-      }
 
       // Create request object for postNode API endpoint
-      let params = {
-        'node_id': currentUUID,
-        'node_data': {
-          'lat': undefined,
-          'lng': undefined,
-          'title': savedTitle,
-          'description': savedDescription,
-          'public': false,
-          'type': 'person',
-          'device_token': deviceToken,
-        },
-      };
+      let params = await this.getPostParams();
 
       BackgroundGeolocation.ready({
         // Geolocation Config
@@ -549,6 +508,20 @@ export class App extends Component<IProps, IState> {
 
       await this.props.UserPositionChanged(userRegion);
 
+     let params = await this.getPostParams();
+
+      BackgroundGeolocation.setConfig({
+        params: params,
+      });
+
+      if (!this.nodeService.monitoring) {
+        Logger.info('App.onLocation - got first location, starting to monitor nodes');
+        this.nodeService.StartMonitoring();
+      }
+
+    }
+
+    async getPostParams() {
       let storedSettings = await AsyncStorage.getItem('userSettings');
       storedSettings = JSON.parse(storedSettings);
 
@@ -565,18 +538,18 @@ export class App extends Component<IProps, IState> {
       let currentUUID = undefined;
       try {
         currentUUID = await this.authService.getUUID();
-        Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
+        Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
       } catch (err) {
-        console.log('Error when getting UUID: ', err);
+        Logger.info(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
       }
 
       // Get pushy device token
       let deviceToken = undefined;
       try {
         deviceToken = await this.setupPushNotifications();
-        Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
+        Logger.info(`App.getPostParams - User has a pushy token of: ${deviceToken}`);
       } catch (err) {
-        console.log('Error when getting deviceToken: ', err);
+        // Do nothing w/ this, usually only happens in the simulator
       }
 
       let params = {
@@ -592,15 +565,7 @@ export class App extends Component<IProps, IState> {
         },
       };
 
-      BackgroundGeolocation.setConfig({
-        params: params,
-      });
-
-      if (!this.nodeService.monitoring) {
-        Logger.info('App.onLocation - got first location, starting to monitor nodes');
-        this.nodeService.StartMonitoring();
-      }
-
+      return params;
     }
 
     onError(error) {

@@ -189,7 +189,9 @@ export class CreateNode extends Component<IProps, IState> {
 
     if (newUuid !== undefined && nodeData.private === true) {
       await this.nodeService.storeNode(newUuid);
-      console.log('successfully created node', newUuid);
+      Logger.info('CreateNode.submitCreateNode - successfully created new private node.');
+    } else if (newUuid !== undefined && nodeData.private === false) {
+      Logger.info('CreateNode.submitCreateNode - successfully created new public node.');
     } else {
       Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
     }

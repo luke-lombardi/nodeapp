@@ -34,6 +34,8 @@ import NodeService,
   }
   from '../services/NodeService';
 
+import NavigationService from '../services/NavigationService';
+
 import SleepUtil from '../services/SleepUtil';
 import ApiService from '../services/ApiService';
 
@@ -184,6 +186,9 @@ export class MainMap extends Component<IProps, IState> {
       }
     }
 
+    console.log('CURRENT MARKET REGION');
+    console.log(this.currentMarkerRegion);
+
     // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
     if (this.currentMarkerRegion !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
@@ -276,7 +281,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   viewNodeList() {
-    this.props.navigation.navigate({Key: 'Nodes', routeName: 'Nodes'});
+    NavigationService.reset('Nodes', {});
   }
 
   onNodeSelected(e, nodeType) {

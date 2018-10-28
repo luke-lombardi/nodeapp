@@ -3,6 +3,8 @@ import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, ButtonGroup } from 'react-native-elements';
 // import LinearGradient from 'react-native-linear-gradient';
 
+import NavigationService from '../services/NavigationService';
+
 // import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -71,7 +73,10 @@ export class NodeList extends Component<IProps, IState> {
       nodeType = 'publicPerson';
     }
 
-    this.props.navigation.navigate({key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
+    NavigationService.reset('Map', {
+      region: region,
+      nodeType: nodeType,
+    });
   }
 
   _renderItem = ({item}) => (

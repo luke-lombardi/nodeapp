@@ -61,6 +61,7 @@ import AuthService from '../services/AuthService';
 
 // SET GLOBAL PROPS //
 import { setCustomText } from 'react-native-global-props';
+import SleepUtil from '../services/SleepUtil';
 
 const customTextProps = {
   style: {
@@ -441,16 +442,16 @@ export class App extends Component<IProps, IState> {
         savedDescription = storedSettings.savedDescription;
       }
 
-      let currentUUID = null;
+      let currentUUID = undefined;
       try {
-        let currentUUID = await this.authService.getUUID();
+        currentUUID = await this.authService.getUUID();
         Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
       } catch (err) {
         console.log('Error when getting UUID: ', err);
       }
 
       // Get pushy device token
-      let deviceToken = null;
+      let deviceToken = undefined;
       try {
         deviceToken = await this.setupPushNotifications();
         Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
@@ -486,7 +487,7 @@ export class App extends Component<IProps, IState> {
         stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
         stopOnStationary: false,   // <-- Allow the background-service to stop tracking when user stops moving
         startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-        allowIdenticalLocations: false,
+        allowIdenticalLocations: true,
         url: 'https://api.smartshare.io/dev/postNode',
         batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
         autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
@@ -495,9 +496,7 @@ export class App extends Component<IProps, IState> {
       }, (state) => {
         Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
 
-        // Promise API
-        // should call this function to track your location
-        BackgroundGeolocation.getCurrentPosition({samples:1, persist: false});
+        this.monitorLocation();
 
         if (!state.enabled) {
           // Start tracking location
@@ -509,6 +508,14 @@ export class App extends Component<IProps, IState> {
 
     }
 
+    async monitorLocation() {
+      while (true) {
+        // Promise API
+        // should call this function to track your location
+        BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
+        await SleepUtil.SleepAsync(5000);
+      }
+    }
     async setupPushNotifications() {
       let deviceToken = await Pushy.register();
       return deviceToken;
@@ -541,6 +548,53 @@ export class App extends Component<IProps, IState> {
       };
 
       await this.props.UserPositionChanged(userRegion);
+
+      let storedSettings = await AsyncStorage.getItem('userSettings');
+      storedSettings = JSON.parse(storedSettings);
+
+      let savedTitle = 'Anonymous';
+      let savedDescription = '';
+
+      if (storedSettings !== null) {
+        // @ts-ignore
+        savedTitle = storedSettings.savedTitle;
+        // @ts-ignore
+        savedDescription = storedSettings.savedDescription;
+      }
+
+      let currentUUID = undefined;
+      try {
+        currentUUID = await this.authService.getUUID();
+        Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
+      } catch (err) {
+        console.log('Error when getting UUID: ', err);
+      }
+
+      // Get pushy device token
+      let deviceToken = undefined;
+      try {
+        deviceToken = await this.setupPushNotifications();
+        Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
+      } catch (err) {
+        console.log('Error when getting deviceToken: ', err);
+      }
+
+      let params = {
+        'node_id': currentUUID,
+        'node_data': {
+          'lat': undefined,
+          'lng': undefined,
+          'title': savedTitle,
+          'description': savedDescription,
+          'public': false,
+          'type': 'person',
+          'device_token': deviceToken,
+        },
+      };
+
+      BackgroundGeolocation.setConfig({
+        params: params,
+      });
 
       if (!this.nodeService.monitoring) {
         Logger.info('App.onLocation - got first location, starting to monitor nodes');

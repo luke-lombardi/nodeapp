@@ -189,7 +189,7 @@ export class CreateNode extends Component<IProps, IState> {
     // If the node title is empty, don't post the node
     if (this.state.title === '') {
       Snackbar.show({
-        title: 'Enter a message to send.',
+        title: 'Enter a title for the node.',
         duration: Snackbar.LENGTH_SHORT,
       });
 

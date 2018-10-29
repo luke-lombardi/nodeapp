@@ -4,6 +4,7 @@ import { View, StyleSheet, TextInput, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Snackbar from 'react-native-snackbar';
 
 import NavigationService from '../services/NavigationService';
 
@@ -39,6 +40,20 @@ export default class CreateMessage extends Component<IProps, IState> {
         messageBody: this.state.messageBody,
       });
 
+      // If the message body is empty, don't post the message
+      if (this.state.messageBody === '') {
+        Snackbar.show({
+          title: 'Enter a message to send.',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+
+        await this.setState({
+          isLoading: false,
+        });
+
+        return;
+      }
+
       let userUuid = await AsyncStorage.getItem('user_uuid');
 
       NavigationService.reset('Chat', {
@@ -53,7 +68,8 @@ export default class CreateMessage extends Component<IProps, IState> {
       try {
         await this.setState({messageBody: text});
       } catch (error) {
-        console.log(error);
+        // Ignore
+        // The only reason this would fail is if the component unmounted
       }
     }
 

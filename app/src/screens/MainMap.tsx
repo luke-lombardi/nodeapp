@@ -186,9 +186,6 @@ export class MainMap extends Component<IProps, IState> {
       }
     }
 
-    console.log('CURRENT MARKET REGION');
-    console.log(this.currentMarkerRegion);
-
     // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
     if (this.currentMarkerRegion !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();

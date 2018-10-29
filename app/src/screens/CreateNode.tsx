@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Switch, Text, TextInput } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
+import Snackbar from 'react-native-snackbar';
+
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -182,9 +184,22 @@ export class CreateNode extends Component<IProps, IState> {
       'ttl': this.state.ttl,
     };
 
-    console.log('Submitted node request');
-
     await this.setState({isLoading: true});
+
+    // If the node title is empty, don't post the node
+    if (this.state.title === '') {
+      Snackbar.show({
+        title: 'Enter a message to send.',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+
+      await this.setState({
+        isLoading: false,
+      });
+
+      return;
+    }
+
     let newUuid = await this.apiService.CreateNodeAsync(nodeData);
 
     if (newUuid !== undefined && nodeData.private === true) {

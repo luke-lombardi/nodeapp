@@ -70,7 +70,7 @@ def send_text(person_to_invite, relation_id, to_user_friend_id):
     person_to_invite['action'] = 'send_friend_invite'
     person_to_invite['response'] = False
     
-    invoke_response = lambda_client.invoke(FunctionName="Smartshare_addFriend",
+    invoke_response = lambda_client.invoke(FunctionName="Smartshare_sendText",
                                         InvocationType='RequestResponse',
                                         Payload=json.dumps(person_to_invite)
                                         )
@@ -130,6 +130,7 @@ def lambda_handler(event, context):
     logging.info('Received invite data: %s', invite_data)
 
     from_user = invite_data.get('from', None)
+    from_user_friend_id = None
 
     # If there is a valid 'from' user id, then create a new mirror node for them
     if from_user:

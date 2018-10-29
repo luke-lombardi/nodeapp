@@ -24,7 +24,7 @@ import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
-import Profile from '../screens/Profile';
+import Settings from '../screens/Settings';
 import Chat from '../screens/Chat';
 import CreateMessage from '../components/CreateMessage';
 
@@ -158,11 +158,11 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
     },
-  Profile: { screen: Profile,
+  Settings: { screen: Settings,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
-      title: 'Profile',
+      title: 'Settings',
       headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {

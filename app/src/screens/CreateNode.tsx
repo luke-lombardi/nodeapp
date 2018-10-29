@@ -116,7 +116,7 @@ export class CreateNode extends Component<IProps, IState> {
           />
             </View>
             <View style={styles.switchView}>
-              <Text style={styles.switchText}>Visibility</Text>
+              {/* <Text style={styles.switchText}>Visibility</Text> */}
               <Text style={{
                 position: 'absolute',
                 // fontWeight: this.state.private ? 'bold' : 'normal',
@@ -125,7 +125,7 @@ export class CreateNode extends Component<IProps, IState> {
                 marginLeft: 65,
                 fontSize: 20,
                 color: this.state.private ? 'black' : 'gray'}}>
-                Private
+                {/* Private */}
                 </Text>
 
             <Switch

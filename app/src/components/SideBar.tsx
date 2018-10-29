@@ -126,10 +126,10 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                 }}
                   containerStyle={styles.navItem}
-                  key='profile'
-                  title='Profile'
+                  key='settings'
+                  title='Settings'
                   leftIcon={{name: 'settings', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.resetNavigation('Profile');
+                  onPress={ () => { this.resetNavigation('Settings');
                 }}
               />
 

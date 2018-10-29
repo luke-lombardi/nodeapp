@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, TextInput, StyleSheet, Text, AsyncStorage } from 'react-native';
+// @ts-ignore
 import { Button, Card } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -17,7 +18,7 @@ interface IState {
     privacy: boolean;
 }
 
-export class Profile extends Component<IProps, IState> {
+export class Settings extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
@@ -59,7 +60,7 @@ export class Profile extends Component<IProps, IState> {
     render() {
       return (
         <View style={styles.settings}>
-          <Card containerStyle={styles.card}>
+          {/* <Card containerStyle={styles.card}> */}
             <View style={styles.inputContainer}>
             <Text style={styles.settingsHeader}>Display Name</Text>
             <TextInput
@@ -90,7 +91,7 @@ export class Profile extends Component<IProps, IState> {
             />
 
             </View>
-          </Card>
+          {/* </Card> */}
         </View>
 
       );
@@ -128,7 +129,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);
 
 const styles = StyleSheet.create({
   inputContainer: {

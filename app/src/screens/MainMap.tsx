@@ -122,6 +122,7 @@ export class MainMap extends Component<IProps, IState> {
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.closeCreateModal = this.closeCreateModal.bind(this);
     this.closeConfirmModal = this.closeConfirmModal.bind(this);
+    this.refreshNodes = this.refreshNodes.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -494,7 +495,7 @@ export class MainMap extends Component<IProps, IState> {
             <MapToolbar functions={{
               zoomToUserLocation: this.zoomToUserLocation,
               navigateToPage: this.navigateToPage,
-              updateNodeList: this.nodeService.CheckNow,
+              updateNodeList: this.refreshNodes,
               toggleSwitch: this.togglePublicVisible,
             }}
             publicNodesVisible={this.state.publicNodesVisible}
@@ -618,6 +619,15 @@ export class MainMap extends Component<IProps, IState> {
 
   private async gotNewFriendList(props: IFriendListUpdated) {
     await this.props.FriendListUpdated(props.friendList);
+  }
+
+  private async refreshNodes() {
+    this.nodeService.CheckNow();
+
+    Snackbar.show({
+      title: 'Updating node list.',
+      duration: Snackbar.LENGTH_SHORT,
+    });
   }
 
   private navigateToPage(pageName: string) {

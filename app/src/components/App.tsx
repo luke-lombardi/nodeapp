@@ -3,7 +3,6 @@ import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
-// @ts-ignore
 import Permissions from 'react-native-permissions';
 
 // Location services, and user notifications
@@ -26,6 +25,7 @@ import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
 import Settings from '../screens/Settings';
 import Chat from '../screens/Chat';
+import GetPermissions from '../screens/GetPermissions';
 import CreateMessage from '../components/CreateMessage';
 
 // Redux imports
@@ -88,6 +88,14 @@ const InternalStack = StackNavigator({
       }),
   },
   Map: { screen: MainMap },
+  GetPermissions: { screen: GetPermissions,
+    navigationOptions: () => ({
+      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerTitleStyle: {color: 'white'},
+      title: 'Enable location tracking',
+      headerLeft: <View></View>,
+      }),
+  },
   Nodes: { screen: NodeList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -101,7 +109,7 @@ const InternalStack = StackNavigator({
         },
         )) } />,
       }),
-    },
+  },
   Groups: { screen: GroupList,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -115,7 +123,7 @@ const InternalStack = StackNavigator({
         },
       )) } />,
       }),
-    },
+  },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -339,28 +347,33 @@ export class App extends Component<IProps, IState> {
        this.registerPushy();
     }
 
+    // TODO: figure out a better way to do this (move to permissions page)
     async checkPermissions() {
-      let permission = await Permissions.check('location', { type: 'always'} );
+      let backgroundLocationPermission = await Permissions.check('location', { type: 'always'} );
 
-      if (permission === 'authorized') {
+      // First, check if the user has allowed background location tracking
+      if (backgroundLocationPermission === 'authorized') {
         await this.setupLocationTracking();
+      // If they haven't, request access
       } else {
-        permission = await Permissions.request('location', { type: 'always'} );
-        if (permission === 'authorized') {
+        backgroundLocationPermission = await Permissions.request('location', { type: 'always'} );
+        // If we got it this time, setup location tracking
+        if (backgroundLocationPermission === 'authorized') {
           await this.setupLocationTracking();
+        } else {
+          // Otherwise, see if we can get whenInUse location tracking permission
+          let inUsePermission = await Permissions.request('location');
+          // If we can, let them proceed with the app, but set a flag so background services are disabled
+          if (inUsePermission === 'authorized') {
+            await this.setupLocationTracking();
+            return;
+          } else {
+            // We have no location permission, the app is useless
+            // Take them to the location disabled screen
+            NavigationService.reset('GetPermissions', {});
+          }
         }
-    }
-
-      // Set up background location tracking
-      // let permission = await Permissions.checkMultiple(['camera', 'location', 'contacts', 'notification']);
-
-      // if (permission !== 'authorized') {
-
-      //   await Permissions.request('camera');
-      //   await Permissions.request('location');
-      //   await Permissions.request('contacts');
-      //   await Permissions.request('notification');
-      // }
+      }
     }
 
     registerPushy() {
@@ -389,7 +402,7 @@ export class App extends Component<IProps, IState> {
       }
 
       if (linkData !== undefined) {
-        NavigationService.navigate('Map', { showConfirmModal: true, linkData: linkData});
+        NavigationService.reset('Map', { showConfirmModal: true, linkData: linkData});
       }
     }
 
@@ -443,7 +456,7 @@ export class App extends Component<IProps, IState> {
         Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
 
         this.monitorLocation();
-      
+
         // This handler fires whenever bgGeo receives a location update.
         BackgroundGeolocation.on('location', this.onLocation, this.onError);
 
@@ -458,7 +471,7 @@ export class App extends Component<IProps, IState> {
 
         // Promise API
         // should call this function to track your location
-        BackgroundGeolocation.getCurrentPosition({samples:1, persist: false});
+        BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
 
         if (!state.enabled) {
           // Start tracking location

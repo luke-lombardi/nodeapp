@@ -325,8 +325,6 @@ export class App extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-      this.checkPermissions();
-
       Pushy.listen();
 
       // This handles the case where a user clicked a link and the app was closed
@@ -345,11 +343,11 @@ export class App extends Component<IProps, IState> {
       let permission = await Permissions.check('location', { type: 'always'} );
 
       if (permission === 'authorized') {
-        this.setupLocationTracking();
+        await this.setupLocationTracking();
       } else {
         permission = await Permissions.request('location', { type: 'always'} );
         if (permission === 'authorized') {
-          this.setupLocationTracking();
+          await this.setupLocationTracking();
         }
     }
 
@@ -400,20 +398,9 @@ export class App extends Component<IProps, IState> {
     // 2. Deep link handling
 
     componentWillMount() {
+      this.checkPermissions();
       // Listen for incoming URL
       Linking.addEventListener('url', this.handleLink);
-
-      // This handler fires whenever bgGeo receives a location update.
-      BackgroundGeolocation.on('location', this.onLocation, this.onError);
-
-      // This handler fires when movement states changes (stationary->moving; moving->stationary)
-      BackgroundGeolocation.on('motionchange', this.onMotionChange);
-
-      // This event fires when a change in motion activity is detected
-      BackgroundGeolocation.on('activitychange', this.onActivityChange);
-
-      // This event fires when the user toggles location-services authorization
-      BackgroundGeolocation.on('providerchange', this.onProviderChange);
     }
 
     componentWillUnmount() {
@@ -456,6 +443,22 @@ export class App extends Component<IProps, IState> {
         Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
 
         this.monitorLocation();
+      
+        // This handler fires whenever bgGeo receives a location update.
+        BackgroundGeolocation.on('location', this.onLocation, this.onError);
+
+        // This handler fires when movement states changes (stationary->moving; moving->stationary)
+        BackgroundGeolocation.on('motionchange', this.onMotionChange);
+
+        // This event fires when a change in motion activity is detected
+        BackgroundGeolocation.on('activitychange', this.onActivityChange);
+
+        // This event fires when the user toggles location-services authorization
+        BackgroundGeolocation.on('providerchange', this.onProviderChange);
+
+        // Promise API
+        // should call this function to track your location
+        BackgroundGeolocation.getCurrentPosition({samples:1, persist: false});
 
         if (!state.enabled) {
           // Start tracking location

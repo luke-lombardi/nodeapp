@@ -24,7 +24,7 @@ import SideBar from '../components/SideBar';
 import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
-import Profile from '../screens/Profile';
+import Settings from '../screens/Settings';
 import Chat from '../screens/Chat';
 import CreateMessage from '../components/CreateMessage';
 
@@ -61,6 +61,7 @@ import AuthService from '../services/AuthService';
 
 // SET GLOBAL PROPS //
 import { setCustomText } from 'react-native-global-props';
+import SleepUtil from '../services/SleepUtil';
 
 const customTextProps = {
   style: {
@@ -157,11 +158,11 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
     },
-  Profile: { screen: Profile,
+  Settings: { screen: Settings,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
-      title: 'Profile',
+      title: 'Settings',
       headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -279,6 +280,7 @@ export class App extends Component<IProps, IState> {
 
       // Location tracking methods
       this.onLocation = this.onLocation.bind(this);
+      this.getPostParams = this.getPostParams.bind(this);
       this.setupLocationTracking = this.setupLocationTracking.bind(this);
       this.setupPushNotifications = this.setupPushNotifications.bind(this);
       this.updateBearing = this.updateBearing.bind(this);
@@ -343,11 +345,9 @@ export class App extends Component<IProps, IState> {
       let permission = await Permissions.check('location', { type: 'always'} );
 
       if (permission === 'authorized') {
-        console.log('hpy ot');
         this.setupLocationTracking();
       } else {
         permission = await Permissions.request('location', { type: 'always'} );
-        console.log(permission);
         if (permission === 'authorized') {
           this.setupLocationTracking();
         }
@@ -428,40 +428,9 @@ export class App extends Component<IProps, IState> {
     // Location listeners and helper methods
 
     async setupLocationTracking() {
-      let storedSettings = await AsyncStorage.getItem('userSettings');
-      storedSettings = JSON.parse(storedSettings);
-
-      let savedTitle = 'Anonymous';
-      let savedDescription = '';
-
-      if (storedSettings !== null) {
-        // @ts-ignore
-        savedTitle = storedSettings.savedTitle;
-        // @ts-ignore
-        savedDescription = storedSettings.savedDescription;
-      }
-
-      let currentUUID = await this.authService.getUUID();
-      Logger.info(`App.setupLocationTracking - User has a UUID of: ${currentUUID}`);
-
-      // Get pushy device token
-      let deviceToken = await this.setupPushNotifications();
-
-      Logger.info(`App.setupLocationTracking - User has a pushy token of: ${deviceToken}`);
 
       // Create request object for postNode API endpoint
-      let params = {
-        'node_id': currentUUID,
-        'node_data': {
-          'lat': undefined,
-          'lng': undefined,
-          'title': savedTitle,
-          'description': savedDescription,
-          'public': false,
-          'type': 'person',
-          'device_token': deviceToken,
-        },
-      };
+      let params = await this.getPostParams();
 
       BackgroundGeolocation.ready({
         // Geolocation Config
@@ -477,7 +446,7 @@ export class App extends Component<IProps, IState> {
         stopOnTerminate: false,   // <-- Allow the background-service to continue tracking when user closes the app.
         stopOnStationary: false,   // <-- Allow the background-service to stop tracking when user stops moving
         startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
-        allowIdenticalLocations: false,
+        allowIdenticalLocations: true,
         url: 'https://api.smartshare.io/dev/postNode',
         batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
         autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
@@ -485,6 +454,8 @@ export class App extends Component<IProps, IState> {
         params: params,
       }, (state) => {
         Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
+
+        this.monitorLocation();
 
         if (!state.enabled) {
           // Start tracking location
@@ -496,6 +467,14 @@ export class App extends Component<IProps, IState> {
 
     }
 
+    async monitorLocation() {
+      while (true) {
+        // Promise API
+        // should call this function to track your location
+        BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
+        await SleepUtil.SleepAsync(5000);
+      }
+    }
     async setupPushNotifications() {
       let deviceToken = await Pushy.register();
       return deviceToken;
@@ -529,6 +508,12 @@ export class App extends Component<IProps, IState> {
 
       await this.props.UserPositionChanged(userRegion);
 
+     let params = await this.getPostParams();
+
+      BackgroundGeolocation.setConfig({
+        params: params,
+      });
+
       if (!this.nodeService.monitoring) {
         Logger.info('App.onLocation - got first location, starting to monitor nodes');
         this.nodeService.StartMonitoring();
@@ -536,7 +521,56 @@ export class App extends Component<IProps, IState> {
 
     }
 
+    async getPostParams() {
+      let storedSettings = await AsyncStorage.getItem('userSettings');
+      storedSettings = JSON.parse(storedSettings);
+
+      let savedTitle = 'Anonymous';
+      let savedDescription = '';
+
+      if (storedSettings !== null) {
+        // @ts-ignore
+        savedTitle = storedSettings.savedTitle;
+        // @ts-ignore
+        savedDescription = storedSettings.savedDescription;
+      }
+
+      let currentUUID = undefined;
+      try {
+        currentUUID = await this.authService.getUUID();
+        Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
+      } catch (err) {
+        Logger.info(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
+      }
+
+      // Get pushy device token
+      let deviceToken = undefined;
+      try {
+        deviceToken = await this.setupPushNotifications();
+        Logger.info(`App.getPostParams - User has a pushy token of: ${deviceToken}`);
+      } catch (err) {
+        // Do nothing w/ this, usually only happens in the simulator
+      }
+
+      let params = {
+        'node_id': currentUUID,
+        'node_data': {
+          'lat': undefined,
+          'lng': undefined,
+          'title': savedTitle,
+          'description': savedDescription,
+          'public': false,
+          'type': 'person',
+          'device_token': deviceToken,
+        },
+      };
+
+      return params;
+    }
+
     onError(error) {
+      // to get more information about error code
+      // visit to https://github.com/transistorsoft/react-native-background-geolocation/wiki/Error-Codes
       console.warn('- [event] location error ', error);
     }
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Switch, Text, TextInput } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
+import Snackbar from 'react-native-snackbar';
+
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -114,7 +116,7 @@ export class CreateNode extends Component<IProps, IState> {
           />
             </View>
             <View style={styles.switchView}>
-              <Text style={styles.switchText}>Visibility</Text>
+              {/* <Text style={styles.switchText}>Visibility</Text> */}
               <Text style={{
                 position: 'absolute',
                 // fontWeight: this.state.private ? 'bold' : 'normal',
@@ -123,7 +125,7 @@ export class CreateNode extends Component<IProps, IState> {
                 marginLeft: 65,
                 fontSize: 20,
                 color: this.state.private ? 'black' : 'gray'}}>
-                Private
+                {/* Private */}
                 </Text>
 
             <Switch
@@ -182,14 +184,29 @@ export class CreateNode extends Component<IProps, IState> {
       'ttl': this.state.ttl,
     };
 
-    console.log('Submitted node request');
-
     await this.setState({isLoading: true});
+
+    // If the node title is empty, don't post the node
+    if (this.state.title === '') {
+      Snackbar.show({
+        title: 'Enter a title for the node.',
+        duration: Snackbar.LENGTH_SHORT,
+      });
+
+      await this.setState({
+        isLoading: false,
+      });
+
+      return;
+    }
+
     let newUuid = await this.apiService.CreateNodeAsync(nodeData);
 
     if (newUuid !== undefined && nodeData.private === true) {
       await this.nodeService.storeNode(newUuid);
-      console.log('successfully created node', newUuid);
+      Logger.info('CreateNode.submitCreateNode - successfully created new private node.');
+    } else if (newUuid !== undefined && nodeData.private === false) {
+      Logger.info('CreateNode.submitCreateNode - successfully created new public node.');
     } else {
       Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
     }

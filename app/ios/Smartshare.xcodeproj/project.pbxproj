@@ -1802,7 +1802,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
+				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
 				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -1849,7 +1849,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "1b1cadda-7e8f-415c-8b95-22a8f035ae79";
+				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
 				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";

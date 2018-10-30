@@ -21,7 +21,7 @@ export default class AuthService {
     }
 
     // Setting the UUID serves as a simple 'account' for each user.
-    // It does not contain any real information, but it temporarily bound to the phone
+    // It does not contain any real information, but is temporarily bound to the phone
     public async getUUID() {
         let currentUUID = await AsyncStorage.getItem('user_uuid');
         if (currentUUID === null) {

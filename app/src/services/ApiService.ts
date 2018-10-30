@@ -307,6 +307,8 @@ export default class ApiService {
 
     // Posts a new message to a node
     async GetMessagesAsync(requestBody: any) {
+      Logger.info(`ApiService.GetMessagesAsync - Getting messages for node: ${JSON.stringify(requestBody)}`);
+
       let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getMessages', {
             method: 'POST',
             headers: {
@@ -316,7 +318,7 @@ export default class ApiService {
           });
 
       if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+        Logger.info('ApiService.GetMessagesAsync - Unable to get messages');
 
         return undefined;
       }

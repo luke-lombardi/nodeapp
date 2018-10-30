@@ -35,7 +35,7 @@ def get_messages(rds, node_id, user_uuid):
     if node_exists:
         messages_ttl = rds.ttl(node_id)
 
-        logging.info('Node %s exists, posting message', node_id)
+        logging.info('Node %s exists, getting messages', node_id)
 
         node_uuid = node_id.split(':')[1]
         messages_exist = rds.exists('messages:' + node_uuid)

@@ -34,6 +34,8 @@ import NodeService,
   }
   from '../services/NodeService';
 
+import NavigationService from '../services/NavigationService';
+
 import SleepUtil from '../services/SleepUtil';
 import ApiService from '../services/ApiService';
 
@@ -120,6 +122,7 @@ export class MainMap extends Component<IProps, IState> {
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.closeCreateModal = this.closeCreateModal.bind(this);
     this.closeConfirmModal = this.closeConfirmModal.bind(this);
+    this.refreshNodes = this.refreshNodes.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
     this.clearSelectedNode = this.clearSelectedNode.bind(this);
@@ -276,7 +279,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   viewNodeList() {
-    this.props.navigation.navigate({Key: 'Nodes', routeName: 'Nodes'});
+    NavigationService.reset('Nodes', {});
   }
 
   onNodeSelected(e, nodeType) {
@@ -492,7 +495,7 @@ export class MainMap extends Component<IProps, IState> {
             <MapToolbar functions={{
               zoomToUserLocation: this.zoomToUserLocation,
               navigateToPage: this.navigateToPage,
-              updateNodeList: this.nodeService.CheckNow,
+              updateNodeList: this.refreshNodes,
               toggleSwitch: this.togglePublicVisible,
             }}
             publicNodesVisible={this.state.publicNodesVisible}
@@ -528,6 +531,7 @@ export class MainMap extends Component<IProps, IState> {
 
               <ActionButton
                   backdrop={<BlurView
+                    // @ts-ignore
                     style={styles.absolute}
                     blurType='dark'
                     blurAmount={5}
@@ -536,7 +540,7 @@ export class MainMap extends Component<IProps, IState> {
                   size={72}
                   spacing={40}
                   degrees={90}
-                  buttonColor='rgba(231,76,60,1)'>
+                  buttonColor='rgba(1,23,58,0.8)'>
                 <ActionButton.Item
                   style={styles.buttonItem}
                   buttonColor='gray'
@@ -546,7 +550,7 @@ export class MainMap extends Component<IProps, IState> {
                   onPress={() =>
                     this.navigateToPage('CreateNode')
                   }>
-                  <Icon name='md-cube' style={styles.actionButtonIcon} />
+                  <Icon name='md-pin' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
                 <ActionButton.Item
                   style={styles.buttonItem}
@@ -615,6 +619,15 @@ export class MainMap extends Component<IProps, IState> {
 
   private async gotNewFriendList(props: IFriendListUpdated) {
     await this.props.FriendListUpdated(props.friendList);
+  }
+
+  private async refreshNodes() {
+    this.nodeService.CheckNow();
+
+    Snackbar.show({
+      title: 'Updating node list.',
+      duration: Snackbar.LENGTH_SHORT,
+    });
   }
 
   private navigateToPage(pageName: string) {

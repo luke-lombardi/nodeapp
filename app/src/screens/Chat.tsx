@@ -15,6 +15,7 @@ import { connect, Dispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
 
+// @ts-ignore
 import moment from 'moment';
 
 import SleepUtil from '../services/SleepUtil';
@@ -118,7 +119,7 @@ export class Chat extends Component<IProps, IState> {
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}>{moment(new Date()).from(item.timestamp)}</Text>
+          <Text style={styles.ratingText}> {item.timestamp} - { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
           </View>
         }
       />
@@ -209,8 +210,8 @@ export class Chat extends Component<IProps, IState> {
         let messages = await this.apiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
-          // console.log('messages');
-          // console.log(messages);
+          console.log('messages');
+          console.log(messages);
 
           if (this.stopping) {
             return;

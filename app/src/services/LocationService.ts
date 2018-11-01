@@ -28,6 +28,7 @@ interface NodeData {
   speed: number;
   ttl: number;
   status: string;
+  total_messages: number;
 }
 
 interface Node {
@@ -178,6 +179,7 @@ export default class LocationService {
         currentNode.data.type = nodeListArray[key].type;
         currentNode.data.color = nodeListArray[key].color;
         currentNode.data.status = nodeListArray[key].status;
+        currentNode.data.total_messages = nodeListArray[key].total_messages;
 
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);

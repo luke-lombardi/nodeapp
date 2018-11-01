@@ -71,11 +71,13 @@ def post_message(rds, node_id, message, user_uuid):
             rds.setex(name='recent_message:' + node_uuid + ':' + user_uuid, value=True, time=RECENT_MESSAGE_TTL)
 
 
-
+        messages = []
         if not messages_exist:
             logging.info('No messages yet, posting message')
             messages = []
             messages.append(new_message)
+            
+            # Update the messages on the node
             rds.setex(name='messages:' + node_uuid, value=json.dumps(messages), time=messages_ttl)
 
         else:
@@ -84,6 +86,14 @@ def post_message(rds, node_id, message, user_uuid):
 
             messages.append(new_message)
             rds.setex(name='messages:' + node_uuid, value=json.dumps(messages), time=messages_ttl)
+
+        # Update the message count on the node (for a badge on the market)
+        total_messages = len(messages)
+        node_data = json.loads(rds.get(node_id))
+        node_data['total_messages'] = total_messages
+        current_ttl = rds.ttl(node_id)
+        rds.setex(name=node_id, value=json.dumps(node_data), time=current_ttl)
+    
     else:
         logging.info('Node %s does not exist', node_id)
         return False

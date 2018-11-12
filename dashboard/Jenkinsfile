@@ -1,0 +1,2 @@
+@Library('sa-build-pipelines')_
+buildApp()

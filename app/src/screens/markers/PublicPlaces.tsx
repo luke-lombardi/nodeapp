@@ -30,11 +30,11 @@ export default class PublicPlaces extends Component<IProps, IState> {
                 key={marker.node_id}
             >
 
-            <Image source={require('../../../assets/images/public_place.png')} style={{ width: 50, height: 50 }} />
-            <Callout tooltip={false} style={styles.callout}>
-            <Text style={styles.title}>{marker.data.title}</Text>
-            </Callout>
-        </ Marker>
+                <Image source={require('../../../assets/images/public_place.png')} style={{ width: 50, height: 50 }} />
+                <Callout tooltip={false} style={styles.callout}>
+                <Text style={styles.title}>{marker.data.title}</Text>
+                </Callout>
+            </ Marker>
 
             ))
         );

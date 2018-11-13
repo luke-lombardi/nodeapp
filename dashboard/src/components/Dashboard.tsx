@@ -43,7 +43,8 @@ import PageActions from './common/PageActions';
 
 // Modules
 import Summary from './Modules/Summary';
-import AthleteBulkUpload from './Modules/AthleteBulkUpload';
+
+// import AthleteBulkUpload from './Modules/AthleteBulkUpload';
 
 // Editors
 import EditClient from './Editors/EditClient';
@@ -51,7 +52,7 @@ import EditWarehouse from './Editors/EditWarehouse';
 
 // Lists
 import ClientList from './Lists/ClientList';
-import AthleteList from './Lists/AthleteList';
+// import AthleteList from './Lists/AthleteList';
 import GroupList from './Lists/GroupList';
 
 // Import redux stuff
@@ -265,7 +266,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route exact path='/warehouses/edit/' component={EditWarehouse} />
                   <Route path='/warehouses/edit/:warehouseId?' component={EditWarehouse} />
 
-                  <Route exact path='/skills' component={AthleteList} />
+                  {/* <Route exact path='/skills' component={AthleteList} /> */}
                   <Route exact path='/groups' component={GroupList} />
 
               </Switch>

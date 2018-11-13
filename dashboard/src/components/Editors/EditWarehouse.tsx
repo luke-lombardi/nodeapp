@@ -23,7 +23,6 @@ import classNames from 'classnames';
 import Utils from './common/Utils';
 import { weekdays } from './common/ListData';
 import { TextInput, TimeInput, SelectInput } from './common/Inputs';
-import SettingsTab from '../common/SettingsTab';
 
 import { ConfigGlobalLoader } from '../../services/config/ConfigGlobal';
 
@@ -214,82 +213,6 @@ class EditWarehouse extends Component<IProps, IState> {
   }
 
   async setData() {
-    let warehouseId = 0;
-
-    try {
-      // @ts-ignore
-      warehouseId = this.props.match.params.warehouseId.toString();
-    } catch (error) {
-      await this.setState({newWarehouse: true});
-      return;
-    }
-
-    let warehouseData = this.state.warehouseData;
-
-    // Grab data for current warehouse
-    let response = await this.apiService.GetWarehouseAsync(warehouseId);
-
-    // If we got a valid response, setting the athleteData state fills out forms on the editor
-    if (response !== undefined) {
-      warehouseData.id = response.id;
-      warehouseData.clientId = response.client_id;
-      warehouseData.location = response.location;
-      warehouseData.name = response.name;
-      warehouseData.timezone = response.prefered_timezone;
-      warehouseData.opDayStart = response.utc_op_day_start;
-      warehouseData.weekStart = response.week_start;
-      warehouseData.showEngagement = response.show_engagement === 1 ? true : false;
-      warehouseData.updateEngagement = response.update_engagement === 1 ? true : false;
-      warehouseData.hideJudgement = response.hide_judgement === 1 ? true : false;
-      warehouseData.displayNames = response.display_names === 1 ? true : false;
-
-      await this.setState({warehouseData: warehouseData});
-    }
-
-    // @ts-ignore
-    let warehouseSettings = this.state.warehouseSettings;
-
-    // If a valid setting is associated w/ the athlete, use non default settings
-    console.log('Getting warehouse settings');
-    response = await this.apiService.GetSettingAsync('warehouse', warehouseId);
-    console.log(response);
-
-    let settingsData = undefined;
-
-    try {
-        // If we got a valid response, setting the athleteSettings state fills out forms on the editor
-      if (response.id !== undefined) {
-        settingsData = JSON.parse(response.value);
-
-        warehouseSettings.hapticEnabled = settingsData.hapticEnabled;
-        warehouseSettings.athleteEnabled = settingsData.athleteEnabled;
-        warehouseSettings.enagementEnabled = settingsData.enagementEnabled;
-        warehouseSettings.hapticFeedbackGap = settingsData.hapticFeedbackGap;
-        warehouseSettings.hapticBendPercentile = settingsData.hapticBendPercentile;
-        warehouseSettings.hapticSingleBendWindow = settingsData.hapticSingleBendWindow;
-        warehouseSettings.hapticSagAngleThreshold = settingsData.hapticSagAngleThreshold;
-        warehouseSettings.hapticFeedbackWindow = settingsData.hapticFeedbackWindow;
-        warehouseSettings.hapticBendNumber = settingsData.hapticBendNumber;
-        warehouseSettings.showBaselineModal = settingsData.showBaselineModal;
-        warehouseSettings.showSafetyScoreModal = settingsData.showSafetyScoreModal;
-        warehouseSettings.showHapticModal = settingsData.showHapticModal;
-      } else {
-        settingsData = { id: 0 };
-      }
-
-    } catch (error) {
-       console.log(error);
-       await this.showSnackbar('Error loading settings data', 1000);
-      }
-
-    // Update state for settings and data
-    await this.setState({
-      warehouseSettings: warehouseSettings,
-      warehouseData: warehouseData,
-      settingsModified: false,
-      settingId: settingsData.id,
-    });
-
     await this.showSnackbar('Loaded warehouse data', 1000);
   }
 
@@ -298,79 +221,6 @@ class EditWarehouse extends Component<IProps, IState> {
   async saveData() {
     // @ts-ignore
     let currentSettingId = this.state.settingId;
-
-    let settingData = {
-        'target_type': 'warehouse',
-        'target_id': this.state.warehouseData.id,
-        'value': this.state.warehouseSettings,
-        'id': currentSettingId,
-    };
-
-    let validForm = await this.validateForm();
-    if (!validForm) {
-      await this.showSnackbar(`Error saving, invalid input`, 1000);
-      return;
-    }
-
-    // Build request body
-    let warehouseData = {
-      'id': this.state.warehouseData.id,
-      'client_id': this.state.warehouseData.clientId,
-      'name': this.state.warehouseData.name,
-      'timezone': this.state.warehouseData.timezone,
-      'location': this.state.warehouseData.location,
-      'op_day_start': this.state.warehouseData.opDayStart,
-      'week_start': this.state.warehouseData.weekStart,
-      'show_engagement': this.state.warehouseData.showEngagement,
-      'update_engagement': this.state.warehouseData.updateEngagement,
-      'hide_judgement': this.state.warehouseData.hideJudgement,
-      'display_names': this.state.warehouseData.displayNames,
-    };
-
-    // Save the new warehouse data
-    let warehouseId = undefined;
-
-    await this.setState({isLoading: true});
-
-    if (this.state.warehouseData.id && this.state.warehouseData.id > 0) {
-      await this.apiService.UpdateWarehouseAsync(this.state.warehouseData.id, warehouseData);
-      warehouseId = this.state.warehouseData.id;
-    } else {
-      warehouseId = await this.apiService.CreateWarehouse(warehouseData);
-    }
-
-    if (this.state.settingsModified) {
-      console.log('Saving new setting data');
-      settingData.target_id = warehouseId;
-
-      let newSettingId = await this.apiService.UpdateSettingsAsync(settingData);
-
-      console.log('Got new setting id: ', newSettingId);
-    }
-
-    await this.setState({isLoading: false});
-
-    // @ts-ignore
-    if (warehouseId !== 0) {
-      await this.showSnackbar('Saved warehouse data', 1000);
-
-      if (this.state.newWarehouse) {
-        window.location.href = window.location.href + '/' + warehouseId.toString();
-      } else {
-        this.setData();
-      }
-
-    } else {
-      await this.showSnackbar('Error saving warehouse data', 1000);
-    }
-  }
-
-  async updateSetting() {
-    console.log('setting');
-  }
-
-  async _deleteWarehouse() {
-    this.setState({ isDeleteOpen: true });
   }
 
   async showSnackbar(message: string, durationMS: number) {
@@ -550,7 +400,7 @@ class EditWarehouse extends Component<IProps, IState> {
   private confirmDelete = async () => {
     this.setState({ isDeleteOpen: false });
 
-    await this.apiService.DeleteWarehouse(this.state.warehouseData.id);
+    // await this.apiService.DeleteWarehouse(this.state.warehouseData.id);
 
     this.setState({ toList: true });
   }

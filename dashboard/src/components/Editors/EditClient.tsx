@@ -69,6 +69,7 @@ interface IState {
 }
 
 class EditClient extends Component<IProps, IState> {
+  // @ts-ignore
   private apiService: ApiService;
   // @ts-ignore
   private readonly configGlobal = ConfigGlobalLoader.config;
@@ -143,29 +144,6 @@ class EditClient extends Component<IProps, IState> {
   }
 
   async setData() {
-    let clientId = 0;
-
-    try {
-      // @ts-ignore
-      clientId = this.props.match.params.clientId.toString();
-    } catch (error) {
-      await this.setState({newClient: true});
-      return;
-    }
-
-    let clientData = this.state.clientData;
-
-    // Grab data for current warehouse
-    let response = await this.apiService.GetClientAsync(clientId);
-
-    // If we got a valid response, setting the athleteData state fills out forms on the editor
-    if (response !== undefined) {
-      clientData.id = response.id;
-      clientData.name = response.name;
-      clientData.enableProcessing = response.enable_processing;
-
-      await this.setState({clientData: clientData});
-    }
 
     await this.showSnackbar('Loaded client data', 1000);
   }
@@ -179,38 +157,10 @@ class EditClient extends Component<IProps, IState> {
     // }
 
     // Build request body
-    let clientData = {
-      'id': this.state.clientData.id,
-      'name': this.state.clientData.name,
-      'enableProcessing': this.state.clientData.enableProcessing,
-    };
-
     // Save the new warehouse data
-    let clientId = undefined;
-
     await this.setState({isLoading: true});
 
-    if (this.state.clientData.id && this.state.clientData.id > 0) {
-      await this.apiService.UpdateClient(this.state.clientData.id, clientData);
-      clientId = this.state.clientData.id;
-    } else {
-      clientId = await this.apiService.CreateClient(clientData);
-    }
-
-    await this.setState({isLoading: false});
-
-    if (clientId !== 0) {
-      await this.showSnackbar('Saved client data', 1000);
-
-      if (this.state.newClient) {
-        window.location.href = window.location.href + '/' + clientId.toString();
-      } else {
-        this.setData();
-      }
-
-    } else {
-      await this.showSnackbar('Error saving client!', 1000);
-    }
+        await this.showSnackbar('Error saving client!', 1000);
   }
 
   async _deleteClient() {
@@ -310,8 +260,6 @@ class EditClient extends Component<IProps, IState> {
 
   private confirmDelete = async () => {
     this.setState({ isDeleteOpen: false });
-
-    await this.apiService.DeleteClient(this.state.clientData.id);
 
     this.setState({ toList: true });
   }

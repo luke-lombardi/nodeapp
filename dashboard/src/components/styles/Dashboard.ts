@@ -21,7 +21,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: '#292C34',
+    backgroundColor: '#00004d',
   },
   appToolbar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -31,7 +31,7 @@ const styles = theme => ({
     }),
     top: 65,
     height: 50,
-    backgroundColor: '#292C34',
+    backgroundColor: '#00004d',
   },
   appBarShift: {
     marginLeft: drawerWidth,

@@ -210,6 +210,7 @@ export default class ApiService {
     return response;
   }
 
+  // @ts-ignore
   private async getItemRequest(url: string) {
     let headers = await this.authService.getAuthHeaders();
     let response = undefined;
@@ -267,7 +268,7 @@ export default class ApiService {
           await this.props.functions.setList(results);
         }
 
-        await SleepUtil.SleepAsync(this.configGlobal.athleteUpdateIntervalMS);
+        await SleepUtil.SleepAsync(this.configGlobal.nodeUpdateIntervalMS);
     }
 
   }

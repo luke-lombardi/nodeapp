@@ -14,12 +14,20 @@ import { PageChangedActionCreator } from '../../actions/NavActions';
 import styles from '../styles/Summary';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+// @ts-ignore
 import Divider from '@material-ui/core/Divider';
 
 // @ts-ignore
 import CardContent from '@material-ui/core/CardContent';
 // @ts-ignore
 import MaterialTable from 'material-table';
+import MainMap from '../common/MainMap';
+import { TextInput } from '../Editors/common/Inputs';
+// @ts-ignore
+import LocationSearchInput from '../common/LocationInput';
+
+// @ts-ignore
+import PlacesAutocomplete from 'react-places-autocomplete';
 
 // @ts-ignore
 import Button from '@material-ui/core/Button';
@@ -35,6 +43,7 @@ interface IProps {
 }
 
 interface IState {
+  location: any;
 }
 
 class Summary extends Component<IProps, IState> {
@@ -49,6 +58,7 @@ class Summary extends Component<IProps, IState> {
     // this.eventList = this.eventList.bind(this);
 
     this.state = {
+      location: {},
     };
 
   }
@@ -80,6 +90,10 @@ class Summary extends Component<IProps, IState> {
   //     );
   // }
 
+  handleChange() {
+    return '';
+  }
+
   render() {
     // @ts-ignore
     const { classes } = this.props;
@@ -88,9 +102,12 @@ class Summary extends Component<IProps, IState> {
        <div className={classes.tableContainer}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
-            <h3> Map </h3>
-              <Divider />
-                {/* <MapComponent /> */}
+              <form className={classes.container} noValidate autoComplete='off'>
+                {/* INPUT: Address */}
+                <TextInput label='Service address' field='address' data={this.state.location} handleChange={this.handleChange}/>
+                <MainMap />
+                {/* <LocationSearchInput /> */}
+              </form>
           </Grid>
         </Grid>
        </div>

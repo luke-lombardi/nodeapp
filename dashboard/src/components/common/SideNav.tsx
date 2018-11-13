@@ -39,7 +39,7 @@ class SideNav extends Component<IProps, IState> {
       <ListItemIcon>
         <WarehouseIcon />
       </ListItemIcon>
-      <ListItemText primary='Summary' />
+      <ListItemText primary='Location' />
     </ListItem>
     </Link>
 

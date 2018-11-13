@@ -37,9 +37,6 @@ interface IProps {
 
 interface IState {
   Skills: any;
-  pivotBy: any;
-  expanded: any;
-  selectedRow: any;
 }
 
 class SkillList extends Component<IProps, IState> {
@@ -54,7 +51,6 @@ class SkillList extends Component<IProps, IState> {
 
     this.state = {
       Skills: [],
-      selectedRow: undefined,
     };
 
     this.setAthletesList = this.setAthletesList.bind(this);
@@ -87,7 +83,7 @@ class SkillList extends Component<IProps, IState> {
   }
 
   public async setAthletesList(athletes: any) {
-    await this.setState({Athletes: athletes});
+    // await this.setState({Athletes: athletes});
   }
 
   render() {

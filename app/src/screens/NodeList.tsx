@@ -135,11 +135,11 @@ export class NodeList extends Component<IProps, IState> {
 
         {
           this.state.selectedIndex === 1 && this.props.privatePlaceList.length === 0 &&
-          <Text style={styles.null}>No nodes have been created yet</Text>
+          <Text style={styles.null}>No services have been created yet</Text>
         }
         {
           this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
-          <Text style={styles.null}>No nodes have been created yet</Text>
+          <Text style={styles.null}>No services have been created yet</Text>
         }
         </View>
      </View>

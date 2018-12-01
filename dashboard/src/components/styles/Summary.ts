@@ -15,6 +15,8 @@ const styles = theme => ({
     marginLeft: 1,
     backgroundColor: '#0B5897',
   },
+  container: {
+  },
   navButtonContainer: {
   },
   root: {

@@ -30,6 +30,7 @@
     "is-buffer": "^2.0.3",
     "logzio-nodejs": "^0.4.15",
     "moment": "^2.22.2",
+    "mui-places-autocomplete": "^2.0.0",
     "nanomatch": "^1.2.13",
     "npm": "^6.4.1",
     "posix-character-classes": "^1.0.0",

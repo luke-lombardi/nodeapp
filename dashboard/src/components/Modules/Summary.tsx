@@ -21,7 +21,10 @@ import Divider from '@material-ui/core/Divider';
 import CardContent from '@material-ui/core/CardContent';
 // @ts-ignore
 import MaterialTable from 'material-table';
+// @ts-ignore
 import MainMap from '../common/MainMap';
+import MUIPlacesAutocomplete from 'mui-places-autocomplete';
+
 import { TextInput } from '../Editors/common/Inputs';
 // @ts-ignore
 import LocationSearchInput from '../common/LocationInput';
@@ -94,6 +97,10 @@ class Summary extends Component<IProps, IState> {
     return '';
   }
 
+  onSuggestionSelected(suggestion: any) {
+    console.log('Selected suggestion:', suggestion);
+  }
+
   render() {
     // @ts-ignore
     const { classes } = this.props;
@@ -102,12 +109,15 @@ class Summary extends Component<IProps, IState> {
        <div className={classes.tableContainer}>
         <Grid container spacing={24}>
           <Grid item xs={12}>
-              <form className={classes.container} noValidate autoComplete='off'>
+              {/* <form className={classes.container} noValidate autoComplete='off'> */}
                 {/* INPUT: Address */}
-                <TextInput label='Service address' field='address' data={this.state.location} handleChange={this.handleChange}/>
+                <MUIPlacesAutocomplete
+                  onSuggestionSelected={this.onSuggestionSelected}
+                  renderTarget={() => (<TextInput label='Address' field='id' data={this.state.location} handleChange={this.handleChange} disabled={true}/>)}
+                />
                 <MainMap />
-                {/* <LocationSearchInput /> */}
-              </form>
+
+              {/* </form> */}
           </Grid>
         </Grid>
        </div>

@@ -546,13 +546,13 @@ export class MainMap extends Component<IProps, IState> {
                   buttonColor='gray'
                   textStyle={{fontSize: 22, color: 'white'}}
                   textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
-                  title='Drop Pin'
+                  title='Scan Service'
                   onPress={() =>
                     this.navigateToPage('CreateNode')
                   }>
-                  <Icon name='md-pin' style={styles.actionButtonIcon} />
+                  <Icon name='ios-qr-scanner' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
-                <ActionButton.Item
+                {/* <ActionButton.Item
                   style={styles.buttonItem}
                   buttonColor='gray'
                   textStyle={{fontSize: 22, color: 'white'}}
@@ -562,7 +562,7 @@ export class MainMap extends Component<IProps, IState> {
                     this.navigateToPage('ContactList')
                   }>
                   <Icon name='md-person-add' style={styles.actionButtonIcon} />
-                </ActionButton.Item>
+                </ActionButton.Item> */}
               </ActionButton>
             </View>
           // End map view
@@ -625,7 +625,7 @@ export class MainMap extends Component<IProps, IState> {
     this.nodeService.CheckNow();
 
     Snackbar.show({
-      title: 'Updating node list.',
+      title: 'Updating service list.',
       duration: Snackbar.LENGTH_SHORT,
     });
   }

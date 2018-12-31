@@ -77,7 +77,7 @@ export class SideBar extends Component<IProps> {
                   containerStyle={styles.navItem}
                   badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
                   key='nodes'
-                  title='Services'
+                  title='Nodes'
                   leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.privatePlaceList.length && this.props.publicPlaceList.length === 0 ?
                     this.resetNavigation('CreateNode') :

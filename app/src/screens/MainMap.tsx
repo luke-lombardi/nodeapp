@@ -546,13 +546,13 @@ export class MainMap extends Component<IProps, IState> {
                   buttonColor='gray'
                   textStyle={{fontSize: 22, color: 'white'}}
                   textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
-                  title='Scan Service'
+                  title='Create Node'
                   onPress={() =>
                     this.navigateToPage('CreateNode')
                   }>
                   <Icon name='ios-qr-scanner' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
-                {/* <ActionButton.Item
+                <ActionButton.Item
                   style={styles.buttonItem}
                   buttonColor='gray'
                   textStyle={{fontSize: 22, color: 'white'}}
@@ -562,7 +562,7 @@ export class MainMap extends Component<IProps, IState> {
                     this.navigateToPage('ContactList')
                   }>
                   <Icon name='md-person-add' style={styles.actionButtonIcon} />
-                </ActionButton.Item> */}
+                </ActionButton.Item>
               </ActionButton>
             </View>
           // End map view

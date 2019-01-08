@@ -73,33 +73,22 @@ export default class Node extends Component<IProps, IState> {
     return (
       <View style={styles.view}>
         <Card containerStyle={styles.nodeCard}>
-
-          {/* <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.distance}>
-            {this.props.distance ? this.props.distance + ' miles away' : ''}
-          </Text>
-
-          <Text numberOfLines={1} ellipsizeMode={'head'} style={styles.distance}>
-            {this.props.minutesAway ? this.props.minutesAway + ' minutes away' : ''}
-          </Text> */}
-
           <Text numberOfLines={1} style={styles.nodeTitle}>
             {this.props.title}
           </Text>
           <Text numberOfLines={1} style={styles.durationTitle}>
           { (this.props.ttl > 0) ? ' Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text>
-
           <Text numberOfLines={1} style={styles.description}>
             {this.props.description}
           </Text>
-
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
             <Button
               icon={{
                 name: 'map',
                 type: 'feather',
-                size: 50,
+                size: 40,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.mapButton}
@@ -108,25 +97,11 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.handleGetDirections}
             />
-             {/* <Button
-              icon={{
-                name: 'message-circle',
-                type: 'feather',
-                size: 50,
-                color: 'rgba(44,55,71,0.8)',
-              }}
-              style={styles.cameraButton}
-              containerStyle={styles.buttonContainer}
-              buttonStyle={styles.transparentButton}
-              title=''
-              onPress={this.goToFinder}
-            /> */}
-
              <Button
               icon={{
                 name: 'message-circle',
                 type: 'feather',
-                size: 50,
+                size: 40,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.middleButton}
@@ -140,7 +115,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'share',
                 type: 'feather',
-                size: 50,
+                size: 40,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.directionsButton}
@@ -183,11 +158,11 @@ const styles = StyleSheet.create({
   },
   nodeTitle: {
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
     alignSelf: 'center',
   },
   durationTitle: {
-    marginTop: 10,
+    marginTop: 5,
     fontWeight: 'bold',
     fontSize: 14,
     alignSelf: 'center',
@@ -195,8 +170,8 @@ const styles = StyleSheet.create({
   description: {
     paddingLeft: 10,
     alignSelf: 'center',
-    marginTop: 10,
-    marginBottom: 15,
+    marginTop: 5,
+    marginBottom: 5,
   },
   distance: {
     fontSize: 14,

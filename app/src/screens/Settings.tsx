@@ -71,7 +71,7 @@ export class Settings extends Component<IProps, IState> {
                   color='black'
                 />}
               onChangeText={(title) => this.setState({title: title})}
-              inputContainerStyle={styles.input}
+              containerStyle={styles.input}
               leftIconContainerStyle={{left: -10}}
               placeholder={this.state.savedTitle !== null ? this.state.savedTitle : 'Display Name'}
               placeholderTextColor={'lightgray'}
@@ -85,7 +85,7 @@ export class Settings extends Component<IProps, IState> {
                 color='black'
               />}
               onChangeText={(description) => this.setState({description: description})}
-              inputContainerStyle={styles.input}
+              containerStyle={styles.input}
               leftIconContainerStyle={{left: -10}}
               placeholder={this.state.savedDescription !== null ? this.state.savedDescription : 'Display Description'}
               placeholderTextColor={'lightgray'}
@@ -172,7 +172,11 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 10,
     marginBottom: 10,
-    width: '110%',
+    width: '100%',
     fontSize: 26,
+    top: 25,
+    backgroundColor: 'white',
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start',
   },
 });

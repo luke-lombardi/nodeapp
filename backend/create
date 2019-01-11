@@ -1,0 +1,43 @@
+#!/usr/local/bin/python
+
+import sys
+import json
+import subprocess
+
+DEFAULT_DEPLOYMENT_STAGE = 'DEV'
+
+def run():
+  try:
+    NEW_ENDPOINT = sys.argv[1]
+  except:
+    print('Usage: ./create NEW_ENDPOINT_NAME')
+    return
+
+  # create new directory
+  print('Creating a new directory for endpoint: ' + NEW_ENDPOINT + '\n')
+  rc = subprocess.call('mkdir ./endpoints/' + NEW_ENDPOINT, shell=True)
+  if(rc != 0):
+    print('\nEndpoint directory already exists')
+    return
+
+  print('Copying template API into new directory' + '\n')
+  subprocess.call('cp -r ./endpoints/templateEndpoint/. ./endpoints/' + NEW_ENDPOINT, shell=True)
+
+  print('Generating new config file for local execution' + '\n')
+  
+  with open('./endpoints/' + NEW_ENDPOINT + '/build_config.json', 'r') as f_in:
+    conf = json.load(f_in)
+  
+  CONFIG_PREFIX = conf.get('CONFIG_PREFIX', '')
+  
+  subprocess.call('python generate_config.py ' + CONFIG_PREFIX + ' DEV', shell=True)
+  subprocess.call('python generate_config.py ' + CONFIG_PREFIX + ' PROD', shell=True)
+
+  print('\nMoving config file to new endpoint directory' + '\n')
+  subprocess.call('mv config_DEV.py ./endpoints/' + NEW_ENDPOINT, shell=True)
+  subprocess.call('mv config_PROD.py ./endpoints/' + 'Smartshare_' + NEW_ENDPOINT, shell=True)
+
+  print('Finished configuring new API endpoint' + '\n')
+
+
+if __name__ == '__main__':run()

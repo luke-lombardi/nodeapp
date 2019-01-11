@@ -1,0 +1,12 @@
+{
+    "name": "luke",
+    "title": "embedded guy",
+    "phone": "7184145662",
+    "email": "luke@smartshare.io",
+    "department": "smartshare",
+    "probability": 0.80,
+    "mrr": 50.0,
+    "notes": "he loves to code",
+    "status": "unknown",
+    "product": "small guy"
+}

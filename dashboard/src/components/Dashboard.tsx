@@ -48,13 +48,13 @@ import Summary from './Modules/Summary';
 
 // Editors
 import EditClient from './Editors/EditClient';
-import EditWarehouse from './Editors/EditWarehouse';
+// import EditWarehouse from './Editors/EditWarehouse';
 
 // Lists
 import ClientList from './Lists/ClientList';
 // import AthleteList from './Lists/AthleteList';
 import GroupList from './Lists/GroupList';
-import Login from './Modules/Login';
+// import Login from './Modules/Login';
 
 // Import redux stuff
 import { connect } from 'react-redux';
@@ -254,7 +254,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route path='/login' component={() => window.location = '/'}/>
                    }
 
-                  <Route exact path='/' component={Login} />
+                  {/* <Route exact path='/' component={Login} /> */}
 
                   <Route exact path='/summary' component={Summary} />
 
@@ -263,9 +263,9 @@ class Dashboard extends Component<IProps, IState> {
                   <Route exact path='/clients/edit/' component={EditClient} />
                   <Route path='/clients/edit/:clientId?' component={EditClient} />
 
-                  <Route exact path='/warehouses/edit' component={EditWarehouse} />
+                  {/* <Route exact path='/warehouses/edit' component={EditWarehouse} />
                   <Route exact path='/warehouses/edit/' component={EditWarehouse} />
-                  <Route path='/warehouses/edit/:warehouseId?' component={EditWarehouse} />
+                  <Route path='/warehouses/edit/:warehouseId?' component={EditWarehouse} /> */}
 
                   {/* <Route exact path='/skills' component={AthleteList} /> */}
                   <Route exact path='/groups' component={GroupList} />

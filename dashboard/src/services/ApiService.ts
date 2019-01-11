@@ -96,32 +96,25 @@ export default class ApiService {
     // Shared request code
   // upload new customer
   public async createLead(leadData: any) {
-    let headers = await this.authService.getAuthHeaders();
-    console.log('auth header--->', headers);
 
     let response = await fetch('https://sr1.smartshare.io/dev/createlead', {
           method: 'POST',
           body: JSON.stringify(leadData),
-          headers: headers,
         });
 
-    // If we our token expired, redirect to the login page
-    if (response.status === HttpStatus.UNAUTHORIZED) {
-      await this.props.functions.authChanged({
-        loggedIn: false,
-        username: undefined,
-      });
+    if (response !== undefined) {
+
+      console.log('successfully created lead for', leadData);
+      console.log('lead id ------->', response);
+
+      response = await response.json();
+
+      return response;
+      }
+
+      console.log('unable to create lead', response);
 
       return undefined;
-    } else if (response.status !== HttpStatus.OK) {
-      console.log(response);
-      // Logger.info('ApiService.sendCreateRequest - ');
-      return undefined;
-    }
-
-    response = await response.json();
-
-    return response;
   }
 
   // Shared request code
@@ -220,34 +213,22 @@ export default class ApiService {
   }
 
   private async getListRequest(url: string) {
-    let headers = await this.authService.getAuthHeaders();
-    let response = undefined;
+    let response = await fetch(url, {
+          method: 'GET',
+        });
 
-    try {
-      response = await fetch(url, {
-        method: 'GET',
-        headers: headers,
-      });
+    if (response !== undefined) {
 
-    // If we our token expired, redirect to the login page
-    if (response.status === HttpStatus.UNAUTHORIZED) {
-      await this.props.functions.authChanged({
-        loggedIn: false,
-        username: undefined,
-      });
+      console.log('got lead list', response);
 
-      return undefined;
-    } else if (response.status !== HttpStatus.OK) {
-      // Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
-      return undefined;
-    }
-
-      // Read response
       response = await response.json();
-    } catch (error) {
-      console.log('Caught exception: ' + JSON.stringify(error));
-    }
-    return response;
+
+      return response;
+      }
+
+      console.log('unable to get lead list', response);
+
+      return undefined;
   }
 
   // @ts-ignore

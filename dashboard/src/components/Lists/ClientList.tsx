@@ -3,7 +3,7 @@ import  { Component }  from 'react';
 
 // @ts-ignore
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import { Redirect } from 'react-router';
+// import { Redirect } from 'react-router';
 
 // Redux imports
 import { connect } from 'react-redux';
@@ -49,12 +49,40 @@ class ClientList extends Component<IProps, IState> {
 
   private columns = [
     {
-      title: 'ID',
-      field: 'id',
+      title: 'Name',
+      field: 'name',
     },
     {
-      title: 'Client name',
-      field: 'name',
+      title: 'Title',
+      field: 'title',
+    },
+    {
+      title: 'Department',
+      field: 'department',
+    },
+    {
+      title: 'Phone',
+      field: 'phone',
+    },
+    {
+      title: 'Email',
+      field: 'email',
+    },
+    {
+      title: 'Product',
+      field: 'product',
+    },
+    {
+      title: 'Probability',
+      field: 'probability',
+    },
+    {
+      title: 'Status',
+      field: 'status',
+    },
+    {
+      title: 'Notes',
+      field: 'notes',
     },
     {
     title: 'Actions',
@@ -129,8 +157,8 @@ class ClientList extends Component<IProps, IState> {
 
   render() {
 
-    if (this.props.auth.loggedIn === false) {
-      return <Redirect to='/login' />; }
+    // if (this.props.auth.loggedIn === false) {
+    //   return <Redirect to='/login' />; }
 
     return (
        <div style={styles.tableContainer}>

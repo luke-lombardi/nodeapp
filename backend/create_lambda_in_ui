@@ -1,0 +1,107 @@
+#!/usr/local/bin/python
+import json
+import subprocess
+import re
+
+def read_default_config():
+    default_config = None
+    try:
+        with open('/Users/beta9/default_lambda.json', 'r') as f_in:
+            default_config = json.load(f_in)
+    except:
+        pass
+    return default_config
+
+
+def get_name_and_description(default_config):
+    print('\n##################################################################')
+    endpointName = str(raw_input('\nEnter the endpoint name (e.g. getHauls): '))
+    description = str(raw_input('Enter a description for the function: '))
+    
+    functionName = default_config['api_name'] + '_' + endpointName
+
+    default_config['function_name'] = functionName
+    default_config['description'] = "\"" + description + "\""
+
+    return default_config
+
+
+def format_vpc_config(vpc_config):
+    # SubnetIds=string,string,SecurityGroupIds=string,string
+    formattedConfig = 'SubnetIds=' + ','.join(vpc_config['SubnetIds']) + ',' + 'SecurityGroupIds=' + ','.join(vpc_config['SecurityGroupIds'])
+    return formattedConfig
+
+def create_new_lambda_function(config):
+    print('\n\nCreating new function........')    
+
+    # config['vpc_config'] = format_vpc_config(config['vpc_config'])
+    
+    output = subprocess.check_output("aws --profile {} lambda create-function \
+    --function-name {} \
+    --runtime {} \
+    --role {} \
+    --handler {} \
+    --memory-size {} \
+    --timeout {} \
+    --description {} \
+    --zip-file {} \
+    ".format(
+    config['profile'], config['function_name'], config['runtime'],
+    config['role'], config['handler'], config['memory_size'],
+    config['timeout'], config['description'], config['default_zip'],
+    ), shell=True)
+
+    functionArn = None
+    m = re.findall(r'FunctionArn\"[^\"]+\"([^\"]+)', output)
+    if m:
+        functionArn = m[0]
+
+    return functionArn
+
+
+def create_aliases(functionArn, config):
+    print('\n\nCreating DEV and PROD aliases........')    
+    rc = subprocess.call("aws --profile {} lambda publish-version \
+    --function-name {} \
+    ".format(
+    config['profile'],
+    functionArn), shell=True)
+
+    rc = subprocess.call("aws --profile {} lambda create-alias \
+    --function-name {} \
+    --name {} \
+    --function-version {} \
+    ".format(
+    config['profile'],
+    functionArn, 'DEV', '\"1\"'), shell=True)
+
+    rc = subprocess.call("aws --profile {} lambda create-alias \
+    --function-name {} \
+    --name {} \
+    --function-version {} \
+    ".format(
+    config['profile'],
+    functionArn, 'PROD', '\"1\"'), shell=True)
+
+    return rc
+
+def main():
+    default_config = read_default_config()
+    if default_config is not None:
+        print("\nLoading default config:\n")
+        for k, v in default_config.iteritems():
+            print("{}:\t{}".format(k,v))
+    else:
+        print('Could not locate \"default_lambda.json\", exiting...')
+        return
+
+    config = get_name_and_description(default_config)
+    functionArn = create_new_lambda_function(config)
+    rc = create_aliases(functionArn, config)
+    if rc == 0:
+        print('Done....')
+    else:
+        print("Error creating aliases: ".format(rc))
+
+
+if __name__ == '__main__': main()

@@ -11,8 +11,6 @@ import Divider from '@material-ui/core/Divider';
 import BackArrowIcon from '@material-ui/icons/ArrowBack';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -194,7 +192,6 @@ class EditClient extends Component<IProps, IState> {
       await this.setState({isLoading: false});
       await this.showSnackbar('saved lead to databaase', 1000);
 
-      response = await response.json();
       return response;
       }
     await this.setState({isLoading: false});
@@ -229,17 +226,6 @@ class EditClient extends Component<IProps, IState> {
       return <Redirect to='/login' />;
     }
 
-    const statusTypes = [
-      {
-        value: 'To Call',
-        label: 'upcoming',
-      },
-      {
-        value: 'Called',
-        label: 'called',
-      },
-    ];
-
     return (
       <div className={classes.editContainer}>
           <Link to='/clients'>
@@ -254,33 +240,16 @@ class EditClient extends Component<IProps, IState> {
               <h4> Create New Lead </h4>
 
               {/* INPUT: Client id */}
-              <TextInput label='Full Name' field='name' data={this.state.leadData.name} handleChange={this.handleChange} />
-              <TextInput label='Title' field='title' data={this.state.leadData.title} handleChange={this.handleChange} />
-              <TextInput label='Department' field='department' data={this.state.leadData.department} handleChange={this.handleChange} />
-              <TextInput label='Phone' field='phone' data={this.state.leadData.phone} handleChange={this.handleChange} />
-              <TextInput label='Email' field='email' data={this.state.leadData.email} handleChange={this.handleChange} />
-              <TextInput label='Product' field='product' data={this.state.leadData.product} handleChange={this.handleChange} />
-              <TextInput label='MRR' field='mrr' data={this.state.leadData.mrr} handleChange={this.handleChange} />
-              <TextInput label='Notes' field='notes' data={this.state.leadData.notes} handleChange={this.handleChange} />
-              <TextInput label='Probability' field='probability' data={this.state.leadData.probability} handleChange={this.handleChange} />
-
-              {/* INPUT: Client name */}
-              <TextField
-                  id='outlined-name'
-                  label='Status'
-                  className={classes.textField}
-                  value={this.state.leadData.status}
-                  margin='normal'
-                  variant='outlined'
-              >
-                  {statusTypes.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              {/* <TextInput label='Status' field='status' data={this.state.leadData} handleChange={this.handleChange} /> */}
-
+              <TextInput label='Full Name' field='name' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Title' field='title' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Department' field='department' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Phone' field='phone' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Email' field='email' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Product' field='product' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='MRR' field='mrr' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Notes' field='notes' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Probability' field='probability' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Status' field='status' data={this.state.leadData} handleChange={this.handleChange} />
               {/* INPUT: Enable processing */}
               <FormGroup row>
                 <FormControlLabel

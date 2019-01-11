@@ -54,6 +54,7 @@ import EditWarehouse from './Editors/EditWarehouse';
 import ClientList from './Lists/ClientList';
 // import AthleteList from './Lists/AthleteList';
 import GroupList from './Lists/GroupList';
+import Login from './Modules/Login';
 
 // Import redux stuff
 import { connect } from 'react-redux';
@@ -253,7 +254,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route path='/login' component={() => window.location = '/'}/>
                    }
 
-                  <Route exact path='/' component={ClientList} />
+                  <Route exact path='/' component={Login} />
 
                   <Route exact path='/summary' component={Summary} />
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import  { Component }  from 'react';
-
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -12,6 +11,8 @@ import Divider from '@material-ui/core/Divider';
 import BackArrowIcon from '@material-ui/icons/ArrowBack';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -48,16 +49,23 @@ interface IProps {
   authStateChanged?: (auth: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
-// These are the columns of the warehouse table that are editable in this view
-interface IData {
-  id: number;
-  name: string;
-  enableProcessing: boolean;
-}
+// // These are the columns of the warehouse table that are editable in this view
+// interface IData {
+//   name: string,
+//   title: string,
+//   phone: number,
+//   email: string,
+//   department: string
+//   probability: number,
+//   mrr: number,
+//   notes: string,
+//   status: string,
+//   product: string
+// }
 
 interface IState {
-  newClient: boolean;
-  clientData: any;
+  newLead: boolean;
+  leadData: any;
   isErrorOpen: boolean;
   isDeleteOpen: boolean;
   messages: Array<string>;
@@ -79,13 +87,19 @@ class EditClient extends Component<IProps, IState> {
 
     // Initialize state variables
     this.state = {
-      clientData: {
-        id: 0,
+      leadData: {
         name: '',
-        enableProcessing: false,
-      } as IData,
-
-      newClient: false,
+        title: '',
+        phone: '',
+        email: '',
+        department: '',
+        probability: 0.0,
+        mrr: 0.0,
+        notes: '',
+        status: '',
+        product: '',
+    },
+      newLead: false,
       isErrorOpen: false,
       isDeleteOpen: false,
       messages: [],
@@ -116,7 +130,7 @@ class EditClient extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('EditWarehouse component mounted');
+    console.log('EditLead component mounted');
 
     // @ts-ignore
     this.props.currentPageChanged('client_editor');
@@ -132,10 +146,10 @@ class EditClient extends Component<IProps, IState> {
   }
 
   async handleChange(name: string, value: any) {
-    let clientData = this.state.clientData;
-    clientData[name] = value;
+    let leadData = this.state.leadData;
+    leadData[name] = value;
     await this.setState({
-      clientData: clientData,
+      leadData: leadData,
     });
   }
 
@@ -145,23 +159,48 @@ class EditClient extends Component<IProps, IState> {
 
   async setData() {
 
-    await this.showSnackbar('Loaded client data', 1000);
+    await this.showSnackbar('Loaded lead data', 1000);
   }
 
   // Saves the athlete data and settings
   // Makes two API calls, one to /updateSetting, and one to /updateRow
   async saveData() {
+    // save customer data to db
     // if (!Utils._validateFields(this.state)) {
     //   this.setState({ isErrorOpen: true });
     //   return;
     // }
 
-    // Build request body
-    // Save the new warehouse data
     await this.setState({isLoading: true});
 
-        await this.showSnackbar('Error saving client!', 1000);
-  }
+    let leadData = {
+      name: this.state.leadData.name,
+      title: this.state.leadData.title,
+      phone: this.state.leadData.phone,
+      email: this.state.leadData.email,
+      department: this.state.leadData.department,
+      probability: this.state.leadData.probability,
+      mrr: this.state.leadData.mrr,
+      notes: this.state.leadData.notes,
+      status: this.state.leadData.status,
+      product: this.state.leadData.product,
+    };
+    // Build request body
+    // Save the new lead data
+
+    let response = await this.apiService.createLead(leadData);
+
+    if (response !== undefined) {
+      await this.setState({isLoading: false});
+      await this.showSnackbar('saved lead to databaase', 1000);
+
+      response = await response.json();
+      return response;
+      }
+    await this.setState({isLoading: false});
+    await this.showSnackbar('Error saving lead!', 1000);
+    return undefined;
+    }
 
   async _deleteClient() {
     this.setState({ isDeleteOpen: true });
@@ -190,6 +229,17 @@ class EditClient extends Component<IProps, IState> {
       return <Redirect to='/login' />;
     }
 
+    const statusTypes = [
+      {
+        value: 'To Call',
+        label: 'upcoming',
+      },
+      {
+        value: 'Called',
+        label: 'called',
+      },
+    ];
+
     return (
       <div className={classes.editContainer}>
           <Link to='/clients'>
@@ -201,22 +251,44 @@ class EditClient extends Component<IProps, IState> {
           <Divider />
 
           <form className={classes.container} noValidate autoComplete='off'>
-              <h4> Client Info </h4>
+              <h4> Create New Lead </h4>
 
               {/* INPUT: Client id */}
-              <TextInput label='Client id' field='id' data={this.state.clientData} handleChange={this.handleChange} disabled={true}/>
+              <TextInput label='Full Name' field='name' data={this.state.leadData.name} handleChange={this.handleChange} />
+              <TextInput label='Title' field='title' data={this.state.leadData.title} handleChange={this.handleChange} />
+              <TextInput label='Department' field='department' data={this.state.leadData.department} handleChange={this.handleChange} />
+              <TextInput label='Phone' field='phone' data={this.state.leadData.phone} handleChange={this.handleChange} />
+              <TextInput label='Email' field='email' data={this.state.leadData.email} handleChange={this.handleChange} />
+              <TextInput label='Product' field='product' data={this.state.leadData.product} handleChange={this.handleChange} />
+              <TextInput label='MRR' field='mrr' data={this.state.leadData.mrr} handleChange={this.handleChange} />
+              <TextInput label='Notes' field='notes' data={this.state.leadData.notes} handleChange={this.handleChange} />
+              <TextInput label='Probability' field='probability' data={this.state.leadData.probability} handleChange={this.handleChange} />
 
               {/* INPUT: Client name */}
-              <TextInput label='Client name' field='name' data={this.state.clientData} handleChange={this.handleChange} />
+              <TextField
+                  id='outlined-name'
+                  label='Status'
+                  className={classes.textField}
+                  value={this.state.leadData.status}
+                  margin='normal'
+                  variant='outlined'
+              >
+                  {statusTypes.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              {/* <TextInput label='Status' field='status' data={this.state.leadData} handleChange={this.handleChange} /> */}
 
               {/* INPUT: Enable processing */}
               <FormGroup row>
                 <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.clientData.enableProcessing}
-                    onClick={ (event) => { this.handleChange('enableProcessing', !this.state.clientData.enableProcessing); }}
-                    value={this.state.clientData.enableProcessing}
+                    checked={this.state.leadData.enableProcessing}
+                    // onClick={ (event) => { this.handleChange('enableProcessing', !this.state.leadData.enableProcessing); }}
+                    value={this.state.leadData.enableProcessing}
                   />
                 }
               label='Enable processing'
@@ -230,7 +302,7 @@ class EditClient extends Component<IProps, IState> {
               <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
               Save Client
           </Button>
-          <Button variant='contained' size='large' className={classes.button} disabled={this.state.newClient} onClick={this.confirmDelete}>
+          <Button variant='contained' size='large' className={classes.button} disabled={this.state.newLead} onClick={this.confirmDelete}>
               <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
               Delete Client
           </Button>

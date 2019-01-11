@@ -46,16 +46,19 @@ export default class ApiService {
 
       switch (table) {
         case 'athletes':
-          results =  await this.GetAthleteListAsync(filters);
+          results =  await this.GetLeadsListAsync();
           break;
         case 'clients':
-          results =  await this.GetClientsAsync();
+          results =  await this.GetLeadsListAsync();
           break;
         default:
           console.log('Unhandled');
       }
 
+      results = await this.GetLeadsListAsync();
+
       if (results !== undefined) {
+        console.log('RESULTS', results);
         await this.props.functions.setList(results);
       }
 
@@ -63,6 +66,11 @@ export default class ApiService {
 
   StopMonitoring() {
     this.stopping = true;
+  }
+
+  public async GetLeadsListAsync() {
+    let url = 'https://sr1.smartshare.io/dev/getleads';
+    return await this.getListRequest(url);
   }
 
   public async GetClientsAsync() {
@@ -85,7 +93,39 @@ export default class ApiService {
     return await this.sendDeleteRequest('deleteAthlete', 'athlete_id', athleteId);
   }
 
+    // Shared request code
+  // upload new customer
+  public async createLead(leadData: any) {
+    let headers = await this.authService.getAuthHeaders();
+    console.log('auth header--->', headers);
+
+    let response = await fetch('https://sr1.smartshare.io/dev/createlead', {
+          method: 'POST',
+          body: JSON.stringify(leadData),
+          headers: headers,
+        });
+
+    // If we our token expired, redirect to the login page
+    if (response.status === HttpStatus.UNAUTHORIZED) {
+      await this.props.functions.authChanged({
+        loggedIn: false,
+        username: undefined,
+      });
+
+      return undefined;
+    } else if (response.status !== HttpStatus.OK) {
+      console.log(response);
+      // Logger.info('ApiService.sendCreateRequest - ');
+      return undefined;
+    }
+
+    response = await response.json();
+
+    return response;
+  }
+
   // Shared request code
+  // upload new customer
   private async sendCreateRequest(endpoint: string, model: any) {
     let headers = await this.authService.getAuthHeaders();
     console.log(headers);
@@ -290,5 +330,4 @@ export default class ApiService {
 
     return await this.getListRequest(url);
   }
-
 }

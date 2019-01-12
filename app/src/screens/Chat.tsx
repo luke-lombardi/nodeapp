@@ -64,7 +64,7 @@ export class Chat extends Component<IProps, IState> {
           headerRight: <Icon name='edit' type='feather' containerStyle={{padding: 5}} size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
             params.goToCreateMessage();
            } } />,
-          };
+      };
   }
 
   constructor(props: IProps) {
@@ -138,7 +138,6 @@ export class Chat extends Component<IProps, IState> {
         console.log('posting a message');
         this.postMessage();
       }
-
     }
 
     componentDidMount() {

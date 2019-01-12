@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, AsyncStorage } from 'react-native';
 
 import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Icon } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Snackbar from 'react-native-snackbar';
+
+// import { NavigationActions } from 'react-navigation';
 
 import NavigationService from '../services/NavigationService';
 
@@ -20,6 +22,20 @@ interface IState {
 }
 
 export default class CreateMessage extends Component<IProps, IState> {
+    private nodeId: string;
+    // TODO: figure out a smarter way to do this
+    static navigationOptions = ({ navigation }) => {
+      const { params = {} } = navigation.state;
+      return {
+        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, paddingRight: 10},
+          headerTitleStyle: { color: 'white'},
+          title: 'Compose Message',
+          headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+            params.returnToChat();
+          }} 
+        />,
+      };
+    }
 
     constructor(props: IProps) {
         super(props);
@@ -30,6 +46,18 @@ export default class CreateMessage extends Component<IProps, IState> {
 
         this.submitMessage = this.submitMessage.bind(this);
         this.setMessageText = this.setMessageText.bind(this);
+        this.returnToChat = this.returnToChat.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
+    }
+
+    componentWillMount() {
+      this.props.navigation.setParams({ returnToChat: this.returnToChat });
+    }
+
+    async returnToChat() {
+      this.nodeId = this.props.navigation.getParam('nodeId', '');
+      this.props.navigation.navigate({key: 'Chat', routeName: 'Chat', params: { nodeId: this.nodeId }}
+      );
     }
 
     async submitMessage() {
@@ -97,6 +125,7 @@ export default class CreateMessage extends Component<IProps, IState> {
               loadingStyle={styles.loading}
               icon={
                 <Icon
+                  type={'feather'}
                   name='arrow-right'
                   size={30}
                   color='white'

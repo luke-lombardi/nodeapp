@@ -625,7 +625,7 @@ export class MainMap extends Component<IProps, IState> {
     this.nodeService.CheckNow();
 
     Snackbar.show({
-      title: 'Updating service list.',
+      title: 'Updating node list.',
       duration: Snackbar.LENGTH_SHORT,
     });
   }

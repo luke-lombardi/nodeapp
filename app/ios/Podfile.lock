@@ -5,9 +5,9 @@ PODS:
   - CocoaLumberjack/Default (3.4.2)
   - CocoaLumberjack/Extensions (3.4.2):
     - CocoaLumberjack/Default
-  - Crashlytics (3.10.5):
-    - Fabric (~> 1.7.9)
-  - Fabric (1.7.9)
+  - Crashlytics (3.12.0):
+    - Fabric (~> 1.9.0)
+  - Fabric (1.9.0)
   - Google-Maps-iOS-Utils (2.1.0):
     - Google-Maps-iOS-Utils/Clustering (= 2.1.0)
     - Google-Maps-iOS-Utils/Geometry (= 2.1.0)
@@ -35,7 +35,7 @@ PODS:
     - React/Core (= 0.55.4)
   - react-native-blur (0.8.0):
     - React
-  - react-native-contacts (2.2.3):
+  - react-native-contacts (2.2.2):
     - React
   - react-native-google-maps (0.21.0):
     - Google-Maps-iOS-Utils (= 2.1.0)
@@ -74,18 +74,18 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - ReactNativeFabric (0.5.1):
+  - ReactNativeFabric (0.5.2):
     - Crashlytics
     - Fabric
     - React
   - ReactNativePermissions (1.1.1):
     - React
-  - RNBackgroundFetch (2.4.3):
+  - RNBackgroundFetch (2.4.5):
     - React
-  - RNBackgroundGeolocation (2.13.3):
+  - RNBackgroundGeolocation (2.14.2):
     - CocoaLumberjack (~> 3.0)
     - React
-  - RNSnackbar (0.5.1):
+  - RNSnackbar (0.5.3):
     - React
   - ViroKit_static_lib (1.0)
   - ViroReact (1.0)
@@ -121,47 +121,38 @@ DEPENDENCIES:
   - ViroReact (from `../node_modules/react-viro/ios/`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - CocoaLumberjack
-    - Crashlytics
-    - Fabric
-    - Google-Maps-iOS-Utils
-    - GoogleMaps
-    - GooglePlaces
-
 EXTERNAL SOURCES:
   React:
-    :path: "../node_modules/react-native"
+    :path: ../node_modules/react-native
   react-native-blur:
-    :path: "../node_modules/react-native-blur"
+    :path: ../node_modules/react-native-blur
   react-native-contacts:
-    :path: "../node_modules/react-native-contacts"
+    :path: ../node_modules/react-native-contacts
   react-native-google-maps:
-    :path: "../node_modules/react-native-maps"
+    :path: ../node_modules/react-native-maps
   react-native-maps:
-    :path: "../node_modules/react-native-maps"
+    :path: ../node_modules/react-native-maps
   ReactNativeFabric:
-    :path: "../node_modules/react-native-fabric"
+    :path: ../node_modules/react-native-fabric
   ReactNativePermissions:
-    :path: "../node_modules/react-native-permissions"
+    :path: ../node_modules/react-native-permissions
   RNBackgroundFetch:
-    :path: "../node_modules/react-native-background-fetch"
+    :path: ../node_modules/react-native-background-fetch
   RNBackgroundGeolocation:
-    :path: "../node_modules/react-native-background-geolocation"
+    :path: ../node_modules/react-native-background-geolocation
   RNSnackbar:
-    :path: "../node_modules/react-native-snackbar"
+    :path: ../node_modules/react-native-snackbar
   ViroKit_static_lib:
-    :path: "../node_modules/react-viro/ios/dist/ViroRenderer/static_lib"
+    :path: ../node_modules/react-viro/ios/dist/ViroRenderer/static_lib
   ViroReact:
-    :path: "../node_modules/react-viro/ios/"
+    :path: ../node_modules/react-viro/ios/
   yoga:
-    :path: "../node_modules/react-native/ReactCommon/yoga"
+    :path: ../node_modules/react-native/ReactCommon/yoga
 
 SPEC CHECKSUMS:
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
-  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
+  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
+  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
@@ -170,15 +161,15 @@ SPEC CHECKSUMS:
   react-native-contacts: 1a8913219e54d1fa20e817b99d9b42b9ec98558d
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
-  ReactNativeFabric: 3912bf9c714d7cc98110eadf06ca6dedef219322
+  ReactNativeFabric: 01c1333f76fd4708a5833d71f0a4832a9266bf0f
   ReactNativePermissions: 9f2d9c45c98800795e6c2ed330e25d11a66a8169
   RNBackgroundFetch: 8c4f77f83c398c659bce82af2f0a885079417b9e
   RNBackgroundGeolocation: c9bbf69b9aa277f0b46754cc5f853bd26051a18f
-  RNSnackbar: 30ae0274ca33ea8b7b72a74b6402366a1ce27dd7
+  RNSnackbar: 90718c3ffbe9ca9178763c96fc2aa7e81d78851f
   ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
 PODFILE CHECKSUM: 9def7354a7005dab9909ed8512adffba6c99b301
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.4.0

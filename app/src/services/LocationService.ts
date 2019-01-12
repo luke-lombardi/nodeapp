@@ -153,7 +153,7 @@ export default class LocationService {
 
         let arrowBearing = 0.0;
         if (userRegion.bearing == undefined) {
-          Logger.info('User orientation not defined, using shortest path vector.');
+          // Logger.info('User orientation not defined, using shortest path vector.');
           arrowBearing = bearing;
         } else {
           // shift bearing by 180 degrees so it lines up with compass angles

@@ -334,7 +334,14 @@ export default class NodeService {
 
     // Gets the current node list, which includes both public and tracked nodes
     private async GetNodeListAsync() {
-      let nodes = await this.apiService.getNodes();
+      let nodes = undefined;
+
+      try  {
+        nodes = await this.apiService.getNodes();
+      } catch (error) {
+        // Do nothing if this fails
+      }
+
       if (nodes) {
         let orderedNodes = await this.locationService.orderNodes(this.props.currentUserRegion(), nodes);
         await this.props.publicPersonListUpdated({nodeList: orderedNodes.publicPersonList});

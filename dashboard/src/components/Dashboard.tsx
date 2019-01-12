@@ -254,7 +254,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route path='/login' component={() => window.location = '/'}/>
                    }
 
-                  {/* <Route exact path='/' component={Login} /> */}
+                  <Route exact path='/' component={ClientList} />
 
                   <Route exact path='/summary' component={Summary} />
 

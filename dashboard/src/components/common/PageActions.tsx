@@ -43,7 +43,7 @@ class PageActions extends Component<IProps, IState> {
   clientActions() {
     return (
       <div>
-      <ListSubheader inset>Actions</ListSubheader>
+      {/* <ListSubheader inset>Actions</ListSubheader>
       <Link to='/clients/edit'>
         <ListItem button>
           <ListItemIcon>
@@ -51,7 +51,7 @@ class PageActions extends Component<IProps, IState> {
           </ListItemIcon>
           <ListItemText primary='Add client' />
         </ListItem>
-      </Link>
+      </Link> */}
       {/* <ListItem button>
         <ListItemIcon>
           <DeleteIcon />

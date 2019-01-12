@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AddIcon from '@material-ui/icons/Add';
 
 // Import icons for sidebar
 // import DashboardIcon from '@material-ui/icons/Dashboard';
-import WarehouseIcon from '@material-ui/icons/Home';
+// import WarehouseIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/Person';
 
 // @ts-ignore
@@ -34,41 +35,41 @@ class SideNav extends Component<IProps, IState> {
   render() { return (
     <div>
 
-    <Link to='/summary'>
+    {/* <Link to='/summary'>
     <ListItem button>
       <ListItemIcon>
         <WarehouseIcon />
       </ListItemIcon>
       <ListItemText primary='Location' />
     </ListItem>
-    </Link>
+    </Link> */}
 
-    <Link to='/users'>
+    <Link to='/clients'>
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary='Users' />
+      <ListItemText primary='Leads' />
     </ListItem>
     </Link>
 
-    <Link to='/warehouses'>
+    <Link to='/clients/edit'>
     <ListItem button>
-      <ListItemIcon>
-        <WarehouseIcon />
-      </ListItemIcon>
-      <ListItemText primary='Skills' />
+        <ListItemIcon>
+          <AddIcon />
+        </ListItemIcon>
+      <ListItemText primary='Add Lead' />
     </ListItem>
     </Link>
 
-    <Link to='/triggers'>
+    {/* <Link to='/triggers'>
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary='Triggers' />
     </ListItem>
-    </Link>
+    </Link> */}
 
   </div>
   );

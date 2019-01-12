@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, AsyncStorage } from 'react-native';
 
 import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Icon } from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Snackbar from 'react-native-snackbar';
 
@@ -125,6 +125,7 @@ export default class CreateMessage extends Component<IProps, IState> {
               loadingStyle={styles.loading}
               icon={
                 <Icon
+                  type={'feather'}
                   name='arrow-right'
                   size={30}
                   color='white'

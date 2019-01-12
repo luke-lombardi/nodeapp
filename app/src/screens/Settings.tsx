@@ -25,8 +25,8 @@ export class Settings extends Component<IProps, IState> {
     this.state = {
         title: '',
         description: '',
-        savedTitle: 'Not Set',
-        savedDescription: 'Not Set',
+        savedTitle: '',
+        savedDescription: '',
         privacy: false,
     };
 
@@ -73,7 +73,7 @@ export class Settings extends Component<IProps, IState> {
               onChangeText={(title) => this.setState({title: title})}
               containerStyle={styles.input}
               leftIconContainerStyle={{left: -10}}
-              placeholder={this.state.savedTitle !== null ? this.state.savedTitle : 'Display Name'}
+              placeholder={this.state.savedTitle !== '' ? this.state.savedTitle : 'Display Name'}
               placeholderTextColor={'lightgray'}
             />
             <Input
@@ -87,7 +87,7 @@ export class Settings extends Component<IProps, IState> {
               onChangeText={(description) => this.setState({description: description})}
               containerStyle={styles.input}
               leftIconContainerStyle={{left: -10}}
-              placeholder={this.state.savedDescription !== null ? this.state.savedDescription : 'Display Description'}
+              placeholder={this.state.savedDescription !== '' ? this.state.savedDescription : 'Display Description'}
               placeholderTextColor={'lightgray'}
           />
             <Button

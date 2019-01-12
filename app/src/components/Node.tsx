@@ -99,7 +99,7 @@ export default class Node extends Component<IProps, IState> {
             />
              <Button
               icon={{
-                name: 'message-circle',
+                name: 'users',
                 type: 'feather',
                 size: 40,
                 color: 'rgba(44,55,71,0.8)',

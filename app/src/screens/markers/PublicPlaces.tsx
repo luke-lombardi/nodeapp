@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Marker }   from 'react-native-maps';
 // @ts-ignore
-import { Image, StyleSheet, Text }   from 'react-native';
+import { Image, StyleSheet, Text, View }   from 'react-native';
 import AuthService from '../../services/AuthService';
 import ApiService from '../../services/ApiService';
 
@@ -36,6 +36,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
 
     componentDidMount() {
         this.getMessages()
+        console.log('MESSAGES LENGTH', this.state.messages.length)
     }
 
     async getMessages() {
@@ -64,17 +65,20 @@ export default class PublicPlaces extends Component<IProps, IState> {
         return (
             this.props.visible &&
             this.props.publicPlaceList.map(marker => (
+          <View>
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 title={marker.data.title}
                 // description={this.state.messages.length}
-                anchor={{ x: .5, y: .9 }}
+                anchor={{ x: .5, y: .6 }}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPlace'); }}
                 key={marker.node_id}
-            >   
-            <Text>{this.state.messages.length}</Text>
-                <Image source={require('../../../assets/images/public_place.png')} style={{ width: 50, height: 50 }} />
+            >
+            <View style={this.state.messages.length === 0 ? styles.nullMarker : styles.markerText}>
+              <Text style={styles.markerTitle}>{this.state.messages.length}</Text>
+            </View>
             </ Marker>
+          </View>
             ))
         );
     }
@@ -82,11 +86,28 @@ export default class PublicPlaces extends Component<IProps, IState> {
 
 // @ts-ignore
 const styles = StyleSheet.create({
-    callout: {
-        backgroundColor: '#fff',
-        position: 'relative',
-        flex: 1,
-        alignItems: 'center',
+      markerText: { 
+        alignContent: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'lightblue',   
+        borderRadius: 50,
+        width: 50,
+        height: 50,
+      },
+      nullMarker: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'lightgreen',   
+        borderRadius: 50,
+        width: 50,
+        height: 50,
+      },
+      markerTitle: {
+        alignSelf: 'center',
+        justifyContent: 'center',
+        padding: '10%',
+        color: 'black',
+        fontSize: 20,
       },
       card: {
         backgroundColor: '#fff',

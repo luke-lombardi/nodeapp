@@ -46,10 +46,8 @@ def toggle_like_status(rds, node_id, user_uuid):
 
         if user_like_status is None:
           current_likes[user_uuid] = True
-        elif user_like_status == True:
-          current_likes[user_uuid] = False
-        else:
-          current_likes[user_uuid] = True
+        elif user_like_status == True or user_like_status == False:
+          del current_likes[user_uuid]
 
         node_data['likes'] = current_likes
 

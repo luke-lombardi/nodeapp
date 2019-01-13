@@ -363,6 +363,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   titleText: {
+    left: 5,
     color: 'black',
     fontSize: 14,
   },

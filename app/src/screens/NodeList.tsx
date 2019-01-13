@@ -93,10 +93,11 @@ export class NodeList extends Component<IProps, IState> {
       containerStyle={styles.nodeListItem}
       leftIcon={
         item.data.type === 'place' ?
-        {name: 'circle', type: 'font-awesome', size: 10, color: 'green'} :
+        {name: 'circle', type: 'font-awesome', size: 10, color: 'lightgreen'} :
         {name: 'circle', type: 'font-awesome', size: 10, color: 'blue'}
       }
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
+      titleStyle={{fontWeight: 'bold', marginBottom: 2}}
       title={item.data.title}
       subtitle={item.data.distance_in_miles.toString() + ' miles, expires in ' + (item.data.ttl / 3600).toFixed(1) + ' hours' }
     />
@@ -123,6 +124,7 @@ export class NodeList extends Component<IProps, IState> {
           onPress={this.updateIndex}
           selectedIndex={selectedIndex}
           buttons={buttons}
+          textStyle={{fontWeight: 'bold'}}
         />
       <View style={styles.flatlist}>
         <FlatList
@@ -140,7 +142,7 @@ export class NodeList extends Component<IProps, IState> {
           this.state.selectedIndex === 1 && this.props.privatePlaceList.length === 0 &&
           <View style={styles.nullContainer}>
           <Text style={styles.null}>No nodes have been created yet</Text>
-          <Button 
+          <Button
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
             title={'Create Node'}
@@ -152,7 +154,7 @@ export class NodeList extends Component<IProps, IState> {
           this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
           <View style={styles.nullContainer}>
           <Text style={styles.null}>No nodes have been created yet</Text>
-          <Button 
+          <Button
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
             title={'Create Node'}
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 10,
     marginBottom: 5,
-    borderRadius: 5,
+    borderRadius: 20,
   },
   nullContainer: {
     justifyContent: 'center',

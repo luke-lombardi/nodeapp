@@ -35,7 +35,7 @@ PODS:
     - React/Core (= 0.55.4)
   - react-native-blur (0.8.0):
     - React
-  - react-native-contacts (2.2.2):
+  - react-native-contacts (2.2.3):
     - React
   - react-native-google-maps (0.21.0):
     - Google-Maps-iOS-Utils (= 2.1.0)
@@ -74,18 +74,18 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - ReactNativeFabric (0.5.2):
+  - ReactNativeFabric (0.5.1):
     - Crashlytics
     - Fabric
     - React
   - ReactNativePermissions (1.1.1):
     - React
-  - RNBackgroundFetch (2.4.5):
+  - RNBackgroundFetch (2.4.3):
     - React
-  - RNBackgroundGeolocation (2.14.2):
+  - RNBackgroundGeolocation (2.13.3):
     - CocoaLumberjack (~> 3.0)
     - React
-  - RNSnackbar (0.5.3):
+  - RNSnackbar (0.5.1):
     - React
   - ViroKit_static_lib (1.0)
   - ViroReact (1.0)
@@ -121,33 +121,42 @@ DEPENDENCIES:
   - ViroReact (from `../node_modules/react-viro/ios/`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CocoaLumberjack
+    - Crashlytics
+    - Fabric
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
+    - GooglePlaces
+
 EXTERNAL SOURCES:
   React:
-    :path: ../node_modules/react-native
+    :path: "../node_modules/react-native"
   react-native-blur:
-    :path: ../node_modules/react-native-blur
+    :path: "../node_modules/react-native-blur"
   react-native-contacts:
-    :path: ../node_modules/react-native-contacts
+    :path: "../node_modules/react-native-contacts"
   react-native-google-maps:
-    :path: ../node_modules/react-native-maps
+    :path: "../node_modules/react-native-maps"
   react-native-maps:
-    :path: ../node_modules/react-native-maps
+    :path: "../node_modules/react-native-maps"
   ReactNativeFabric:
-    :path: ../node_modules/react-native-fabric
+    :path: "../node_modules/react-native-fabric"
   ReactNativePermissions:
-    :path: ../node_modules/react-native-permissions
+    :path: "../node_modules/react-native-permissions"
   RNBackgroundFetch:
-    :path: ../node_modules/react-native-background-fetch
+    :path: "../node_modules/react-native-background-fetch"
   RNBackgroundGeolocation:
-    :path: ../node_modules/react-native-background-geolocation
+    :path: "../node_modules/react-native-background-geolocation"
   RNSnackbar:
-    :path: ../node_modules/react-native-snackbar
+    :path: "../node_modules/react-native-snackbar"
   ViroKit_static_lib:
-    :path: ../node_modules/react-viro/ios/dist/ViroRenderer/static_lib
+    :path: "../node_modules/react-viro/ios/dist/ViroRenderer/static_lib"
   ViroReact:
-    :path: ../node_modules/react-viro/ios/
+    :path: "../node_modules/react-viro/ios/"
   yoga:
-    :path: ../node_modules/react-native/ReactCommon/yoga
+    :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
@@ -161,15 +170,15 @@ SPEC CHECKSUMS:
   react-native-contacts: 1a8913219e54d1fa20e817b99d9b42b9ec98558d
   react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
   react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
-  ReactNativeFabric: 01c1333f76fd4708a5833d71f0a4832a9266bf0f
+  ReactNativeFabric: 3912bf9c714d7cc98110eadf06ca6dedef219322
   ReactNativePermissions: 9f2d9c45c98800795e6c2ed330e25d11a66a8169
   RNBackgroundFetch: 8c4f77f83c398c659bce82af2f0a885079417b9e
   RNBackgroundGeolocation: c9bbf69b9aa277f0b46754cc5f853bd26051a18f
-  RNSnackbar: 90718c3ffbe9ca9178763c96fc2aa7e81d78851f
+  RNSnackbar: 30ae0274ca33ea8b7b72a74b6402366a1ce27dd7
   ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
 PODFILE CHECKSUM: 9def7354a7005dab9909ed8512adffba6c99b301
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.2

@@ -1,5 +1,5 @@
 '''
-    endpoint: /fyb/postMessage
+    endpoint: /fyb/likeNode
     method: POST
     format: application/json
 
@@ -28,27 +28,32 @@ else:
   from config_PROD import Config as ConfigProd
 
 
-def toggle_like_status(rds, node_id, user_uuid):
+def toggle_like_status(rds, node_id, user_uuid, toggle = False):
     user_data = json.loads(rds.get('private:' + user_uuid).decode("utf-8"))
 
     node_exists = rds.exists(node_id)
+    node_data = {}
 
     if node_exists:
+        logging.info('Node %s exists', node_id)
 
-        logging.info('Node %s exists, toggling like status', node_id)
-
-        node_uuid = node_id.split(':')[1]
         node_data = json.loads(rds.get(node_id))
+        if not toggle:
+          return node_data
 
         # Get the current likes on the node
         current_likes = node_data.get('likes', {})
         user_like_status = current_likes.get(user_uuid, None)
 
-        if user_like_status is None:
+        logger.info("Node data: %s", node_data)
+        logger.info("User like status: %s", user_like_status)
+
+        if user_like_status is None or user_like_status is {}:
           current_likes[user_uuid] = True
         elif user_like_status == True or user_like_status == False:
           del current_likes[user_uuid]
 
+        logger.info("Toggling like status on node %s", node_id)
         node_data['likes'] = current_likes
 
         logging.info('Node data: %s', node_data)
@@ -58,9 +63,9 @@ def toggle_like_status(rds, node_id, user_uuid):
     
     else:
         logging.info('Node %s does not exist', node_id)
-        return False
+        return None
 
-    return True
+    return node_data
 
 
 def lambda_handler(event, context):
@@ -84,6 +89,7 @@ def lambda_handler(event, context):
     
     node_id = event.get('node_id', 0)
     user_uuid = event.get('user_uuid', None)
+    toggle = event.get('toggle', False)
 
     user_exists = rds.exists('private:' + user_uuid)
 
@@ -91,10 +97,12 @@ def lambda_handler(event, context):
         logging.info('User %s does not exist' % (user_uuid))
         return False
 
-    logging.info('User %s exists, proceeding to toggle like status' % (user_uuid))
-    
+    logging.info('User %s exists' % (user_uuid))
+    logging.info('Event payload %s' % (event))
+
     if node_id:
-        result = toggle_like_status(rds, node_id, user_uuid)
+        result = toggle_like_status(rds, node_id, user_uuid, toggle=toggle)
+        logger.info("Returning this node data: %s", result)
 
     return result
 
@@ -102,7 +110,8 @@ def lambda_handler(event, context):
 def run():
     test_event = {
         "node_id": "public:4fadd3f2-116c-4106-9209-d72eb4cf48df",
-        "user_uuid": "0b1a92f6-949d-48c0-a10d-dbc530f5a02f"
+        "user_uuid": "0b1a92f6-949d-48c0-a10d-dbc530f5a02f",
+        "toggle": True,
     }
     
     test_context = {

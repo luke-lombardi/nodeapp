@@ -37,7 +37,7 @@ export default class ApiService {
       // This gets the currently tracked private nodes in ASYNC storage
       let trackedNodes = await AsyncStorage.getItem('trackedNodes');
 
-      Logger.info(`Fetching these public nodes: ${JSON.stringify(publicNodes)}`);
+      // Logger.info(`Fetching these public nodes: ${JSON.stringify(publicNodes)}`);
 
       let nodesToGet = {
         'node_ids': [],
@@ -97,7 +97,7 @@ export default class ApiService {
           groupsToGet.group_ids = trackedGroups;
         }
 
-        Logger.info(`Fetching these groups: ${JSON.stringify(groupsToGet)}`);
+        // Logger.info(`Fetching these groups: ${JSON.stringify(groupsToGet)}`);
         let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getGroups', {
             method: 'POST',
             headers: {'Content-Type': 'text/plain'},
@@ -273,6 +273,26 @@ export default class ApiService {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(nodeData),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
+    // Toggles the users 'like status' of a node
+    async LikeNodeAsync(requestData: any) {
+      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/likeNode', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
           });
 
       if (response.status !== HttpStatus.OK) {

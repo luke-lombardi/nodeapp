@@ -1832,7 +1832,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = Smartshare;
 				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
 				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Production;
@@ -1879,7 +1879,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = Smartshare;
 				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
 				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Production;

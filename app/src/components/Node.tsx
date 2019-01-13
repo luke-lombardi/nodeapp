@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   durationTitle: {
-    marginTop: 5,
+    marginTop: 10,
     fontWeight: 'bold',
     fontSize: 14,
     alignSelf: 'center',
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
   description: {
     paddingLeft: 10,
     alignSelf: 'center',
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
   },
   distance: {
     fontSize: 14,
@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 3,
     backgroundColor: 'rgba(44,55,71,0.0)',
+    top: 5,
     padding: 0,
     flexDirection: 'row',
     alignSelf: 'center',

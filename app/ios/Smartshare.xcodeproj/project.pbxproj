@@ -1028,7 +1028,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = TN6X9LR957;
 						LastSwiftMigration = 940;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.GameCenter.iOS = {
 								enabled = 1;
@@ -1761,7 +1761,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 7DA27ZHP58;
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1801,10 +1801,10 @@
 				CODEPUSH_KEY = "zICSrruj-JhwNSG5MJnWfkuC_jhPc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -1832,8 +1832,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "7c27fdac-5c2d-425a-a282-ae3ac27a36f6";
-				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Debug;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1849,9 +1849,9 @@
 				CODEPUSH_KEY = "urD5MLD2l7Y-8YNlCjlw7RdKjfVqc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TN6X9LR957;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -1879,8 +1879,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app.debug;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "64812248-5a3e-4272-ae7f-1ee4540e4365";
-				PROVISIONING_PROFILE_SPECIFIER = smartshare3;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

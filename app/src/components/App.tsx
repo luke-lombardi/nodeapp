@@ -399,7 +399,7 @@ export class App extends Component<IProps, IState> {
       await Pushy.subscribe('nodes');
       } catch (error) {
         console.log('unable to subscribe to pushy topic');
-      }        
+      }
     }
 
     // TODO: listen for new nodes, send notifcation to topic when node list is updated

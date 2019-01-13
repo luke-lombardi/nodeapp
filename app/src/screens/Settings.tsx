@@ -153,12 +153,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   settingsHeader: {
-    fontSize: 22,
+    fontSize: 28,
     color: 'gray',
+    fontWeight: 'bold',
     paddingVertical: 22,
   },
   button: {
-    top: 250,
+    top: 325,
     position: 'absolute',
     width: '100%',
   },

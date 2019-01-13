@@ -49,7 +49,7 @@ export class Chat extends Component<IProps, IState> {
 
   // TODO: figure out a smarter way to do this
   static navigationOptions = ({ navigation }) => {
-    const { params = {} } = navigation.state;
+    // const { params = {} } = navigation.state;
     return {
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, paddingRight: 10},
         headerTitleStyle: { color: 'white'},
@@ -63,9 +63,9 @@ export class Chat extends Component<IProps, IState> {
                   action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
                 })); }
                } />,
-          headerRight: <Icon name='edit' type='feather' containerStyle={{padding: 5}} size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
-            params.goToCreateMessage();
-           } } />,
+          // headerRight: <Icon name='edit' type='feather' containerStyle={{padding: 5}} size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+          //   params.goToCreateMessage();
+          //  } } />,
       };
   }
 
@@ -173,6 +173,7 @@ export class Chat extends Component<IProps, IState> {
     )
 
     componentWillMount () {
+      console.log('CHAT COMPONENT MOUNTED');
       // Set params for nav stack
       this.props.navigation.setParams({ goToCreateMessage: this.goToCreateMessage });
 
@@ -287,7 +288,7 @@ export class Chat extends Component<IProps, IState> {
 
     render() {
       return (
-      <View>
+      <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
            data={this.state.data}
@@ -298,18 +299,16 @@ export class Chat extends Component<IProps, IState> {
             this.state.data.length === 0 &&
             <Text style={styles.null}>No messages yet!</Text>
           }
-
-          {/* <KeyboardAvoidingView 
-            behavior='padding'
-            keyboardVerticalOffset={10}
-            style={styles.inputContainer}
-          > */}
           </View>
+          <KeyboardAvoidingView
+            behavior='padding'
+            // contentContainerstyle={styles.chatMessageContainer}
+          >
           <View style={styles.chatMessageContainer}>
-          <TextInput 
+          <TextInput
             multiline
             allowFontScaling
-            //onSubmitEditing={this.submitMessage}
+            onSubmitEditing={this.submitMessage}
             numberOfLines={3}
             placeholder={'Type your message...'}
             returnKeyType='send'
@@ -317,18 +316,18 @@ export class Chat extends Component<IProps, IState> {
             onChangeText={text => this.setMessageText(text)}
             value={this.state.messageBody}
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={this.submitMessage}>
             <Icon
-              size={16} 
-              name="send"
+              size={16}
+              name='send'
               color={'black'}
               raised
               />
           </TouchableOpacity>
-          {/* </KeyAvoidingView> */}
           <Spinner visible={this.state.isLoading} textContent={'Loading...'} textStyle={{color: 'rgba(44,55,71,1.0)'}} />
         </View>
+        </KeyboardAvoidingView>
       </View>
       );
     }
@@ -363,6 +362,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   titleText: {
+    left: 5,
     color: 'black',
     fontSize: 14,
   },
@@ -370,34 +370,29 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderTopWidth: .5,
     borderTopColor: 'lightgray',
-    top: 550,
-    height: 200,
+    bottom: 0,
+    height: 50,
     justifyContent: 'center',
     flexDirection: 'row',
     width: '100%',
     backgroundColor: 'white',
   },
   chatInput: {
-    fontSize: 16, 
-    paddingHorizontal: 10, 
-    height: 30, 
-    top: 10, 
-    width: 305, 
-    borderColor: 'white', 
-    borderRadius: 20, 
-    backgroundColor: 'white'
+    fontSize: 16,
+    paddingHorizontal: 10,
+    height: 30,
+    top: 10,
+    width: '80%',
+    borderColor: 'white',
+    borderRadius: 20,
+    backgroundColor: 'white',
   },
   submitChatButton: {
     position: 'absolute',
     top: 10,
-    bottom: 5, 
+    bottom: 5,
   },
   inputContainer: {
-    height: 150,
-    justifyContent: 'center',
-    flexDirection: 'row',
-    position: 'absolute',
-    width: '100%',
   },
   titleView: {
     flexDirection: 'row',
@@ -411,6 +406,7 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   flatlist: {
+    flex: 1,
     marginBottom: 50,
   },
 });

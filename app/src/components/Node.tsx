@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-elements';
-import getDirections from 'react-native-google-maps-directions';
 import NavigationService from '../services/NavigationService';
+import ApiService from '../services/ApiService';
+import AuthService from '../services/AuthService';
 
 interface IProps {
   title: string;
@@ -13,46 +14,91 @@ interface IProps {
   navigation: any;
   origin: any;
   destination: any;
+  likes: any;
 }
 
 interface IState {
+  loadingLikeIcon: boolean;
+  currentLikeIcon: string;
+  likeIconOpacity: number;
 }
 
 export default class Node extends Component<IProps, IState> {
+  private apiService: ApiService;
+  private authService: AuthService;
+
   constructor(props: IProps) {
     super(props);
     this.state = {
+      loadingLikeIcon: true,
+      currentLikeIcon: 'loader',
+      likeIconOpacity: 0.4,
     };
 
     this.goToFinder = this.goToFinder.bind(this);
     this.goToChat = this.goToChat.bind(this);
     this.shareNode = this.shareNode.bind(this);
-    this.handleGetDirections = this.handleGetDirections.bind(this);
+
+    this.toggleLikeStatus = this.toggleLikeStatus.bind(this);
+    this.updateLikeStatus = this.updateLikeStatus.bind(this);
+    this.updateLikeIcon  = this.updateLikeIcon.bind(this);
+
+    this.apiService = new ApiService({});
+    this.authService = new AuthService({});
+
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
-  handleGetDirections = () => {
-    const { origin, destination } = this.props;
-    const data = {
-      source: {
-        latitude: origin.latitude,
-        longitude: origin.longitude,
-      },
-      destination: {
-        latitude: destination.latitude,
-        longitude: destination.longitude,
-      },
-      params: [
-        {
-          key: 'travelmode',
-          value: 'walking',       // may be "walking", "bicycling" or "transit" as well
-        },
-        {
-          key: 'dir_action',
-          value: 'navigate',      // this instantly initializes navigation using the given travel mode
-        },
-      ],
+  async toggleLikeStatus() {
+    let currentUUID = await this.authService.getUUID();
+    let requestBody = {
+        'node_id': this.props.nodeId,
+        'user_uuid': currentUUID,
+        'toggle': true,
     };
-    getDirections(data);
+
+    await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
+
+    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    await this.updateLikeIcon(currentUUID, response);
+  }
+
+  componentDidMount() {
+    this.updateLikeStatus();
+  }
+
+  async updateLikeStatus() {
+    let currentUUID = await this.authService.getUUID();
+
+    let requestBody = {
+      'node_id': this.props.nodeId,
+      'user_uuid': currentUUID,
+      'toggle': false,
+    };
+
+    await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
+
+    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    await this.updateLikeIcon(currentUUID, response);
+  }
+
+  async updateLikeIcon(uuid: string, response: any) {
+    if (response !== undefined) {
+      try {
+        // @ts-ignore
+        if (response.likes[uuid] === true) {
+          await this.setState({likeIconOpacity: 0.8});
+        } else {
+          await this.setState({likeIconOpacity: 0.4});
+        }
+      } catch (error) {
+        await this.setState({likeIconOpacity: 0.4});
+        // User does not exist in dictionary
+      }
+    }
+
+    await this.setState({loadingLikeIcon: false, currentLikeIcon: 'thumbs-up'});
+
   }
 
   goToChat() {
@@ -86,16 +132,17 @@ export default class Node extends Component<IProps, IState> {
           <View style={styles.buttonView}>
             <Button
               icon={{
-                name: 'thumbs-up',
+                name: this.state.currentLikeIcon,
                 type: 'feather',
                 size: 45,
-                color: 'rgba(44,55,71,0.8)',
+                color: `rgba(44,55,71,${this.state.likeIconOpacity})`,
               }}
               style={styles.mapButton}
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={this.handleGetDirections}
+              onPress={this.toggleLikeStatus}
+              disabled={this.state.loadingLikeIcon}
             />
              <Button
               icon={{

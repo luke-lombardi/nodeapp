@@ -264,7 +264,7 @@ export default class NodeService {
             const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.nodeCheckIntervalMs);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
-            Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
+            Logger.trace('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
         }
     }
 
@@ -282,7 +282,7 @@ export default class NodeService {
             const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.groupCheckIntervalMs);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
-            Logger.info('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
+            Logger.trace('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
         }
     }
 

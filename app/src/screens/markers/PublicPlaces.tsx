@@ -69,6 +69,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                 title={marker.data.title}
+                tracksViewChanges
                 // description={this.state.messages.length}
                 anchor={{ x: .5, y: .6 }}
                 onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPlace'); }}
@@ -89,16 +90,20 @@ const styles = StyleSheet.create({
       markerText: { 
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: 'lightblue',   
-        borderRadius: 50,
+        backgroundColor: 'rgba(153,51,255,0.4)',   
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: 'grey',
         width: 50,
         height: 50,
       },
       nullMarker: {
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: 'lightgreen',   
-        borderRadius: 50,
+        backgroundColor: 'rgba(153,51,255,0.4)',   
+        borderRadius: 30,
+        borderWidth: 1,   
+        borderColor: 'grey',     
         width: 50,
         height: 50,
       },
@@ -106,7 +111,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'center',
         padding: '10%',
-        color: 'black',
+        color: 'white',
+        fontWeight: 'bold',
         fontSize: 20,
       },
       card: {

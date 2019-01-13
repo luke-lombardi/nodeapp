@@ -86,9 +86,9 @@ export default class Node extends Component<IProps, IState> {
           <View style={styles.buttonView}>
             <Button
               icon={{
-                name: 'map',
+                name: 'thumbs-up',
                 type: 'feather',
-                size: 40,
+                size: 45,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.mapButton}
@@ -99,9 +99,9 @@ export default class Node extends Component<IProps, IState> {
             />
              <Button
               icon={{
-                name: 'users',
+                name: 'message-circle',
                 type: 'feather',
-                size: 40,
+                size: 45,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.middleButton}
@@ -115,7 +115,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'share',
                 type: 'feather',
-                size: 40,
+                size: 45,
                 color: 'rgba(44,55,71,0.8)',
               }}
               style={styles.directionsButton}
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
   middleButton: {
     width: '70%',
     height: '100%',
+    top: 1,
     alignSelf: 'center',
     marginLeft: 15,
   },

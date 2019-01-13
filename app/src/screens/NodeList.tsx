@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, ButtonGroup } from 'react-native-elements';
+import { Button } from 'react-native-elements';
+
 // import LinearGradient from 'react-native-linear-gradient';
 
 import NavigationService from '../services/NavigationService';
@@ -11,6 +13,7 @@ import { connect, Dispatch } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 
 interface IProps {
+    functions: any;
     navigation: any;
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
@@ -135,11 +138,27 @@ export class NodeList extends Component<IProps, IState> {
 
         {
           this.state.selectedIndex === 1 && this.props.privatePlaceList.length === 0 &&
-          <Text style={styles.null}>No services have been created yet</Text>
+          <View style={styles.nullContainer}>
+          <Text style={styles.null}>No nodes have been created yet</Text>
+          <Button 
+            containerStyle={styles.createNodeButton}
+            buttonStyle={{borderRadius: 10}}
+            title={'Create Node'}
+            onPress = {() => this.props.navigation.navigate('CreateNode')}
+          />
+          </View>
         }
         {
           this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
-          <Text style={styles.null}>No services have been created yet</Text>
+          <View style={styles.nullContainer}>
+          <Text style={styles.null}>No nodes have been created yet</Text>
+          <Button 
+            containerStyle={styles.createNodeButton}
+            buttonStyle={{borderRadius: 10}}
+            title={'Create Node'}
+            onPress = {() => this.props.navigation.navigate('CreateNode')}
+          />
+          </View>
         }
         </View>
      </View>
@@ -168,7 +187,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 
 const styles = StyleSheet.create({
   flatlist: {
-    marginBottom: 200,
+    marginBottom: 180,
   },
   nodeListItem: {
     minHeight: 80,
@@ -176,20 +195,28 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 10,
     marginBottom: 5,
-    borderRadius: 10,
+    borderRadius: 5,
+  },
+  nullContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 175,
   },
   null: {
-    fontSize: 22,
+    fontSize: 18,
     color: 'gray',
-    top: 200,
     alignSelf: 'center',
   },
   button: {
-
+  },
+  createNodeButton: {
+    top: 30,
+    width: 150,
+    borderRadius: 30,
   },
   buttonContainer: {
     top: -10,
-    height: 80,
+    height: 70,
     alignSelf: 'center',
     width: '110%',
   },

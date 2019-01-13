@@ -314,6 +314,8 @@ export class App extends Component<IProps, IState> {
       this.handleLink = this.handleLink.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
 
+      this.subscribeToNotifications = this.subscribeToNotifications.bind(this);
+
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService(
         {
@@ -333,7 +335,6 @@ export class App extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-      Pushy.listen();
 
       // This handles the case where a user clicked a link and the app was closed
       Linking.getInitialURL().then((url) => {
@@ -388,7 +389,20 @@ export class App extends Component<IProps, IState> {
         // Display basic system notification
         Pushy.notify(notificationTitle, notificationText);
       });
+      // subscribe device to notifications
+      this.subscribeToNotifications()
     }
+
+    async subscribeToNotifications() {
+      // subscribe device to notifcation topic
+      try {
+      await Pushy.subscribe('nodes');
+      } catch (error) {
+        console.log('unable to subscribe to pushy topic');
+      }        
+    }
+
+    // TODO: listen for new nodes, send notifcation to topic when node list is updated
 
     // Handle a link clicked from a text message
     async handleLink(event) {

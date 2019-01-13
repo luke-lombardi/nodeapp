@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
+import NavigationService from '../services/NavigationService';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -29,6 +30,7 @@ interface IProps {
 interface IState {
     data: any;
     isLoading: boolean;
+    messageBody: string;
 }
 
 export class Chat extends Component<IProps, IState> {
@@ -72,6 +74,7 @@ export class Chat extends Component<IProps, IState> {
 
     this.state = {
         data: [],
+        messageBody: '',
         isLoading: false,
     };
 
@@ -83,6 +86,9 @@ export class Chat extends Component<IProps, IState> {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
+    this.submitMessage = this.submitMessage.bind(this);
+    this.setMessageText = this.setMessageText.bind(this);
+
     this.CheckNow = this.CheckNow.bind(this);
     this.monitorMessages = this.monitorMessages.bind(this);
     this.postMessage = this.postMessage.bind(this);
@@ -92,6 +98,47 @@ export class Chat extends Component<IProps, IState> {
 
     goToCreateMessage() {
       this.props.navigation.navigate({key: 'CreateMessage', routeName: 'CreateMessage', params: { nodeId: this.nodeId }});
+    }
+
+    async submitMessage() {
+      let nodeId = this.props.navigation.getParam('nodeId');
+
+      await this.setState({
+        isLoading: true,
+        messageBody: this.state.messageBody,
+      });
+
+      // If the message body is empty, don't post the message
+      if (this.state.messageBody === '') {
+        Snackbar.show({
+          title: 'Enter a message to send.',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+
+        await this.setState({
+          isLoading: false,
+        });
+
+        return;
+      }
+
+      let userUuid = await AsyncStorage.getItem('user_uuid');
+
+      NavigationService.reset('Chat', {
+        messageBody: this.state.messageBody,
+        action: 'new_message',
+        userUuid: userUuid,
+        nodeId: nodeId,
+      });
+    }
+
+    async setMessageText(text) {
+      try {
+        await this.setState({messageBody: text});
+      } catch (error) {
+        // Ignore
+        // The only reason this would fail is if the component unmounted
+      }
     }
 
     _renderItem = ({item, index}) => (
@@ -240,21 +287,49 @@ export class Chat extends Component<IProps, IState> {
 
     render() {
       return (
+      <View>
         <View style={styles.flatlist}>
           <FlatList
            data={this.state.data}
            renderItem={this._renderItem}
            keyExtractor={item => item.timestamp}
           />
-
           {
             this.state.data.length === 0 &&
             <Text style={styles.null}>No messages yet!</Text>
           }
 
+          {/* <KeyboardAvoidingView 
+            behavior='padding'
+            keyboardVerticalOffset={10}
+            style={styles.inputContainer}
+          > */}
+          </View>
+          <View style={styles.chatMessageContainer}>
+          <TextInput 
+            multiline
+            allowFontScaling
+            //onSubmitEditing={this.submitMessage}
+            numberOfLines={3}
+            placeholder={'Type your message...'}
+            returnKeyType='send'
+            style={styles.chatInput}
+            onChangeText={text => this.setMessageText(text)}
+            value={this.state.messageBody}
+          />
+          <TouchableOpacity 
+            onPress={this.submitMessage}>
+            <Icon
+              size={16} 
+              name="send"
+              color={'black'}
+              raised
+              />
+          </TouchableOpacity>
+          {/* </KeyAvoidingView> */}
           <Spinner visible={this.state.isLoading} textContent={'Loading...'} textStyle={{color: 'rgba(44,55,71,1.0)'}} />
         </View>
-
+      </View>
       );
     }
   }
@@ -291,6 +366,39 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 14,
   },
+  chatMessageContainer: {
+    position: 'absolute',
+    borderTopWidth: .5,
+    borderTopColor: 'lightgray',
+    top: 550,
+    height: 200,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'white',
+  },
+  chatInput: {
+    fontSize: 16, 
+    paddingHorizontal: 10, 
+    height: 30, 
+    top: 10, 
+    width: 305, 
+    borderColor: 'white', 
+    borderRadius: 20, 
+    backgroundColor: 'white'
+  },
+  submitChatButton: {
+    position: 'absolute',
+    top: 10,
+    bottom: 5, 
+  },
+  inputContainer: {
+    height: 150,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    position: 'absolute',
+    width: '100%',
+  },
   titleView: {
     flexDirection: 'row',
     paddingTop: 5,
@@ -303,6 +411,6 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   flatlist: {
-    marginBottom: 0,
+    marginBottom: 50,
   },
 });

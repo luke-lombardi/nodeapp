@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   sliderContainer: {
     maxWidth: 300,
     alignItems: 'flex-start',
-    marginTop: -15,
+    marginTop: 10,
   },
   sliderText: {
     alignSelf: 'center',

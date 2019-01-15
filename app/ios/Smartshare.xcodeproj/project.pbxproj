@@ -1028,7 +1028,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = TN6X9LR957;
 						LastSwiftMigration = 940;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.GameCenter.iOS = {
 								enabled = 1;
@@ -1802,11 +1802,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "zICSrruj-JhwNSG5MJnWfkuC_jhPc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -1835,7 +1835,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = Smartshare;
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = Smartshare_Prov_Production;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1850,10 +1850,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "urD5MLD2l7Y-8YNlCjlw7RdKjfVqc4b048d9-4cc7-47f0-88cc-dc57fd739066";
 				CODE_SIGN_ENTITLEMENTS = Smartshare/Smartshare.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = TN6X9LR957;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Text, AsyncStorage, Dimensions } from 'react-native';
 // @ts-ignore
 import { Button, Input } from 'react-native-elements';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 interface IProps {
     navigation: any;
@@ -63,6 +65,7 @@ export class Settings extends Component<IProps, IState> {
             <View style={styles.inputContainer}>
             <Text style={styles.settingsHeader}>Set Alias</Text>
             <Input
+              inputStyle={styles.textInput}
               label={'Name'}
               leftIcon={
                 <Icon
@@ -91,7 +94,7 @@ export class Settings extends Component<IProps, IState> {
               placeholderTextColor={'lightgray'}
           />
             <Button
-                style={styles.button}
+                style={[styles.button, {top: WINDOW_HEIGHT / 2.3}]}
                 onPress={this.saveSettings}
                 title={'Save'}
             />
@@ -142,20 +145,23 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     paddingHorizontal: 25,
   },
+  textInput: {
+    fontFamily: 'Avenir',
+    fontSize: 20,
+  },
   settings: {
     flex: 1,
     backgroundColor: 'white',
     alignItems: 'center',
   },
   inputHeader: {
-    fontSize: 16,
+    fontSize: 20,
     color: 'gray',
     paddingVertical: 10,
   },
   settingsHeader: {
     fontSize: 28,
-    color: 'gray',
-    fontWeight: 'bold',
+    color: 'black',
     paddingVertical: 22,
   },
   button: {

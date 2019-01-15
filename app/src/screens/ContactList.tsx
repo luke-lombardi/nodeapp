@@ -103,10 +103,10 @@ export class ContactList extends Component<IProps, IState> {
         key={item.item.recordID}
         onPress={() => this.selectContact(item.item)}
         containerStyle={styles.nodeListItem}
-        // leftAvatar={item.thumbnailPath ? { source: { uri: item.thumbnailPath } } : { source: require('./../../assets/images/big-guy.png') }}
-        leftIcon={ {name: 'circle', type: 'font-awesome', size: 10, color: 'rgba(51, 51, 51, 0.8)'} }
+        leftAvatar={item.item.thumbnailPath ? { source: { uri: item.item.thumbnailPath } } : { source: require('./../../assets/images/big-guy.png') }}
         rightIcon={ {name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'} }
         title={item.item.givenName + ' ' + item.item.familyName}
+        titleStyle={{fontSize: 18}}
       />
     );
   }
@@ -115,16 +115,17 @@ export class ContactList extends Component<IProps, IState> {
       return (
         <View>
         <SearchBar
-          onChangeText={query => this.setState({query})}
-          lightTheme
-          inputStyle={{fontFamily: 'Avenir'}}
-          inputContainerStyle={{borderRadius: 10}}
-          placeholder='Search Contacts...' />
+            containerStyle={{backgroundColor: 'white'}}
+            onChangeText={query => this.setState({query})}
+            lightTheme
+            inputStyle={{fontFamily: 'Avenir', fontSize: 16}}
+            inputContainerStyle={{borderRadius: 10}}
+            placeholder='Search Contacts...' />
           <FlatList
-          data={this.state.query ? this.searchContact() : this.state.data}
-          renderItem={this._renderItem}
-          extraData={this.state}
-          keyExtractor={item => item.recordID}
+            data={this.state.query ? this.searchContact() : this.state.data}
+            renderItem={this._renderItem}
+            extraData={this.state}
+            keyExtractor={item => item.recordID}
           />
 
           {
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   nodeListItem: {
-    borderBottomWidth: 1,
+    borderBottomWidth: .5,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     minHeight: 80,
     maxHeight: 80,

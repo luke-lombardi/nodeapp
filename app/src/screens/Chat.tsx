@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
+import Moment from 'moment';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -31,6 +32,7 @@ interface IState {
     data: any;
     isLoading: boolean;
     messageBody: string;
+    textInputHeight: number;
 }
 
 export class Chat extends Component<IProps, IState> {
@@ -76,6 +78,7 @@ export class Chat extends Component<IProps, IState> {
         data: [],
         messageBody: '',
         isLoading: false,
+        textInputHeight: 0,
     };
 
     this.apiService = new ApiService({});
@@ -94,6 +97,7 @@ export class Chat extends Component<IProps, IState> {
     this.postMessage = this.postMessage.bind(this);
 
     this.goToCreateMessage = this.goToCreateMessage.bind(this);
+    this.getTime = this.getTime.bind(this);
     }
 
     goToCreateMessage() {
@@ -109,7 +113,7 @@ export class Chat extends Component<IProps, IState> {
       });
 
       // If the message body is empty, don't post the message
-      if (this.state.messageBody === '') {
+      if (this.state.messageBody === '' || this.state.messageBody.length < 1) {
         Snackbar.show({
           title: 'Enter a message to send.',
           duration: Snackbar.LENGTH_SHORT,
@@ -132,6 +136,14 @@ export class Chat extends Component<IProps, IState> {
       });
     }
 
+    getTime(item) {
+      let easternTime = moment(item.timestamp).utcOffset(14);
+
+      let parsedTimestamp = moment(easternTime).calendar();
+
+      return parsedTimestamp;
+    }
+
     async setMessageText(text) {
       try {
         await this.setState({messageBody: text});
@@ -140,7 +152,7 @@ export class Chat extends Component<IProps, IState> {
         // The only reason this would fail is if the component unmounted
       }
     }
-
+    // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
         // scaleProps={{
@@ -152,6 +164,7 @@ export class Chat extends Component<IProps, IState> {
         containerStyle={{
           minHeight: 100,
           maxHeight: 120,
+          //backgroundColor: '#f9fbff',
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
         // rightIcon={{
@@ -166,14 +179,13 @@ export class Chat extends Component<IProps, IState> {
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}> {item.timestamp} - { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
+          <Text style={styles.ratingText}> {this.getTime(item)} | { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
           </View>
         }
       />
     )
 
     componentWillMount () {
-      console.log('CHAT COMPONENT MOUNTED');
       // Set params for nav stack
       this.props.navigation.setParams({ goToCreateMessage: this.goToCreateMessage });
 
@@ -289,8 +301,15 @@ export class Chat extends Component<IProps, IState> {
     render() {
       return (
       <View style={{flex: 1}}>
+        <KeyboardAvoidingView
+          style={{flex: 1}}
+          behavior='padding'
+          keyboardVerticalOffset={65}
+        >
+        <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
+           keyboardDismissMode={'on-drag'}
            data={this.state.data}
            renderItem={this._renderItem}
            keyExtractor={item => item.timestamp}
@@ -300,34 +319,49 @@ export class Chat extends Component<IProps, IState> {
             <Text style={styles.null}>No messages yet!</Text>
           }
           </View>
-          <KeyboardAvoidingView
-            behavior='padding'
-            // contentContainerstyle={styles.chatMessageContainer}
+          <View
+            style={[
+              styles.chatMessageContainer, {
+                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
+              },
+            ]}
           >
-          <View style={styles.chatMessageContainer}>
           <TextInput
+            onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
+            underlineColorAndroid={'transparent'}
             multiline
+            maxLength={500}
             allowFontScaling
             onSubmitEditing={this.submitMessage}
-            numberOfLines={3}
             placeholder={'Type your message...'}
             returnKeyType='send'
-            style={styles.chatInput}
+            style={[
+              styles.chatInput, {
+                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
+              },
+            ]}
             onChangeText={text => this.setMessageText(text)}
             value={this.state.messageBody}
           />
-          <TouchableOpacity
-            onPress={this.submitMessage}>
+          {/* <TouchableOpacity
+              onPress={this.submitMessage}
+              style={{width: 100}}
+            >
             <Icon
-              size={16}
+              iconStyle={{padding: 10}}
+              containerStyle={styles.iconContainer}
+              size={20}
               name='send'
               color={'black'}
-              raised
-              />
-          </TouchableOpacity>
-          <Spinner visible={this.state.isLoading} textContent={'Loading...'} textStyle={{color: 'rgba(44,55,71,1.0)'}} />
+            />
+          </TouchableOpacity> */}
+          <Spinner
+            visible={this.state.isLoading}
+            textStyle={{color: 'rgba(44,55,71,1.0)'}}
+          />
         </View>
-        </KeyboardAvoidingView>
+      </View>
+      </KeyboardAvoidingView>
       </View>
       );
     }
@@ -362,29 +396,40 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   titleText: {
-    left: 5,
+    left: 4,
     color: 'black',
-    fontSize: 14,
+    fontSize: 16,
+  },
+  iconContainer: {
+    backgroundColor: 'white',
+    bottom: 2,
+    position: 'absolute',
+    borderWidth: .5,
+    marginHorizontal: 5,
+    borderColor: 'rgba(220,220,220,1)',
+    borderRadius: 30,
   },
   chatMessageContainer: {
-    position: 'absolute',
-    borderTopWidth: .5,
-    borderTopColor: 'lightgray',
-    bottom: 0,
-    height: 50,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    marginTop: -20,
+    bottom: 10,
+    paddingHorizontal: 10,
     width: '100%',
-    backgroundColor: 'white',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(220,220,220,0.1)',
   },
   chatInput: {
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: 'Avenir',
+    overflow: 'hidden',
+    paddingVertical: 10,
     paddingHorizontal: 10,
-    height: 30,
-    top: 10,
-    width: '80%',
-    borderColor: 'white',
-    borderRadius: 20,
+    textAlign: 'left',
+    flexWrap: 'wrap',
+    width: '100%',
+    borderWidth: .5,
+    borderColor: 'rgba(220,220,220,0.8)',
+    borderRadius: 10,
     backgroundColor: 'white',
   },
   submitChatButton: {
@@ -406,7 +451,8 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   flatlist: {
+    backgroundColor: 'white',
     flex: 1,
-    marginBottom: 50,
+    marginBottom: 40,
   },
 });

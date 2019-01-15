@@ -97,15 +97,18 @@ export class NodeList extends Component<IProps, IState> {
         {name: 'circle', type: 'font-awesome', size: 10, color: 'blue'}
       }
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
-      titleStyle={{fontWeight: 'bold', marginBottom: 2}}
+      titleStyle={{fontWeight: 'bold', fontSize: 18, marginBottom: 2}}
       title={item.data.title}
       subtitle={item.data.distance_in_miles.toString() + ' miles, expires in ' + (item.data.ttl / 3600).toFixed(1) + ' hours' }
+      subtitleStyle={{fontSize: 16}}
     />
   )
 
   async onRefresh() {
     this.setState({isRefreshing: true});
-    let newList = await this.props.privatePlaceList && this.props.publicPlaceList;
+    let newList = await this.props.publicPlaceList;
+    // @ts-ignore
+    let newPrivateList = await this.props.privatePlaceList;
     if (newList) {
       this.setState({isRefreshing: false});
     } else {
@@ -117,8 +120,9 @@ export class NodeList extends Component<IProps, IState> {
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
     return (
-      <View style={{width: '100%'}}>
+      <View style={{width: '100%', flex: 1}}>
         <ButtonGroup
+          innerBorderStyle={{width: 0}}
           buttonStyle={styles.button}
           containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
@@ -189,7 +193,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 
 const styles = StyleSheet.create({
   flatlist: {
-    marginBottom: 180,
+    flex: 1,
+    marginBottom: 10,
+    marginTop: -10,
+    height: '100%',
   },
   nodeListItem: {
     minHeight: 80,
@@ -200,12 +207,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   nullContainer: {
+    flex: 1,
+    bottom: 200,
     justifyContent: 'center',
     alignItems: 'center',
-    top: 175,
   },
   null: {
-    fontSize: 18,
+    fontSize: 22,
     color: 'gray',
     alignSelf: 'center',
   },
@@ -215,10 +223,11 @@ const styles = StyleSheet.create({
     top: 30,
     width: 150,
     borderRadius: 30,
+    fontSize: 22,
   },
   buttonContainer: {
     top: -10,
-    height: 70,
+    height: 75,
     alignSelf: 'center',
     width: '110%',
   },

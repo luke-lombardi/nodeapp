@@ -62,11 +62,12 @@ export default class ConfirmModal extends Component<IProps, IState> {
                     isVisible={this.state.visibleModal}
                     >
                      <View style={styles.modalContent}>
-                        <Text> {this.state.displayTitle} </Text>
+                        <Text style={{fontWeight: 'bold'}}> {this.state.displayTitle} </Text>
                         <Button style={styles.fullWidthButton}
                                     buttonStyle={styles.buttonStyle}
                                     titleStyle={{
                                         'color': 'black',
+                                        'fontWeight': 'bold',
                                     }}
                                     onPress={() => {
                                         this.props.functions.closeConfirmModal(true, this.props.linkData);
@@ -83,6 +84,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
                                     buttonStyle={styles.buttonStyle}
                                     titleStyle={{
                                         'color': 'black',
+                                        'fontWeight': 'bold',
                                     }}
                                     onPress={() => {
                                         this.props.functions.closeConfirmModal(false, this.props.linkData);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Switch, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Switch, Text, TextInput, Dimensions  } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
@@ -14,6 +14,8 @@ import NodeService from '../services/NodeService';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { mapStyle } from '../config/map';
+
+const WINDOW_WIDTH = Dimensions.get('window').width;
 
 interface IProps {
   navigation: any;
@@ -94,7 +96,6 @@ export class CreateNode extends Component<IProps, IState> {
                   value={this.state.title}
                   blurOnSubmit
                   multiline
-                  keyboardAppearance={'dark'}
                   style={styles.input}
                   maxLength={280}
                   underlineColorAndroid='transparent'
@@ -103,12 +104,10 @@ export class CreateNode extends Component<IProps, IState> {
 
             <TextInput
               onChangeText={(description) => this.setState({description: description})}
-              // enablesReturnKeyAutomatically={true}
               // onSubmitEditing={this.submitCreateNode}
               value={this.state.description}
               blurOnSubmit
               multiline
-              keyboardAppearance={'dark'}
               style={styles.input}
               maxLength={280}
               underlineColorAndroid='transparent'
@@ -116,18 +115,7 @@ export class CreateNode extends Component<IProps, IState> {
           />
             </View>
             <View style={styles.switchView}>
-              {/* <Text style={styles.switchText}>Visibility</Text> */}
-              <Text style={{
-                position: 'absolute',
-                // fontWeight: this.state.private ? 'bold' : 'normal',
-                alignContent: 'flex-start',
-                marginTop: 55,
-                marginLeft: 65,
-                fontSize: 20,
-                color: this.state.private ? 'black' : 'gray'}}>
-                {/* Private */}
-                </Text>
-
+              <Text style={styles.switchText}>{this.state.private ? 'Private' : 'Public'}</Text>
             <Switch
               style={styles.switch}
               value={this.state.private}
@@ -135,21 +123,21 @@ export class CreateNode extends Component<IProps, IState> {
             }}
             />
           <View style={styles.sliderContainer}>
-          <Slider
-            style={styles.slider}
-            value={this.state.ttl}
-            thumbTouchSize={{width: 40, height: 40}}
-            onValueChange={(ttl) => this.setState({ttl: ttl})}
-            minimumValue={1}
-            maximumValue={24}
-            minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
-            maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
-            thumbTintColor={'red'}
-            />
             <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} hours</Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} {this.state.ttl < 1.1 ? 'hour' : 'hours'}</Text>
             </Text>
+            <Slider
+              style={[styles.slider, { width: WINDOW_WIDTH * .9 }]}
+              value={this.state.ttl}
+              thumbTouchSize={{width: 50, height: 50}}
+              onValueChange={(ttl) => this.setState({ttl: ttl})}
+              minimumValue={1}
+              maximumValue={24}
+              minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
+              maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
+              thumbTintColor={'red'}
+            />
             </View>
           </View>
 
@@ -169,7 +157,7 @@ export class CreateNode extends Component<IProps, IState> {
             title=''
           />
           </View>
-          </View>
+        </View>
     );
   }
 
@@ -242,14 +230,13 @@ const styles = StyleSheet.create({
   },
   miniMapView: {
     flex: 1,
-    padding: 10,
+    padding: 20,
   },
   map: {
   },
   inputView: {
     marginTop: 10,
     marginBottom: 10,
-    flex: 1,
   },
   nodeForm: {
     flex: 6,
@@ -276,19 +263,16 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   switch: {
-    height: 50,
     alignSelf: 'flex-start',
   },
   switchText: {
-    paddingBottom: 20,
+    paddingVertical: 20,
     fontSize: 24,
-    color: 'gray',
+    color: 'black',
     alignSelf: 'flex-start',
   },
   sliderContainer: {
-    maxWidth: 300,
     alignItems: 'flex-start',
-    marginTop: -15,
   },
   sliderText: {
     alignSelf: 'center',
@@ -303,13 +287,11 @@ const styles = StyleSheet.create({
   switchIcon: {
   },
   slider: {
-    marginTop: 5,
     alignSelf: 'center',
-    top: 70,
-    width: 220,
+    width: 350,
   },
   sliderTextContainer: {
-    marginBottom: 10,
+    paddingVertical: 20,
   },
   privateText: {
     position: 'absolute',
@@ -321,6 +303,8 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingHorizontal: 20,
+    borderBottomWidth: .5,
+    borderBottomColor: 'rgba(220,220,220,0.8)',
     paddingVertical: 10,
     paddingTop: 25,
     fontSize: 24,

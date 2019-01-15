@@ -65,9 +65,6 @@ export class Chat extends Component<IProps, IState> {
                   action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
                 })); }
                } />,
-          // headerRight: <Icon name='edit' type='feather' containerStyle={{padding: 5}} size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
-          //   params.goToCreateMessage();
-          //  } } />,
       };
   }
 
@@ -96,12 +93,7 @@ export class Chat extends Component<IProps, IState> {
     this.monitorMessages = this.monitorMessages.bind(this);
     this.postMessage = this.postMessage.bind(this);
 
-    this.goToCreateMessage = this.goToCreateMessage.bind(this);
     this.getTime = this.getTime.bind(this);
-    }
-
-    goToCreateMessage() {
-      this.props.navigation.navigate({key: 'CreateMessage', routeName: 'CreateMessage', params: { nodeId: this.nodeId }});
     }
 
     async submitMessage() {
@@ -186,14 +178,10 @@ export class Chat extends Component<IProps, IState> {
     )
 
     componentWillMount () {
-      // Set params for nav stack
-      this.props.navigation.setParams({ goToCreateMessage: this.goToCreateMessage });
-
       // Grab navigation params
       this.action = this.props.navigation.getParam('action', '');
       this.nodeId = this.props.navigation.getParam('nodeId', '');
 
-      // If we are returning from the CreateMessage screen, post the users message
       if (this.action === 'new_message') {
         console.log('posting a message');
         this.postMessage();

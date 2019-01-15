@@ -26,7 +26,6 @@ import GroupEditor from '../screens/GroupEditor';
 import Settings from '../screens/Settings';
 import Chat from '../screens/Chat';
 import GetPermissions from '../screens/GetPermissions';
-import CreateMessage from '../components/CreateMessage';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -195,20 +194,6 @@ const InternalStack = StackNavigator({
       }),
     },
   Chat: { screen: Chat },
-  CreateMessage : { screen: CreateMessage },
-    //     navigationOptions: ({navigation}) => ({
-    //       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-    //       headerTitleStyle: {color: 'white'},
-    //       title: 'Compose Message',
-    //       headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-    //         navigation.dispatch(NavigationActions.reset(
-    //           {
-    //             index: 0,
-    //             actions: [ NavigationActions.navigate({ routeName: 'Chat', key: 'Chat', params: {action: 'check_messages'} }) ],
-    //           },
-    //         )) } />,
-    //     }),
-    // },
   },
   {
   initialRouteName: 'Map',

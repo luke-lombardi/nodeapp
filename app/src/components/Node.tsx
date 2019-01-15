@@ -158,13 +158,12 @@ const styles = StyleSheet.create({
   },
   nodeTitle: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 22,
     alignSelf: 'center',
   },
   durationTitle: {
     marginTop: 10,
-    fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 16,
     alignSelf: 'center',
   },
   description: {

@@ -62,7 +62,8 @@ export class SideBar extends Component<IProps> {
                   containerStyle={styles.navItem}
                   key='map'
                   title='Map'
-                  leftIcon={{name: 'map', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'map', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
                     this.resetNavigation('Map');
                   }}
@@ -75,10 +76,11 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
+                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   key='nodes'
                   title='Nodes'
-                  leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'map-pin', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.privatePlaceList.length && this.props.publicPlaceList.length === 0 ?
                     this.resetNavigation('CreateNode') :
                     this.resetNavigation('Nodes');
@@ -92,10 +94,11 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   key='friends'
                   title='People'
-                  leftIcon={{name: 'user', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'user', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.friendList.length === 0 ?
                     this.props.navigation.navigate('ContactList', {action: 'add_friend'}) :
                     this.resetNavigation('Friends');
@@ -128,7 +131,8 @@ export class SideBar extends Component<IProps> {
                   containerStyle={styles.navItem}
                   key='settings'
                   title='Settings'
-                  leftIcon={{name: 'settings', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'settings', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.resetNavigation('Settings');
                 }}
               />
@@ -189,12 +193,14 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
   },
   version: {
+    fontSize: 16,
     position: 'absolute',
     paddingRight: '5%',
     alignSelf: 'flex-end',
     bottom: 10,
   },
   legal: {
+    fontSize: 16,
     alignSelf: 'flex-start',
     paddingLeft: '5%',
     position: 'absolute',

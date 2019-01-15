@@ -7,6 +7,7 @@ import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
+import Moment from 'moment';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -96,6 +97,7 @@ export class Chat extends Component<IProps, IState> {
     this.postMessage = this.postMessage.bind(this);
 
     this.goToCreateMessage = this.goToCreateMessage.bind(this);
+    this.getTime = this.getTime.bind(this);
     }
 
     goToCreateMessage() {
@@ -111,7 +113,7 @@ export class Chat extends Component<IProps, IState> {
       });
 
       // If the message body is empty, don't post the message
-      if (this.state.messageBody === '' || this.state.messageBody.length > 1) {
+      if (this.state.messageBody === '' || this.state.messageBody.length < 1) {
         Snackbar.show({
           title: 'Enter a message to send.',
           duration: Snackbar.LENGTH_SHORT,
@@ -134,6 +136,14 @@ export class Chat extends Component<IProps, IState> {
       });
     }
 
+    getTime(item) {
+      let easternTime = moment(item.timestamp).utcOffset(14);
+
+      let parsedTimestamp = moment(easternTime).calendar();
+
+      return parsedTimestamp;
+    }
+
     async setMessageText(text) {
       try {
         await this.setState({messageBody: text});
@@ -142,7 +152,7 @@ export class Chat extends Component<IProps, IState> {
         // The only reason this would fail is if the component unmounted
       }
     }
-
+    // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
         // scaleProps={{
@@ -155,7 +165,7 @@ export class Chat extends Component<IProps, IState> {
           minHeight: 100,
           maxHeight: 120,
           //backgroundColor: '#f9fbff',
-          //backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
+          backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
         // rightIcon={{
         //   name: 'arrow-up-right',
@@ -169,7 +179,7 @@ export class Chat extends Component<IProps, IState> {
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}> {item.timestamp} - { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
+          <Text style={styles.ratingText}> {this.getTime(item)} | { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
           </View>
         }
       />
@@ -295,7 +305,6 @@ export class Chat extends Component<IProps, IState> {
           style={{flex: 1}}
           behavior='padding'
           keyboardVerticalOffset={65}
-          //contentContainerstyle={styles.chatMessageContainer}
         >
         <View style={{flex: 1}}>
         <View style={styles.flatlist}>
@@ -313,7 +322,7 @@ export class Chat extends Component<IProps, IState> {
           <View
             style={[
               styles.chatMessageContainer, {
-                height: Math.max(45, this.state.textInputHeight),
+                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
               },
             ]}
           >
@@ -321,19 +330,20 @@ export class Chat extends Component<IProps, IState> {
             onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
             underlineColorAndroid={'transparent'}
             multiline
+            maxLength={500}
             allowFontScaling
             onSubmitEditing={this.submitMessage}
             placeholder={'Type your message...'}
             returnKeyType='send'
             style={[
               styles.chatInput, {
-                height: Math.max(45, this.state.textInputHeight),
+                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
               },
             ]}
             onChangeText={text => this.setMessageText(text)}
             value={this.state.messageBody}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
               onPress={this.submitMessage}
               style={{width: 100}}
             >
@@ -344,7 +354,7 @@ export class Chat extends Component<IProps, IState> {
               name='send'
               color={'black'}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Spinner
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
@@ -386,9 +396,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   titleText: {
-    left: 5,
+    left: 4,
     color: 'black',
-    fontSize: 14,
+    fontSize: 16,
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -416,7 +426,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     textAlign: 'left',
     flexWrap: 'wrap',
-    width: '85%',
+    width: '100%',
     borderWidth: .5,
     borderColor: 'rgba(220,220,220,0.8)',
     borderRadius: 10,

@@ -128,7 +128,7 @@ export class CreateNode extends Component<IProps, IState> {
           </View>
 
           <Button
-            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
+            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'black'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}

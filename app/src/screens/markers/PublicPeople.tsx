@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Marker, Callout }   from 'react-native-maps';
-import { Image, StyleSheet, Text }   from 'react-native';
+import { Marker }   from 'react-native-maps';
+import { View, StyleSheet, Text }   from 'react-native';
+import Pulse from 'react-native-pulse';
 
 interface IProps {
     publicPersonList: any;
@@ -32,12 +33,12 @@ export default class PublicPeople extends Component<IProps, IState> {
                 description={marker.data.description}
                 key={marker.node_id}
             >
+            <View style={styles.callout}>
 
-            <Image source={require('../../../assets/images/public_person.png')} style={{ width: 35, height: 35 }} />
+            <Pulse color='orange' numPulses={3} diameter={400} speed={20} duration={2000} />
 
-            <Callout tooltip={false} style={styles.callout}>
             <Text style={styles.title}>{marker.data.title}</Text>
-            </Callout>
+            </View>
         </ Marker>
 
             ))

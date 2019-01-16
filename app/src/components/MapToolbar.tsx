@@ -6,6 +6,7 @@ import { Button } from 'react-native-elements';
 interface IProps {
   functions: any;
   publicNodesVisible: boolean;
+  //navigation: any;
 }
 
 interface IState {
@@ -19,7 +20,20 @@ export default class MapToolbar extends Component<IProps, IState> {
   render() {
     return (
     <View style={styles.toolbarView}>
-
+          <Button
+            icon={{
+              name: 'menu',
+              type: 'feather',
+              size: 30,
+              underlayColor: 'rgba(44,55,71, 0.7)',
+              color: '#ffffff',
+            }}
+            //onPress={this.props.navigation.navigate('DrawerToggle')}
+            style={styles.refreshButton}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            />
           <Switch
             style={styles.center}
             value={!this.props.publicNodesVisible}
@@ -72,12 +86,9 @@ export default class MapToolbar extends Component<IProps, IState> {
 // @ts-ignore
 const styles = StyleSheet.create({
   toolbarView: {
+    backgroundColor: 'white',
     height: 50,
-    backgroundColor: 'rgba(255,255,255,1.0)',
-    padding: 0,
     flexDirection: 'row',
-    borderBottomColor: 'rgba(44,55,71,0.3)',
-    borderBottomWidth: 1,
   },
   refreshButton: {
     width: '100%',
@@ -107,18 +118,18 @@ const styles = StyleSheet.create({
     padding: 0,
     width: '15%',
     height: '100%',
-    borderRightWidth: 1,
-    borderRightColor: 'rgba(44,55,71,0.3)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
   },
   floatRight: {
     backgroundColor: 'rgba(44,55,71,0.0)',
     padding: 0,
     width: '15%',
     height: '100%',
-    borderRightWidth: 1,
-    borderRightColor: 'rgba(44,55,71,0.3)',
-    borderLeftWidth: 1,
-    borderLeftColor: 'rgba(44,55,71,0.3)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
     position: 'absolute',
     right: 70,
   },
@@ -131,6 +142,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderRightColor: 'rgba(44,55,71,0.3)',
     position: 'absolute',
+    borderRadius: 20,
     right: 25,
   },
   transparentButton: {
@@ -138,6 +150,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   switch: {
+    backgroundColor: 'white',
     paddingTop: 20,
     margin: 10,
     // marginLeft: '20%',

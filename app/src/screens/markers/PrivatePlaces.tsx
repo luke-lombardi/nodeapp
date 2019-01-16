@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Marker, Callout }   from 'react-native-maps';
-import { Image, Text, StyleSheet }   from 'react-native';
+import { Marker }   from 'react-native-maps';
+import { Text, StyleSheet, View }   from 'react-native';
 
 interface IProps {
     privatePlaceList: any;
@@ -20,30 +20,57 @@ export default class PrivatePlaces extends Component<IProps, IState> {
     render() {
         return (
             this.props.privatePlaceList.map(marker => (
-            // <View style={{overflow: 'hidden' }}>
-            <Marker
-                title={marker.data.title}
-                coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
-                pinColor={'red'}
-                anchor={{ x: 0.5, y: 0.5 }}
-                onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePlace'); }}
-                // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
-                key={marker.node_id}
-            >
-
-            <Image source={require('../../../assets/images/private_place.png')} style={{ width: 50, height: 50 }} />
-
-            <Callout tooltip={false} style={styles.callout}>
-            <Text style={styles.title}>{marker.data.title}</Text>
-            </Callout>
-        </ Marker>
-
+              marker.node_id !== undefined ?
+              <View key={marker.node_id}>
+                <Marker
+                    coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
+                    title={marker.data.title}
+                    // description={}
+                    anchor={{ x: .5, y: .6 }}
+                    onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePlace'); }}
+                    key={marker.node_id}
+                >
+                <View style={marker.data.total_messages === undefined ? styles.nullMarker : styles.markerText}>
+                  <Text style={styles.markerTitle}>{marker.data.total_messages}</Text>
+                </View>
+                </ Marker>
+              </View>
+              :
+              undefined
             ))
         );
     }
 }
 
 const styles = StyleSheet.create({
+    markerText: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255,153,51,0.4)',
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: 'grey',
+        width: 50,
+        height: 50,
+      },
+      markerTitle: {
+        alignSelf: 'center',
+        justifyContent: 'center',
+        padding: '10%',
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 20,
+      },
+      nullMarker: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255,153,51,0.4)',
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: 'grey',
+        width: 50,
+        height: 50,
+      },
     callout: {
         position: 'relative',
         flex: 1,

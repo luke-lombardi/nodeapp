@@ -117,6 +117,7 @@ export default class Node extends Component<IProps, IState> {
   render() {
     return (
       <View style={styles.view}>
+        <View style={styles.nodeCardContainer}>
         <Card containerStyle={styles.nodeCard}>
           <Text numberOfLines={1} style={styles.nodeTopic}>
             {this.props.topic}
@@ -130,8 +131,8 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'feather',
-                size: 45,
-                color: `rgba(44,55,71,${this.state.likeIconOpacity})`,
+                size: 40,
+                color: `rgba(255,255,255,${this.state.likeIconOpacity})`,
               }}
               style={styles.mapButton}
               containerStyle={styles.buttonContainer}
@@ -144,8 +145,8 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'message-circle',
                 type: 'feather',
-                size: 45,
-                color: 'rgba(44,55,71,0.8)',
+                size: 40,
+                color: 'rgba(255,255,255,.8)',
               }}
               style={styles.middleButton}
               containerStyle={styles.buttonContainer}
@@ -158,8 +159,8 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'share',
                 type: 'feather',
-                size: 45,
-                color: 'rgba(44,55,71,0.8)',
+                size: 40,
+                color: 'rgba(255,255,255,.8)',
               }}
               style={styles.directionsButton}
               containerStyle={styles.buttonContainer}
@@ -172,6 +173,7 @@ export default class Node extends Component<IProps, IState> {
 
           </View>
         </Card>
+        </View>
       </View>
     );
   }
@@ -183,34 +185,44 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    backgroundColor: 'transparent',
+  },
+  nodeCardContainer: {
+    backgroundColor: 'transparent',
+    width: '100%',
+    height: '100%',
+    paddingBottom: 15,
   },
   nodeCard: {
     height: '90%',
     width: '90%',
     borderRadius: 20,
-    borderColor: 'rgba(53,53,53,0.1)',
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(44,55,71,.9)',
     shadowColor: 'black',
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 2, height: 3 },
   },
   nodeTopic: {
     fontWeight: 'bold',
+    color: 'white',
     fontSize: 22,
     alignSelf: 'center',
   },
   durationTitle: {
-    marginTop: 10,
+    marginVertical: 10,
+    color: 'white',
     fontSize: 16,
     alignSelf: 'center',
   },
   distance: {
     fontSize: 14,
+    color: 'white',
     alignSelf: 'flex-end',
     marginBottom: 10,
   },
@@ -227,7 +239,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     width: '100%',
-    height: '100%',
+    height: '70%',
     borderRightWidth: 0,
     borderRightColor: 'rgba(44,55,71,0.3)',
   },

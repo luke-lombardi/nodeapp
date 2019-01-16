@@ -551,18 +551,7 @@ export class MainMap extends Component<IProps, IState> {
                   onPress={() =>
                     this.navigateToPage('CreateNode')
                   }>
-                  <Icon name='ios-qr-scanner' style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-                <ActionButton.Item
-                  style={styles.buttonItem}
-                  buttonColor='gray'
-                  textStyle={{fontSize: 22, color: 'white'}}
-                  textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
-                  title='Add Friend'
-                  onPress={() =>
-                    this.navigateToPage('ContactList')
-                  }>
-                  <Icon name='md-person-add' style={styles.actionButtonIcon} />
+                  <Icon name='ios-pin' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
               </ActionButton>
             </View>
@@ -576,8 +565,7 @@ export class MainMap extends Component<IProps, IState> {
             <Node
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
-              title={this.state.selectedNode.data.title}
-              description={this.state.selectedNode.data.description}
+              topic={this.state.selectedNode.data.title}
               ttl={this.state.selectedNode.data.ttl}
               origin={this.props.userRegion}
               destination={this.state.selectedNode.data}

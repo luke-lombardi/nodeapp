@@ -24,8 +24,7 @@ interface IProps {
 }
 
 interface IState {
-  title: string;
-  description: string;
+  topic: string;
   userRegion: any;
   isLoading: boolean;
   uuid: string;
@@ -42,8 +41,7 @@ export class CreateNode extends Component<IProps, IState> {
     super(props);
 
     this.state = {
-      title: '',
-      description: '',
+      topic: '',
       userRegion: {},
       isLoading: false,
       uuid: '',
@@ -92,27 +90,15 @@ export class CreateNode extends Component<IProps, IState> {
           </View>
           <View style={styles.inputView}>
             <TextInput
-                  onChangeText={(title) => this.setState({title: title})}
-                  value={this.state.title}
+                  onChangeText={(topic) => this.setState({topic: topic})}
+                  value={this.state.topic}
                   blurOnSubmit
                   multiline
                   style={styles.input}
                   maxLength={280}
                   underlineColorAndroid='transparent'
-                  placeholder='Title'
+                  placeholder='Topic'
               />
-
-            <TextInput
-              onChangeText={(description) => this.setState({description: description})}
-              // onSubmitEditing={this.submitCreateNode}
-              value={this.state.description}
-              blurOnSubmit
-              multiline
-              style={styles.input}
-              maxLength={280}
-              underlineColorAndroid='transparent'
-              placeholder='Description'
-          />
             </View>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>{this.state.private ? 'Private' : 'Public'}</Text>
@@ -163,8 +149,7 @@ export class CreateNode extends Component<IProps, IState> {
 
   private async submitCreateNode() {
     let nodeData = {
-      'title': this.state.title,
-      'description': this.state.description,
+      'topic': this.state.topic,
       'lat': this.state.userRegion.latitude,
       'lng': this.state.userRegion.longitude,
       'private': this.state.private,
@@ -174,10 +159,10 @@ export class CreateNode extends Component<IProps, IState> {
 
     await this.setState({isLoading: true});
 
-    // If the node title is empty, don't post the node
-    if (this.state.title === '') {
+    // If the node topic is empty, don't post the node
+    if (this.state.topic === '') {
       Snackbar.show({
-        title: 'Enter a title for the node.',
+        title: 'Enter a topic for the node.',
         duration: Snackbar.LENGTH_SHORT,
       });
 

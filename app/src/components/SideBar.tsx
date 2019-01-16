@@ -100,56 +100,10 @@ export class SideBar extends Component<IProps> {
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'user', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.friendList.length === 0 ?
-                    this.props.navigation.navigate('ContactList', {action: 'add_friend'}) :
+                    this.props.navigation.navigate('Friends', {action: 'add_friend'}) :
                     this.resetNavigation('Friends');
                   }}
                 />
-
-                  {/* <ListItem
-                  scaleProps={{
-                    friction: 90,
-                    tension: 100,
-                    activeScale: 0.95,
-                  }}
-                  containerStyle={styles.navItem}
-                  badge={{ value: this.props.groupList.length, textStyle: { color: 'white' }, containerStyle: { padding: 20 } }}
-                  key='groups'
-                  title='Groups'
-                  leftIcon={{name: 'users', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.groupList.length === 0 ?
-                    this.resetNavigation('GroupEditor') :
-                    this.resetNavigation('Groups');
-                }}
-                /> */}
-
-                <ListItem
-                  scaleProps={{
-                    friction: 90,
-                    tension: 100,
-                    activeScale: 0.95,
-                }}
-                  containerStyle={styles.navItem}
-                  key='settings'
-                  title='Settings'
-                  titleStyle={{fontSize: 22}}
-                  leftIcon={{name: 'settings', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.resetNavigation('Settings');
-                }}
-              />
-
-               {/* <ListItem
-                  scaleProps={{
-                    friction: 90,
-                    tension: 100,
-                    activeScale: 0.95,
-                }}
-                  containerStyle={styles.navItem}
-                  key='tour'
-                  title='Help'
-                  leftIcon={{name: 'help-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.resetNavigation('Tour');
-                }}
-              /> */}
 
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text

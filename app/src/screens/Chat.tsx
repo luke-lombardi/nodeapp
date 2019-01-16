@@ -7,7 +7,6 @@ import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
-import Moment from 'moment';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -156,7 +155,7 @@ export class Chat extends Component<IProps, IState> {
         containerStyle={{
           minHeight: 100,
           maxHeight: 120,
-          //backgroundColor: '#f9fbff',
+          // backgroundColor: '#f9fbff',
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
         // rightIcon={{

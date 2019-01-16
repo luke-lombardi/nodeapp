@@ -6,8 +6,7 @@ import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
 
 interface IProps {
-  title: string;
-  description: string;
+  topic: string;
   nodeId: string;
   nodeType: string;
   ttl: number;
@@ -119,14 +118,11 @@ export default class Node extends Component<IProps, IState> {
     return (
       <View style={styles.view}>
         <Card containerStyle={styles.nodeCard}>
-          <Text numberOfLines={1} style={styles.nodeTitle}>
-            {this.props.title}
+          <Text numberOfLines={1} style={styles.nodeTopic}>
+            {this.props.topic}
           </Text>
           <Text numberOfLines={1} style={styles.durationTitle}>
           { (this.props.ttl > 0) ? ' Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
-          </Text>
-          <Text numberOfLines={1} style={styles.description}>
-            {this.props.description}
           </Text>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
@@ -203,7 +199,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { width: 2, height: 3 },
   },
-  nodeTitle: {
+  nodeTopic: {
     fontWeight: 'bold',
     fontSize: 22,
     alignSelf: 'center',
@@ -212,12 +208,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     alignSelf: 'center',
-  },
-  description: {
-    paddingLeft: 10,
-    alignSelf: 'center',
-    marginTop: 10,
-    marginBottom: 10,
   },
   distance: {
     fontSize: 14,

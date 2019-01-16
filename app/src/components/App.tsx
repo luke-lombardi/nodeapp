@@ -20,10 +20,8 @@ import NodeList from '../screens/NodeList';
 import GroupList from '../screens/GroupList';
 import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
-import ContactList from '../screens/ContactList';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
-import Settings from '../screens/Settings';
 import Chat from '../screens/Chat';
 import GetPermissions from '../screens/GetPermissions';
 
@@ -156,34 +154,6 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
       title: 'Group Editor',
-      headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-        },
-        )) } />,
-      }),
-    },
-  Settings: { screen: Settings,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: {color: 'white'},
-      title: 'Settings',
-      headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-        },
-        )) } />,
-      }),
-    },
-  ContactList: { screen: ContactList,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: {color: 'white'},
-      title: 'Contact List',
       headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -375,7 +345,7 @@ export class App extends Component<IProps, IState> {
         Pushy.notify(notificationTitle, notificationText);
       });
       // subscribe device to notifications
-      this.subscribeToNotifications()
+      this.subscribeToNotifications();
     }
 
     async subscribeToNotifications() {

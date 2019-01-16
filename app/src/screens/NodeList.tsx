@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   null: {
-    fontSize: 22,
+    // fontSize: 22,
     color: 'gray',
     alignSelf: 'center',
   },
@@ -223,7 +223,6 @@ const styles = StyleSheet.create({
     top: 30,
     width: 150,
     borderRadius: 30,
-    fontSize: 22,
   },
   buttonContainer: {
     top: -10,

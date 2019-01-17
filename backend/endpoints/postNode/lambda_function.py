@@ -28,10 +28,8 @@ else:
 
 DEFAULT_NODE_TTL = 3600
 
-
 def update_node(rds, node_id, node_data):
     current_ttl = rds.ttl(node_id)
-    logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
     
     prefix = "private:"
     public = node_data.get("public", False)
@@ -39,8 +37,13 @@ def update_node(rds, node_id, node_data):
         prefix = "public:"
 
     key_name = prefix + node_id
+    node_type = node_data.get('type', 'place')
 
-    rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+    if node_type == 'person':
+      rds.set(name=key_name, value=json.dumps(node_data))
+    else:
+      logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
+      rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
 
     return key_name
 
@@ -91,7 +94,6 @@ def run():
         "node_id": '12345',
         "node_data": {
             "title": "demos for sale",
-            "description": "its me mario",
             "lat": 43.13232,
             "lng": 43.333,
             "public": False,

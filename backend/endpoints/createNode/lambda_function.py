@@ -4,7 +4,7 @@
     format: application/json
 
     description:
-        Adds a new node to the database and returns a unique 5-digit node_id.
+        Adds a new node to the database and returns a unique node_id.
         This node_id can then be added to the 'tracked' node list.
 '''
 
@@ -47,14 +47,13 @@ def insert_node(rds, node_id, node_data):
     
     key_name = prefix+str(node_id)
 
-
     ttl = node_data.get("ttl", None)
     if ttl:
-        ttl = int(ttl) * 3600
+        ttl = ttl * 3600
     else:
         ttl = DEFAULT_NODE_TTL
 
-    rds.setex(name=key_name, value=json.dumps(node_data), time=ttl)
+    rds.setex(name=key_name, value=json.dumps(node_data), time=int(ttl))
 
     return key_name
 
@@ -90,8 +89,7 @@ def lambda_handler(event, context):
 def run():
     test_event = {
         "node_data": {
-            "title": "demos for sale",
-            "description": "its me mario",
+            "topic": "demos for sale",
             "lat": 43.13232,
             "lng": 43.333,
             "type": "static",

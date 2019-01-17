@@ -486,7 +486,7 @@ export class App extends Component<IProps, IState> {
     }
 
     async onLocation(location) {
-      console.log('- [event] location: ', location);
+      // console.log('- [event] location: ', location);
 
       let userRegion = {
             latitude:       location.coords.latitude,
@@ -529,9 +529,9 @@ export class App extends Component<IProps, IState> {
       let currentUUID = undefined;
       try {
         currentUUID = await this.authService.getUUID();
-        Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
+        Logger.debug(`App.getPostParams - User has a UUID of: ${currentUUID}`);
       } catch (err) {
-        Logger.info(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
+        Logger.debug(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
       }
 
       // Get pushy device token

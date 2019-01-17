@@ -17,11 +17,9 @@ import Logger from '../services/Logger';
 import Finder from '../screens/Finder';
 import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
-import GroupList from '../screens/GroupList';
 import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
 import CreateNode from '../screens/CreateNode';
-import GroupEditor from '../screens/GroupEditor';
 import Chat from '../screens/Chat';
 import GetPermissions from '../screens/GetPermissions';
 
@@ -114,20 +112,6 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
   },
-  Groups: { screen: GroupList,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: {color: 'white'},
-      title: 'Groups',
-      headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-        },
-      )) } />,
-      }),
-  },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'black', paddingLeft: 10},
@@ -156,20 +140,6 @@ const InternalStack = StackNavigator({
           )) } />,
         }),
       },
-  GroupEditor: { screen: GroupEditor,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
-      headerTitleStyle: {color: 'white'},
-      title: 'Group Editor',
-      headerLeft: <Icon name='arrow-left' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-        },
-        )) } />,
-      }),
-    },
   Chat: { screen: Chat },
   },
   {

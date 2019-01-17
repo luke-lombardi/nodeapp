@@ -32,8 +32,6 @@ else:
   from config_PROD import Config as ConfigProd
 
 
-# Pushy API setup 
-
 DEFAULT_ACK_TTL = 3600 # 1 hr
 
 # Regular expressions for contact information validation
@@ -46,18 +44,7 @@ def send_push(push_info, rds):
     message = None
     action = push_info.get('action', None)
 
-    logging.info("Received the following action: %s".format(action))
-
-    # if action == 'send_group_invite':
-    #     name = contact_info["name"]
-    #     phone = contact_info["phone"]
-    #     member_id = contact_info["member_id"]
-    #     group_id = contact_info["group_id"]
-    
-    #     message = client.messages.create(
-    #         to=phone,
-    #         from_="+12037179852",
-    #         body="Hello %s, you were invited to join a group: \n fyb://join_group/%s/%s" % (name, group_id, member_id))
+    logging.info("Received the following action: {}".format(action))
 
     # elif action == 'share_node':
     #     name = contact_info["name"]
@@ -68,26 +55,38 @@ def send_push(push_info, rds):
     #         to=phone,
     #         from_="+12037179852",
     #         body="Hello %s, you were invited to track a node: \n fyb://add_node/%s" % (name, node_id))
-
+    
+    user_uuid = push_info.get("user_id", "")
+    user_node_id = 'private:' + user_uuid
 
     if action == 'send_friend_invite':
-        
         relation_id = push_info["relation_id"]
         friend_id = push_info["friend_id"]
-        data = {'message': 'Hello World!'}
-        to = ['cdd92f4ce847efa5c7f']
 
-        options = { 
-            'notification': {
-                'badge': 1,
-                'sound': 'ping.aiff',
-                'body': u'Hello World \u270c'
-            }
-        }
+        node_exists = rds.exists(user_node_id)
 
-        # Send the push notification
-        PushyAPI.sendPushNotification(data, to, options)
+        if node_exists:
+          node_data = rds.get(user_node_id)
 
+          pushy_device_token = node_data.get('device_id', '')
+
+          data = { 'message': 'Hello World!' }
+          to = [ pushy_device_token ]
+
+          options = { 
+              'notification': {
+                  'badge': 1,
+                  'sound': 'ping.aiff',
+                  'body': u'Hello World \u270c'
+              }
+          }
+
+          # Send the push notification and check the response
+          response = PushyAPI.sendPushNotification(data, to, options)
+          logger.info("Pushy API response: {}".format(response))
+
+        else:
+          logging.info("Node {} does not exist".format(friend_id))
 
     if message:
         logging.info("Sent a push notificiation to {}".format(friend_id))
@@ -137,6 +136,9 @@ def lambda_handler(contact_info, context):
 def run():
     test_event = {
         "action": "send_friend_invite",
+        "relation_id": "",
+        "friend_id": "",
+        "user_id": "",
     }
     
     test_context = {

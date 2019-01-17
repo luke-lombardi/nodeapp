@@ -21,9 +21,13 @@ class PushyAPI:
         # Set Content-Type header since we're sending JSON
         req.add_header('Content-Type', 'application/json')
 
+        response = None
+
         try:
            # Actually send the push
            response = urllib2.urlopen(req, json.dumps(postData))
         except urllib2.HTTPError, e:
            # Print response errors
            print "Pushy API returned HTTP error " + str(e.code) + ": " + e.read()
+          
+        return response

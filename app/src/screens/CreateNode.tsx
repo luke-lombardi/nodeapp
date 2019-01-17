@@ -9,8 +9,11 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { Button, Slider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
+
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { mapStyle } from '../config/map';
@@ -21,6 +24,10 @@ interface IProps {
   navigation: any;
   userRegion: any;
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+
+  // We need access to the node lists to prevent overlapping nodes
+  privatePlaceList: Array<any>;
+  publicPlaceList: Array<any>;
 }
 
 interface IState {
@@ -36,6 +43,7 @@ export class CreateNode extends Component<IProps, IState> {
   _map: any;
   private apiService: ApiService;
   private nodeService: NodeService;
+  private readonly configGlobal = ConfigGlobalLoader.config;
 
   constructor(props: IProps) {
     super(props);
@@ -51,6 +59,8 @@ export class CreateNode extends Component<IProps, IState> {
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.submitCreateNode = this.submitCreateNode.bind(this);
+    this.checkForOverlaps = this.checkForOverlaps.bind(this);
+
     this.apiService = new ApiService({});
     this.nodeService = new NodeService({});
   }
@@ -147,6 +157,27 @@ export class CreateNode extends Component<IProps, IState> {
     );
   }
 
+  // Checks if any nodes are <= minimumNodeDistance meters away
+  // If so, display a snackbar to user
+  private checkForOverlaps() {
+
+    let overlaps: boolean = false;
+    if (this.props.privatePlaceList.length > 0) {
+      if (this.props.privatePlaceList[0].data.distance_in_meters <= this.configGlobal.minimumNodeDistance) {
+        overlaps = true;
+        return overlaps;
+      }
+    }
+
+    if (this.props.publicPlaceList.length > 0) {
+      if (this.props.publicPlaceList[0].data.distance_in_meters <= this.configGlobal.minimumNodeDistance) {
+        overlaps = true;
+        return overlaps;
+      }
+    }
+    return overlaps;
+  }
+
   private async submitCreateNode() {
     let nodeData = {
       'topic': this.state.topic,
@@ -173,6 +204,22 @@ export class CreateNode extends Component<IProps, IState> {
       return;
     }
 
+    let overlappingNodes: boolean = this.checkForOverlaps();
+    // If there is another node right on top of the user, don't allow overlapping nodes
+    if (overlappingNodes) {
+      Snackbar.show({
+        title: 'You are too close to another node.',
+        duration: Snackbar.LENGTH_LONG,
+      });
+
+      await this.setState({
+        isLoading: false,
+      });
+
+      this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {updateNodes: true}});
+      return;
+    }
+
     let newUuid = await this.apiService.CreateNodeAsync(nodeData);
 
     if (newUuid !== undefined && nodeData.private === true) {
@@ -195,6 +242,8 @@ export class CreateNode extends Component<IProps, IState> {
   // @ts-ignore
   return {
     userRegion: state.userRegion,
+    publicPlaceList: state.publicPlaceList,
+    privatePlaceList: state.privatePlaceList,
   };
 }
 

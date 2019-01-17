@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { View, AsyncStorage, Switch } from 'react-native';
-import { BlurView } from 'react-native-blur';
 
 import {
   StyleSheet,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 
 // Redux imports
@@ -509,28 +506,13 @@ export class MainMap extends Component<IProps, IState> {
               {/* Map markers  */}
               <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }
               visible={this.state.publicNodesVisible} nodeId={this.state.selectedNode} />
-              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } visible={this.state.publicNodesVisible} />
+              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} }
+              visible={this.state.publicNodesVisible} />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <Friends friendList={this.props.friendList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 
               </MapView>
-
-              {/* {
-              // Main map toolbar
-              // <View style={styles.headerView}>
-                <MapToolbar functions={{
-                  zoomToUserLocation: this.zoomToUserLocation,
-                  navigateToPage: this.navigateToPage,
-                  updateNodeList: this.refreshNodes,
-                  toggleSwitch: this.togglePublicVisible,
-                }}
-                publicNodesVisible={this.state.publicNodesVisible}
-                />
-              // </View>
-              // End main map toolbar
-              } */}
-
       <View style={{top: '10%', width: '90%', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'center', flexDirection: 'row'}}>
         <View style={{padding: 10}}>
           <Button
@@ -553,40 +535,11 @@ export class MainMap extends Component<IProps, IState> {
             onValueChange={ () => { this.togglePublicVisible(); } }
           /> */}
         </View>
-        <View style={{padding: 10}}>
-          <Button
-            icon={{
-              name: 'refresh',
-              size: 35,
-              color: '#ffffff',
-            }}
-            style={styles.refreshButton}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={this.refreshNodes}
-          />
-        </View>
-        <View style={{padding: 10}}>
-          <Button
-            icon={{
-              name: 'location-searching',
-              size: 35,
-              color: '#ffffff',
-            }}
-            style={styles.locationButton}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            // @ts-ignore
-            onPress={this.zoomToUserLocation}
-          />
-          </View>
           <View style={{padding: 10}}>
           <Button
             icon={{
-              name: 'list',
-              size: 35,
+              name: 'home',
+              size: 30,
               color: '#ffffff',
             }}
             style={styles.nodeButton}
@@ -598,7 +551,47 @@ export class MainMap extends Component<IProps, IState> {
           />
           </View>
         </View>
-              <ActionButton
+        <View style={{flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', padding: 30, alignSelf: 'flex-end', bottom: 0, position: 'absolute'}}>
+        <Button
+            icon={{
+              name: 'refresh',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.nodeButton}
+            containerStyle={styles.bottomButtonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={this.refreshNodes}
+          />
+          <Button
+            icon={{
+              name: 'location-searching',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.nodeButton}
+            containerStyle={styles.bottomButtonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={this.zoomToUserLocation}
+          />
+          <Button
+            icon={{
+              name: 'add',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.nodeButton}
+            containerStyle={styles.bottomButtonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={() => { this.navigateToPage('CreateNode');
+            }}
+          />
+          </View>
+
+              {/* <ActionButton
                   backdrop={<BlurView
                     // @ts-ignore
                     style={styles.absolute}
@@ -622,7 +615,7 @@ export class MainMap extends Component<IProps, IState> {
                   }>
                   <Icon name='ios-pin' style={styles.actionButtonIcon} />
                 </ActionButton.Item>
-              </ActionButton>
+              </ActionButton> */}
             </View>
           // End map view
         }
@@ -818,6 +811,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: 'gray',
+  },
+  bottomButtonContainer: {
+    backgroundColor: 'rgba(44,55,71,.5)',
+    width: 50,
+    height: 50,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
+    marginVertical: 10,
   },
   floatRight: {
     backgroundColor: 'rgba(44,55,71,0.0)',

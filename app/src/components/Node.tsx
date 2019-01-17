@@ -154,7 +154,6 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.goToChat}
             />
-
             <Button
               icon={{
                 name: 'share',
@@ -168,9 +167,7 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.shareNode}
               />
-
           </View>
-
           </View>
         </Card>
         </View>

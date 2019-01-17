@@ -33,7 +33,6 @@ export interface IFriendListUpdated {
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
-  readonly currentGroupList?: () => any;
   readonly currentFriendList?: () => any;
 
   readonly publicPersonListUpdated?: (props: IPublicPersonListUpdated) => Promise<void>;
@@ -61,7 +60,6 @@ export default class NodeService {
         // Create services
         this.locationService = new LocationService({});
         this.apiService = new ApiService({
-            currentGroupList: this.props.currentGroupList,
         });
 
         this.checkNowTrigger = new DeferredPromise();
@@ -81,7 +79,6 @@ export default class NodeService {
 
         // Start the monitoring loops - don't await this because it runs forever
         this.MonitorNodeListAsync();
-        // this.MonitorGroupListAsync();
     }
 
     public CheckNow() {
@@ -119,29 +116,6 @@ export default class NodeService {
             return true;
         }
 
-    }
-
-    // Stores a new group ID in async storage
-    public async storeGroup(newGroupId) {
-        let trackedGroups = await AsyncStorage.getItem('trackedGroups');
-        if (trackedGroups !== null) {
-            trackedGroups = JSON.parse(trackedGroups);
-        } else {
-          // @ts-ignore
-          trackedGroups = [];
-        }
-
-        let index = trackedGroups.indexOf(newGroupId);
-
-        if (index < 0) {
-            // @ts-ignore
-            trackedGroups.push(newGroupId);
-
-            await AsyncStorage.setItem('trackedGroups', JSON.stringify(trackedGroups));
-            Logger.info(`NodeService.storeGroup: now tracking ${trackedGroups}`);
-        } else {
-            Logger.info(`NodeService.storeGroup: you already are tracking this group.`);
-        }
     }
 
     // Stores a new friend ID in async storage
@@ -219,29 +193,6 @@ export default class NodeService {
         } else {
             Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
         }
-    }
-
-    // Delete a group ID from async storage
-    public async deleteGroup(groupId) {
-            let trackedGroups = await AsyncStorage.getItem('trackedGroups');
-            if (trackedGroups !== null) {
-                trackedGroups = JSON.parse(trackedGroups);
-            } else {
-              // @ts-ignore
-              trackedGroups = [];
-            }
-
-            let index = trackedGroups.indexOf(groupId);
-
-            if (index >= 0) {
-                // @ts-ignore
-                trackedGroups.splice(index, 1);
-
-                await AsyncStorage.setItem('trackedGroups', JSON.stringify(trackedGroups));
-                Logger.info(`NodeService.storeGroup: rnow tracking ${trackedGroups}`);
-            } else {
-                Logger.info(`NodeService.storeGroup: you are not tracking this group.`);
-            }
     }
 
     // Private implementation functions

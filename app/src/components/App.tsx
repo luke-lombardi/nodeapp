@@ -55,6 +55,7 @@ import AuthService from '../services/AuthService';
 // SET GLOBAL PROPS //
 import { setCustomText } from 'react-native-global-props';
 import SleepUtil from '../services/SleepUtil';
+import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 const customTextProps = {
   style: {
@@ -212,6 +213,8 @@ export class App extends Component<IProps, IState> {
     private authService: AuthService;
     private bearing;
 
+    private readonly configGlobal = ConfigGlobalLoader.config;
+
     constructor(props: IProps) {
       super(props);
 
@@ -253,7 +256,6 @@ export class App extends Component<IProps, IState> {
           privatePlaceListUpdated: this.gotNewPrivatePlaceList,
           friendListUpdated: this.gotNewFriendList,
           currentUserRegion: this.getUserRegion,
-          currentGroupList: this.getGroupList,
       });
 
       this.authService = new AuthService({});
@@ -373,6 +375,9 @@ export class App extends Component<IProps, IState> {
       // Create request object for postNode API endpoint
       let params = await this.getPostParams();
 
+      // URL to post user node to
+      let postUrl = this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/postNode';
+
       BackgroundGeolocation.ready({
         // Geolocation Config
         desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
@@ -388,7 +393,7 @@ export class App extends Component<IProps, IState> {
         stopOnStationary: false,   // <-- Allow the background-service to stop tracking when user stops moving
         startOnBoot: true,        // <-- Auto start tracking when device is powered-up.
         allowIdenticalLocations: true,
-        url: 'https://api.smartshare.io/dev/postNode',
+        url: postUrl,
         batchSync: false,       // <-- [Default: false] Set true to sync locations to server in a single HTTP request.
         autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
         headers: {},

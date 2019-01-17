@@ -163,10 +163,10 @@ export class MainMap extends Component<IProps, IState> {
 
   componentDidMount() {
 
-    // If I've been invited to join a group, add a friend, or track a new node, show confirmation modal
+    // If I've been invited to add a friend, or track a new node, show confirmation modal
     let showConfirmModal = this.props.navigation.getParam('showConfirmModal', false);
     if (showConfirmModal) {
-      // Grab the data from the text message containing the type of action (join group, add friend, track node)
+      // Grab the data from the text message containing the type of action (add friend, track node)
       let linkData = this.props.navigation.getParam('linkData', undefined);
       if (linkData !== undefined) {
         this.confirmLink(linkData);
@@ -377,52 +377,19 @@ export class MainMap extends Component<IProps, IState> {
 
       let action = splitLinkData[0];
 
-      if (action === 'join_group') {
-        let groupId = splitLinkData[1];
-        let memberId = splitLinkData[2];
-
-        let currentUUID = await AsyncStorage.getItem('user_uuid');
-
-        let groupData = {
-          'user_uuid': currentUUID,
-          'group_id': groupId,
-          'member_id': memberId,
-        };
-
-        let newGroupId = await this.apiService.JoinGroupAsync(groupData);
-
-        if (newGroupId !== undefined) {
-          await this.nodeService.storeGroup(newGroupId);
-
-          // Show success message
-          Snackbar.show({
-            title: 'Joined new group',
-            duration: Snackbar.LENGTH_SHORT,
-          });
-
-        } else {
-
-          // Show failure message
-          Snackbar.show({
-            title: 'Problem joining group',
-            duration: Snackbar.LENGTH_SHORT,
-          });
-          Logger.info('MainMap.handleLink - invalid response from JoinGroupAsync.');
-        }
-
-      } else if (action === 'add_friend') {
+      if (action === 'add_friend') {
         let relationId = splitLinkData[1];
         let memberId = splitLinkData[2];
 
         let currentUUID = await AsyncStorage.getItem('user_uuid');
 
-        let groupData = {
+        let friendData = {
           'user_uuid': currentUUID,
           'relation_id': relationId,
           'your_id': memberId,
         };
 
-        let newRelation = await this.apiService.AcceptFriendAsync(groupData);
+        let newRelation = await this.apiService.AcceptFriendAsync(friendData);
 
         if (newRelation !== undefined) {
           let newFriendId = newRelation.their_id;
@@ -689,9 +656,6 @@ export class MainMap extends Component<IProps, IState> {
     switch (pageName) {
       case 'Nodes':
         params = {};
-        break;
-      case 'GroupEditor':
-        params = {action: 'create_group', userRegion: this.props.userRegion};
         break;
       case 'CreateNode':
         params = {action: 'create_node', userRegion: this.props.userRegion};

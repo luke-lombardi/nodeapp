@@ -7,7 +7,6 @@ import { AsyncStorage } from 'react-native';
 
 // @ts-ignore
 interface IProps {
-  readonly currentGroupList?: () => any;
 }
 
 export default class ApiService {
@@ -52,24 +51,6 @@ export default class ApiService {
         nodesToGet.node_ids = publicNodes.node_ids;
       }
 
-     // If we are tracking any groups, get the member nodes as well
-     let trackedGroups = await AsyncStorage.getItem('trackedGroups');
-
-     if (trackedGroups !== null) {
-       trackedGroups = JSON.parse(trackedGroups);
-       let groupMembers = [];
-       let groups = this.props.currentGroupList();
-
-       if (groups) {
-           // @ts-ignore
-           groups.forEach(function (group, index) {
-              groupMembers = groupMembers.concat(group.members);
-              // console.log(groupMembers);
-           });
-        }
-        nodesToGet.node_ids = nodesToGet.node_ids.concat(groupMembers);
-      }
-
       Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
       response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getNodes', {
           method: 'POST',
@@ -80,33 +61,6 @@ export default class ApiService {
       // TODO: add error handling here
       let nodeList = await response.json();
       return nodeList;
-    }
-
-    public async getGroups() {
-        // This gets the currently tracked private groups in ASYNC storage
-        let trackedGroups = await AsyncStorage.getItem('trackedGroups');
-
-        let groupsToGet = {
-          'group_ids': [],
-        };
-
-        // If we are tracking any nodes, add them to request body
-        if (trackedGroups !== null) {
-          trackedGroups = JSON.parse(trackedGroups);
-          // @ts-ignore
-          groupsToGet.group_ids = trackedGroups;
-        }
-
-        // Logger.info(`Fetching these groups: ${JSON.stringify(groupsToGet)}`);
-        let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getGroups', {
-            method: 'POST',
-            headers: {'Content-Type': 'text/plain'},
-            body: JSON.stringify(groupsToGet),
-        });
-
-        // TODO: add error handling here
-        let groupList = await response.json();
-        return groupList;
     }
 
     // Creates a new node at the users position, this can be either public or private
@@ -132,94 +86,6 @@ export default class ApiService {
       let newNode = await response.json();
       return newNode;
     }
-
-      // Creates a new group
-      async CreateGroupAsync(groupData: any) {
-        let requestBody = groupData;
-
-        let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/createGroup', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestBody),
-            });
-
-        if (response.status !== HttpStatus.OK) {
-          Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
-
-          return undefined;
-        }
-
-        let newGroup = await response.json();
-        return newGroup;
-    }
-
-    // Updates an existing group
-    async UpdateGroupAsync(groupData: any) {
-      let requestBody = groupData;
-
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/updateGroup', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          });
-
-      if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.UpdateGroupAsync - Unable to get group data');
-
-        return undefined;
-      }
-
-      let newGroupData = await response.json();
-      return newGroupData;
-  }
-
-  // Deletes an existing group
-    async DeleteGroupAsync(groupData: any) {
-      let requestBody = groupData;
-
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/deleteGroup', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          });
-
-      if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.CreateGroupAsync - Unable to get user info');
-
-        return undefined;
-      }
-
-      let result = await response.json();
-      return result;
-    }
-
-    // Joins a new group
-    async JoinGroupAsync(groupData: any) {
-      let requestBody = groupData;
-
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/joinGroup', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          });
-
-      if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.JoinGroupAsync - Unable to join gorup');
-
-        return undefined;
-      }
-
-      let newGroup = await response.json();
-      return newGroup;
-  }
 
     // Invites a new friend
     async AddFriendAsync(inviteData: any) {

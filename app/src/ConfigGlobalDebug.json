@@ -6,5 +6,5 @@
     "nodeCheckIntervalMs": 5000,
     "groupCheckIntervalMs": 5000,
     "messageCheckIntervalMs": 3000,
-    "minimumNodeDistance": 10
+    "minimumNodeDistance": -1
 }

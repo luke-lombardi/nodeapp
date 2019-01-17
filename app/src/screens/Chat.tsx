@@ -7,7 +7,7 @@ import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
-import MessageModal from '../components/MessageModal';
+import ConfirmModal from '../components/ConfirmModal';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -26,6 +26,7 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
     navigation: any;
+    functions: any;
 }
 
 interface IState {
@@ -33,7 +34,7 @@ interface IState {
     isLoading: boolean;
     messageBody: string;
     textInputHeight: number;
-    messageModalVisible: boolean;
+    confirmModalVisible: boolean;
     userInfo: string;
 }
 
@@ -77,9 +78,9 @@ export class Chat extends Component<IProps, IState> {
         data: [],
         messageBody: '',
         isLoading: false,
-        messageModalVisible: false,
+        confirmModalVisible: false,
         textInputHeight: 0,
-        userInfo: 'eli2939',
+        userInfo: '',
     };
 
     this.apiService = new ApiService({});
@@ -89,9 +90,10 @@ export class Chat extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.closeMessageModal = this.closeMessageModal.bind(this);
+    this.closeConfirmModal = this.closeConfirmModal.bind(this);
+    this.showConfirmModal = this.showConfirmModal.bind(this);
 
-    this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
+    this.startPrivateChat = this.startPrivateChat.bind(this);
 
     this.submitMessage = this.submitMessage.bind(this);
     this.setMessageText = this.setMessageText.bind(this);
@@ -103,15 +105,9 @@ export class Chat extends Component<IProps, IState> {
     this.getTime = this.getTime.bind(this);
     }
 
-  async closeMessageModal(userConfirmation: boolean) {
-    await this.setState({messageModalVisible: false});
-
-    if (userConfirmation) {
-      console.log('starting direct message');
-    } else {
-      console.log('unable to start direct message');
+    async closeConfirmModal() {
+      await this.setState({confirmModalVisible: false});
     }
-  }
 
     async submitMessage() {
       let nodeId = this.props.navigation.getParam('nodeId');
@@ -161,21 +157,30 @@ export class Chat extends Component<IProps, IState> {
         // The only reason this would fail is if the component unmounted
       }
     }
+    async showConfirmModal(item) {
+      // show confirm modal and pass userInfo from chat message
+      await this.setState({userInfo: item});
+      await this.setState({confirmModalVisible: true});
+    }
 
-    async sendPrivateMessage(item) {
-      this.setState({messageModalVisible: true});
+    async startPrivateChat(userInfo: any, shareLocation: boolean) {
+      await this.setState({confirmModalVisible: false});
+      // initiate private communication in API service when user submits confirm modal
+      if (shareLocation) {
+        console.log('starting private chat with location tracking for....', userInfo.user);
+      } else {
+        console.log('starting private chat without location tracking for....', userInfo.user);
+      }
     }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onPress={() => console.log('got item', item)}
-        onLongPress={() => this.sendPrivateMessage(item)}
-        // onPress={() => this._onTouchGroup(item)}
+        onPress={() => this.showConfirmModal(item)}
+        onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,
           maxHeight: 120,
-          // backgroundColor: '#f9fbff',
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
         title={
@@ -303,11 +308,16 @@ export class Chat extends Component<IProps, IState> {
     render() {
       return (
       <View style={{flex: 1}}>
-          <MessageModal functions={{
-            'closeMessageModal': this.closeMessageModal,
-          }}
-          userInfo={this.state.userInfo}
-          />
+      {
+        this.state.confirmModalVisible &&
+        <ConfirmModal functions={{
+          'closeConfirmModal': this.closeConfirmModal,
+          'startPrivateChat': this.startPrivateChat,
+        }}
+        userInfo={this.state.userInfo}
+        action={'requestToChat'}
+        />
+      }
         <KeyboardAvoidingView
           style={{flex: 1}}
           behavior='padding'

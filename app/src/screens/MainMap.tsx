@@ -42,7 +42,7 @@ import ApiService from '../services/ApiService';
 import Logger from '../services/Logger';
 // import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
-import ConfirmModal from '../components/ConfirmModal';
+// import ConfirmModal from '../components/ConfirmModal';
 
 // Import various types of map markers
 import PublicPlaces from './markers/PublicPlaces';
@@ -615,7 +615,7 @@ export class MainMap extends Component<IProps, IState> {
           // End node selected view
         }
 
-        {
+        {/* {
           this.state.confirmModalVisible &&
           <ConfirmModal functions={{
             'closeConfirmModal': this.closeConfirmModal,
@@ -623,7 +623,7 @@ export class MainMap extends Component<IProps, IState> {
           }}
           linkData={this.state.linkData}
           />
-        }
+        } */}
 
      </View>
      // End map screen view (exported component)

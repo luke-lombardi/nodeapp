@@ -52,7 +52,7 @@ export class Chat extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10, paddingRight: 10},
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingRight: 10},
         headerTitleStyle: { color: 'white'},
         title: 'Chat',
         headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
@@ -302,8 +302,10 @@ export class Chat extends Component<IProps, IState> {
            keyExtractor={item => item.timestamp}
           />
           {
-            this.state.data.length === 0 &&
+            this.state.data.length < 1 &&
+            <View style={styles.nullContainer}>
             <Text style={styles.null}>No messages yet!</Text>
+            </View>
           }
           </View>
           <View
@@ -317,6 +319,7 @@ export class Chat extends Component<IProps, IState> {
             onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
             underlineColorAndroid={'transparent'}
             multiline
+            blurOnSubmit
             maxLength={500}
             allowFontScaling
             onSubmitEditing={this.submitMessage}
@@ -441,5 +444,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
     marginBottom: 40,
+  },
+  nullContainer: {
+    flex: 1,
+    bottom: 400,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

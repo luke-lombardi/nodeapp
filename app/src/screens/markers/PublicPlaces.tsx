@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
       markerText: {
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(153,51,255,0.4)',   
+        backgroundColor: 'rgba(153,51,255,0.4)',
         borderRadius: 30,
         borderWidth: 1,
         borderColor: 'grey',
@@ -80,10 +80,10 @@ const styles = StyleSheet.create({
       nullMarker: {
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(153,51,255,0.4)',   
+        backgroundColor: 'rgba(153,51,255,0.4)',
         borderRadius: 30,
-        borderWidth: 1,   
-        borderColor: 'grey',     
+        borderWidth: 1,
+        borderColor: 'grey',
         width: 50,
         height: 50,
       },

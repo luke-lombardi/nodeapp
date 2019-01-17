@@ -12,6 +12,8 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 
+// const WINDOW_WIDTH = Dimensions.get('window').width;
+
 interface IProps {
     functions: any;
     navigation: any;
@@ -84,11 +86,11 @@ export class NodeList extends Component<IProps, IState> {
 
   _renderItem = ({item}) => (
     <ListItem
-    scaleProps={{
-      friction: 90,
-      tension: 100,
-      activeScale: 0.95,
-    }}
+    // scaleProps={{
+    //   friction: 90,
+    //   tension: 100,
+    //   activeScale: 0.95,
+    // }}
       onPress={() => this._onTouchNode(item)}
       containerStyle={styles.nodeListItem}
       leftIcon={
@@ -97,10 +99,10 @@ export class NodeList extends Component<IProps, IState> {
         {name: 'circle', type: 'font-awesome', size: 10, color: 'blue'}
       }
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
-      titleStyle={{fontWeight: 'bold', fontSize: 18, marginBottom: 2}}
-      title={item.data.title}
+      titleStyle={{fontWeight: '600', fontSize: 16, marginBottom: 5}}
+      title={item.data.topic}
       subtitle={item.data.distance_in_miles.toString() + ' miles, expires in ' + (item.data.ttl / 3600).toFixed(1) + ' hours' }
-      subtitleStyle={{fontSize: 16}}
+      subtitleStyle={{fontSize: 14, color: 'gray'}}
     />
   )
 
@@ -120,16 +122,18 @@ export class NodeList extends Component<IProps, IState> {
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
     return (
-      <View style={{width: '100%', flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'black'}}>
         <ButtonGroup
-          innerBorderStyle={{width: 0}}
+          innerBorderStyle={{width: 0.0, color: 'black'}}
           buttonStyle={styles.button}
           containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
           selectedIndex={selectedIndex}
+          selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black', borderBottomWidth: 3}}
           buttons={buttons}
-          textStyle={{fontWeight: 'bold'}}
+          textStyle={{fontWeight: 'bold', fontSize: 16}}
         />
+      <View style={{flex: 1, top: -5}}>
       <View style={styles.flatlist}>
         <FlatList
          data={this.state.data}
@@ -167,6 +171,7 @@ export class NodeList extends Component<IProps, IState> {
           </View>
         }
         </View>
+        </View>
      </View>
     );
   }
@@ -194,30 +199,35 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
-    marginBottom: 10,
-    marginTop: -10,
+    top: -30,
+    marginBottom: -50,
+    backgroundColor: 'white',
     height: '100%',
+    width: '100%',
   },
   nodeListItem: {
-    minHeight: 80,
-    maxHeight: 80,
-    margin: 10,
+    width: '110%',
     marginTop: 10,
     marginBottom: 5,
-    borderRadius: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+    minHeight: 100,
+    maxHeight: 120,
   },
   nullContainer: {
     flex: 1,
     bottom: 200,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
   null: {
-    // fontSize: 22,
+    fontSize: 18,
     color: 'gray',
     alignSelf: 'center',
   },
   button: {
+    backgroundColor: 'black',
   },
   createNodeButton: {
     top: 30,
@@ -225,9 +235,20 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   buttonContainer: {
-    top: -10,
-    height: 75,
+    height: 100,
+    bottom: 45,
+    paddingHorizontal: 100,
+    borderBottomColor: 'black',
     alignSelf: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.9);',
     width: '110%',
+  },
+  transparentButton: {
+  },
+  locationButton: {
+    width: 20,
+    height: 20,
+    alignSelf: 'flex-start',
+    padding: 0,
   },
 });

@@ -84,7 +84,12 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
   },
-  Map: { screen: MainMap },
+  Map: { screen: MainMap,
+    navigationOptions: () => ({
+      // @ts-ignore
+      header: null,
+      }),
+  },
   GetPermissions: { screen: GetPermissions,
     navigationOptions: () => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -95,10 +100,12 @@ const InternalStack = StackNavigator({
   },
   Nodes: { screen: NodeList,
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerStyle: {backgroundColor: 'black', height: 30, borderBottomColor: 'black'},
       headerTitleStyle: {color: 'white'},
-      title: 'Nodes',
-      headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+      // title: 'Nodes',
+      headerLeft: <Icon
+        name='arrow-left' containerStyle={{paddingHorizontal: 5, top: 20, borderBottomColor: 'black',
+      }} type='feather' size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
@@ -123,7 +130,7 @@ const InternalStack = StackNavigator({
   },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10},
       headerTitleStyle: { color: 'white'},
       title: 'Drop Node',
       headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
@@ -168,9 +175,8 @@ const InternalStack = StackNavigator({
   {
   initialRouteName: 'Map',
   navigationOptions: ({navigation}) => ({
-    headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
     title: navigation.indexs,
-    headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
+    // headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
     }),
   },
 );

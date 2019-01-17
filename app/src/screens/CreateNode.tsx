@@ -101,7 +101,7 @@ export class CreateNode extends Component<IProps, IState> {
               />
             </View>
             <View style={styles.switchView}>
-              <Text style={styles.switchText}>{this.state.private ? 'Private' : 'Public'}</Text>
+              <Text style={styles.switchText}>{this.state.private ? 'Private (toggle for public)' : 'Public (toggle for private)'}</Text>
             <Switch
               style={styles.switch}
               value={this.state.private}
@@ -128,7 +128,7 @@ export class CreateNode extends Component<IProps, IState> {
           </View>
 
           <Button
-            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%'}}
+            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'black'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}

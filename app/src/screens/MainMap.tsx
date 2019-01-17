@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, AsyncStorage } from 'react-native';
+// @ts-ignore
+import { View, AsyncStorage, Switch } from 'react-native';
 import { BlurView } from 'react-native-blur';
 
 import {
@@ -9,6 +10,7 @@ import MapView from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Button } from 'react-native-elements';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -41,7 +43,7 @@ import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import Logger from '../services/Logger';
-import MapToolbar from '../components/MapToolbar';
+// import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -56,7 +58,7 @@ import { mapStyle } from '../config/map';
 
 interface IProps {
     navigation: any;
-
+    publicNodesVisible: boolean;
     publicPersonList: Array<any>;
     publicPlaceList: Array<any>;
     privatePersonList: Array<any>;
@@ -488,22 +490,6 @@ export class MainMap extends Component<IProps, IState> {
     return (
       // Map screen view (exported component)
       <View style={styles.mainView}>
-
-          {
-          // Main map toolbar
-          <View style={styles.headerView}>
-            <MapToolbar functions={{
-              zoomToUserLocation: this.zoomToUserLocation,
-              navigateToPage: this.navigateToPage,
-              updateNodeList: this.refreshNodes,
-              toggleSwitch: this.togglePublicVisible,
-            }}
-            publicNodesVisible={this.state.publicNodesVisible}
-            />
-          </View>
-          // End main map toolbar
-          }
-
           {
             // Main map view
             <View style={styles.mapView}>
@@ -530,6 +516,88 @@ export class MainMap extends Component<IProps, IState> {
 
               </MapView>
 
+              {/* {
+              // Main map toolbar
+              // <View style={styles.headerView}>
+                <MapToolbar functions={{
+                  zoomToUserLocation: this.zoomToUserLocation,
+                  navigateToPage: this.navigateToPage,
+                  updateNodeList: this.refreshNodes,
+                  toggleSwitch: this.togglePublicVisible,
+                }}
+                publicNodesVisible={this.state.publicNodesVisible}
+                />
+              // </View>
+              // End main map toolbar
+              } */}
+
+      <View style={{top: '10%', width: '90%', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'center', flexDirection: 'row'}}>
+        <View style={{padding: 10}}>
+          <Button
+            icon={{
+              name: 'menu',
+              type: 'feather',
+              size: 30,
+              underlayColor: 'rgba(44,55,71, 0.7)',
+              color: '#ffffff',
+            }}
+            onPress={() => { this.props.navigation.navigate('DrawerToggle'); } }
+            style={styles.refreshButton}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            />
+          {/* <Switch
+            style={styles.center}
+            value={!this.props.publicNodesVisible}
+            onValueChange={ () => { this.togglePublicVisible(); } }
+          /> */}
+        </View>
+        <View style={{padding: 10}}>
+          <Button
+            icon={{
+              name: 'refresh',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.refreshButton}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={this.refreshNodes}
+          />
+        </View>
+        <View style={{padding: 10}}>
+          <Button
+            icon={{
+              name: 'location-searching',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.locationButton}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            // @ts-ignore
+            onPress={this.zoomToUserLocation}
+          />
+          </View>
+          <View style={{padding: 10}}>
+          <Button
+            icon={{
+              name: 'list',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.nodeButton}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={() => { this.navigateToPage('Nodes');
+            }}
+          />
+          </View>
+        </View>
               <ActionButton
                   backdrop={<BlurView
                     // @ts-ignore
@@ -538,10 +606,11 @@ export class MainMap extends Component<IProps, IState> {
                     blurAmount={5}
                   />}
                   onPress={this.openCreateModal}
-                  size={72}
+                  size={64}
                   spacing={40}
                   degrees={90}
-                  buttonColor='rgba(1,23,58,0.8)'>
+                  buttonColor='rgba(153,51,255,0.7)'
+                >
                 <ActionButton.Item
                   style={styles.buttonItem}
                   buttonColor='gray'
@@ -565,7 +634,7 @@ export class MainMap extends Component<IProps, IState> {
             <Node
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
-              topic={this.state.selectedNode.data.title}
+              topic={this.state.selectedNode.data.topic}
               ttl={this.state.selectedNode.data.ttl}
               origin={this.props.userRegion}
               destination={this.state.selectedNode.data}
@@ -690,15 +759,15 @@ const styles = StyleSheet.create({
   },
   headerView: {
     flex: 1,
-    position: 'relative',
     zIndex: 2,
+    padding: 10,
   },
   nodeSelectedView: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: 0,
     flexDirection: 'column',
-    borderTopColor: 'rgba(44,55,71,0.3)',
-    borderTopWidth: 1,
+    // borderTopColor: 'rgba(44,55,71,0.3)',
+    // borderTopWidth: 1,
     marginTop: 0,
     position: 'absolute',
     bottom: 0,
@@ -718,5 +787,70 @@ const styles = StyleSheet.create({
   absolute: {
     position: 'absolute',
     top: 0, left: 0, bottom: 0, right: 0,
+  },
+  refreshButton: {
+    width: '100%',
+    height: '100%',
+    alignSelf: 'flex-start',
+    padding: 0,
+  },
+  locationButton: {
+    width: '100%',
+    height: '100%',
+    alignSelf: 'flex-start',
+    padding: 0,
+  },
+  createNodeButton: {
+    width: '100%',
+    height: '100%',
+    alignSelf: 'flex-start',
+    padding: 0,
+  },
+  nodeButton: {
+    width: '100%',
+    height: '100%',
+    padding: 0,
+  },
+  buttonContainer: {
+    backgroundColor: 'rgba(44,55,71,.5)',
+    width: 50,
+    height: 50,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
+  floatRight: {
+    backgroundColor: 'rgba(44,55,71,0.0)',
+    padding: 0,
+    width: '15%',
+    height: '100%',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
+    position: 'absolute',
+    right: 70,
+  },
+  center: {
+    marginTop: 20,
+    backgroundColor: 'rgba(44,55,71,0.0)',
+    padding: 0,
+    width: '10%',
+    height: '100%',
+    borderRightWidth: 0,
+    borderRightColor: 'rgba(44,55,71,0.3)',
+    position: 'absolute',
+    borderRadius: 20,
+    right: 25,
+  },
+  transparentButton: {
+    backgroundColor: 'rgba(44,55,71,0.0)',
+    paddingTop: 8,
+  },
+  switch: {
+    backgroundColor: 'white',
+    paddingTop: 20,
+    margin: 10,
+    // marginLeft: '20%',
+    alignSelf: 'center',
   },
 });

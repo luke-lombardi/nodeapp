@@ -360,6 +360,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async confirmLink(linkData: string) {
+
     // Wait briefly so the animation shows properly
     await SleepUtil.SleepAsync(1000);
 
@@ -538,7 +539,7 @@ export class MainMap extends Component<IProps, IState> {
           <View style={{padding: 10}}>
           <Button
             icon={{
-              name: 'home',
+              name: 'search',
               size: 30,
               color: '#ffffff',
             }}

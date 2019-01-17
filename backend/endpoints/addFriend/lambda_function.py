@@ -71,8 +71,8 @@ def send_text(person_to_invite, relation_id, to_user_friend_id):
     person_to_invite['response'] = False
     
     invoke_response = lambda_client.invoke(FunctionName="Smartshare_sendText",
-                                        InvocationType='RequestResponse',
-                                        Payload=json.dumps(person_to_invite)
+                                          InvocationType='RequestResponse',
+                                          Payload=json.dumps(person_to_invite)
                                         )
 
     try:

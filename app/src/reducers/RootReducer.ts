@@ -10,7 +10,6 @@ import { privatePersonListUpdatedReducer as privatePersonList } from './NodeRedu
 import { privatePlaceListUpdatedReducer as privatePlaceList } from './NodeReducers';
 
 import { friendListChangedReducer as friendList } from './FriendReducers';
-import { groupListChangedReducer as groupList } from './GroupReducers';
 
 import { userPositionChangedReducer as userRegion } from './MapReducers';
 
@@ -22,7 +21,6 @@ const RootReducer = combineReducers<IStoreState>({
   publicPlaceList,
   privatePersonList,
   privatePlaceList,
-  groupList,
   friendList,
   userRegion,
 });

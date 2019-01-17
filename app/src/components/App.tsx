@@ -34,7 +34,6 @@ import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
-import { GroupListUpdatedActionCreator } from '../actions/GroupActions';
 import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
 
 // Services
@@ -44,7 +43,6 @@ import NodeService,
     IPublicPlaceListUpdated,
     IPrivatePersonListUpdated,
     IPrivatePlaceListUpdated,
-    IGroupListUpdated,
     IFriendListUpdated,
   }
   from '../services/NodeService';
@@ -231,7 +229,6 @@ export class App extends Component<IProps, IState> {
       this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
 
       this.gotNewFriendList = this.gotNewFriendList.bind(this);
-      this.gotNewGroupList = this.gotNewGroupList.bind(this);
 
       this.getUserRegion = this.getUserRegion.bind(this);
       this.getGroupList = this.getGroupList.bind(this);
@@ -254,7 +251,6 @@ export class App extends Component<IProps, IState> {
           publicPlaceListUpdated: this.gotNewPublicPlaceList,
           privatePersonListUpdated: this.gotNewPrivatePersonList,
           privatePlaceListUpdated: this.gotNewPrivatePlaceList,
-          groupListUpdated: this.gotNewGroupList,
           friendListUpdated: this.gotNewFriendList,
           currentUserRegion: this.getUserRegion,
           currentGroupList: this.getGroupList,
@@ -591,10 +587,6 @@ export class App extends Component<IProps, IState> {
       await this.props.PrivatePlaceListUpdated(props.nodeList);
     }
 
-    private async gotNewGroupList(props: IGroupListUpdated) {
-      await this.props.GroupListUpdated(props.groupList);
-    }
-
     private async gotNewFriendList(props: IFriendListUpdated) {
       await this.props.FriendListUpdated(props.friendList);
     }
@@ -608,7 +600,6 @@ function mapStateToProps(state: IStoreState): IProps {
     publicPlaceList: state.publicPlaceList,
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
-    groupList: state.groupList,
     friendList: state.friendList,
     userRegion: state.userRegion,
   };
@@ -621,7 +612,6 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
-    GroupListUpdated: bindActionCreators(GroupListUpdatedActionCreator, dispatch),
     FriendListUpdated: bindActionCreators(FriendListUpdatedActionCreator, dispatch),
   };
 }

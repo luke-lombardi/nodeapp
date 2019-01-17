@@ -5,7 +5,6 @@ export default interface IStoreState {
   readonly publicPlaceList: Array<any>;
   readonly privatePersonList: Array<any>;
   readonly privatePlaceList: Array<any>;
-  readonly groupList: Array<any>;
   readonly friendList: Array<any>;
   readonly userRegion: any;
 }

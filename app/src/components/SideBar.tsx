@@ -120,7 +120,6 @@ export function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     friendList: state.friendList,
-    groupList: state.groupList,
     privatePlaceList: state.privatePlaceList,
     publicPlaceList: state.publicPlaceList,
   };

@@ -26,10 +26,6 @@ export interface IPrivatePlaceListUpdated {
     readonly nodeList: Array<any>;
 }
 
-export interface IGroupListUpdated {
-    readonly groupList: Array<any>;
-}
-
 export interface IFriendListUpdated {
     readonly friendList: Array<any>;
 }
@@ -44,7 +40,6 @@ interface IProps {
   readonly publicPlaceListUpdated?: (props: IPublicPlaceListUpdated) => Promise<void>;
   readonly privatePersonListUpdated?: (props: IPrivatePersonListUpdated) => Promise<void>;
   readonly privatePlaceListUpdated?: (props: IPrivatePlaceListUpdated) => Promise<void>;
-  readonly groupListUpdated?: (props: IGroupListUpdated) => Promise<void>;
   readonly friendListUpdated?: (props: IFriendListUpdated) => Promise<void>;
 }
 
@@ -266,70 +261,6 @@ export default class NodeService {
 
             Logger.trace('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
         }
-    }
-
-    // Monitors the cache for updates to the group list
-    // @ts-ignore
-    private async MonitorGroupListAsync() {
-        while (true) {
-            if (this.stopping) return;
-
-            // Re-create the check-now trigger in case it was triggered last time
-            this.checkNowTrigger = new DeferredPromise();
-
-            await this.GetGroupListAsync();
-
-            const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.groupCheckIntervalMs);
-            await Promise.race([ sleepPromise, this.checkNowTrigger ]);
-
-            Logger.trace('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
-        }
-    }
-
-    // Gets the current group list
-    private async GetGroupListAsync() {
-        Logger.info('NodeService.GetGroupListAsync - Getting the group list.');
-        let trackedGroups = await AsyncStorage.getItem('trackedGroups');
-
-        if (trackedGroups !== null) {
-            trackedGroups = JSON.parse(trackedGroups);
-        }
-
-        let groupListArray = [];
-        let groupList = await this.apiService.getGroups();
-        let modified = false;
-
-        if (groupList) {
-            for (let key in groupList) {
-                if (groupList.hasOwnProperty(key)) {
-
-                    if (groupList[key].status === 'not_found') {
-
-                        Logger.info(`Cannot find group ${key}, removing from storage.`);
-
-                        if (trackedGroups) {
-                            let index = trackedGroups.indexOf(key);
-                            if (index !== -1) {
-                                // @ts-ignore
-                                trackedGroups.splice(index, 1);
-                                modified = true;
-                            }
-                        }
-                        continue;
-                    }
-                    groupList[key].group_id = key;
-                    groupListArray.push(groupList[key]);
-                }
-            }
-
-            // If any groups were not found in the cache, update the tracked group list
-            if (modified) {
-                await AsyncStorage.setItem('trackedGroups', JSON.stringify(trackedGroups));
-            }
-
-            Logger.info(`GetGroupListAsync.GetGroupListAsync - Got these groups: ${JSON.stringify(groupListArray)}`);
-            await this.props.groupListUpdated({groupList: groupListArray});
-            }
     }
 
     // Gets the current node list, which includes both public and tracked nodes

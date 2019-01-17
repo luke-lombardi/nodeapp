@@ -35,7 +35,7 @@ export default class PublicPeople extends Component<IProps, IState> {
             >
             <View style={styles.callout}>
 
-            <Pulse color='orange' numPulses={3} diameter={400} speed={20} duration={2000} />
+            <Pulse color='orange' numPulses={1} diameter={400} speed={100} duration={200} />
 
             <Text style={styles.title}>{marker.data.title}</Text>
             </View>

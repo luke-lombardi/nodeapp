@@ -104,7 +104,7 @@ const InternalStack = StackNavigator({
       headerTitleStyle: {color: 'white'},
       // title: 'Nodes',
       headerLeft: <Icon
-        name='arrow-left' containerStyle={{paddingHorizontal: 5, top: 20,borderBottomColor: 'black',
+        name='arrow-left' containerStyle={{paddingHorizontal: 5, top: 20, borderBottomColor: 'black',
       }} type='feather' size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
@@ -176,7 +176,7 @@ const InternalStack = StackNavigator({
   initialRouteName: 'Map',
   navigationOptions: ({navigation}) => ({
     title: navigation.indexs,
-    //headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
+    // headerLeft: <Icon name='menu' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => navigation.navigate('DrawerToggle') } />,
     }),
   },
 );

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { View, AsyncStorage, Switch } from 'react-native';
 import { BlurView } from 'react-native-blur';
 
@@ -10,7 +11,6 @@ import Snackbar from 'react-native-snackbar';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
-
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -43,7 +43,7 @@ import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import Logger from '../services/Logger';
-import MapToolbar from '../components/MapToolbar';
+// import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -541,7 +541,7 @@ export class MainMap extends Component<IProps, IState> {
               underlayColor: 'rgba(44,55,71, 0.7)',
               color: '#ffffff',
             }}
-            // onPress={this.props.navigation.navigate('DrawerToggle')}
+            onPress={() => { this.props.navigation.navigate('DrawerToggle'); } }
             style={styles.refreshButton}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.transparentButton}
@@ -634,7 +634,7 @@ export class MainMap extends Component<IProps, IState> {
             <Node
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
-              topic={this.state.selectedNode.data.title}
+              topic={this.state.selectedNode.data.topic}
               ttl={this.state.selectedNode.data.ttl}
               origin={this.props.userRegion}
               destination={this.state.selectedNode.data}
@@ -763,7 +763,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   nodeSelectedView: {
-    //backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: 0,
     flexDirection: 'column',
     // borderTopColor: 'rgba(44,55,71,0.3)',

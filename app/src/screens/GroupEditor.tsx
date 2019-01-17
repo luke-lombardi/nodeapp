@@ -205,6 +205,7 @@ export class GroupEditor extends Component<IProps, IState> {
       <View style={styles.container}>
         <View style={styles.groupForm}>
           <View style={styles.inputView}>
+            // @ts-ignore
             <Input
               placeholder='Group title'
               leftIcon={

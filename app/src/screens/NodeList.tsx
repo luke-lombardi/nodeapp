@@ -100,7 +100,7 @@ export class NodeList extends Component<IProps, IState> {
       }
       rightIcon={{name: 'chevron-right', color: 'rgba(51, 51, 51, 0.8)'}}
       titleStyle={{fontWeight: '600', fontSize: 16, marginBottom: 5}}
-      title={item.data.title}
+      title={item.data.topic}
       subtitle={item.data.distance_in_miles.toString() + ' miles, expires in ' + (item.data.ttl / 3600).toFixed(1) + ' hours' }
       subtitleStyle={{fontSize: 14, color: 'gray'}}
     />

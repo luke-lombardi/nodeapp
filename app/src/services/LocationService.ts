@@ -15,8 +15,7 @@ interface NodeData {
   longitude: number;
   latDelta: string;
   longDelta: string;
-  title: string;
-  description: string;
+  topic: string;
   distance_in_meters: number;
   distance_in_miles: number;
   bearing: number;
@@ -168,8 +167,7 @@ export default class LocationService {
         currentNode.data.longitude = nodeListArray[key].lng;
         currentNode.data.latDelta = '0.000183';
         currentNode.data.longDelta = '0.000183';
-        currentNode.data.title = nodeListArray[key].title;
-        currentNode.data.description = nodeListArray[key].description;
+        currentNode.data.topic = nodeListArray[key].topic;
         currentNode.data.ttl = nodeListArray[key].ttl;
         currentNode.data.distance_in_meters = orderedList[i].distance;
         currentNode.data.distance_in_miles = milesToNode;

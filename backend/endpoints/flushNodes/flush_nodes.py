@@ -31,7 +31,7 @@ def is_cache_connected(rds):
 
 
 def connect_to_cache():
-    rds = redis.StrictRedis(host='redis-11771.c10.us-east-1-4.ec2.cloud.redislabs.com', password='3VyLUrhKv8BzUWtZKtKoIFdqlMk6TVOQ', port=11771, db=0, socket_connect_timeout=5)
+    rds = redis.StrictRedis(host='redis-18280.c10.us-east-1-4.ec2.cloud.redislabs.com', password='OKyQXRnYwPSxy7ivgJ6l12DjoSNNIiJ0', port=18280, db=0, socket_connect_timeout=5)
 
     connected = is_cache_connected(rds)
     if connected:

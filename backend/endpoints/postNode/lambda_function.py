@@ -11,6 +11,7 @@ import redis
 import json
 import logging
 import os
+import boto3
 
 from modules import cache
 
@@ -28,6 +29,38 @@ else:
 
 DEFAULT_NODE_TTL = 3600
 
+
+lambda_client = boto3.client('lambda', 
+                        aws_access_key_id='AKIAJTWJKPPNEIBU4BSQ', 
+                        aws_secret_access_key='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', 
+                        region_name='us-east-1')
+
+
+def new_user(rds, key_name):
+    node_exists = rds.exists(key_name)
+
+    if node_exists:
+        return False
+    
+    return True
+
+
+def get_random_name():
+    username = None
+    
+    invoke_response = lambda_client.invoke(FunctionName="Smartshare_randomName",
+                                          InvocationType='RequestResponse',
+                                          Payload=json.dumps({})
+                                        )
+    try:
+        response_data = json.loads(invoke_response['Payload'].read())
+        username = response_data.get('username', None)
+    except Exception as e:
+        logger.info("Error generating random username: {}".format(e))
+
+    return username
+
+
 def update_node(rds, node_id, node_data):
     current_ttl = rds.ttl(node_id)
     
@@ -40,15 +73,27 @@ def update_node(rds, node_id, node_data):
     node_type = node_data.get('type', 'place')
 
     if node_type == 'person':
-      rds.set(name=key_name, value=json.dumps(node_data))
+        # If it's a new user, assign them a random username
+        if new_user(rds, key_name):
+            username = get_random_name()
+            if username:
+                logger.info("Generated a new username: {} for {}".format(username, key_name))
+                node_data['topic'] = username
+            else:
+                node_data['topic'] = 'Anonymous'
+
+        # Update the node data in the cache
+        rds.set(name=key_name, value=json.dumps(node_data))
     else:
-      logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
-      rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
+        logging.info('Node %s has %d seconds to live.', node_id, current_ttl)
+        rds.setex(name=key_name, value=json.dumps(node_data), time=DEFAULT_NODE_TTL)
 
     return key_name
 
 
 def lambda_handler(event, context):
+    rds = None
+  
     # if we are running locally, use the DEV config file
     if not context:
         rds = cache.connect_to_cache('DEV')

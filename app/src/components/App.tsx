@@ -23,6 +23,7 @@ import SideBar from '../components/SideBar';
 import CreateNode from '../screens/CreateNode';
 import GroupEditor from '../screens/GroupEditor';
 import Chat from '../screens/Chat';
+import GeneralChat from '../screens/Chat';
 import GetPermissions from '../screens/GetPermissions';
 
 // Redux imports
@@ -104,8 +105,8 @@ const InternalStack = StackNavigator({
       headerTitleStyle: {color: 'white'},
       // title: 'Nodes',
       headerLeft: <Icon
-        name='arrow-left' containerStyle={{paddingHorizontal: 5, top: 20, borderBottomColor: 'black',
-      }} type='feather' size={25} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        name='arrow-left' containerStyle={{paddingHorizontal: 10, top: 20, borderBottomColor: 'black',
+      }} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
         {
           index: 0,
@@ -144,7 +145,7 @@ const InternalStack = StackNavigator({
   },
   Friends: { screen: FriendList,
       navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+        headerStyle: {backgroundColor: 'black', paddingLeft: 10},
         headerTitleStyle: { color: 'white'},
         title: 'People',
         headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
@@ -171,6 +172,7 @@ const InternalStack = StackNavigator({
       }),
     },
   Chat: { screen: Chat },
+  GeneralChat: { screen: GeneralChat },
   },
   {
   initialRouteName: 'Map',

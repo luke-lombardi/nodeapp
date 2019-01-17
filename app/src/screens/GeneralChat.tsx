@@ -7,7 +7,6 @@ import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
-import MessageModal from '../components/MessageModal';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -33,11 +32,9 @@ interface IState {
     isLoading: boolean;
     messageBody: string;
     textInputHeight: number;
-    messageModalVisible: boolean;
-    userInfo: string;
 }
 
-export class Chat extends Component<IProps, IState> {
+export class GeneralChat extends Component<IProps, IState> {
   private monitoring: boolean = false;
   private stopping: boolean = false;
   private checkNowTrigger: DeferredPromise;
@@ -48,7 +45,7 @@ export class Chat extends Component<IProps, IState> {
 
   // @ts-ignore
   private userUuid: string;
-  private nodeId: string;
+//   private nodeId: string;
   private action: any;
 
   // TODO: figure out a smarter way to do this
@@ -77,9 +74,7 @@ export class Chat extends Component<IProps, IState> {
         data: [],
         messageBody: '',
         isLoading: false,
-        messageModalVisible: false,
         textInputHeight: 0,
-        userInfo: 'eli2939',
     };
 
     this.apiService = new ApiService({});
@@ -89,9 +84,6 @@ export class Chat extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.closeMessageModal = this.closeMessageModal.bind(this);
-
-    this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
 
     this.submitMessage = this.submitMessage.bind(this);
     this.setMessageText = this.setMessageText.bind(this);
@@ -103,18 +95,8 @@ export class Chat extends Component<IProps, IState> {
     this.getTime = this.getTime.bind(this);
     }
 
-  async closeMessageModal(userConfirmation: boolean) {
-    await this.setState({messageModalVisible: false});
-
-    if (userConfirmation) {
-      console.log('starting direct message');
-    } else {
-      console.log('unable to start direct message');
-    }
-  }
-
     async submitMessage() {
-      let nodeId = this.props.navigation.getParam('nodeId');
+    //   let nodeId = this.props.navigation.getParam('nodeId');
 
       await this.setState({
         isLoading: true,
@@ -141,7 +123,7 @@ export class Chat extends Component<IProps, IState> {
         messageBody: this.state.messageBody,
         action: 'new_message',
         userUuid: userUuid,
-        nodeId: nodeId,
+        // nodeId: nodeId,
       });
     }
 
@@ -161,16 +143,14 @@ export class Chat extends Component<IProps, IState> {
         // The only reason this would fail is if the component unmounted
       }
     }
-
-    async sendPrivateMessage(item) {
-      this.setState({messageModalVisible: true});
-    }
-
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onPress={() => console.log('got item', item)}
-        onLongPress={() => this.sendPrivateMessage(item)}
+        // scaleProps={{
+        //   friction: 90,
+        //   tension: 100,
+        //   activeScale: 0.95,
+        // }}
         // onPress={() => this._onTouchGroup(item)}
         containerStyle={{
           minHeight: 100,
@@ -178,6 +158,11 @@ export class Chat extends Component<IProps, IState> {
           // backgroundColor: '#f9fbff',
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
+        // rightIcon={{
+        //   name: 'arrow-up-right',
+        //   type: 'feather',
+        //   color: 'rgba(51, 51, 51, 0.8)',
+        // }}
         title={
           <View style={styles.titleView}>
           <Text style={styles.titleText}>{item.message}</Text>
@@ -194,7 +179,7 @@ export class Chat extends Component<IProps, IState> {
     componentWillMount () {
       // Grab navigation params
       this.action = this.props.navigation.getParam('action', '');
-      this.nodeId = this.props.navigation.getParam('nodeId', '');
+    //   this.nodeId = this.props.navigation.getParam('nodeId', '');
 
       if (this.action === 'new_message') {
         console.log('posting a message');
@@ -215,11 +200,11 @@ export class Chat extends Component<IProps, IState> {
     async postMessage() {
       let userUuid = await this.authService.getUUID();
 
-      let nodeId = this.props.navigation.getParam('nodeId', undefined);
+    //   let nodeId = this.props.navigation.getParam('nodeId', undefined);
       let messageBody = this.props.navigation.getParam('messageBody', undefined);
 
       let requestBody = {
-        node_id:  nodeId,
+        // node_id:  nodeId,
         message: messageBody,
         user_uuid: userUuid,
       };
@@ -264,7 +249,7 @@ export class Chat extends Component<IProps, IState> {
 
         let currentUUID = await this.authService.getUUID();
         let requestBody = {
-          'node_id': this.nodeId,
+        //   'node_id': this.nodeId,
           'user_uuid': currentUUID,
         };
 
@@ -303,11 +288,6 @@ export class Chat extends Component<IProps, IState> {
     render() {
       return (
       <View style={{flex: 1}}>
-          <MessageModal functions={{
-            'closeMessageModal': this.closeMessageModal,
-          }}
-          userInfo={this.state.userInfo}
-          />
         <KeyboardAvoidingView
           style={{flex: 1}}
           behavior='padding'
@@ -390,7 +370,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(GeneralChat);
 
 const styles = StyleSheet.create({
   nodeListItem: {

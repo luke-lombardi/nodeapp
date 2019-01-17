@@ -105,6 +105,24 @@ export class SideBar extends Component<IProps> {
                   }}
                 />
 
+                <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
+                  containerStyle={styles.navItem}
+                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  key='generalchat'
+                  title='Chat'
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'message-circle', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => { this.props.friendList.length === 0 ?
+                    this.props.navigation.navigate('GeneralChat', {action: 'add_friend'}) :
+                    this.resetNavigation('GeneralChat');
+                  }}
+                />
+
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}

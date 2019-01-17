@@ -131,6 +131,7 @@ export class FriendList extends Component<IProps, IState> {
 
   render() {
     return (
+      <View style={{backgroundColor: 'white', height: '100%', flex: 1}}>
       <View style={styles.flatlist}>
         <FlatList
          data={this.props.friendList}
@@ -150,6 +151,7 @@ export class FriendList extends Component<IProps, IState> {
           this.props.friendList.length === 0 &&
           <Text style={styles.null}>No friends have been added yet</Text>
         }
+     </View>
      </View>
     );
   }
@@ -194,10 +196,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   flatlist: {
-    marginBottom: 200,
   },
   null: {
-    fontSize: 22,
+    fontSize: 20,
     color: 'gray',
     top: 250,
     alignSelf: 'center',

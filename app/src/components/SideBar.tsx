@@ -98,7 +98,7 @@ export class SideBar extends Component<IProps> {
                   key='friends'
                   title='People'
                   titleStyle={{fontSize: 22}}
-                  leftIcon={{name: 'user', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  leftIcon={{name: 'users', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.friendList.length === 0 ?
                     this.props.navigation.navigate('Friends', {action: 'add_friend'}) :
                     this.resetNavigation('Friends');
@@ -132,9 +132,9 @@ export class SideBar extends Component<IProps> {
                   containerStyle={styles.navItem}
                   badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   // key='chat'
-                  title='My Chats'
+                  title='Messages'
                   titleStyle={{fontSize: 22}}
-                  leftIcon={{name: 'message-circle', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  leftIcon={{name: 'lock', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.friendList.length === 0 ?
                     this.props.navigation.navigate('Chat', {action: 'user_chat'}) :
                     this.resetNavigation('Chat');
@@ -176,7 +176,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navItem: {
-    borderBottomWidth: 1,
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',

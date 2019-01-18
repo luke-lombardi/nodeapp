@@ -186,7 +186,6 @@ export class Chat extends Component<IProps, IState> {
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onPress={() => this.showConfirmModal(item)}
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,

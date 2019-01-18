@@ -212,12 +212,14 @@ export class Chat extends Component<IProps, IState> {
         }
         title={
           <View style={styles.titleView}>
+          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}</Text>
           <Text style={styles.titleText}>{item.message}</Text>
           </View>
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}> {this.getTime(item)} | { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
+          <Text style={styles.ratingText}>{this.getTime(item)}</Text>
+          {/* ({ item.user.substr(item.user.length - 5)}) */}
           </View>
         }
       />
@@ -447,9 +449,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   titleText: {
-    left: 4,
     color: 'black',
     fontSize: 16,
+    paddingTop: 5,
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -491,7 +493,7 @@ const styles = StyleSheet.create({
   inputContainer: {
   },
   titleView: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     paddingTop: 5,
   },
   subtitleView: {

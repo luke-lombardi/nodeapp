@@ -118,6 +118,7 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   render() {
+    console.log('nodeList', this.props.publicPlaceList);
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
     return (

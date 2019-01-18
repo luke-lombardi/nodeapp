@@ -204,6 +204,10 @@ export class Chat extends Component<IProps, IState> {
       if (this.action === 'new_message') {
         console.log('posting a message');
         this.postMessage();
+      } else if (this.action === 'general_chat') {
+        console.log('general chat');
+      } else if (this.action === 'user_chat') {
+        console.log('user chat');
       }
     }
 

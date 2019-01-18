@@ -21,7 +21,6 @@ import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
 import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
-import GeneralChat from '../screens/Chat';
 import GetPermissions from '../screens/GetPermissions';
 
 // Redux imports
@@ -141,7 +140,6 @@ const InternalStack = StackNavigator({
         }),
       },
   Chat: { screen: Chat },
-  GeneralChat: { screen: GeneralChat },
   },
   {
   initialRouteName: 'Map',

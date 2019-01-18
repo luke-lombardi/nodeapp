@@ -113,13 +113,31 @@ export class SideBar extends Component<IProps> {
                   }}
                   containerStyle={styles.navItem}
                   badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
-                  key='generalchat'
+                  // key='chat'
                   title='Chat'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'message-circle', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.friendList.length === 0 ?
-                    this.props.navigation.navigate('GeneralChat', {action: 'add_friend'}) :
-                    this.resetNavigation('GeneralChat');
+                    this.props.navigation.navigate('Chat', {action: 'general_chat'}) :
+                    this.resetNavigation('Chat');
+                  }}
+                />
+
+                <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
+                  containerStyle={styles.navItem}
+                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  // key='chat'
+                  title='My Chats'
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'message-circle', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => { this.props.friendList.length === 0 ?
+                    this.props.navigation.navigate('Chat', {action: 'user_chat'}) :
+                    this.resetNavigation('Chat');
                   }}
                 />
 

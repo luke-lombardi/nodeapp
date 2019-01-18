@@ -94,6 +94,8 @@ export class Chat extends Component<IProps, IState> {
     this.showConfirmModal = this.showConfirmModal.bind(this);
 
     this.startPrivateChat = this.startPrivateChat.bind(this);
+    this.upvoteComment = this.upvoteComment.bind(this);
+    this.downvoteComment = this.downvoteComment.bind(this);
 
     this.submitMessage = this.submitMessage.bind(this);
     this.setMessageText = this.setMessageText.bind(this);
@@ -173,6 +175,14 @@ export class Chat extends Component<IProps, IState> {
       }
     }
 
+    async upvoteComment(item) {
+      console.log('upvoting comment....', item);
+    }
+
+    async downvoteComment(item) {
+      console.log('downvoting comment....', item);
+    }
+
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
@@ -183,6 +193,23 @@ export class Chat extends Component<IProps, IState> {
           maxHeight: 120,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
+        rightElement={
+          <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+            <Icon
+              name='keyboard-arrow-up'
+              color='#00aced'
+              size={32}
+              onPress={() => this.upvoteComment(item)}
+            />
+            <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
+            <Icon
+              name='keyboard-arrow-down'
+              color='#00aced'
+              size={32}
+              onPress={() => this.downvoteComment(item)}
+            />
+          </View>
+        }
         title={
           <View style={styles.titleView}>
           <Text style={styles.titleText}>{item.message}</Text>

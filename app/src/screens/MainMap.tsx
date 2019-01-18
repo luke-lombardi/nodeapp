@@ -42,7 +42,7 @@ import ApiService from '../services/ApiService';
 import Logger from '../services/Logger';
 // import MapToolbar from '../components/MapToolbar';
 import Node from '../components/Node';
-import ConfirmModal from '../components/ConfirmModal';
+// import ConfirmModal from '../components/ConfirmModal';
 
 // Import various types of map markers
 import PublicPlaces from './markers/PublicPlaces';
@@ -462,7 +462,7 @@ export class MainMap extends Component<IProps, IState> {
               <MapView
                 provider='google'
                 ref={ component => { this._map = component; } }
-                style={StyleSheet.absoluteFillObject}
+                style={ StyleSheet.absoluteFillObject }
                 showsUserLocation={true}
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
@@ -480,7 +480,7 @@ export class MainMap extends Component<IProps, IState> {
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <Friends friendList={this.props.friendList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 
-              </MapView>
+      </MapView>
       <View style={{top: '10%', width: '90%', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'center', flexDirection: 'row'}}>
         <View style={{padding: 10}}>
           <Button
@@ -519,6 +519,8 @@ export class MainMap extends Component<IProps, IState> {
           />
           </View>
         </View>
+        {
+        !this.state.nodeSelected &&
         <View style={{flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', padding: 30, alignSelf: 'flex-end', bottom: 0, position: 'absolute'}}>
         <Button
             icon={{
@@ -558,33 +560,8 @@ export class MainMap extends Component<IProps, IState> {
             }}
           />
           </View>
-
-              {/* <ActionButton
-                  backdrop={<BlurView
-                    // @ts-ignore
-                    style={styles.absolute}
-                    blurType='dark'
-                    blurAmount={5}
-                  />}
-                  onPress={this.openCreateModal}
-                  size={64}
-                  spacing={40}
-                  degrees={90}
-                  buttonColor='rgba(153,51,255,0.7)'
-                >
-                <ActionButton.Item
-                  style={styles.buttonItem}
-                  buttonColor='gray'
-                  textStyle={{fontSize: 22, color: 'white'}}
-                  textContainerStyle={{top: 20, height: 50, backgroundColor: 'transparent', borderWidth: 0}}
-                  title='Create Node'
-                  onPress={() =>
-                    this.navigateToPage('CreateNode')
-                  }>
-                  <Icon name='ios-pin' style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-              </ActionButton> */}
-            </View>
+        }
+        </View>
           // End map view
         }
 
@@ -606,7 +583,7 @@ export class MainMap extends Component<IProps, IState> {
           // End node selected view
         }
 
-        {
+        {/* {
           this.state.confirmModalVisible &&
           <ConfirmModal functions={{
             'closeConfirmModal': this.closeConfirmModal,
@@ -614,7 +591,7 @@ export class MainMap extends Component<IProps, IState> {
           }}
           linkData={this.state.linkData}
           />
-        }
+        } */}
 
      </View>
      // End map screen view (exported component)
@@ -721,14 +698,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   nodeSelectedView: {
-    // backgroundColor: 'rgba(255, 255, 255, 0.9)',
     padding: 0,
     flexDirection: 'column',
-    // borderTopColor: 'rgba(44,55,71,0.3)',
-    // borderTopWidth: 1,
     marginTop: 0,
     position: 'absolute',
-    bottom: 0,
+    bottom: 15,
     left: 0,
     height: '35%',
     width: '100%',

@@ -7,7 +7,6 @@ import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
-import ConfirmModal from '../components/ConfirmModal';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -26,7 +25,6 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
     navigation: any;
-    functions: any;
 }
 
 interface IState {
@@ -34,11 +32,9 @@ interface IState {
     isLoading: boolean;
     messageBody: string;
     textInputHeight: number;
-    confirmModalVisible: boolean;
-    userInfo: string;
 }
 
-export class Chat extends Component<IProps, IState> {
+export class GeneralChat extends Component<IProps, IState> {
   private monitoring: boolean = false;
   private stopping: boolean = false;
   private checkNowTrigger: DeferredPromise;
@@ -49,7 +45,7 @@ export class Chat extends Component<IProps, IState> {
 
   // @ts-ignore
   private userUuid: string;
-  private nodeId: string;
+//   private nodeId: string;
   private action: any;
 
   // TODO: figure out a smarter way to do this
@@ -78,9 +74,7 @@ export class Chat extends Component<IProps, IState> {
         data: [],
         messageBody: '',
         isLoading: false,
-        confirmModalVisible: false,
         textInputHeight: 0,
-        userInfo: '',
     };
 
     this.apiService = new ApiService({});
@@ -90,10 +84,6 @@ export class Chat extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.closeConfirmModal = this.closeConfirmModal.bind(this);
-    this.showConfirmModal = this.showConfirmModal.bind(this);
-
-    this.startPrivateChat = this.startPrivateChat.bind(this);
 
     this.submitMessage = this.submitMessage.bind(this);
     this.setMessageText = this.setMessageText.bind(this);
@@ -105,12 +95,8 @@ export class Chat extends Component<IProps, IState> {
     this.getTime = this.getTime.bind(this);
     }
 
-    async closeConfirmModal() {
-      await this.setState({confirmModalVisible: false});
-    }
-
     async submitMessage() {
-      let nodeId = this.props.navigation.getParam('nodeId');
+    //   let nodeId = this.props.navigation.getParam('nodeId');
 
       await this.setState({
         isLoading: true,
@@ -137,7 +123,7 @@ export class Chat extends Component<IProps, IState> {
         messageBody: this.state.messageBody,
         action: 'new_message',
         userUuid: userUuid,
-        nodeId: nodeId,
+        // nodeId: nodeId,
       });
     }
 
@@ -157,32 +143,26 @@ export class Chat extends Component<IProps, IState> {
         // The only reason this would fail is if the component unmounted
       }
     }
-    async showConfirmModal(item) {
-      // show confirm modal and pass userInfo from chat message
-      await this.setState({userInfo: item});
-      await this.setState({confirmModalVisible: true});
-    }
-
-    async startPrivateChat(userInfo: any, shareLocation: boolean) {
-      await this.setState({confirmModalVisible: false});
-      // initiate private communication in API service when user submits confirm modal
-      if (shareLocation) {
-        console.log('starting private chat with location tracking for....', userInfo.user);
-      } else {
-        console.log('starting private chat without location tracking for....', userInfo.user);
-      }
-    }
-
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onPress={() => this.showConfirmModal(item)}
-        onLongPress={() => this.showConfirmModal(item)}
+        // scaleProps={{
+        //   friction: 90,
+        //   tension: 100,
+        //   activeScale: 0.95,
+        // }}
+        // onPress={() => this._onTouchGroup(item)}
         containerStyle={{
           minHeight: 100,
           maxHeight: 120,
+          // backgroundColor: '#f9fbff',
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
+        // rightIcon={{
+        //   name: 'arrow-up-right',
+        //   type: 'feather',
+        //   color: 'rgba(51, 51, 51, 0.8)',
+        // }}
         title={
           <View style={styles.titleView}>
           <Text style={styles.titleText}>{item.message}</Text>
@@ -199,7 +179,7 @@ export class Chat extends Component<IProps, IState> {
     componentWillMount () {
       // Grab navigation params
       this.action = this.props.navigation.getParam('action', '');
-      this.nodeId = this.props.navigation.getParam('nodeId', '');
+    //   this.nodeId = this.props.navigation.getParam('nodeId', '');
 
       if (this.action === 'new_message') {
         console.log('posting a message');
@@ -220,11 +200,11 @@ export class Chat extends Component<IProps, IState> {
     async postMessage() {
       let userUuid = await this.authService.getUUID();
 
-      let nodeId = this.props.navigation.getParam('nodeId', undefined);
+    //   let nodeId = this.props.navigation.getParam('nodeId', undefined);
       let messageBody = this.props.navigation.getParam('messageBody', undefined);
 
       let requestBody = {
-        node_id:  nodeId,
+        // node_id:  nodeId,
         message: messageBody,
         user_uuid: userUuid,
       };
@@ -269,7 +249,7 @@ export class Chat extends Component<IProps, IState> {
 
         let currentUUID = await this.authService.getUUID();
         let requestBody = {
-          'node_id': this.nodeId,
+        //   'node_id': this.nodeId,
           'user_uuid': currentUUID,
         };
 
@@ -308,16 +288,6 @@ export class Chat extends Component<IProps, IState> {
     render() {
       return (
       <View style={{flex: 1}}>
-      {
-        this.state.confirmModalVisible &&
-        <ConfirmModal functions={{
-          'closeConfirmModal': this.closeConfirmModal,
-          'startPrivateChat': this.startPrivateChat,
-        }}
-        userInfo={this.state.userInfo}
-        action={'requestToChat'}
-        />
-      }
         <KeyboardAvoidingView
           style={{flex: 1}}
           behavior='padding'
@@ -400,7 +370,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(GeneralChat);
 
 const styles = StyleSheet.create({
   nodeListItem: {

@@ -49,7 +49,7 @@ def post_message(rds, node_id, message, user_uuid):
             "message": message,
             "user": "private:" + user_uuid,
             "timestamp": datetime.datetime.now().isoformat(),
-            "display_name":  user_data.get('title', '')
+            "display_name":  user_data.get('topic', '')
         }
 
         # Calculate message hash to prevent duplicate messages

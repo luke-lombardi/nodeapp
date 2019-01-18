@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
+
+// @ts-ignore
 import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
 import Permissions from 'react-native-permissions';
 
@@ -486,19 +488,6 @@ export class App extends Component<IProps, IState> {
     }
 
     async getPostParams() {
-      let storedSettings = await AsyncStorage.getItem('userSettings');
-      storedSettings = JSON.parse(storedSettings);
-
-      let savedTitle = 'Anonymous';
-      let savedDescription = '';
-
-      if (storedSettings !== null) {
-        // @ts-ignore
-        savedTitle = storedSettings.savedTitle;
-        // @ts-ignore
-        savedDescription = storedSettings.savedDescription;
-      }
-
       let currentUUID = undefined;
       try {
         currentUUID = await this.authService.getUUID();
@@ -521,8 +510,6 @@ export class App extends Component<IProps, IState> {
         'node_data': {
           'lat': undefined,
           'lng': undefined,
-          'title': savedTitle,
-          'description': savedDescription,
           'public': false,
           'type': 'person',
           'device_token': deviceToken,

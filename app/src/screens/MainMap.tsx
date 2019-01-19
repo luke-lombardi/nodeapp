@@ -163,6 +163,8 @@ export class MainMap extends Component<IProps, IState> {
 
   componentDidMount() {
 
+    console.log('opening drawer...');
+    // this.props.navigation.navigate('RightSideMenuToggle', { key: 'Chat', routeName: 'chat'});
     // If I've been invited to add a friend, or track a new node, show confirmation modal
     let showConfirmModal = this.props.navigation.getParam('showConfirmModal', false);
     if (showConfirmModal) {
@@ -467,6 +469,10 @@ export class MainMap extends Component<IProps, IState> {
                 followsUserLocation={true}
                 showsIndoorLevelPicker={false}
                 onPress={this.clearSelectedNode}
+                // zoomEnabled={false}
+                // scrollEnabled={false}
+                // pitchEnabled={false}
+                // rotateEnabled={false}
                 // @ts-ignore
                 customMapStyle={mapStyle}
               >
@@ -702,7 +708,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginTop: 0,
     position: 'absolute',
-    bottom: 15,
+    bottom: 35,
     left: 0,
     height: '35%',
     width: '100%',

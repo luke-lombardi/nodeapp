@@ -229,13 +229,15 @@ export class Chat extends Component<IProps, IState> {
       this.action = this.props.navigation.getParam('action', '');
       this.nodeId = this.props.navigation.getParam('nodeId', '');
 
-      if (this.action === 'new_message') {
-        console.log('posting a message');
-        this.postMessage();
+      // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
+
+      if (this.action === '' || undefined) {
+        console.log('my chats');
       } else if (this.action === 'general_chat') {
         console.log('general chat');
-      } else if (this.action === 'user_chat') {
-        console.log('user chat');
+      } else if (this.action === 'new_message') {
+        console.log('posting a message');
+        this.postMessage();
       }
     }
 

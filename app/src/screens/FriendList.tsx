@@ -121,8 +121,10 @@ export class FriendList extends Component<IProps, IState> {
           containerStyle={styles.friendListItem}
           leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
           rightIcon={{name: 'chevron-left', color: 'rgba(51, 51, 51, 0.8)'}}
-          title={ row.data.title ? row.data.title : row.node_id }
-          subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+          title={'test'}
+          subtitle={'test'}
+          //title={ row.data.title ? row.data.title : row.node_id }
+          //subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
         />
 
       </Swipeout>
@@ -130,14 +132,24 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   render() {
+    const data = [
+      {
+        'node_ids': [
+          'public:628dc255-f3ca-4634-91b9-be596633e864',
+          'public:04d8b648-7da2-4642-a4f0-4c01845400c7',
+          'public:9718a6db-3a29-4920-85b1-f951ba8bdb21',
+          ],
+        },
+      ];
     return (
       <View style={{backgroundColor: 'white', height: '100%', flex: 1}}>
       <View style={styles.flatlist}>
         <FlatList
-         data={this.props.friendList}
+          data={data}
+         //data={this.props.friendList}
          renderItem={this._renderItem}
          extraData={this.state}
-         keyExtractor={item => item.node_id}
+         //keyExtractor={item => item.node_id}
         />
 
         {

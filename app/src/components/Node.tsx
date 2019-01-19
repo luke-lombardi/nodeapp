@@ -4,6 +4,8 @@ import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
+
+// @ts-ignore
 import Moment from 'moment';
 
 interface IProps {

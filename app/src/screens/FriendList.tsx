@@ -123,8 +123,8 @@ export class FriendList extends Component<IProps, IState> {
           rightIcon={{name: 'chevron-left', color: 'rgba(51, 51, 51, 0.8)'}}
           title={'test'}
           subtitle={'test'}
-          //title={ row.data.title ? row.data.title : row.node_id }
-          //subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+          // title={ row.data.title ? row.data.title : row.node_id }
+          // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
         />
 
       </Swipeout>

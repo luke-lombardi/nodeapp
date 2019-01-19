@@ -16,6 +16,7 @@ import { connect, Dispatch } from 'react-redux';
 // Services
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
+import NodeService from '../services/NodeService';
 
 // @ts-ignore
 import moment from 'moment';
@@ -23,6 +24,7 @@ import moment from 'moment';
 import SleepUtil from '../services/SleepUtil';
 import DeferredPromise from '../services/DeferredPromise';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import Logger from '../services/Logger';
 
 interface IProps {
     navigation: any;
@@ -46,6 +48,7 @@ export class Chat extends Component<IProps, IState> {
 
   private apiService: ApiService;
   private authService: AuthService;
+  private nodeService: NodeService;
 
   // @ts-ignore
   private userUuid: string;
@@ -85,6 +88,7 @@ export class Chat extends Component<IProps, IState> {
 
     this.apiService = new ApiService({});
     this.authService = new AuthService({});
+    this.nodeService = new NodeService({});
 
     this._renderItem = this._renderItem.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -158,6 +162,15 @@ export class Chat extends Component<IProps, IState> {
       }
     }
     async showConfirmModal(item) {
+
+      // @ts-ignore
+      let currentUUID = await this.authService.getUUID();
+
+      // If a person is clicking themselves in the list, don't open the confirm modal
+      // if ('private:' + currentUUID === item.user) {
+      //   return;
+      // }
+
       // show confirm modal and pass userInfo from chat message
       await this.setState({userInfo: item});
       await this.setState({confirmModalVisible: true});
@@ -165,11 +178,53 @@ export class Chat extends Component<IProps, IState> {
 
     async startPrivateChat(userInfo: any, shareLocation: boolean) {
       await this.setState({confirmModalVisible: false});
-      // initiate private communication in API service when user submits confirm modal
-      if (shareLocation) {
-        console.log('starting private chat with location tracking for....', userInfo.user);
-      } else {
-        console.log('starting private chat without location tracking for....', userInfo.user);
+
+      let currentUUID = await this.authService.getUUID();
+
+      let requestBody = {
+        'from': currentUUID,
+        'to': userInfo.user,
+        'share_location': shareLocation,
+      };
+
+      let alreadyAdded = await this.nodeService.doesRelationExist(userInfo.user);
+
+      if (alreadyAdded) {
+        Snackbar.show({
+          title: 'You already requested a chat with this user',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+
+        Logger.info(`Chat.startPrivateChat - you already requested a DM w/ this user.`);
+        return;
+      }
+
+      let response = await this.apiService.AddFriendAsync(requestBody);
+      if (response !== undefined) {
+        Logger.info(`Chat.startPrivateChat - Received response ${JSON.stringify(response)}`);
+        let stored = await this.nodeService.storeRelation(userInfo.user, response);
+
+        if (!stored) {
+          Snackbar.show({
+            title: 'Could not save new relation',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+
+          Logger.info(`Chat.startPrivateChat - could not save new relation.`);
+          return;
+        }
+
+        if (shareLocation) {
+          await this.nodeService.storeNode(response.their_id);
+        }
+
+        Snackbar.show({
+          title: 'Sent direct message request',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+
+        Logger.info(`Chat.startPrivateChat - stored new relation data.`);
+
       }
     }
 
@@ -301,7 +356,6 @@ export class Chat extends Component<IProps, IState> {
     }
 
     public CheckNow() {
-      // console.log('NodeService.CheckNow - updating the node list');
       this.checkNowTrigger.resolve();
     }
 
@@ -314,8 +368,8 @@ export class Chat extends Component<IProps, IState> {
           'closeConfirmModal': this.closeConfirmModal,
           'startPrivateChat': this.startPrivateChat,
         }}
-        userInfo={this.state.userInfo}
-        action={'requestToChat'}
+        action={'add_friend'}
+        data={this.state.userInfo}
         />
       }
         <KeyboardAvoidingView
@@ -363,18 +417,6 @@ export class Chat extends Component<IProps, IState> {
             onChangeText={text => this.setMessageText(text)}
             value={this.state.messageBody}
           />
-          {/* <TouchableOpacity
-              onPress={this.submitMessage}
-              style={{width: 100}}
-            >
-            <Icon
-              iconStyle={{padding: 10}}
-              containerStyle={styles.iconContainer}
-              size={20}
-              name='send'
-              color={'black'}
-            />
-          </TouchableOpacity> */}
           <Spinner
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}

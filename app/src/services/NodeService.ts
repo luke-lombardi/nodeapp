@@ -118,36 +118,50 @@ export default class NodeService {
 
     }
 
-    // Stores a new friend ID in async storage
-    public async storeFriend(newFriendId) {
-        let trackedFriends = await AsyncStorage.getItem('trackedFriends');
-        if (trackedFriends !== null) {
-            trackedFriends = JSON.parse(trackedFriends);
-        } else {
-            // @ts-ignore
-            trackedFriends = [];
-        }
+    public async doesRelationExist(userId: string) {
+      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+      if (trackedRelations !== null) {
+          trackedRelations = JSON.parse(trackedRelations);
+      } else {
+          // @ts-ignore
+          trackedRelations = {};
+      }
 
-        let index = trackedFriends.indexOf(newFriendId);
-
-        if (index < 0) {
-            Logger.info(`NodeService.storeFriend - this is a new friend: ${JSON.stringify(newFriendId)}`);
-
-            // @ts-ignore
-            trackedFriends.push(newFriendId);
-
-            Logger.info(`NodeService.storeFriend - Current tracked friends: ${JSON.stringify(trackedFriends)}`);
-
-            await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
-            Logger.info(`NodeService.storeFriend: now tracking ${JSON.stringify(trackedFriends)}`);
-
-            return false;
-        } else {
-            Logger.info(`NodeService.storeFriend: you already are tracking this person.`);
-
-            return true;
-        }
+      if (userId in trackedRelations) {
+        return true;
+      }  else {
+        return false;
+      }
     }
+
+    // Stores a new friend ID in async storage
+    public async storeRelation(userId: string, relationData: any) {
+
+      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+      if (trackedRelations !== null) {
+          trackedRelations = JSON.parse(trackedRelations);
+      } else {
+          // @ts-ignore
+          trackedRelations = {};
+      }
+
+      if (!(userId in trackedRelations)) {
+          Logger.info(`NodeService.storeRelation - this is a new relation: ${JSON.stringify(trackedRelations)}`);
+
+          trackedRelations[userId] = relationData;
+
+          Logger.info(`NodeService.storeRelation - Current tracked relations: ${JSON.stringify(trackedRelations)}`);
+
+          await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
+          Logger.info(`NodeService.storeRelation: now tracking ${JSON.stringify(trackedRelations)}`);
+
+          return true;
+      } else {
+          Logger.info(`NodeService.storeRelation: you already are tracking this relation.`);
+
+          return false;
+      }
+  }
 
     // Delete a node ID from async storage
     public async deleteNode(nodeId) {

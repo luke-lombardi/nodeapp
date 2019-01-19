@@ -7,8 +7,8 @@ import Modal from 'react-native-modal';
 
 interface IProps {
     functions: any;
-    userInfo: any;
     action: string;
+    data: any;
 }
 
 interface IState {
@@ -60,9 +60,8 @@ export default class ConfirmModal extends Component<IProps, IState> {
       }
 
     render() {
-      // @ts-ignore
-      // declare username here to keep tslint from complaining
-      const userName = this.props.userInfo.display_name;
+        const displayName = this.props.data.display_name;
+
         return (
             <Modal
               isVisible={this.state.visibleModal}
@@ -70,13 +69,13 @@ export default class ConfirmModal extends Component<IProps, IState> {
               <View style={styles.modalContent}>
                 <Text style={{fontWeight: 'bold', paddingVertical: 20}}> {this.state.displayTitle} </Text>
                 {
-                  this.props.action === 'requestToChat' &&
+                  this.props.action === 'add_friend' &&
                   <CheckBox
                       center
                       title={
                         <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
                         <Text>Share my location with</Text>
-                        <Text style={{fontWeight: 'bold', paddingVertical: 10}}>{userName}</Text>
+                        <Text style={{fontWeight: 'bold', paddingVertical: 10}}>{ displayName }</Text>
                         </View>
                       }
                       iconRight
@@ -98,7 +97,12 @@ export default class ConfirmModal extends Component<IProps, IState> {
                         'fontWeight': 'bold',
                     }}
                     onPress={() => {
-                        this.props.functions.startPrivateChat(this.props.userInfo, this.state.shareLocationActive);
+
+                        if (this.props.action === 'add_friend') {
+                          this.props.functions.startPrivateChat(this.props.data, this.state.shareLocationActive);
+                        } else if (this.props.action === 'confirm_friend') {
+                          this.props.functions.closeConfirmModal(true, this.props.data);
+                        }
                     } }
                     loading={false}
                     disabled={false}
@@ -131,9 +135,12 @@ export default class ConfirmModal extends Component<IProps, IState> {
     private async setDisplayText() {
         if (this.action === 'join_group') {
             await this.setState({displayTitle: 'Are you sure you want to join this group?'});
-        } else if (this.props.action === 'requestToChat') {
-            await this.setState({displayTitle: `Request to chat with ${this.props.userInfo.display_name}`});
-        }
+        } else if (this.props.action === 'add_friend') {
+            await this.setState({displayTitle: `Request to chat with ${this.props.data.display_name}`});
+        } else if (this.props.action === 'confirm_friend') {
+          await this.setState({displayTitle: `${this.props.data.from_username} wants to chat. Accept?`});
+      }
+
     }
 }
 

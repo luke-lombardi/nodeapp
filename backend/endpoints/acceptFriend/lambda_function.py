@@ -53,6 +53,9 @@ def update_relation(rds, relation_id, your_id, user_uuid):
             current_relation_data['members'][your_id] = True
 
             rds.set(name=relation_id, value=json.dumps(current_relation_data))
+
+            logger.info('Friend ID: %s, User UUID: %s' % (your_id, user_uuid))
+
             rds.set(name=your_id, value='private:' + user_uuid)
         
             current_relation_data = json.loads(rds.get(name=relation_id))

@@ -45,12 +45,13 @@ def get_new_uuid(rds, prefix):
     return new_uuid
 
 # Create the actual group in the cache
-def insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id):
+def insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id, location_tracking_enabled = False):
     relation_data = {
         'members': {
             from_user_friend_id: True,
             to_user_friend_id: False
-        }
+        },
+        'location_tracking': location_tracking_enabled,
     }
 
     logger.info('Inserting this relation data into cache: %s' % (relation_data))
@@ -61,19 +62,22 @@ def create_mirror_node(rds, private_uuid, friend_id):
     ret = rds.set(name=friend_id, value=private_uuid)
     return ret
 
-# Sends a text to the recipient of the friend request
-def send_text(person_to_invite, relation_id, to_user_friend_id):
-    logger.info('Sending text to friend...')
+# Sends a push notification to the recipient of the friend request
+def send_push(person_to_invite, relation_id, from_user, to_user_friend_id, location_tracking_enabled=False):
+    logger.info('Sending push notification...')
 
     person_to_invite['relation_id'] = relation_id
     person_to_invite['friend_id'] = to_user_friend_id
     person_to_invite['action'] = 'send_friend_invite'
+    person_to_invite['from_user'] = from_user
+    person_to_invite['location_tracking'] = location_tracking_enabled
     person_to_invite['response'] = False
+
     
-    invoke_response = lambda_client.invoke(FunctionName="Smartshare_sendText",
+    invoke_response = lambda_client.invoke(FunctionName="Smartshare_sendPush",
                                           InvocationType='RequestResponse',
                                           Payload=json.dumps(person_to_invite)
-                                        )
+                                          )
 
     try:
         response_data = json.loads(json.loads(invoke_response['Payload'].read()))
@@ -107,14 +111,14 @@ def lambda_handler(event, context):
 
     ERROR_MSG = {
         'CACHE_ERROR': 'Could not connect to cache',
-        'INVALID_GROUP_ID': 'Please specify a valid group ID',
     }
     
     response = {
         'relation_id': '',
         'your_id': '',
-        'their_id': '',
-        'error_msg': ''
+        'error_msg': '',
+        'location_tracking': False,
+        'their_id': ''
     }
     
     logger.info('Event payload: ' + str(event))
@@ -125,11 +129,9 @@ def lambda_handler(event, context):
     # Get a new ID for the relationship
     relation_id = get_new_uuid(rds, 'relation:')
 
-    invite_data = event.get('invite_data', {})
+    logging.info('Received invite data: %s', event)
 
-    logging.info('Received invite data: %s', invite_data)
-
-    from_user = invite_data.get('from', None)
+    from_user = event.get('from', None)
     from_user_friend_id = None
 
     # If there is a valid 'from' user id, then create a new mirror node for them
@@ -140,7 +142,7 @@ def lambda_handler(event, context):
 
         # If the node was created and inserted properly, add it to the response body
         if ret:
-            logger.info('Cache insert success: %s' % (ret))
+            logger.info('Cache insert success : %s : %s' % (from_user_friend_id , ret))
             response['your_id'] = from_user_friend_id
         else:
             response['error_msg'] = ERROR_MSG['CACHE_ERROR']
@@ -148,24 +150,28 @@ def lambda_handler(event, context):
             return response
     
     # Create an ID/mirror node for the receipient user
-    to_user = None
+    to_user = event.get('to', None)
     to_user_friend_id = get_new_uuid(rds, 'friend:')
 
     # Insert it into the cache
     ret = create_mirror_node(rds, to_user, to_user_friend_id)
     if ret:
-        logger.info('Cache insert success: %s' % (ret))
+        logger.info('Cache insert success : %s : %s' % (to_user_friend_id , ret))
+        response['their_id'] = to_user_friend_id
     else:
         response['error_msg'] = ERROR_MSG['CACHE_ERROR']
         logger.info('Error inserting into cache, response was: %s' % (ret))
         return response
     
+    # Relations can either share location or just be direct messages
+    share_location = event.get('share_location', False)
+
     # Add the relation to the cache
-    ret = insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id)
+    ret = insert_relation(rds, relation_id, from_user_friend_id, to_user_friend_id, location_tracking_enabled=share_location)
     if ret:
         logger.info('Cache insert success: %s' % (ret))
         response['relation_id'] = relation_id
-        response['their_id'] = to_user_friend_id
+        response['location_tracking'] = share_location
     else:
         logger.info('Error inserting into cache, response was: %s' % (ret))
         return response
@@ -173,22 +179,15 @@ def lambda_handler(event, context):
     logging.info('Create a new relation: %s', relation_id)
 
     # Last, we have to a text to recipient friend
-    members = send_text(person_to_invite, relation_id, to_user_friend_id)
+    members = send_push(person_to_invite, relation_id, from_user, to_user_friend_id, location_tracking_enabled=share_location)
 
     return response
 
 
 def run():
     test_event = {
-        "invite_data": {
             "from": "private:7d8b17e8-e944-4869-b3e5-0730bed5ed89",
-            "to": None,
-            "ttl": None,
-        },
-        "person_to_invite": {
-            "name": "Luke Lombardi",
-            "phone": "+17184145662",
-        },
+            "to": "private:88c162b0-eeda-4cde-9d7b-92ec0b361d82",
     }
     
     test_context = {

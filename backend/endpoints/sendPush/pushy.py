@@ -1,5 +1,5 @@
 import json
-import urllib2
+import requests
 
 class PushyAPI:
 
@@ -15,19 +15,16 @@ class PushyAPI:
         postData['to'] = to
         postData['data'] = data
 
+        headers = {'Content-Type':'application/json' }
+
         # Set URL to Send Notifications API endpoint
-        req = urllib2.Request('https://api.pushy.me/push?api_key=' + apiKey)
-
-        # Set Content-Type header since we're sending JSON
-        req.add_header('Content-Type', 'application/json')
-
+        data = json.dumps(postData)
         response = None
 
         try:
-           # Actually send the push
-           response = urllib2.urlopen(req, json.dumps(postData))
-        except urllib2.HTTPError, e:
+           response = requests.post('https://api.pushy.me/push?api_key=' + apiKey, data=data, headers=headers)
+        except Exception as e:
            # Print response errors
-           print "Pushy API returned HTTP error " + str(e.code) + ": " + e.read()
+           print(e)
           
         return response

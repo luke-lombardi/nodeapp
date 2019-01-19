@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { Marker, Callout } from 'react-native-maps';
-import { Image, Text, StyleSheet } from 'react-native';
+import { Marker } from 'react-native-maps';
+
+// @ts-ignore
+import { Text, StyleSheet, View } from 'react-native';
+import Pulse from 'react-native-pulse';
 
 interface IProps {
     friendList: any;
@@ -18,33 +21,27 @@ export default class Friends extends Component<IProps, IState> {
     }
 
     render() {
-        return (
-            this.props.friendList.map(marker => (
+      return (
+          this.props.friendList.map(marker => (
+          <Marker
+              coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
+              title={marker.data.title}
+              pinColor={'purple'}
+              anchor={{ x: 0.5, y: 0.5 }}
+              onPress={(event) => {this.props.functions.onNodeSelected(event, 'friend'); }}
+              // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
+              description={marker.data.description}
+              key={marker.node_id}
+          >
+          <View style={styles.callout}>
+            <Pulse color='orange' numPulses={1} diameter={60} speed={25} duration={3000} />
+            {/* <Text style={styles.title}>{marker.data.topic}</Text> */}
+          </View>
+      </ Marker>
 
-            (marker.data.status !== 'inactive') ?
-            <Marker
-                coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
-                title={marker.data.title}
-                pinColor={marker.data.color}
-                // image={require('../../../assets/images/gift.png')}
-                anchor={{ x: 0.5, y: 0.5 }}
-                onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePerson'); }}
-                // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
-                description={marker.data.description}
-                key={marker.node_id}
-            >
-
-            <Image source={require('../../../assets/images/public_person.png')} style={{ width: 35, height: 35 }} />
-
-            <Callout tooltip={false} style={styles.callout}>
-            <Text style={styles.title}>{marker.data.title}</Text>
-            </Callout>
-        </ Marker>
-        : undefined
-
-            ))
-        );
-    }
+          ))
+      );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -52,6 +49,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         alignItems: 'center',
+        height: 60,
+        width: 60,
       },
       card: {
         backgroundColor: '#fff',

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Smartshare</string>
+	<string>SmartshareDBG</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,14 +17,14 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.23</string>
+	<string>1.0.24</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>debug.fyb.smartshare.io</string>
+			<string>io.smartshare.app.debug</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fyb</string>
@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>23</string>
+	<string>24</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>Fabric</key>

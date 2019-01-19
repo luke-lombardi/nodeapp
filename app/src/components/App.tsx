@@ -207,6 +207,24 @@ interface IProps {
 interface IState {
 }
 
+// Subscribe to push notifications
+Pushy.setNotificationListener(async (data) => {
+
+  Logger.info(`Received push notification: ${JSON.stringify(data)}`);
+
+  if (data.action === 'confirm_friend') {
+    Logger.info(`Received friend request from: ${data.from_username}`);
+    NavigationService.reset('Map', { showConfirmModal: true, pushData: data});
+  }
+  // let notificationTitle = 'Smartshare';
+
+  // // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
+  // let notificationText = data.message || 'Test notification';
+
+  // Display basic system notification
+  // Pushy.notify(notificationTitle, notificationText);
+});
+
 export class App extends Component<IProps, IState> {
 
     // Private services
@@ -215,6 +233,7 @@ export class App extends Component<IProps, IState> {
     // @ts-ignore
     private locationService: LocationService;
     private authService: AuthService;
+
     private bearing;
 
     private readonly configGlobal = ConfigGlobalLoader.config;
@@ -248,8 +267,6 @@ export class App extends Component<IProps, IState> {
       // Link handling
       this.handleLink = this.handleLink.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
-
-      this.subscribeToNotifications = this.subscribeToNotifications.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService(
@@ -312,30 +329,8 @@ export class App extends Component<IProps, IState> {
 
     registerPushy() {
       // Handle push notifications
-      Pushy.setNotificationListener(async (data) => {
-        // Print notification payload data
-        console.log('Received notification: ' + JSON.stringify(data));
-        // Notification title
-        let notificationTitle = 'Smartshare';
-        // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
-        let notificationText = data.message || 'Test notification';
-        // Display basic system notification
-        Pushy.notify(notificationTitle, notificationText);
-      });
-      // subscribe device to notifications
-      this.subscribeToNotifications();
+      Pushy.listen();
     }
-
-    async subscribeToNotifications() {
-      // subscribe device to notifcation topic
-      try {
-      await Pushy.subscribe('nodes');
-      } catch (error) {
-        console.log('unable to subscribe to pushy topic');
-      }
-    }
-
-    // TODO: listen for new nodes, send notifcation to topic when node list is updated
 
     // Handle a link clicked from a text message
     async handleLink(event) {
@@ -441,6 +436,7 @@ export class App extends Component<IProps, IState> {
         await SleepUtil.SleepAsync(5000);
       }
     }
+
     async setupPushNotifications() {
       let deviceToken = await Pushy.register();
       return deviceToken;
@@ -488,10 +484,12 @@ export class App extends Component<IProps, IState> {
     }
 
     async getPostParams() {
+      // await AsyncStorage.clear();
+
       let currentUUID = undefined;
       try {
         currentUUID = await this.authService.getUUID();
-        Logger.debug(`App.getPostParams - User has a UUID of: ${currentUUID}`);
+        Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
       } catch (err) {
         Logger.debug(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
       }

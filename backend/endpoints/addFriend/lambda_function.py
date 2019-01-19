@@ -138,7 +138,7 @@ def lambda_handler(event, context):
     if from_user:
         logger.info('Invite is from: %s, creating new ID for them' % (from_user))
         from_user_friend_id = get_new_uuid(rds, 'friend:')
-        ret = create_mirror_node(rds, from_user, from_user_friend_id)
+        ret = create_mirror_node(rds, 'private:' + from_user, from_user_friend_id)
 
         # If the node was created and inserted properly, add it to the response body
         if ret:

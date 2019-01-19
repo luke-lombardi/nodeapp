@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Card, Text, Button } from 'react-native-elements';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
@@ -25,6 +25,7 @@ interface IState {
 export default class Node extends Component<IProps, IState> {
   private apiService: ApiService;
   private authService: AuthService;
+  private scrollView: any;
 
   constructor(props: IProps) {
     super(props);
@@ -41,6 +42,9 @@ export default class Node extends Component<IProps, IState> {
     this.toggleLikeStatus = this.toggleLikeStatus.bind(this);
     this.updateLikeStatus = this.updateLikeStatus.bind(this);
     this.updateLikeIcon  = this.updateLikeIcon.bind(this);
+
+    this.upvoteComment = this.upvoteComment.bind(this);
+    this.downvoteComment = this.downvoteComment.bind(this);
 
     this.apiService = new ApiService({});
     this.authService = new AuthService({});
@@ -64,6 +68,7 @@ export default class Node extends Component<IProps, IState> {
 
   componentDidMount() {
     this.updateLikeStatus();
+    this.scrollView.scrollToEnd({ animated: true });
   }
 
   async updateLikeStatus() {
@@ -114,24 +119,57 @@ export default class Node extends Component<IProps, IState> {
     this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: { action: 'share_node', nodeId: this.props.nodeId } });
   }
 
+  async upvoteComment(item) {
+    console.log('upvoting comment....', item);
+  }
+
+  async downvoteComment(item) {
+    console.log('downvoting comment....', item);
+  }
+
   render() {
     return (
       <View style={styles.view}>
         <View style={styles.nodeCardContainer}>
         <Card containerStyle={styles.nodeCard}>
-          <Text numberOfLines={1} style={styles.nodeTopic}>
+        <View style={{width: '80%'}}>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            ref={ref => {
+              this.scrollView = ref;
+            }}
+          >
+            <Text numberOfLines={1} style={styles.nodeTopic}>
             {this.props.topic}
-          </Text>
+            </Text>
+          </ScrollView>
           <Text numberOfLines={1} style={styles.durationTitle}>
-          { (this.props.ttl > 0) ? ' Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
+          { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text>
+          </View>
+          <View style={{paddingHorizontal: 10, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+            <Icon
+              name='keyboard-arrow-up'
+              color='#00aced'
+              size={36}
+              //onPress={() => this.upvoteComment(item)}
+            />
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>39</Text>
+            <Icon
+              name='keyboard-arrow-down'
+              color='#00aced'
+              size={36}
+              //onPress={() => this.downvoteComment(item)}
+            />
+          </View>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
             <Button
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'feather',
-                size: 40,
+                size: 36,
                 color: `rgba(255,255,255,${this.state.likeIconOpacity})`,
               }}
               style={styles.mapButton}
@@ -145,7 +183,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'message-circle',
                 type: 'feather',
-                size: 40,
+                size: 36,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.middleButton}
@@ -158,7 +196,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'share',
                 type: 'feather',
-                size: 40,
+                size: 36,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.directionsButton}
@@ -208,14 +246,16 @@ const styles = StyleSheet.create({
   nodeTopic: {
     fontWeight: 'bold',
     color: 'white',
-    fontSize: 22,
-    alignSelf: 'center',
+    fontSize: 18,
+    alignSelf: 'flex-start',
+    marginVertical: 5,
+    paddingHorizontal: 10,
   },
   durationTitle: {
-    marginVertical: 10,
     color: 'white',
-    fontSize: 16,
-    alignSelf: 'center',
+    fontSize: 14,
+    alignSelf: 'flex-start',
+    padding: 10,
   },
   distance: {
     fontSize: 14,
@@ -231,14 +271,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 3,
     backgroundColor: 'rgba(44,55,71,0.0)',
-    top: 5,
-    padding: 0,
     flexDirection: 'row',
     alignSelf: 'center',
     width: '100%',
-    height: '70%',
-    borderRightWidth: 0,
-    borderRightColor: 'rgba(44,55,71,0.3)',
+    height: '60%',
   },
   buttonView: {
     width: '100%',

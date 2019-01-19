@@ -23,7 +23,6 @@ import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
 import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
-import GeneralChat from '../screens/Chat';
 import GetPermissions from '../screens/GetPermissions';
 
 // Redux imports
@@ -143,7 +142,6 @@ const InternalStack = StackNavigator({
         }),
       },
   Chat: { screen: Chat },
-  GeneralChat: { screen: GeneralChat },
   },
   {
   initialRouteName: 'Map',
@@ -165,8 +163,26 @@ const InternalStack = StackNavigator({
     },
   );
 
+  const ChatStack = DrawerNavigator({
+    Chat: {
+      screen: Chat,
+    },
+  },
+  {
+    navigationOptions: {
+    },
+    drawerPosition: 'right',
+    // drawerWidth: Dimensions.get('window').width,
+    contentComponent: props => <Chat {...props} />,
+    drawerOpenRoute: 'OpenChat',
+    drawerCloseRoute: 'CloseChat',
+    drawerToggleRoute: 'ToggleChat',
+  },
+);
+
   const DrawerNavigation = StackNavigator({
     DrawerStack: { screen: DrawerStack },
+    ChatStack: { screen: ChatStack},
     }, {
       headerMode: 'none',
   });
@@ -174,6 +190,7 @@ const InternalStack = StackNavigator({
 // Manifest of possible screens
 export const RootStack = StackNavigator({
     drawerStack: { screen: DrawerNavigation },
+    chatStack: { screen: DrawerNavigation},
   }, {
     // Default config for all screens
     headerMode: 'none',

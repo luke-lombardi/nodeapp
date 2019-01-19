@@ -98,6 +98,8 @@ export class Chat extends Component<IProps, IState> {
     this.showConfirmModal = this.showConfirmModal.bind(this);
 
     this.startPrivateChat = this.startPrivateChat.bind(this);
+    // this.upvoteComment = this.upvoteComment.bind(this);
+    // this.downvoteComment = this.downvoteComment.bind(this);
 
     this.submitMessage = this.submitMessage.bind(this);
     this.setMessageText = this.setMessageText.bind(this);
@@ -228,24 +230,50 @@ export class Chat extends Component<IProps, IState> {
       }
     }
 
+    // async upvoteComment(item) {
+    //   console.log('upvoting comment....', item);
+    // }
+
+    // async downvoteComment(item) {
+    //   console.log('downvoting comment....', item);
+    // }
+
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onPress={() => this.showConfirmModal(item)}
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,
           maxHeight: 120,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
+        // rightElement={
+        //   <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+        //     <Icon
+        //       name='keyboard-arrow-up'
+        //       color='#00aced'
+        //       size={32}
+        //       onPress={() => this.upvoteComment(item)}
+        //     />
+        //     <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
+        //     <Icon
+        //       name='keyboard-arrow-down'
+        //       color='#00aced'
+        //       size={32}
+        //       onPress={() => this.downvoteComment(item)}
+        //     />
+        //   </View>
+        // }
         title={
           <View style={styles.titleView}>
+          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}</Text>
           <Text style={styles.titleText}>{item.message}</Text>
           </View>
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}> {this.getTime(item)} | { item.display_name } ({ item.user.substr(item.user.length - 5)})</Text>
+          <Text style={styles.ratingText}>{this.getTime(item)}</Text>
+          {/* ({ item.user.substr(item.user.length - 5)}) */}
           </View>
         }
       />
@@ -256,7 +284,13 @@ export class Chat extends Component<IProps, IState> {
       this.action = this.props.navigation.getParam('action', '');
       this.nodeId = this.props.navigation.getParam('nodeId', '');
 
-      if (this.action === 'new_message') {
+      // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
+
+      if (this.action === '' || undefined) {
+        console.log('my chats');
+      } else if (this.action === 'general_chat') {
+        console.log('general chat');
+      } else if (this.action === 'new_message') {
         console.log('posting a message');
         this.postMessage();
       }
@@ -458,9 +492,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   titleText: {
-    left: 4,
     color: 'black',
     fontSize: 16,
+    paddingTop: 5,
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -502,7 +536,7 @@ const styles = StyleSheet.create({
   inputContainer: {
   },
   titleView: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     paddingTop: 5,
   },
   subtitleView: {

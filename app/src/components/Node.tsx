@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, Text, Button } from 'react-native-elements';
+import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
+import Moment from 'moment';
 
 interface IProps {
   topic: string;
@@ -42,6 +43,11 @@ export default class Node extends Component<IProps, IState> {
     this.updateLikeStatus = this.updateLikeStatus.bind(this);
     this.updateLikeIcon  = this.updateLikeIcon.bind(this);
 
+    this.upvoteComment = this.upvoteComment.bind(this);
+    this.downvoteComment = this.downvoteComment.bind(this);
+
+    this.countdown = this.countdown.bind(this);
+
     this.apiService = new ApiService({});
     this.authService = new AuthService({});
 
@@ -64,6 +70,10 @@ export default class Node extends Component<IProps, IState> {
 
   componentDidMount() {
     this.updateLikeStatus();
+  }
+
+  countdown() {
+    return '2:13:23';
   }
 
   async updateLikeStatus() {
@@ -96,7 +106,7 @@ export default class Node extends Component<IProps, IState> {
       }
     }
 
-    await this.setState({loadingLikeIcon: false, currentLikeIcon: 'thumbs-up'});
+    await this.setState({loadingLikeIcon: false, currentLikeIcon: 'heart'});
 
   }
 
@@ -114,24 +124,62 @@ export default class Node extends Component<IProps, IState> {
     this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: { action: 'share_node', nodeId: this.props.nodeId } });
   }
 
+  async upvoteComment() {
+    console.log('upvoting comment....');
+  }
+
+  async downvoteComment() {
+    console.log('downvoting comment....');
+  }
+
   render() {
     return (
       <View style={styles.view}>
         <View style={styles.nodeCardContainer}>
+        <View style={styles.countdownContainer}>
+        <Icon
+          name='clock'
+          type='feather'
+          size={22}
+          color='white'
+          containerStyle={{position: 'absolute', left: 10, top: 1, padding: 10, alignSelf: 'flex-start'}}
+        />
+        <Text style={{color: 'white', alignSelf: 'center', paddingTop: 10, left: 10, letterSpacing: 5, fontSize: 18}}>{this.countdown()}</Text>
+        </View>
         <Card containerStyle={styles.nodeCard}>
-          <Text numberOfLines={1} style={styles.nodeTopic}>
+        <View style={{width: '80%', maxHeight: 150, minHeight: 100}}>
+            <Text numberOfLines={6} style={styles.nodeTopic}>
             {this.props.topic}
-          </Text>
-          <Text numberOfLines={1} style={styles.durationTitle}>
-          { (this.props.ttl > 0) ? ' Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
-          </Text>
+            </Text>
+          {/* <Text numberOfLines={1} style={styles.durationTitle}>
+          { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
+          </Text> */}
+          </View>
+          <View style={{paddingHorizontal: 10, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+            <Icon
+              name='keyboard-arrow-up'
+              color='#00aced'
+              size={36}
+              onPress={() => this.upvoteComment()}
+              underlayColor={'transparent'}
+            />
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>39</Text>
+            <Icon
+              name='keyboard-arrow-down'
+              color='#00aced'
+              size={36}
+              onPress={() => this.downvoteComment()}
+              underlayColor={'transparent'}
+            />
+          </View>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
             <Button
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'feather',
-                size: 40,
+                size: 32,
+                underlayColor: 'transparent',
                 color: `rgba(255,255,255,${this.state.likeIconOpacity})`,
               }}
               style={styles.mapButton}
@@ -145,7 +193,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'message-circle',
                 type: 'feather',
-                size: 40,
+                size: 32,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.middleButton}
@@ -158,7 +206,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'share',
                 type: 'feather',
-                size: 40,
+                size: 32,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.directionsButton}
@@ -182,23 +230,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'transparent',
   },
   nodeCardContainer: {
     backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
     paddingBottom: 15,
+    bottom: 30,
   },
   nodeCard: {
-    height: '90%',
+    height: '100%',
     width: '90%',
     borderRadius: 20,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(255,255,255,0.2)',
     borderWidth: 1,
+    borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    //padding: 10,
+    bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
     shadowColor: 'black',
     shadowOpacity: 0.1,
@@ -208,14 +258,27 @@ const styles = StyleSheet.create({
   nodeTopic: {
     fontWeight: 'bold',
     color: 'white',
-    fontSize: 22,
-    alignSelf: 'center',
+    fontSize: 18,
+    alignSelf: 'flex-start',
+    marginVertical: 5,
+    paddingHorizontal: 10,
+    maxHeight: 100,
+  },
+  countdownContainer: {
+    left: 16,
+    position: 'relative',
+    backgroundColor: 'rgba(44,55,71,.9)',
+    alignSelf: 'flex-start',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    width: 200,
+    height: 50,
   },
   durationTitle: {
-    marginVertical: 10,
     color: 'white',
-    fontSize: 16,
-    alignSelf: 'center',
+    fontSize: 14,
+    alignSelf: 'flex-start',
+    padding: 10,
   },
   distance: {
     fontSize: 14,
@@ -229,40 +292,35 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonContainer: {
-    flex: 3,
+    flex: 1,
     backgroundColor: 'rgba(44,55,71,0.0)',
-    top: 5,
-    padding: 0,
     flexDirection: 'row',
-    alignSelf: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    height: 50,
     width: '100%',
-    height: '70%',
-    borderRightWidth: 0,
-    borderRightColor: 'rgba(44,55,71,0.3)',
   },
   buttonView: {
+    height: 35,
     width: '100%',
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(44,55,71,0.1)',
+    alignSelf: 'center',
+    alignContent: 'center',
   },
   middleButton: {
     width: '70%',
     height: '100%',
     top: 1,
-    alignSelf: 'center',
     marginLeft: 15,
   },
   mapButton: {
     width: '70%',
     height: '100%',
-    alignSelf: 'center',
     marginLeft: 15,
   },
   directionsButton: {
     width: '70%',
     height: '100%',
-    alignSelf: 'center',
     marginLeft: 15,
   },
   transparentButton: {

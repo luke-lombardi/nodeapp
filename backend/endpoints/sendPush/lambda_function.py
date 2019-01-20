@@ -45,16 +45,6 @@ def send_push(push_info, rds):
     action = push_info.get('action', None)
 
     logging.info("Received the following action: {}".format(action))
-
-    # elif action == 'share_node':
-    #     name = contact_info["name"]
-    #     phone = contact_info["phone"]
-    #     node_id = contact_info["node_id"]
-    
-    #     message = client.messages.create(
-    #         to=phone,
-    #         from_="+12037179852",
-    #         body="Hello %s, you were invited to track a node: \n fyb://add_node/%s" % (name, node_id))
     
     user_uuid = push_info.get("user_id", "")
     user_node_id = 'private:' + user_uuid
@@ -62,22 +52,40 @@ def send_push(push_info, rds):
     if action == 'send_friend_invite':
         relation_id = push_info["relation_id"]
         friend_id = push_info["friend_id"]
+        from_user = push_info["from_user"]
+        to_user = push_info["to_user"]
 
-        node_exists = rds.exists(user_node_id)
+        location_tracking = push_info["location_tracking"]
+
+        node_exists = rds.exists(friend_id)
 
         if node_exists:
-          node_data = rds.get(user_node_id)
+          user_uuid = to_user
+  
+          logger.info("Recipient friend id: {}".format(friend_id))
+          logger.info("Recipient user id: {}".format(user_uuid))
 
-          pushy_device_token = node_data.get('device_id', '')
+          node_data = json.loads(rds.get(user_uuid))
 
-          data = { 'message': 'Hello World!' }
+          # Grab the recipient push notification device ID
+          pushy_device_token = node_data.get('device_token', '')
+
+          data = {
+              "from_username": node_data.get('topic', 'Anonymous'),
+              "from_user": from_user,
+              "action": "confirm_friend",
+              "relation_id": relation_id,
+              "friend_id": friend_id,
+              "location_tracking": location_tracking,
+          }
+  
           to = [ pushy_device_token ]
 
           options = { 
               'notification': {
                   'badge': 1,
                   'sound': 'ping.aiff',
-                  'body': u'Hello World \u270c'
+                  'body': u'You have received a chat request'
               }
           }
 
@@ -86,10 +94,10 @@ def send_push(push_info, rds):
           logger.info("Pushy API response: {}".format(response))
 
         else:
-          logging.info("Node {} does not exist".format(friend_id))
+          logging.info("Node {} does not exist".format(user_node_id))
 
     if message:
-        logging.info("Sent a push notificiation to {}".format(friend_id))
+        logging.info("Sent a push notificiation to {}".format(user_node_id))
         return True
     
     return False

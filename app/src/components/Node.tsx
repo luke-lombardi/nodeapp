@@ -4,6 +4,8 @@ import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
+
+// @ts-ignore
 import Moment from 'moment';
 
 interface IProps {
@@ -275,7 +277,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    //padding: 10,
+    // padding: 10,
     bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
     //shadowColor: 'black',

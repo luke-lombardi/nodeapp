@@ -60,6 +60,7 @@ export default class ApiService {
 
       // TODO: add error handling here
       let nodeList = await response.json();
+      console.log(nodeList);
       return nodeList;
     }
 
@@ -122,7 +123,7 @@ export default class ApiService {
           });
 
       if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.AcceptFriendAsync - Unable to accept friend request');
+        Logger.info(`ApiService.AcceptFriendAsync - Unable to accept friend request: ${response.status}`);
 
         return undefined;
       }
@@ -211,28 +212,6 @@ export default class ApiService {
 
       response = await response.json();
       return response;
-    }
-
-    // Sends a text to add a friend or share a node
-    async sendText(requestBody: any) {
-
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/sendText', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-          });
-
-      if (response.status !== HttpStatus.OK) {
-        Logger.info('ApiService.sendText - Unable to send text');
-        console.log('could not send text', response);
-        return undefined;
-      }
-
-      let result = await response.json();
-      console.log('successfully sent text', response);
-      return result;
     }
 
   }

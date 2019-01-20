@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
-import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+
+// @ts-ignore
+import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState } from 'react-native';
 import Permissions from 'react-native-permissions';
 
 // Location services, and user notifications
@@ -52,6 +54,7 @@ import NodeService,
 
 import LocationService from '../services/LocationService';
 import AuthService from '../services/AuthService';
+import NotificationService from '../services/NotificationService';
 
 // SET GLOBAL PROPS //
 import { setCustomText } from 'react-native-global-props';
@@ -226,6 +229,58 @@ interface IProps {
 interface IState {
 }
 
+// Begin: Push notification handling logic
+////////////////////////////////////////////////////////////////////////////////////////////////
+// We have a few things to do here:
+//    - Subscribe to push notifications w/ pushy
+//    - Handle the case where the app is opened from a push notification
+//    - Clear the notification area of existing notifications and clear the 'badge'
+//    - Store notifications in async storage so they are persistent until checked by the user
+
+// Subscribe to push notifications
+Pushy.setNotificationListener(async (data) => {
+
+  Logger.info(`Received push notification: ${JSON.stringify(data)}`);
+
+  if (data.action === 'confirm_friend') {
+    await NotificationService.storeNotification(data);
+    // Logger.info(`Received friend request from: ${data.from_username}`);
+    // NavigationService.reset('Map', { showConfirmModal: true, pushData: data});
+  } else {
+    await NotificationService.storeNotification(data);
+  }
+
+  // let notificationTitle = 'Smartshare';
+  // // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
+  // let notificationText = data.message || 'Test notification';
+  // Display basic system notification
+  // Pushy.notify(notificationTitle, notificationText);
+});
+
+function processInitialNotification(notification) {
+  console.log(notification);
+}
+
+function processDeliveredNotifications(notifications) {
+  for (let i = 0; i < notifications.length; i++) {
+    NotificationService.storeNotification(notifications[i]);
+  }
+
+  // Clear the notification badges
+  PushNotificationIOS.setApplicationIconBadgeNumber(0);
+}
+
+PushNotificationIOS.getInitialNotification().then(function (notification) {
+  if (notification !== null) {
+    processInitialNotification(notification);
+  }
+});
+
+PushNotificationIOS.getDeliveredNotifications(processDeliveredNotifications);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// End: Push notification handling logic
+
 export class App extends Component<IProps, IState> {
 
     // Private services
@@ -234,6 +289,7 @@ export class App extends Component<IProps, IState> {
     // @ts-ignore
     private locationService: LocationService;
     private authService: AuthService;
+
     private bearing;
 
     private readonly configGlobal = ConfigGlobalLoader.config;
@@ -267,8 +323,6 @@ export class App extends Component<IProps, IState> {
       // Link handling
       this.handleLink = this.handleLink.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
-
-      this.subscribeToNotifications = this.subscribeToNotifications.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
       this.nodeService = new NodeService(
@@ -331,30 +385,8 @@ export class App extends Component<IProps, IState> {
 
     registerPushy() {
       // Handle push notifications
-      Pushy.setNotificationListener(async (data) => {
-        // Print notification payload data
-        console.log('Received notification: ' + JSON.stringify(data));
-        // Notification title
-        let notificationTitle = 'Smartshare';
-        // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
-        let notificationText = data.message || 'Test notification';
-        // Display basic system notification
-        Pushy.notify(notificationTitle, notificationText);
-      });
-      // subscribe device to notifications
-      this.subscribeToNotifications();
+      Pushy.listen();
     }
-
-    async subscribeToNotifications() {
-      // subscribe device to notifcation topic
-      try {
-      await Pushy.subscribe('nodes');
-      } catch (error) {
-        console.log('unable to subscribe to pushy topic');
-      }
-    }
-
-    // TODO: listen for new nodes, send notifcation to topic when node list is updated
 
     // Handle a link clicked from a text message
     async handleLink(event) {
@@ -460,6 +492,7 @@ export class App extends Component<IProps, IState> {
         await SleepUtil.SleepAsync(5000);
       }
     }
+
     async setupPushNotifications() {
       let deviceToken = await Pushy.register();
       return deviceToken;
@@ -507,23 +540,12 @@ export class App extends Component<IProps, IState> {
     }
 
     async getPostParams() {
-      let storedSettings = await AsyncStorage.getItem('userSettings');
-      storedSettings = JSON.parse(storedSettings);
-
-      let savedTitle = 'Anonymous';
-      let savedDescription = '';
-
-      if (storedSettings !== null) {
-        // @ts-ignore
-        savedTitle = storedSettings.savedTitle;
-        // @ts-ignore
-        savedDescription = storedSettings.savedDescription;
-      }
+      // await AsyncStorage.clear();
 
       let currentUUID = undefined;
       try {
         currentUUID = await this.authService.getUUID();
-        Logger.debug(`App.getPostParams - User has a UUID of: ${currentUUID}`);
+        Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
       } catch (err) {
         Logger.debug(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
       }
@@ -542,8 +564,6 @@ export class App extends Component<IProps, IState> {
         'node_data': {
           'lat': undefined,
           'lng': undefined,
-          'title': savedTitle,
-          'description': savedDescription,
           'public': false,
           'type': 'person',
           'device_token': deviceToken,

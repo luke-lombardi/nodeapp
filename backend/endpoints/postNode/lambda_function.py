@@ -45,6 +45,18 @@ def new_user(rds, key_name):
     return True
 
 
+def set_username(node_data):
+    username = get_random_name()
+
+    if username:
+        logger.info("Generated a new username: {}".format(username))
+        node_data['topic'] = username
+    else:
+        node_data['topic'] = 'Anonymous'
+    
+    return node_data
+      
+
 def get_random_name():
     username = None
     
@@ -73,14 +85,20 @@ def update_node(rds, node_id, node_data):
     node_type = node_data.get('type', 'place')
 
     if node_type == 'person':
+
         # If it's a new user, assign them a random username
         if new_user(rds, key_name):
-            username = get_random_name()
-            if username:
-                logger.info("Generated a new username: {} for {}".format(username, key_name))
-                node_data['topic'] = username
-            else:
-                node_data['topic'] = 'Anonymous'
+            node_data = set_username(node_data)
+        
+        # Not a new user
+        else:
+            current_node_data = rds.get(key_name).decode("utf-8")
+            
+            logger.info("Current node data: {}".format(current_node_data))
+  
+            # If they have no username set, create one for them
+            if current_node_data.get('topic', None) is None:
+                node_data = set_username(node_data)
 
         # Update the node data in the cache
         rds.set(name=key_name, value=json.dumps(node_data))

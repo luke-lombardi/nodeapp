@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-import { Marker, Callout } from 'react-native-maps';
-import { Text, StyleSheet } from 'react-native';
+import { Marker } from 'react-native-maps';
+
+// @ts-ignore
+import { Text, StyleSheet, View } from 'react-native';
+
+// @ts-ignore
+import Pulse from 'react-native-pulse';
 
 interface IProps {
     privatePersonList: any;
@@ -18,51 +23,45 @@ export default class PrivatePeople extends Component<IProps, IState> {
     }
 
     render() {
-        return (
-            this.props.privatePersonList.map(marker => (
-            <Marker
-                coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
-                title={marker.data.title}
-                pinColor={marker.data.color}
-                image={require('../../../assets/images/gift.png')}
-                anchor={{ x: 0.5, y: 0.5 }}
-                onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePerson'); }}
-                // pinColor={this.state.inactive  ? 'red' : 'purple'} TODO: DIFFERENT MARKER COLOR FOR NODE STATE
-                description={marker.data.description}
-                key={marker.node_id}
-                >
-                <Callout tooltip={false} style={styles.callout}>
-                <Text style={styles.title}>{marker.data.title}</Text>
-                </Callout>
-            </ Marker>
-                ))
-            );
-        }
-    }
+      return (
+          this.props.privatePersonList.map(marker => (
+            marker.node_id !== undefined ?
+            <View key={marker.node_id}>
+              <Marker
+                  coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
+                  title={marker.data.topic}
+                  // description={}
+                  anchor={{ x: .5, y: .6 }}
+                  onPress={(event) => {this.props.functions.onNodeSelected(event, 'privatePerson'); }}
+                  key={marker.node_id}
+              >
+              </ Marker>
+            </View>
+            :
+            undefined
+          ))
+      );
+  }
 
-    const styles = StyleSheet.create({
-        callout: {
-            position: 'relative',
-            flex: 1,
-            alignItems: 'center',
-          },
-          card: {
-            backgroundColor: '#fff',
-            borderRadius: 6,
-            borderColor: 'black',
-            borderWidth: 1,
-            padding: 10,
-          },
-        title: {
-            color: '#000',
-            fontSize: 25,
-            alignSelf: 'center',
-        },
-        description: {
-            color: '#000',
-            fontSize: 18,
-            textAlign: 'center',
-            marginBottom: 3,
-            marginTop: 10,
-        },
-    });
+}
+
+// @ts-ignore
+const styles = StyleSheet.create({
+  callout: {
+    position: 'relative',
+    flex: 1,
+    alignItems: 'center',
+  },
+  title: {
+    color: '#000',
+    fontSize: 25,
+    alignSelf: 'center',
+  },
+  description: {
+    color: '#000',
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 3,
+    marginTop: 10,
+  },
+});

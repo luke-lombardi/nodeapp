@@ -43,6 +43,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* SmartshareTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* SmartshareTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2E4CEACB2187F004008D205B /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E4CEAB72187EF12008D205B /* libReact Native Open Settings.a */; };
+		2E5B3EAF21F4C83500B5048C /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E5B3E8621F4C7DD00B5048C /* libRCTPushNotification.a */; };
 		2E747B1C213C481100EC738F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E747B1B213C481100EC738F /* GameKit.framework */; };
 		2E8CD0EA214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */; };
 		2E8CD0F7214DA68B004137D1 /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8CD0F6214DA678004137D1 /* libRNSimpleCompass.a */; };
@@ -246,6 +247,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
 			remoteInfo = React;
+		};
+		2E5B3E8521F4C7DD00B5048C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E5B3E6F21F4C7DD00B5048C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		2E5B3E8721F4C7DD00B5048C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E5B3E6F21F4C7DD00B5048C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
+		};
+		2E5B3EAB21F4C82500B5048C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E5B3EA621F4C82500B5048C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		2E5B3EAD21F4C82500B5048C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E5B3EA621F4C82500B5048C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
 		};
 		2E8CD0F5214DA678004137D1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -467,6 +496,11 @@
 		2D02E4901E0B4A5D006451C7 /* Smartshare-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Smartshare-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E4CEA982187EF11008D205B /* React Native Open Settings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "React Native Open Settings.xcodeproj"; path = "../node_modules/react-native-open-settings/React Native Open Settings.xcodeproj"; sourceTree = "<group>"; };
+		2E5B3E6C21F4C7DD00B5048C /* RCTPushNotificationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTPushNotificationManager.m; sourceTree = "<group>"; };
+		2E5B3E6D21F4C7DD00B5048C /* PushNotificationIOS.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = PushNotificationIOS.js; sourceTree = "<group>"; };
+		2E5B3E6E21F4C7DD00B5048C /* RCTPushNotificationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTPushNotificationManager.h; sourceTree = "<group>"; };
+		2E5B3E6F21F4C7DD00B5048C /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RCTPushNotification.xcodeproj; sourceTree = "<group>"; };
+		2E5B3EA621F4C82500B5048C /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		2E747B1A213C480900EC738F /* Smartshare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Smartshare.entitlements; path = Smartshare/Smartshare.entitlements; sourceTree = "<group>"; };
 		2E747B1B213C481100EC738F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
@@ -528,6 +562,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E5B3EAF21F4C83500B5048C /* libRCTPushNotification.a in Frameworks */,
 				2E4CEACB2187F004008D205B /* libReact Native Open Settings.a in Frameworks */,
 				2E8CD0F7214DA68B004137D1 /* libRNSimpleCompass.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
@@ -713,6 +748,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2E5B3E6B21F4C7DD00B5048C /* PushNotificationIOS */,
 				2E747B1B213C481100EC738F /* GameKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				17E0612A16444329BE411F7B /* libz.tbd */,
@@ -725,6 +761,36 @@
 			isa = PBXGroup;
 			children = (
 				2E4CEAB72187EF12008D205B /* libReact Native Open Settings.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2E5B3E6B21F4C7DD00B5048C /* PushNotificationIOS */ = {
+			isa = PBXGroup;
+			children = (
+				2E5B3E6C21F4C7DD00B5048C /* RCTPushNotificationManager.m */,
+				2E5B3E6D21F4C7DD00B5048C /* PushNotificationIOS.js */,
+				2E5B3E6E21F4C7DD00B5048C /* RCTPushNotificationManager.h */,
+				2E5B3E6F21F4C7DD00B5048C /* RCTPushNotification.xcodeproj */,
+			);
+			name = PushNotificationIOS;
+			path = "../node_modules/react-native/Libraries/PushNotificationIOS";
+			sourceTree = "<group>";
+		};
+		2E5B3E7021F4C7DD00B5048C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2E5B3E8621F4C7DD00B5048C /* libRCTPushNotification.a */,
+				2E5B3E8821F4C7DD00B5048C /* libRCTPushNotification-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2E5B3EA721F4C82500B5048C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2E5B3EAC21F4C82500B5048C /* libRCTPushNotification.a */,
+				2E5B3EAE21F4C82500B5048C /* libRCTPushNotification-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -820,6 +886,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				2E5B3EA621F4C82500B5048C /* RCTPushNotification.xcodeproj */,
 				2E4CEA982187EF11008D205B /* React Native Open Settings.xcodeproj */,
 				2E8CD0F1214DA678004137D1 /* RNSimpleCompass.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -1022,7 +1089,7 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = TN6X9LR957;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -1100,6 +1167,14 @@
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+				},
+				{
+					ProductGroup = 2E5B3E7021F4C7DD00B5048C /* Products */;
+					ProjectRef = 2E5B3E6F21F4C7DD00B5048C /* RCTPushNotification.xcodeproj */;
+				},
+				{
+					ProductGroup = 2E5B3EA721F4C82500B5048C /* Products */;
+					ProjectRef = 2E5B3EA621F4C82500B5048C /* RCTPushNotification.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -1298,6 +1373,34 @@
 			fileType = archive.ar;
 			path = "libReact Native Open Settings.a";
 			remoteRef = 2E4CEAB62187EF12008D205B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2E5B3E8621F4C7DD00B5048C /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 2E5B3E8521F4C7DD00B5048C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2E5B3E8821F4C7DD00B5048C /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 2E5B3E8721F4C7DD00B5048C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2E5B3EAC21F4C82500B5048C /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 2E5B3EAB21F4C82500B5048C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2E5B3EAE21F4C82500B5048C /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 2E5B3EAD21F4C82500B5048C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2E8CD0F6214DA678004137D1 /* libRNSimpleCompass.a */ = {
@@ -1718,8 +1821,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = TN6X9LR957;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1760,8 +1863,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = TN6X9LR957;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -1881,7 +1984,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.smartshare.app;
 				PRODUCT_NAME = Smartshare;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "1492d360-adf0-4e6b-a91c-a2b3f24e9722";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";

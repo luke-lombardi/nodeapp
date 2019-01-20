@@ -4,8 +4,10 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 // @ts-ignore
 import { AsyncStorage } from 'react-native';
+import Snackbar from 'react-native-snackbar';
 
 // services
+import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
 interface IProps {
@@ -28,8 +30,19 @@ export default class NotificationService {
         }
 
         notifications.push(pushData);
-        Logger.info(`NotificationService.storeNotification: now tracking ${notifications}`);
+        Logger.info(`NotificationService.storeNotification: now tracking ${JSON.stringify(notifications)}`);
         await AsyncStorage.setItem('notifications', JSON.stringify(notifications));
+
+        // Show a snackbar that links to the notification list
+        Snackbar.show({
+          title: 'Received new notifications.',
+          duration: Snackbar.LENGTH_INDEFINITE,
+          action: {
+            title: 'View',
+            color: 'white',
+            onPress: () => { NavigationService.reset('Map', {}); },
+          },
+        });
 
         // let index = notifications.indexOf(newNodeId);
 

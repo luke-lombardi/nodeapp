@@ -258,7 +258,12 @@ function processInitialNotification(notification) {
 }
 
 function processDeliveredNotifications(notifications) {
-  console.log(notifications);
+  for (let i = 0; i < notifications.length; i++) {
+    NotificationService.storeNotification(notifications[i]);
+  }
+
+  // Clear the notification badges
+  PushNotificationIOS.setApplicationIconBadgeNumber(0);
 }
 
 PushNotificationIOS.getInitialNotification().then(function (notification) {

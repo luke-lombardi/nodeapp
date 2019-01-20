@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
+// import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
-import { ListItem, Icon } from 'react-native-elements';
+import { ListItem, Icon, Button } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
@@ -38,7 +38,7 @@ interface IState {
     userInfo: string;
 }
 
-export class Chat extends Component<IProps, IState> {
+export class Notifications extends Component<IProps, IState> {
   private monitoring: boolean = false;
   private stopping: boolean = false;
   private checkNowTrigger: DeferredPromise;
@@ -58,16 +58,17 @@ export class Chat extends Component<IProps, IState> {
     return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingRight: 10},
         headerTitleStyle: { color: 'white'},
-        title: 'Chat',
-        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
-          navigation.dispatch(NavigationActions.navigate(
-                {
-                  key: 'Map',
-                  routeName: 'Map',
-                  params: {},
-                  action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
-                })); }
-               } />,
+        title: 'Notifications',
+        headerLeft:
+            <Icon
+            name='menu'
+            type='feather'
+            containerStyle={{padding: 5}}
+            size={30}
+            underlayColor={'rgba(44,55,71, 0.7)'}
+            color={'#ffffff'}
+            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+            />,
       };
   }
 
@@ -210,14 +211,43 @@ export class Chat extends Component<IProps, IState> {
         // }
         title={
           <View style={styles.titleView}>
-          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}</Text>
-          <Text style={styles.titleText}>{item.message}</Text>
+          <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
+          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>softlion393</Text>
+          <Text style={{fontSize: 12, color: 'gray'}}>{this.getTime(item)}</Text>
+          </View>
+          {/* <Text style={styles.titleText}>{item.message}</Text> */}
           </View>
         }
-        subtitle={
-          <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}>{this.getTime(item)}</Text>
-          {/* ({ item.user.substr(item.user.length - 5)}) */}
+        rightSubtitle={
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            style={{width: 90}}
+            titleStyle={{fontSize: 14}}
+            containerStyle={{paddingHorizontal: 5}}
+            icon={
+                <Icon
+                name='check'
+                type='feather'
+                size={15}
+                color='white'
+                />
+            }
+            title='Accept'
+            />
+          <Button
+            style={{width: 90}}
+            titleStyle={{fontSize: 14}}
+            containerStyle={{paddingHorizontal: 5}}
+            icon={
+                <Icon
+                name='x'
+                type='feather'
+                size={15}
+                color='white'
+                />
+            }
+            title='Reject'
+            />
           </View>
         }
       />
@@ -341,6 +371,21 @@ export class Chat extends Component<IProps, IState> {
     }
 
     render() {
+      const data = [
+        {
+          'action': 'confirm_friend',
+          'relation_id': 'relation:8a8df1bb-b79d-45b3-bfa6-2891b92befd4',
+          'from_username': 'SoftLion163',
+          'friend_id': 'friend:239ce858-0f0a-4b59-8b99-a529370a6a41',
+          'aps': {
+            'badge': 1,
+            'sound': 'ping.aiff',
+            'alert': 'You have received a chat request',
+          },
+          'from_user': 'a3827ae6-9fa2-4cd5-87e9-413bc0472235',
+          'location_tracking': true,
+        },
+      ];
       return (
       <View style={{flex: 1}}>
       {
@@ -353,70 +398,26 @@ export class Chat extends Component<IProps, IState> {
         action={'requestToChat'}
         />
       }
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior='padding'
-          keyboardVerticalOffset={65}
-        >
         <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
-           keyboardDismissMode={'on-drag'}
-           data={this.state.data}
+           data={data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.timestamp}
+           keyExtractor={item => item.friend_id}
           />
           {
-            this.state.data.length < 1 &&
+            data.length === 0 &&
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>No messages yet!</Text>
+            <Text style={styles.null}>No Notifications</Text>
+            <Text style={{fontSize: 14, top: 280, color: 'gray'}}>You can find things that require your attention here.</Text>
             </View>
           }
           </View>
-          <View
-            style={[
-              styles.chatMessageContainer, {
-                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
-              },
-            ]}
-          >
-          <TextInput
-            onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
-            underlineColorAndroid={'transparent'}
-            multiline
-            blurOnSubmit
-            maxLength={500}
-            allowFontScaling
-            onSubmitEditing={this.submitMessage}
-            placeholder={'Type your message...'}
-            returnKeyType='send'
-            style={[
-              styles.chatInput, {
-                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
-              },
-            ]}
-            onChangeText={text => this.setMessageText(text)}
-            value={this.state.messageBody}
-          />
-          {/* <TouchableOpacity
-              onPress={this.submitMessage}
-              style={{width: 100}}
-            >
-            <Icon
-              iconStyle={{padding: 10}}
-              containerStyle={styles.iconContainer}
-              size={20}
-              name='send'
-              color={'black'}
-            />
-          </TouchableOpacity> */}
           <Spinner
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
           />
         </View>
-      </View>
-      </KeyboardAvoidingView>
       </View>
       );
     }
@@ -435,7 +436,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
 
 const styles = StyleSheet.create({
   nodeListItem: {
@@ -504,11 +505,15 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     color: 'grey',
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 5,
   },
   flatlist: {
     backgroundColor: 'white',
     flex: 1,
-    marginBottom: 40,
   },
   nullContainer: {
     flex: 1,

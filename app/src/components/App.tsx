@@ -21,6 +21,7 @@ import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
 import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
+import Notifications from '../screens/Notifications';
 import GetPermissions from '../screens/GetPermissions';
 
 // Redux imports
@@ -56,6 +57,7 @@ import AuthService from '../services/AuthService';
 import { setCustomText } from 'react-native-global-props';
 import SleepUtil from '../services/SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+// import { Notifications } from '../screens/Notifications';
 
 const customTextProps = {
   style: {
@@ -140,6 +142,7 @@ const InternalStack = StackNavigator({
         }),
       },
   Chat: { screen: Chat },
+  Notifications: { screen: Notifications },
   },
   {
   initialRouteName: 'Map',
@@ -157,6 +160,7 @@ const InternalStack = StackNavigator({
     },
     {
       initialRouteName: 'Main',
+      drawerPosition: 'left',
       contentComponent: props => <SideBar {...props} />,
     },
   );

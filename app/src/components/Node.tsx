@@ -144,7 +144,16 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async upvoteComment() {
-    console.log('upvoting comment....');
+    let currentUUID = await this.authService.getUUID();
+
+    let requestBody = {
+      'node_id': this.props.nodeId,
+      'user_uuid': currentUUID,
+      'toggle': false,
+    };
+
+    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    console.log('upvoting comment....', response);
   }
 
   async downvoteComment() {
@@ -182,7 +191,7 @@ export default class Node extends Component<IProps, IState> {
               onPress={() => this.upvoteComment()}
               underlayColor={'transparent'}
             />
-            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>39</Text>
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{Object.keys(this.props.likes).length}</Text>
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'
@@ -207,6 +216,7 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.toggleLikeStatus}
               disabled={this.state.loadingLikeIcon}
+              disabledStyle={{backgroundColor: 'rgba(44,55,71,.9)'}}
             />
              <Button
               icon={{
@@ -260,17 +270,18 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(255,255,255,0.2)',
-    borderWidth: 1,
+    borderTopWidth: 0,
+    borderWidth: .5,
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
     //padding: 10,
     bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
-    shadowColor: 'black',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 2, height: 3 },
+    //shadowColor: 'black',
+    //shadowOpacity: 0.1,
+    //shadowRadius: 5,
+    //shadowOffset: { width: 2, height: 3 },
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -310,7 +321,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    backgroundColor: 'rgba(44,55,71,0.0)',
+    backgroundColor: 'rgba(44,55,71,.9)',
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',

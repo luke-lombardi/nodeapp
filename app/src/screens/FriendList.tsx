@@ -100,11 +100,6 @@ export class FriendList extends Component<IProps, IState> {
 
         <ListItem
           onPress={() => this.sendPrivateMessage(row)}
-          scaleProps={{
-            friction: 90,
-            tension: 100,
-            activeScale: 0.95,
-          }}
           containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
           rightElement={
             <View style={{flexDirection: 'row'}}>
@@ -115,7 +110,7 @@ export class FriendList extends Component<IProps, IState> {
               size={32}
               onPress={() => this._onTouchNode(row) }
               underlayColor={'transparent'}
-              containerStyle={{paddingHorizontal: 20}}
+              containerStyle={{paddingHorizontal: 20, right: 20}}
             />
             <Switch
             />
@@ -204,6 +199,8 @@ const styles = StyleSheet.create({
     minHeight: 80,
     maxHeight: 80,
     width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
   },
   flatlist: {
   },

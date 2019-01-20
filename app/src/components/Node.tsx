@@ -23,11 +23,14 @@ interface IState {
   loadingLikeIcon: boolean;
   currentLikeIcon: string;
   likeIconOpacity: number;
+  time: any;
+  elaspedTime: number;
 }
 
 export default class Node extends Component<IProps, IState> {
   private apiService: ApiService;
   private authService: AuthService;
+  private interval: any;
 
   constructor(props: IProps) {
     super(props);
@@ -35,6 +38,8 @@ export default class Node extends Component<IProps, IState> {
       loadingLikeIcon: true,
       currentLikeIcon: 'loader',
       likeIconOpacity: 0.4,
+      time: '',
+      elaspedTime: 0,
     };
 
     this.goToFinder = this.goToFinder.bind(this);
@@ -54,6 +59,7 @@ export default class Node extends Component<IProps, IState> {
     this.authService = new AuthService({});
 
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
 
   async toggleLikeStatus() {
@@ -72,10 +78,23 @@ export default class Node extends Component<IProps, IState> {
 
   componentDidMount() {
     this.updateLikeStatus();
+    this.interval = setInterval(() => { this.countdown(); }, 1000);
   }
 
-  countdown() {
-    return '2:13:23';
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  // TODO: figure out a better way to do this
+  async countdown() {
+    let elaspedTime = this.state.elaspedTime;
+    elaspedTime += 1;
+
+    let timeInMinutes = Moment().startOf('day').seconds(this.props.ttl - elaspedTime).format('HH:mm:ss');
+    await this.setState({
+      elaspedTime: elaspedTime,
+      time: timeInMinutes,
+    });
   }
 
   async updateLikeStatus() {
@@ -127,7 +146,16 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async upvoteComment() {
-    console.log('upvoting comment....');
+    let currentUUID = await this.authService.getUUID();
+
+    let requestBody = {
+      'node_id': this.props.nodeId,
+      'user_uuid': currentUUID,
+      'toggle': false,
+    };
+
+    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    console.log('upvoting comment....', response);
   }
 
   async downvoteComment() {
@@ -143,10 +171,10 @@ export default class Node extends Component<IProps, IState> {
           name='clock'
           type='feather'
           size={22}
-          color='white'
+          color={'rgba(255,255,255,.8)'}
           containerStyle={{position: 'absolute', left: 10, top: 1, padding: 10, alignSelf: 'flex-start'}}
         />
-        <Text style={{color: 'white', alignSelf: 'center', paddingTop: 10, left: 10, letterSpacing: 5, fontSize: 18}}>{this.countdown()}</Text>
+        <Text style={{color: 'rgba(255,255,255,.8)', alignSelf: 'center', paddingTop: 10, left: 10, letterSpacing: 3, fontSize: 18}}>{this.state.time}</Text>
         </View>
         <Card containerStyle={styles.nodeCard}>
         <View style={{width: '80%', maxHeight: 150, minHeight: 100}}>
@@ -157,19 +185,19 @@ export default class Node extends Component<IProps, IState> {
           { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text> */}
           </View>
-          <View style={{paddingHorizontal: 10, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+          <View style={{paddingHorizontal: 15, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
             <Icon
               name='keyboard-arrow-up'
               color='#00aced'
-              size={36}
+              size={40}
               onPress={() => this.upvoteComment()}
               underlayColor={'transparent'}
             />
-            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>39</Text>
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{Object.keys(this.props.likes).length}</Text>
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'
-              size={36}
+              size={40}
               onPress={() => this.downvoteComment()}
               underlayColor={'transparent'}
             />
@@ -180,7 +208,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'feather',
-                size: 32,
+                size: 34,
                 underlayColor: 'transparent',
                 color: `rgba(255,255,255,${this.state.likeIconOpacity})`,
               }}
@@ -190,12 +218,13 @@ export default class Node extends Component<IProps, IState> {
               title=''
               onPress={this.toggleLikeStatus}
               disabled={this.state.loadingLikeIcon}
+              disabledStyle={{backgroundColor: 'rgba(44,55,71,.9)'}}
             />
              <Button
               icon={{
                 name: 'message-circle',
                 type: 'feather',
-                size: 32,
+                size: 34,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.middleButton}
@@ -208,7 +237,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'share',
                 type: 'feather',
-                size: 32,
+                size: 34,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.directionsButton}
@@ -237,25 +266,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
-    paddingBottom: 15,
-    bottom: 30,
   },
   nodeCard: {
-    height: '100%',
+    height: 220,
     width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(255,255,255,0.2)',
-    borderWidth: 1,
+    borderTopWidth: 0,
+    borderWidth: .5,
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
     // padding: 10,
     bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
-    shadowColor: 'black',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 2, height: 3 },
+    //shadowColor: 'black',
+    //shadowOpacity: 0.1,
+    //shadowRadius: 5,
+    //shadowOffset: { width: 2, height: 3 },
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -295,7 +323,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    backgroundColor: 'rgba(44,55,71,0.0)',
+    backgroundColor: 'rgba(44,55,71,.9)',
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
@@ -303,7 +331,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonView: {
-    height: 35,
+    //height: 35,
     width: '100%',
     flexDirection: 'row',
     alignSelf: 'center',
@@ -318,12 +346,12 @@ const styles = StyleSheet.create({
   mapButton: {
     width: '70%',
     height: '100%',
-    marginLeft: 15,
+    //marginLeft: 15,
   },
   directionsButton: {
     width: '70%',
     height: '100%',
-    marginLeft: 15,
+    marginLeft: 30,
   },
   transparentButton: {
     backgroundColor: 'rgba(44,55,71,0.0)',

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, ButtonGroup } from 'react-native-elements';
 import { Button } from 'react-native-elements';
+import Moment from 'moment';
 
 // import LinearGradient from 'react-native-linear-gradient';
 
@@ -27,6 +28,8 @@ interface IState {
   selectedIndex: number;
   data: Array<any>;
   isRefreshing: boolean;
+  elaspedTime: number;
+  time: any;
 }
 
 export class NodeList extends Component<IProps, IState> {
@@ -38,10 +41,13 @@ export class NodeList extends Component<IProps, IState> {
       selectedIndex: 0,
       data: this.props.publicPlaceList,
       isRefreshing: false,
+      elaspedTime: 0,
+      time: '',
     };
 
     this.updateIndex = this.updateIndex.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
+    this.countdown = this.countdown.bind(this);
   }
 
   updateIndex (selectedIndex) {
@@ -84,24 +90,41 @@ export class NodeList extends Component<IProps, IState> {
     });
   }
 
+    // TODO: figure out a better way to do this
+    async countdown(item) {
+      // {this.interval = setInterval(() => { this.countdown(item); }, 1000)}
+      let elaspedTime = this.state.elaspedTime;
+      elaspedTime += 1;
+
+      let timeInMinutes = Moment().startOf('day').seconds(item.data.ttl - elaspedTime).format('HH:mm:ss');
+      await this.setState({
+        elaspedTime: elaspedTime,
+        time: timeInMinutes,
+      });
+    }
+
   _renderItem = ({item}) => (
     <ListItem
-    // scaleProps={{
-    //   friction: 90,
-    //   tension: 100,
-    //   activeScale: 0.95,
-    // }}
       onPress={() => this._onTouchNode(item)}
       containerStyle={styles.nodeListItem}
-      leftIcon={
-        item.data.type === 'place' ?
-        {name: 'circle', type: 'font-awesome', size: 10, color: 'lightgreen'} :
-        {name: 'circle', type: 'font-awesome', size: 10, color: 'blue'}
-      }
-      titleStyle={{fontWeight: '600', fontSize: 16, marginBottom: 5}}
+      titleStyle={{fontWeight: 'bold', fontSize: 14}}
       title={item.data.topic}
-      subtitle={item.data.distance_in_miles.toString() + ' miles, expires in ' + (item.data.ttl / 3600).toFixed(1) + ' hours' }
-      subtitleStyle={{fontSize: 14, color: 'gray'}}
+      rightTitleStyle={{fontWeight: '600', fontSize: 14}}
+      rightTitle={
+      <View style={{paddingVertical: 5}}>
+        <Text style={{fontWeight: 'bold'}}>{item.data.distance_in_miles.toString()}</Text>
+        <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
+        </View>
+      }
+      subtitle={
+        <View style={{paddingVertical: 5}}>
+          <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
+          {
+            Object.keys(item.data.likes).length > 0 &&
+            <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
+          }
+        </View>
+      }
     />
   )
 
@@ -206,7 +229,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   nodeListItem: {
-    width: '110%',
+    width: '100%',
     marginTop: 10,
     marginBottom: 5,
     borderBottomWidth: 1,

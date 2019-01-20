@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
+// import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
-import { ListItem, Icon } from 'react-native-elements';
+import { ListItem, Icon, Button } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 import NavigationService from '../services/NavigationService';
@@ -16,7 +16,6 @@ import { connect, Dispatch } from 'react-redux';
 // Services
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
-import NodeService from '../services/NodeService';
 
 // @ts-ignore
 import moment from 'moment';
@@ -24,7 +23,6 @@ import moment from 'moment';
 import SleepUtil from '../services/SleepUtil';
 import DeferredPromise from '../services/DeferredPromise';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import Logger from '../services/Logger';
 
 interface IProps {
     navigation: any;
@@ -40,7 +38,7 @@ interface IState {
     userInfo: string;
 }
 
-export class Chat extends Component<IProps, IState> {
+export class Notifications extends Component<IProps, IState> {
   private monitoring: boolean = false;
   private stopping: boolean = false;
   private checkNowTrigger: DeferredPromise;
@@ -48,7 +46,6 @@ export class Chat extends Component<IProps, IState> {
 
   private apiService: ApiService;
   private authService: AuthService;
-  private nodeService: NodeService;
 
   // @ts-ignore
   private userUuid: string;
@@ -61,16 +58,17 @@ export class Chat extends Component<IProps, IState> {
     return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingRight: 10},
         headerTitleStyle: { color: 'white'},
-        title: 'Chat',
-        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
-          navigation.dispatch(NavigationActions.navigate(
-                {
-                  key: 'Map',
-                  routeName: 'Map',
-                  params: {},
-                  action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
-                })); }
-               } />,
+        title: 'Notifications',
+        headerLeft:
+            <Icon
+            name='menu'
+            type='feather'
+            containerStyle={{padding: 5}}
+            size={30}
+            underlayColor={'rgba(44,55,71, 0.7)'}
+            color={'#ffffff'}
+            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+            />,
       };
   }
 
@@ -88,7 +86,6 @@ export class Chat extends Component<IProps, IState> {
 
     this.apiService = new ApiService({});
     this.authService = new AuthService({});
-    this.nodeService = new NodeService({});
 
     this._renderItem = this._renderItem.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -164,15 +161,6 @@ export class Chat extends Component<IProps, IState> {
       }
     }
     async showConfirmModal(item) {
-
-      // @ts-ignore
-      let currentUUID = await this.authService.getUUID();
-
-      // If a person is clicking themselves in the list, don't open the confirm modal
-      // if ('private:' + currentUUID === item.user) {
-      //   return;
-      // }
-
       // show confirm modal and pass userInfo from chat message
       await this.setState({userInfo: item});
       await this.setState({confirmModalVisible: true});
@@ -180,53 +168,11 @@ export class Chat extends Component<IProps, IState> {
 
     async startPrivateChat(userInfo: any, shareLocation: boolean) {
       await this.setState({confirmModalVisible: false});
-
-      let currentUUID = await this.authService.getUUID();
-
-      let requestBody = {
-        'from': currentUUID,
-        'to': userInfo.user,
-        'share_location': shareLocation,
-      };
-
-      let alreadyAdded = await this.nodeService.doesRelationExist(userInfo.user);
-
-      if (alreadyAdded) {
-        Snackbar.show({
-          title: 'You already requested a chat with this user',
-          duration: Snackbar.LENGTH_SHORT,
-        });
-
-        Logger.info(`Chat.startPrivateChat - you already requested a DM w/ this user.`);
-        return;
-      }
-
-      let response = await this.apiService.AddFriendAsync(requestBody);
-      if (response !== undefined) {
-        Logger.info(`Chat.startPrivateChat - Received response ${JSON.stringify(response)}`);
-        let stored = await this.nodeService.storeRelation(userInfo.user, response);
-
-        if (!stored) {
-          Snackbar.show({
-            title: 'Could not save new relation',
-            duration: Snackbar.LENGTH_SHORT,
-          });
-
-          Logger.info(`Chat.startPrivateChat - could not save new relation.`);
-          return;
-        }
-
-        if (shareLocation) {
-          await this.nodeService.storeNode(response.their_id);
-        }
-
-        Snackbar.show({
-          title: 'Sent direct message request',
-          duration: Snackbar.LENGTH_SHORT,
-        });
-
-        Logger.info(`Chat.startPrivateChat - stored new relation data.`);
-
+      // initiate private communication in API service when user submits confirm modal
+      if (shareLocation) {
+        console.log('starting private chat with location tracking for....', userInfo.user);
+      } else {
+        console.log('starting private chat without location tracking for....', userInfo.user);
       }
     }
 
@@ -265,14 +211,43 @@ export class Chat extends Component<IProps, IState> {
         // }
         title={
           <View style={styles.titleView}>
-          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}</Text>
-          <Text style={styles.titleText}>{item.message}</Text>
+          <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
+          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>softlion393</Text>
+          <Text style={{fontSize: 12, color: 'gray'}}>{this.getTime(item)}</Text>
+          </View>
+          {/* <Text style={styles.titleText}>{item.message}</Text> */}
           </View>
         }
-        subtitle={
-          <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}>{this.getTime(item)}</Text>
-          {/* ({ item.user.substr(item.user.length - 5)}) */}
+        rightSubtitle={
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button
+            style={{width: 90}}
+            titleStyle={{fontSize: 14}}
+            containerStyle={{paddingHorizontal: 5}}
+            icon={
+                <Icon
+                name='check'
+                type='feather'
+                size={15}
+                color='white'
+                />
+            }
+            title='Accept'
+            />
+          <Button
+            style={{width: 90}}
+            titleStyle={{fontSize: 14}}
+            containerStyle={{paddingHorizontal: 5}}
+            icon={
+                <Icon
+                name='x'
+                type='feather'
+                size={15}
+                color='white'
+                />
+            }
+            title='Reject'
+            />
           </View>
         }
       />
@@ -391,10 +366,26 @@ export class Chat extends Component<IProps, IState> {
     }
 
     public CheckNow() {
+      // console.log('NodeService.CheckNow - updating the node list');
       this.checkNowTrigger.resolve();
     }
 
     render() {
+      const data = [
+        {
+          'action': 'confirm_friend',
+          'relation_id': 'relation:8a8df1bb-b79d-45b3-bfa6-2891b92befd4',
+          'from_username': 'SoftLion163',
+          'friend_id': 'friend:239ce858-0f0a-4b59-8b99-a529370a6a41',
+          'aps': {
+            'badge': 1,
+            'sound': 'ping.aiff',
+            'alert': 'You have received a chat request',
+          },
+          'from_user': 'a3827ae6-9fa2-4cd5-87e9-413bc0472235',
+          'location_tracking': true,
+        },
+      ];
       return (
       <View style={{flex: 1}}>
       {
@@ -403,62 +394,30 @@ export class Chat extends Component<IProps, IState> {
           'closeConfirmModal': this.closeConfirmModal,
           'startPrivateChat': this.startPrivateChat,
         }}
-        action={'add_friend'}
-        data={this.state.userInfo}
+        userInfo={this.state.userInfo}
+        action={'requestToChat'}
         />
       }
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior='padding'
-          keyboardVerticalOffset={65}
-        >
         <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
-           keyboardDismissMode={'on-drag'}
-           data={this.state.data}
+           data={data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.timestamp}
+           keyExtractor={item => item.friend_id}
           />
           {
-            this.state.data.length < 1 &&
+            data.length === 0 &&
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>No messages yet!</Text>
+            <Text style={styles.null}>No Notifications</Text>
+            <Text style={{fontSize: 14, top: 280, color: 'gray'}}>You can find things that require your attention here.</Text>
             </View>
           }
           </View>
-          <View
-            style={[
-              styles.chatMessageContainer, {
-                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
-              },
-            ]}
-          >
-          <TextInput
-            onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
-            underlineColorAndroid={'transparent'}
-            multiline
-            blurOnSubmit
-            maxLength={500}
-            allowFontScaling
-            onSubmitEditing={this.submitMessage}
-            placeholder={'Type your message...'}
-            returnKeyType='send'
-            style={[
-              styles.chatInput, {
-                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
-              },
-            ]}
-            onChangeText={text => this.setMessageText(text)}
-            value={this.state.messageBody}
-          />
           <Spinner
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
           />
         </View>
-      </View>
-      </KeyboardAvoidingView>
       </View>
       );
     }
@@ -477,7 +436,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
 
 const styles = StyleSheet.create({
   nodeListItem: {
@@ -546,11 +505,15 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     color: 'grey',
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 5,
   },
   flatlist: {
     backgroundColor: 'white',
     flex: 1,
-    marginBottom: 40,
   },
   nullContainer: {
     flex: 1,

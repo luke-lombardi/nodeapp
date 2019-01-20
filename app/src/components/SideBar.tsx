@@ -123,7 +123,7 @@ export class SideBar extends Component<IProps> {
                   }}
                 />
 
-                <ListItem
+                {/* <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,
@@ -138,6 +138,24 @@ export class SideBar extends Component<IProps> {
                   onPress={ () => { this.props.friendList.length === 0 ?
                     this.props.navigation.navigate('Chat', {action: 'user_chat'}) :
                     this.resetNavigation('Chat');
+                  }}
+                /> */}
+
+                <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
+                  containerStyle={styles.navItem}
+                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  // key='chat'
+                  title='Notifications'
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'bell', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => { this.props.friendList.length === 0 ?
+                    this.props.navigation.navigate('Notifications') :
+                    this.resetNavigation('Notifications');
                   }}
                 />
 

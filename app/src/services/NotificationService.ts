@@ -40,7 +40,7 @@ export default class NotificationService {
           action: {
             title: 'View',
             color: 'white',
-            onPress: () => { NavigationService.reset('Map', {}); },
+            onPress: () => { NavigationService.reset('Notifications', {}); },
           },
         });
 

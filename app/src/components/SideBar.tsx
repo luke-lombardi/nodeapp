@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Linking } from 'react-native';
+import { View, StyleSheet, Text, Linking, AsyncStorage } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -20,16 +20,28 @@ interface IProps {
     publicPlaceList: Array<any>;
 }
 
-export class SideBar extends Component<IProps> {
+interface IState {
+  numberOfNotifications: number;
+  isLoading: boolean;
+}
+
+export class SideBar extends Component<IProps, IState> {
   resetAction: any;
   private readonly configGlobal = ConfigGlobalLoader.config;
 
     constructor(props: IProps) {
         super(props);
 
+        this.state  = {
+          isLoading: true,
+          numberOfNotifications: undefined,
+        };
+
         this.resetAction = NavigationActions.replace({ routeName: 'Map' });
         this.navigateToScreen = this.navigateToScreen.bind(this);
         this.resetNavigation = this.resetNavigation.bind(this);
+
+        this.componentWillMount = this.componentWillMount.bind(this);
     }
 
     resetNavigation(route) {
@@ -47,6 +59,37 @@ export class SideBar extends Component<IProps> {
         routeName: route,
       });
       this.props.navigation.dispatch(navigateAction);
+    }
+
+    componentWillMount() {
+      this.loadNotifications();
+    }
+
+    async loadNotifications() {
+
+      // Pull notifications from async storage
+      let notifications: any = await AsyncStorage.getItem('notifications');
+      if (notifications !== null) {
+        notifications = JSON.parse(notifications);
+      } else {
+        // @ts-ignore
+        notifications = [];
+      }
+
+      // Parse out notifications that are actual requests
+      let parsedNotifications = [];
+
+      for (let i = 0; i < notifications.length; i++) {
+        if (notifications[i].action !== undefined) {
+          parsedNotifications.push(notifications[i]);
+        }
+      }
+
+      // Update the state w/ parsed notifications
+      await this.setState({
+        isLoading: false,
+        numberOfNotifications: parsedNotifications.length,
+      });
     }
 
     render() {
@@ -148,12 +191,12 @@ export class SideBar extends Component<IProps> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.state.numberOfNotifications, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   // key='chat'
                   title='Notifications'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'bell', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.friendList.length === 0 ?
+                  onPress={ () => { this.state.numberOfNotifications === 0 ?
                     this.props.navigation.navigate('Notifications') :
                     this.resetNavigation('Notifications');
                   }}

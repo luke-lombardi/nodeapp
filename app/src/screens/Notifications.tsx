@@ -4,10 +4,11 @@ import React, { Component } from 'react';
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
 import { ListItem, Icon, Button } from 'react-native-elements';
+// @ts-ignore
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
+// @ts-ignore
 import NavigationService from '../services/NavigationService';
-import ConfirmModal from '../components/ConfirmModal';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -20,8 +21,6 @@ import AuthService from '../services/AuthService';
 // @ts-ignore
 import moment from 'moment';
 
-import SleepUtil from '../services/SleepUtil';
-import DeferredPromise from '../services/DeferredPromise';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
@@ -32,24 +31,21 @@ interface IProps {
 interface IState {
     data: any;
     isLoading: boolean;
-    messageBody: string;
     textInputHeight: number;
-    confirmModalVisible: boolean;
     userInfo: string;
 }
 
 export class Notifications extends Component<IProps, IState> {
-  private monitoring: boolean = false;
-  private stopping: boolean = false;
-  private checkNowTrigger: DeferredPromise;
+  // @ts-ignore
   private readonly configGlobal = ConfigGlobalLoader.config;
 
+  // @ts-ignore
   private apiService: ApiService;
+  // @ts-ignore
   private authService: AuthService;
 
   // @ts-ignore
   private userUuid: string;
-  private nodeId: string;
   private action: any;
 
   // TODO: figure out a smarter way to do this
@@ -77,9 +73,7 @@ export class Notifications extends Component<IProps, IState> {
 
     this.state = {
         data: [],
-        messageBody: '',
-        isLoading: false,
-        confirmModalVisible: false,
+        isLoading: true,
         textInputHeight: 0,
         userInfo: '',
     };
@@ -91,57 +85,9 @@ export class Notifications extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.closeConfirmModal = this.closeConfirmModal.bind(this);
-    this.showConfirmModal = this.showConfirmModal.bind(this);
 
-    this.startPrivateChat = this.startPrivateChat.bind(this);
-    // this.upvoteComment = this.upvoteComment.bind(this);
-    // this.downvoteComment = this.downvoteComment.bind(this);
-
-    this.submitMessage = this.submitMessage.bind(this);
-    this.setMessageText = this.setMessageText.bind(this);
-
-    this.CheckNow = this.CheckNow.bind(this);
-    this.monitorMessages = this.monitorMessages.bind(this);
-    this.postMessage = this.postMessage.bind(this);
-
+    this.loadNotifications = this.loadNotifications.bind(this);
     this.getTime = this.getTime.bind(this);
-    }
-
-    async closeConfirmModal() {
-      await this.setState({confirmModalVisible: false});
-    }
-
-    async submitMessage() {
-      let nodeId = this.props.navigation.getParam('nodeId');
-
-      await this.setState({
-        isLoading: true,
-        messageBody: this.state.messageBody,
-      });
-
-      // If the message body is empty, don't post the message
-      if (this.state.messageBody === '' || this.state.messageBody.length < 1) {
-        Snackbar.show({
-          title: 'Enter a message to send.',
-          duration: Snackbar.LENGTH_SHORT,
-        });
-
-        await this.setState({
-          isLoading: false,
-        });
-
-        return;
-      }
-
-      let userUuid = await AsyncStorage.getItem('user_uuid');
-
-      NavigationService.reset('Chat', {
-        messageBody: this.state.messageBody,
-        action: 'new_message',
-        userUuid: userUuid,
-        nodeId: nodeId,
-      });
     }
 
     getTime(item) {
@@ -152,68 +98,19 @@ export class Notifications extends Component<IProps, IState> {
       return parsedTimestamp;
     }
 
-    async setMessageText(text) {
-      try {
-        await this.setState({messageBody: text});
-      } catch (error) {
-        // Ignore
-        // The only reason this would fail is if the component unmounted
-      }
-    }
-    async showConfirmModal(item) {
-      // show confirm modal and pass userInfo from chat message
-      await this.setState({userInfo: item});
-      await this.setState({confirmModalVisible: true});
-    }
-
-    async startPrivateChat(userInfo: any, shareLocation: boolean) {
-      await this.setState({confirmModalVisible: false});
-      // initiate private communication in API service when user submits confirm modal
-      if (shareLocation) {
-        console.log('starting private chat with location tracking for....', userInfo.user);
-      } else {
-        console.log('starting private chat without location tracking for....', userInfo.user);
-      }
-    }
-
-    // async upvoteComment(item) {
-    //   console.log('upvoting comment....', item);
-    // }
-
-    // async downvoteComment(item) {
-    //   console.log('downvoting comment....', item);
-    // }
-
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onLongPress={() => this.showConfirmModal(item)}
+        // onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
-        // rightElement={
-        //   <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-        //     <Icon
-        //       name='keyboard-arrow-up'
-        //       color='#00aced'
-        //       size={32}
-        //       onPress={() => this.upvoteComment(item)}
-        //     />
-        //     <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
-        //     <Icon
-        //       name='keyboard-arrow-down'
-        //       color='#00aced'
-        //       size={32}
-        //       onPress={() => this.downvoteComment(item)}
-        //     />
-        //   </View>
-        // }
         title={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>softlion393</Text>
-          <Text style={{fontSize: 12, color: 'gray'}}>{this.getTime(item)}</Text>
+          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.from_username}</Text>
+          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>{this.getTime(item)}</Text>
           </View>
           {/* <Text style={styles.titleText}>{item.message}</Text> */}
           </View>
@@ -255,8 +152,7 @@ export class Notifications extends Component<IProps, IState> {
 
     componentWillMount () {
       // Grab navigation params
-      this.action = this.props.navigation.getParam('action', '');
-      this.nodeId = this.props.navigation.getParam('nodeId', '');
+      // this.action = this.props.navigation.getParam('action', '');
 
       // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
 
@@ -266,147 +162,64 @@ export class Notifications extends Component<IProps, IState> {
         console.log('general chat');
       } else if (this.action === 'new_message') {
         console.log('posting a message');
-        this.postMessage();
       } else if (this.action === 'private_message') {
         console.log('starting private chat...');
       }
+
+      // Load existing notifications from AsyncStorage
+      this.loadNotifications();
     }
 
     componentDidMount() {
-      // Updates the message data for the node
-      this.monitorMessages();
+      // @ts-ignore
     }
 
     componentWillUnmount() {
-      this.stopping = true;
+      // @ts-ignore
     }
 
-    // Sends a new message to the API
-    async postMessage() {
-      let userUuid = await this.authService.getUUID();
+    async loadNotifications() {
 
-      let nodeId = this.props.navigation.getParam('nodeId', undefined);
-      let messageBody = this.props.navigation.getParam('messageBody', undefined);
-
-      let requestBody = {
-        node_id:  nodeId,
-        message: messageBody,
-        user_uuid: userUuid,
-      };
-
-      let response = await this.apiService.PostMessageAsync(requestBody);
-
-      if (response !== undefined) {
-        // console.log('repsonse');
-        // console.log(response);
-
-      // Check for new messages
-      await this.CheckNow();
-
-      if (this.stopping)
-        return;
-
-      // Show the success snackbar
-          Snackbar.show({
-            title: 'Updated message list',
-            duration: Snackbar.LENGTH_SHORT,
-          });
-      // If the response was undefined, display error snackbar
+      // Pull notifications from async storage
+      let notifications: any = await AsyncStorage.getItem('notifications');
+      if (notifications !== null) {
+        notifications = JSON.parse(notifications);
       } else {
-        Snackbar.show({
-          title: 'Error sending message, try again',
-          duration: Snackbar.LENGTH_SHORT,
-        });
+        // @ts-ignore
+        notifications = [];
       }
 
-    }
+      console.log('LOADED THESE NOTIFICATIONS');
+      console.log(notifications);
 
-    async monitorMessages() {
-      if (this.monitoring) return;
+      // Parse out notifications that are actual requests
+      let parsedNotifications = [];
 
-      this.monitoring = true;
-
-      while (this.monitoring) {
-        if (this.stopping) return;
-
-        // Re-create the check-now trigger in case it was triggered last time
-        this.checkNowTrigger = new DeferredPromise();
-
-        let currentUUID = await this.authService.getUUID();
-        let requestBody = {
-          'node_id': this.nodeId,
-          'user_uuid': currentUUID,
-        };
-
-        let messages = await this.apiService.GetMessagesAsync(requestBody);
-
-        if (messages !== undefined) {
-          console.log('messages');
-          console.log(messages);
-
-          if (this.stopping) {
-            return;
-          }
-
-          // @ts-ignore
-          if (messages !== false) {
-            try {
-              await this.setState({data: messages});
-            } catch (error) {
-              // If we got here, we unmounted
-              // console.log(error);
-            }
-          }
+      for (let i = 0; i < notifications.length; i++) {
+        if (notifications[i].action !== undefined) {
+          parsedNotifications.push(notifications[i]);
         }
-
-        const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.messageCheckIntervalMs);
-        await Promise.race([ sleepPromise, this.checkNowTrigger ]);
       }
 
-    }
-
-    public CheckNow() {
-      // console.log('NodeService.CheckNow - updating the node list');
-      this.checkNowTrigger.resolve();
+      // Update the state w/ parsed notifications
+      await this.setState({
+        isLoading: false,
+        data: parsedNotifications,
+      });
     }
 
     render() {
-      const data = [
-        {
-          'action': 'confirm_friend',
-          'relation_id': 'relation:8a8df1bb-b79d-45b3-bfa6-2891b92befd4',
-          'from_username': 'SoftLion163',
-          'friend_id': 'friend:239ce858-0f0a-4b59-8b99-a529370a6a41',
-          'aps': {
-            'badge': 1,
-            'sound': 'ping.aiff',
-            'alert': 'You have received a chat request',
-          },
-          'from_user': 'a3827ae6-9fa2-4cd5-87e9-413bc0472235',
-          'location_tracking': true,
-        },
-      ];
       return (
       <View style={{flex: 1}}>
-      {
-        this.state.confirmModalVisible &&
-        <ConfirmModal functions={{
-          'closeConfirmModal': this.closeConfirmModal,
-          'startPrivateChat': this.startPrivateChat,
-        }}
-        userInfo={this.state.userInfo}
-        action={'requestToChat'}
-        />
-      }
         <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
-           data={data}
+           data={this.state.data}
            renderItem={this._renderItem}
            keyExtractor={item => item.friend_id}
           />
           {
-            data.length === 0 &&
+            this.state.data.length === 0 &&
             <View style={styles.nullContainer}>
             <Text style={styles.null}>No Notifications</Text>
             <Text style={{fontSize: 14, top: 280, color: 'gray'}}>You can find things that require your attention here.</Text>

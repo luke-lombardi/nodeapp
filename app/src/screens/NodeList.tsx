@@ -61,6 +61,8 @@ export class NodeList extends Component<IProps, IState> {
         selectedIndex,
         data: this.props.privatePlaceList,
       });
+      console.log('PLACES');
+      console.log(this.props.privatePlaceList);
     }
   }
 
@@ -119,10 +121,10 @@ export class NodeList extends Component<IProps, IState> {
       subtitle={
         <View style={{paddingVertical: 5}}>
           <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
-          {
+          {/* {
             Object.keys(item.data.likes).length > 0 &&
             <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
-          }
+          } */}
         </View>
       }
     />

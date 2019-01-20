@@ -56,7 +56,7 @@ export default class Node extends Component<IProps, IState> {
 
     this.authService = new AuthService({});
 
-    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
 
@@ -74,9 +74,11 @@ export default class Node extends Component<IProps, IState> {
     await this.updateLikeIcon(currentUUID, response);
   }
 
-  componentDidMount() {
-    this.updateLikeStatus();
+  componentWillMount() {
+    clearInterval(this.interval);
     this.interval = setInterval(() => { this.countdown(); }, 1000);
+    this.updateLikeStatus();
+    this.countdown();
   }
 
   componentWillUnmount() {
@@ -191,7 +193,7 @@ export default class Node extends Component<IProps, IState> {
               onPress={() => this.upvoteComment()}
               underlayColor={'transparent'}
             />
-            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{Object.keys(this.props.likes).length}</Text>
+            {/* <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{Object.keys(this.props.likes).length}</Text> */}
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'

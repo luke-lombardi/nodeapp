@@ -239,22 +239,15 @@ interface IState {
 
 // Subscribe to push notifications
 Pushy.setNotificationListener(async (data) => {
-
   Logger.info(`Received push notification: ${JSON.stringify(data)}`);
 
-  if (data.action === 'confirm_friend') {
+  if (data.action !== undefined) {
     await NotificationService.storeNotification(data);
     // Logger.info(`Received friend request from: ${data.from_username}`);
     // NavigationService.reset('Map', { showConfirmModal: true, pushData: data});
   } else {
-    await NotificationService.storeNotification(data);
+    await NotificationService.handleNotification(data);
   }
-
-  // let notificationTitle = 'Smartshare';
-  // // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
-  // let notificationText = data.message || 'Test notification';
-  // Display basic system notification
-  // Pushy.notify(notificationTitle, notificationText);
 });
 
 function processInitialNotification(notification) {

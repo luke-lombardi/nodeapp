@@ -46,7 +46,6 @@ export class Chat extends Component<IProps, IState> {
   private checkNowTrigger: DeferredPromise;
   private readonly configGlobal = ConfigGlobalLoader.config;
 
-  private apiService: ApiService;
   private authService: AuthService;
   private nodeService: NodeService;
 
@@ -86,7 +85,6 @@ export class Chat extends Component<IProps, IState> {
         userInfo: '',
     };
 
-    this.apiService = new ApiService({});
     this.authService = new AuthService({});
     this.nodeService = new NodeService({});
 
@@ -201,7 +199,7 @@ export class Chat extends Component<IProps, IState> {
         return;
       }
 
-      let response = await this.apiService.AddFriendAsync(requestBody);
+      let response = await ApiService.AddFriendAsync(requestBody);
       if (response !== undefined) {
         Logger.info(`Chat.startPrivateChat - Received response ${JSON.stringify(response)}`);
         let stored = await this.nodeService.storeRelation(userInfo.user, response);
@@ -319,7 +317,7 @@ export class Chat extends Component<IProps, IState> {
         user_uuid: userUuid,
       };
 
-      let response = await this.apiService.PostMessageAsync(requestBody);
+      let response = await ApiService.PostMessageAsync(requestBody);
 
       if (response !== undefined) {
         // console.log('repsonse');
@@ -363,7 +361,7 @@ export class Chat extends Component<IProps, IState> {
           'user_uuid': currentUUID,
         };
 
-        let messages = await this.apiService.GetMessagesAsync(requestBody);
+        let messages = await ApiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
           console.log('messages');

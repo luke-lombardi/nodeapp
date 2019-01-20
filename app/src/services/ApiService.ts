@@ -9,21 +9,14 @@ import { AsyncStorage } from 'react-native';
 interface IProps {
 }
 
+const configGlobal = ConfigGlobalLoader.config;
 export default class ApiService {
     // @ts-ignore
     private readonly props: IProps;
-    private readonly configGlobal = ConfigGlobalLoader.config;
-
-    constructor(props: IProps) {
-        this.props = props;
-        Logger.trace(`ApiService.constructor -  Initialized api service`);
-
-        this.getNodes = this.getNodes.bind(this);
-    }
 
     // Get all nodes, both private and public, and update the redux store
-    public async getNodes() {
-     let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getPublicNodes', {
+    public static async getNodes() {
+     let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getPublicNodes', {
           method: 'GET',
       });
 
@@ -52,7 +45,7 @@ export default class ApiService {
       }
 
       Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
-      response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getNodes', {
+      response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getNodes', {
           method: 'POST',
           headers: {'Content-Type': 'text/plain'},
           body: JSON.stringify(nodesToGet),
@@ -65,12 +58,12 @@ export default class ApiService {
     }
 
     // Creates a new node at the users position, this can be either public or private
-    async CreateNodeAsync(nodeData: any) {
+    public static async CreateNodeAsync(nodeData: any) {
       let requestBody = {
         'node_data': nodeData,
       };
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/createNode', {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/createNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -89,10 +82,10 @@ export default class ApiService {
     }
 
     // Invites a new friend
-    async AddFriendAsync(inviteData: any) {
+    public static async AddFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/addFriend', {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/addFriend', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -111,10 +104,10 @@ export default class ApiService {
     }
 
     // Accepts a friend request
-    async AcceptFriendAsync(inviteData: any) {
+    public static async AcceptFriendAsync(inviteData: any) {
       let requestBody = inviteData;
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/acceptFriend', {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/acceptFriend', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -133,8 +126,8 @@ export default class ApiService {
     }
 
     // Updates the users location node
-    async PostLocationAsync(nodeData: any) {
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/postNode', {
+    public static async PostLocationAsync(nodeData: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/postNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -153,8 +146,8 @@ export default class ApiService {
     }
 
     // Toggles the users 'like status' of a node
-    async LikeNodeAsync(requestData: any) {
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/likeNode', {
+    public static async LikeNodeAsync(requestData: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/likeNode', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -173,8 +166,8 @@ export default class ApiService {
     }
 
     // Posts a new message to a node
-    async PostMessageAsync(messageData: any) {
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/postMessage', {
+    public static async PostMessageAsync(messageData: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/postMessage', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -193,10 +186,10 @@ export default class ApiService {
     }
 
     // Posts a new message to a node
-    async GetMessagesAsync(requestBody: any) {
+    public static async GetMessagesAsync(requestBody: any) {
       Logger.info(`ApiService.GetMessagesAsync - Getting messages for node: ${JSON.stringify(requestBody)}`);
 
-      let response = await fetch(this.configGlobal.apiServicesUrlBase + this.configGlobal.apiStage + '/getMessages', {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getMessages', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

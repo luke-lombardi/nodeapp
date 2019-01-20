@@ -52,15 +52,12 @@ export default class NodeService {
     private checkNowTrigger: DeferredPromise;
 
     private locationService: LocationService;
-    private apiService: ApiService;
 
     constructor(props: IProps) {
         this.props = props;
 
         // Create services
         this.locationService = new LocationService({});
-        this.apiService = new ApiService({
-        });
 
         this.checkNowTrigger = new DeferredPromise();
 
@@ -233,7 +230,7 @@ export default class NodeService {
       let nodes = undefined;
 
       try  {
-        nodes = await this.apiService.getNodes();
+        nodes = await ApiService.getNodes();
       } catch (error) {
         // Do nothing if this fails
       }

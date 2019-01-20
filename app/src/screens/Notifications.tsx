@@ -15,6 +15,7 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 
 // Services
+// @ts-ignore
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
 
@@ -39,8 +40,6 @@ export class Notifications extends Component<IProps, IState> {
   // @ts-ignore
   private readonly configGlobal = ConfigGlobalLoader.config;
 
-  // @ts-ignore
-  private apiService: ApiService;
   // @ts-ignore
   private authService: AuthService;
 
@@ -78,7 +77,6 @@ export class Notifications extends Component<IProps, IState> {
         userInfo: '',
     };
 
-    this.apiService = new ApiService({});
     this.authService = new AuthService({});
 
     this._renderItem = this._renderItem.bind(this);

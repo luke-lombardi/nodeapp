@@ -28,7 +28,6 @@ interface IState {
 }
 
 export default class Node extends Component<IProps, IState> {
-  private apiService: ApiService;
   private authService: AuthService;
   private interval: any;
 
@@ -55,7 +54,6 @@ export default class Node extends Component<IProps, IState> {
 
     this.countdown = this.countdown.bind(this);
 
-    this.apiService = new ApiService({});
     this.authService = new AuthService({});
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -72,7 +70,7 @@ export default class Node extends Component<IProps, IState> {
 
     await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
 
-    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    let response  = await ApiService.LikeNodeAsync(requestBody);
     await this.updateLikeIcon(currentUUID, response);
   }
 
@@ -108,7 +106,7 @@ export default class Node extends Component<IProps, IState> {
 
     await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
 
-    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    let response  = await ApiService.LikeNodeAsync(requestBody);
     await this.updateLikeIcon(currentUUID, response);
   }
 
@@ -154,7 +152,7 @@ export default class Node extends Component<IProps, IState> {
       'toggle': false,
     };
 
-    let response  = await this.apiService.LikeNodeAsync(requestBody);
+    let response  = await ApiService.LikeNodeAsync(requestBody);
     console.log('upvoting comment....', response);
   }
 
@@ -280,10 +278,10 @@ const styles = StyleSheet.create({
     // padding: 10,
     bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
-    //shadowColor: 'black',
-    //shadowOpacity: 0.1,
-    //shadowRadius: 5,
-    //shadowOffset: { width: 2, height: 3 },
+    // shadowColor: 'black',
+    // shadowOpacity: 0.1,
+    // shadowRadius: 5,
+    // shadowOffset: { width: 2, height: 3 },
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -331,7 +329,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonView: {
-    //height: 35,
+    // height: 35,
     width: '100%',
     flexDirection: 'row',
     alignSelf: 'center',
@@ -346,7 +344,7 @@ const styles = StyleSheet.create({
   mapButton: {
     width: '70%',
     height: '100%',
-    //marginLeft: 15,
+    // marginLeft: 15,
   },
   directionsButton: {
     width: '70%',

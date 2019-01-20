@@ -285,7 +285,6 @@ export class App extends Component<IProps, IState> {
 
     // Private services
     private nodeService: NodeService;
-    // private apiService: ApiService;
     // @ts-ignore
     private locationService: LocationService;
     private authService: AuthService;

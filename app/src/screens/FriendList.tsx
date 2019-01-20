@@ -117,8 +117,8 @@ export class FriendList extends Component<IProps, IState> {
             </View>
           }
           title={'shinywizard2939'}
-          //title={ row.data.title ? row.data.title : row.node_id }
-          //subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+          // title={ row.data.title ? row.data.title : row.node_id }
+          // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
         />
 
       </Swipeout>
@@ -140,10 +140,10 @@ export class FriendList extends Component<IProps, IState> {
       <View style={styles.flatlist}>
         <FlatList
           data={data}
-         //data={this.props.friendList}
+         // data={this.props.friendList}
          renderItem={this._renderItem}
          extraData={this.state}
-         //keyExtractor={item => item.node_id}
+         // keyExtractor={item => item.node_id}
         />
 
         {

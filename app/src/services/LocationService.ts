@@ -1,7 +1,7 @@
 import Logger from './Logger';
 // @ts-ignore
 import SleepUtil from './SleepUtil';
-import ApiService from '../services/ApiService';
+// import ApiService from '../services/ApiService';
 import { AsyncStorage } from 'react-native';
 import geolib from 'geolib';
 
@@ -40,14 +40,10 @@ interface Node {
 export default class LocationService {
     // @ts-ignore
     private readonly props: IProps;
-    // @ts-ignore
-    private apiService: ApiService;
 
     constructor(props: IProps) {
         this.props = props;
         Logger.trace(`LocationService.constructor -  Initialized location service`);
-
-        this.apiService = new ApiService({});
     }
 
     public async orderNodes(userRegion: any, nodeList: any): Promise<any> {

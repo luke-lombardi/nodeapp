@@ -36,12 +36,12 @@ import NodeService,
 import NavigationService from '../services/NavigationService';
 
 import SleepUtil from '../services/SleepUtil';
+// @ts-ignore
 import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import Logger from '../services/Logger';
 import Node from '../components/Node';
-import ConfirmModal from '../components/ConfirmModal';
 
 // Import various types of map markers
 import PublicPlaces from './markers/PublicPlaces';
@@ -94,7 +94,6 @@ export class MainMap extends Component<IProps, IState> {
 
   // @ts-ignore
   private nodeService: NodeService;
-  private apiService: ApiService;
 
   constructor(props: IProps) {
     super(props);
@@ -118,8 +117,6 @@ export class MainMap extends Component<IProps, IState> {
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
-    this.closeCreateModal = this.closeCreateModal.bind(this);
-    this.closeConfirmModal = this.closeConfirmModal.bind(this);
     this.refreshNodes = this.refreshNodes.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
@@ -136,9 +133,6 @@ export class MainMap extends Component<IProps, IState> {
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
-    this.confirmPushData = this.confirmPushData.bind(this);
-    this.handlePushData = this.handlePushData.bind(this);
-    this.openCreateModal = this.openCreateModal.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -149,8 +143,6 @@ export class MainMap extends Component<IProps, IState> {
         friendListUpdated: this.gotNewFriendList,
         currentUserRegion: this.props.userRegion,
     });
-
-    this.apiService = new ApiService({});
 
     let markerRegion = this.props.navigation.getParam('region', undefined);
     this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
@@ -164,15 +156,6 @@ export class MainMap extends Component<IProps, IState> {
 
     console.log('opening drawer...');
     // this.props.navigation.navigate('RightSideMenuToggle', { key: 'Chat', routeName: 'chat'});
-    // If I've been invited to add a friend, or track a new node, show confirmation modal
-    let showConfirmModal = this.props.navigation.getParam('showConfirmModal', false);
-    if (showConfirmModal) {
-      // Grab the data from the text message containing the type of action (add friend, track node)
-      let pushData = this.props.navigation.getParam('pushData', undefined);
-      if (pushData !== undefined) {
-        this.confirmPushData(pushData);
-      }
-    }
 
     // If there is any message to display, then show a snackbar at the bottom of the map
     let showMessage = this.props.navigation.getParam('showMessage', true);
@@ -246,12 +229,6 @@ export class MainMap extends Component<IProps, IState> {
     if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
-  }
-
-  async openCreateModal() {
-    this.state.createModalVisible ?
-    await this.setState({createModalVisible: false}) :
-    await this.setState({createModalVisible: true});
   }
 
   async waitForUserPosition() {
@@ -348,125 +325,6 @@ export class MainMap extends Component<IProps, IState> {
       pushData: undefined,
     });
   }
-
-  async closeConfirmModal(userConfirmation: boolean, pushData: string) {
-    await this.setState({confirmModalVisible: false});
-
-    if (userConfirmation) {
-      Logger.info(`MainMap.closeConfirmModal: User accepted request: ${JSON.stringify(pushData)}`);
-      this.handlePushData(pushData);
-    } else {
-      Logger.info(`MainMap.closeConfirmModal: User rejected request: ${JSON.stringify(pushData)}`);
-    }
-  }
-
-  async confirmPushData(pushData: any) {
-
-    // Wait briefly so the animation shows properly
-    await SleepUtil.SleepAsync(1000);
-
-    console.log('Received the following push data');
-    console.log(pushData);
-
-    await this.setState({
-      confirmModalVisible: true,
-      pushData: pushData,
-    });
-  }
-
-  async handlePushData(pushData: any) {
-    Logger.info(`MainMap.pushData: handling the following push data: ${pushData}`);
-
-      let action = pushData.action;
-      if (action === 'confirm_friend') {
-        /*
-          {"relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
-          "your_id":"friend:0d196ce6-3f71-4cb2-8a4d-35a0742ef7ff",
-          "their_id":"friend:d6748e33-835a-408d-90aa-a8789d023581",
-          "error_msg":"",
-          "location_tracking":true}
-        */
-
-        let relationId = pushData.relation_id;
-        let fromUserId = 'private:' + pushData.from_user;
-        let friendId = pushData.friend_id;
-        let locationTracking = pushData.location_tracking;
-
-        let currentUUID = await AsyncStorage.getItem('user_uuid');
-
-        let relationData = {
-          'relation_id': relationId,
-          'your_id': friendId,
-          'location_tracking': locationTracking,
-          'user_uuid': currentUUID,
-        };
-
-        let newRelation = await this.apiService.AcceptFriendAsync(relationData);
-
-        if (newRelation !== undefined) {
-          let newFriendId = newRelation.their_id;
-          Logger.info(`MainMap.handlePushData - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
-
-          let exists = await this.nodeService.storeRelation(fromUserId, relationData);
-          if (!exists) {
-            Logger.info(`MainMap.handlePushData - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
-
-            //  If this request includes location tracking, store in the tracked node list separately
-            if (locationTracking) {
-              await this.nodeService.storeNode(newFriendId);
-            }
-
-            // Show 'added new friend' message
-            Snackbar.show({
-              title: 'Added new friend',
-              duration: Snackbar.LENGTH_SHORT,
-            });
-
-            return;
-          }
-
-            // Show 'already exists' message
-            Snackbar.show({
-              title: 'You have already added this friend',
-              duration: Snackbar.LENGTH_SHORT,
-            });
-
-        } else {
-          // Show success message
-          Snackbar.show({
-            title: 'Problem adding new friend',
-            duration: Snackbar.LENGTH_SHORT,
-          });
-
-          Logger.info('MainMap.handleLink - invalid response from AcceptFriendAsync.');
-        }
-      // If we are adding a new node to tracked node list
-      } else if (action === 'add_node') {
-          let nodeId = pushData.node_id;
-
-          Logger.info('MainMap.handleLink - Adding a tracked node.');
-
-          let exists = await this.nodeService.storeNode(nodeId);
-          if (!exists) {
-
-            // Show success message
-            Snackbar.show({
-              title: 'Added new node',
-              duration: Snackbar.LENGTH_SHORT,
-            });
-
-            Logger.info(`MainMap.handleLink - this is a new node, storing: ${JSON.stringify(nodeId)}`);
-
-            return;
-          }
-
-          // Show 'already exists' message
-          Snackbar.show({
-            title: 'You have already added this node',
-            duration: Snackbar.LENGTH_SHORT,
-          });
-      }
-    }
 
   render() {
     return (
@@ -602,17 +460,6 @@ export class MainMap extends Component<IProps, IState> {
             />
           </View>
           // End node selected view
-        }
-
-        {
-          this.state.confirmModalVisible &&
-          <ConfirmModal functions={{
-            'closeConfirmModal': this.closeConfirmModal,
-            'navigateToPage': this.navigateToPage,
-          }}
-          data={this.state.pushData}
-          action={'confirm_friend'}
-          />
         }
 
      </View>

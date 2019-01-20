@@ -8,6 +8,7 @@ import Snackbar from 'react-native-snackbar';
 
 // services
 import NavigationService from '../services/NavigationService';
+import ApiService from '../services/ApiService';
 
 // @ts-ignore
 interface IProps {
@@ -81,28 +82,125 @@ export default class NotificationService {
         }
     }
 
-    // Delete a friend ID from async storage
-    public async deleteFriend(friendId) {
-        let trackedFriends = await AsyncStorage.getItem('trackedFriends');
-        if (trackedFriends !== null) {
-            trackedFriends = JSON.parse(trackedFriends);
-        } else {
+    // // Delete a friend ID from async storage
+    // public async deleteFriend(friendId) {
+    //     let trackedFriends = await AsyncStorage.getItem('trackedFriends');
+    //     if (trackedFriends !== null) {
+    //         trackedFriends = JSON.parse(trackedFriends);
+    //     } else {
+    //       // @ts-ignore
+    //       trackedFriends = [];
+    //     }
+
+    //     let index = trackedFriends.indexOf(friendId);
+
+    //     if (index >= 0) {
+    //         // @ts-ignore
+    //         trackedFriends.splice(index, 1);
+
+    //         await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
+    //         Logger.info(`NodeService.deleteFriend: removed friend: ${trackedFriends}`);
+    //     } else {
+    //         Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
+    //     }
+    // }
+
+    public static async handleNotification(pushData: any) {
+      Logger.info(`MainMap.pushData: handling the following push data: ${pushData}`);
+
+        let action = pushData.action;
+        if (action === 'confirm_friend') {
+          /*
+            {"relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
+            "your_id":"friend:0d196ce6-3f71-4cb2-8a4d-35a0742ef7ff",
+            "their_id":"friend:d6748e33-835a-408d-90aa-a8789d023581",
+            "error_msg":"",
+            "location_tracking":true}
+          */
+
+          let relationId = pushData.relation_id;
           // @ts-ignore
-          trackedFriends = [];
-        }
+          let fromUserId = 'private:' + pushData.from_user;
+          let friendId = pushData.friend_id;
+          let locationTracking = pushData.location_tracking;
 
-        let index = trackedFriends.indexOf(friendId);
+          let currentUUID = await AsyncStorage.getItem('user_uuid');
 
-        if (index >= 0) {
+          let relationData = {
+            'relation_id': relationId,
+            'your_id': friendId,
+            'location_tracking': locationTracking,
+            'user_uuid': currentUUID,
+          };
+
+          let newRelation = await ApiService.AcceptFriendAsync(relationData);
+
+          if (newRelation !== undefined) {
             // @ts-ignore
-            trackedFriends.splice(index, 1);
+            let newFriendId = newRelation.their_id;
+            Logger.info(`MainMap.handlePushData - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
 
-            await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
-            Logger.info(`NodeService.deleteFriend: removed friend: ${trackedFriends}`);
-        } else {
-            Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
+            let exists = false; // await this.nodeService.storeRelation(fromUserId, relationData);
+            if (!exists) {
+              Logger.info(`MainMap.handlePushData - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
+
+              //  If this request includes location tracking, store in the tracked node list separately
+              if (locationTracking) {
+                // await this.nodeService.storeNode(newFriendId);
+              }
+
+              // Show 'added new friend' message
+              Snackbar.show({
+                title: 'Added new friend',
+                duration: Snackbar.LENGTH_SHORT,
+              });
+
+              return;
+            }
+
+              // Show 'already exists' message
+              Snackbar.show({
+                title: 'You have already added this friend',
+                duration: Snackbar.LENGTH_SHORT,
+              });
+
+          } else {
+            // Show success message
+            Snackbar.show({
+              title: 'Problem adding new friend',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+
+            Logger.info('MainMap.handleLink - invalid response from AcceptFriendAsync.');
+          }
+
+        // If we are adding a new node to tracked node list
+        } else if (action === 'add_node') {
+            let nodeId = pushData.node_id;
+
+            Logger.info('MainMap.handleLink - Adding a tracked node.');
+
+            let exists = false; // await this.nodeService.storeNode(nodeId);
+            if (!exists) {
+
+              // Show success message
+              Snackbar.show({
+                title: 'Added new node',
+                duration: Snackbar.LENGTH_SHORT,
+              });
+
+              Logger.info(`MainMap.handleLink - this is a new node, storing: ${JSON.stringify(nodeId)}`);
+
+              return;
+            }
+
+            // Show 'already exists' message
+            Snackbar.show({
+              title: 'You have already added this node',
+              duration: Snackbar.LENGTH_SHORT,
+            });
         }
-    }
+      }
 
     // Private implementation functions
 

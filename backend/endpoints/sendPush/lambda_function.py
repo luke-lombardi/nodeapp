@@ -53,12 +53,14 @@ def send_push(push_info, rds):
         relation_id = push_info["relation_id"]
         friend_id = push_info["friend_id"]
         from_user = push_info["from_user"]
+        to_user = push_info["to_user"]
+
         location_tracking = push_info["location_tracking"]
 
         node_exists = rds.exists(friend_id)
 
         if node_exists:
-          user_uuid = rds.get(friend_id)
+          user_uuid = to_user
   
           logger.info("Recipient friend id: {}".format(friend_id))
           logger.info("Recipient user id: {}".format(user_uuid))

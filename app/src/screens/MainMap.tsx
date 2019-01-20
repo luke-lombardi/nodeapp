@@ -421,6 +421,7 @@ export class MainMap extends Component<IProps, IState> {
               title: 'Added new friend',
               duration: Snackbar.LENGTH_SHORT,
             });
+
             return;
           }
 

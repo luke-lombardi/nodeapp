@@ -4,7 +4,7 @@ import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-naviga
 import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
-import { View, StatusBar, AsyncStorage, Linking } from 'react-native';
+import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState } from 'react-native';
 import Permissions from 'react-native-permissions';
 
 // Location services, and user notifications
@@ -53,6 +53,7 @@ import NodeService,
 
 import LocationService from '../services/LocationService';
 import AuthService from '../services/AuthService';
+import NotificationService from '../services/NotificationService';
 
 // SET GLOBAL PROPS //
 import { setCustomText } from 'react-native-global-props';
@@ -224,23 +225,52 @@ interface IProps {
 interface IState {
 }
 
+// Begin: Push notification handling logic
+////////////////////////////////////////////////////////////////////////////////////////////////
+// We have a few things to do here:
+//    - Subscribe to push notifications w/ pushy
+//    - Handle the case where the app is opened from a push notification
+//    - Clear the notification area of existing notifications and clear the 'badge'
+//    - Store notifications in async storage so they are persistent until checked by the user
+
 // Subscribe to push notifications
 Pushy.setNotificationListener(async (data) => {
 
   Logger.info(`Received push notification: ${JSON.stringify(data)}`);
 
   if (data.action === 'confirm_friend') {
-    Logger.info(`Received friend request from: ${data.from_username}`);
-    NavigationService.reset('Map', { showConfirmModal: true, pushData: data});
+    await NotificationService.storeNotification(data);
+    // Logger.info(`Received friend request from: ${data.from_username}`);
+    // NavigationService.reset('Map', { showConfirmModal: true, pushData: data});
+  } else {
+    await NotificationService.storeNotification(data);
   }
-  // let notificationTitle = 'Smartshare';
 
+  // let notificationTitle = 'Smartshare';
   // // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
   // let notificationText = data.message || 'Test notification';
-
   // Display basic system notification
   // Pushy.notify(notificationTitle, notificationText);
 });
+
+function processInitialNotification(notification) {
+  console.log(notification);
+}
+
+function processDeliveredNotifications(notifications) {
+  console.log(notifications);
+}
+
+PushNotificationIOS.getInitialNotification().then(function (notification) {
+  if (notification !== null) {
+    processInitialNotification(notification);
+  }
+});
+
+PushNotificationIOS.getDeliveredNotifications(processDeliveredNotifications);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// End: Push notification handling logic
 
 export class App extends Component<IProps, IState> {
 

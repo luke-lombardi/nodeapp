@@ -20,6 +20,7 @@ interface IState {
 
 export default class ConfirmModal extends Component<IProps, IState> {
     private scrollViewRef: any;
+    // @ts-ignore
     private action: string;
 
     constructor(props: IProps) {
@@ -133,9 +134,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
     }
 
     private async setDisplayText() {
-        if (this.action === 'join_group') {
-            await this.setState({displayTitle: 'Are you sure you want to join this group?'});
-        } else if (this.props.action === 'add_friend') {
+        if (this.props.action === 'add_friend') {
             await this.setState({displayTitle: `Request to chat with ${this.props.data.display_name}`});
         } else if (this.props.action === 'confirm_friend') {
           await this.setState({displayTitle: `${this.props.data.from_username} wants to chat. Accept?`});

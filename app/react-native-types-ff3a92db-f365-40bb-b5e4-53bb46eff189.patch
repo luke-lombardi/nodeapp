@@ -1,0 +1,15 @@
+--- node_modules_orig/@types/react-native/index.d.ts	2018-07-05 20:07:02.000000000 -0400
++++ node_modules/@types/react-native/index.d.ts	2019-01-20 11:07:42.000000000 -0500
+@@ -7638,6 +7638,12 @@
+     getInitialNotification(): Promise<PushNotification>;
+ 
+     /**
++     * This method returns a list of push notifications that the app has received since it was last started
++     */
++    // ff3a92db-f365-40bb-b5e4-53bb46eff189
++    getDeliveredNotifications(callback: (notifications: Promise<Array<PushNotification>>) => void): void
++
++    /**
+      * iOS fetch results that best describe the result of a finished remote notification handler.
+      * For a list of possible values, see `PushNotificationIOS.FetchResult`.
+      */

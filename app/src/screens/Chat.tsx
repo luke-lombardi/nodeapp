@@ -238,6 +238,8 @@ export class Chat extends Component<IProps, IState> {
       } else if (this.action === 'new_message') {
         console.log('posting a message');
         this.postMessage();
+      } else if (this.action === 'private_message') {
+        console.log('starting private chat...');
       }
     }
 

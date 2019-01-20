@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, Switch, FlatList, StyleSheet, Text, Alert, ActivityIndicator } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 
@@ -34,6 +34,8 @@ export class FriendList extends Component<IProps, IState> {
     this._renderItem = this._renderItem.bind(this);
     this.removeFriend = this.removeFriend.bind(this);
 
+    this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
+
     this.nodeService = new NodeService({});
   }
 
@@ -55,6 +57,13 @@ export class FriendList extends Component<IProps, IState> {
     this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
   }
 
+  async sendPrivateMessage(row) {
+    console.log('starting private chat');
+
+    this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: {row}});
+
+  }
+
   _renderItem(item) {
     let row = item.item;
 
@@ -63,10 +72,10 @@ export class FriendList extends Component<IProps, IState> {
         <View
             style={{
               flex: 1,
+              width: '100%',
               alignItems: 'center',
               justifyContent: 'center',
-              flexDirection: 'column',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'red',
               borderLeftWidth: 1,
               borderLeftColor: 'rgba(44,55,71,0.3)',
             }}
@@ -75,34 +84,11 @@ export class FriendList extends Component<IProps, IState> {
           name='trash-2'
           type='feather'
           size={30}
-          color='rgba(44,55,71,1.0)'
+          color='white'
         />
         </View>
       ),
       onPress: () => { this.removeFriend(row); },
-    },
-    {
-      component: (
-        <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              backgroundColor: '#ffffff',
-              borderLeftWidth: 1,
-              borderLeftColor: 'rgba(44,55,71,0.3)',
-            }}
-        >
-        <Icon
-          name='eye'
-          type='feather'
-          size={30}
-          color='rgba(44,55,71,1.0)'
-        />
-        </View>
-      ),      underlayColor: 'white',
-      onPress: () => { this._onTouchNode(row); },
     },
   ];
 
@@ -113,16 +99,29 @@ export class FriendList extends Component<IProps, IState> {
       >
 
         <ListItem
+          onPress={() => this.sendPrivateMessage(row)}
           scaleProps={{
             friction: 90,
             tension: 100,
             activeScale: 0.95,
           }}
-          containerStyle={styles.friendListItem}
-          leftIcon={{name: 'map-pin', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-          rightIcon={{name: 'chevron-left', color: 'rgba(51, 51, 51, 0.8)'}}
-          title={'test'}
-          subtitle={'test'}
+          containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
+          rightElement={
+            <View style={{flexDirection: 'row'}}>
+            <Icon
+              name='eye'
+              type='feather'
+              color='black'
+              size={32}
+              onPress={() => this._onTouchNode(row) }
+              underlayColor={'transparent'}
+              containerStyle={{paddingHorizontal: 20}}
+            />
+            <Switch
+            />
+            </View>
+          }
+          title={'shinywizard2939'}
           //title={ row.data.title ? row.data.title : row.node_id }
           //subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
         />
@@ -204,8 +203,7 @@ const styles = StyleSheet.create({
   friendListItem: {
     minHeight: 80,
     maxHeight: 80,
-    margin: 10,
-    borderRadius: 20,
+    width: '100%',
   },
   flatlist: {
   },

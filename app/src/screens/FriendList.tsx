@@ -3,12 +3,14 @@ import { View, Switch, FlatList, StyleSheet, Text, Alert, ActivityIndicator } fr
 import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 
-// import Logger from '../services/Logger';
+import Logger from '../services/Logger';
 
+// @ts-ignore
 import NodeService from '../services/NodeService';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+import ApiService from '../services/ApiService';
 
 interface IProps {
     navigation: any;
@@ -48,16 +50,12 @@ export class FriendList extends Component<IProps, IState> {
       longitudeDelta: parseFloat(node.data.longDelta),
     };
 
-    let nodeType = 'friend';
-
+    const nodeType = 'friend';
     this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
   }
 
   async sendPrivateMessage(row) {
-    console.log('starting private chat');
-
     this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: {row}});
-
   }
 
   _renderItem(item) {
@@ -122,20 +120,11 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   render() {
-    const data = [
-      {
-        'node_ids': [
-          'public:628dc255-f3ca-4634-91b9-be596633e864',
-          'public:04d8b648-7da2-4642-a4f0-4c01845400c7',
-          'public:9718a6db-3a29-4920-85b1-f951ba8bdb21',
-          ],
-        },
-      ];
     return (
       <View style={{backgroundColor: 'white', height: '100%', flex: 1}}>
       <View style={styles.flatlist}>
         <FlatList
-          data={data}
+          data={this.props.friendList}
          // data={this.props.friendList}
          renderItem={this._renderItem}
          extraData={this.state}
@@ -159,16 +148,33 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   private async removeFriend(row: any): Promise<any> {
-    let initialLength = this.props.friendList.length;
-    this.setState({isLoading: true});
-    // TODO: call deleteRelation endpoint to remove friend from cache
+    await this.setState({isLoading: true});
+
     let friendId = row.node_id;
-    await NodeService.deleteFriend(friendId);
-    await NodeService.deleteNode(friendId);
-    if (this.props.friendList.length !== initialLength) {
-      this.setState({isLoading: false});
+    let response: any = undefined;
+
+    let foundRelation = await NodeService.getRelation(friendId);
+
+    // If a matching relation is found in AsyncStorage, delete it
+    if (foundRelation !== undefined) {
+      let requestBody = {
+        'relation_id': foundRelation.relation.relation_id,
+      };
+
+      // Delete the relation from the cache
+      response = await ApiService.DeleteFriendAsync(requestBody);
     }
-    this.setState({isLoading: false});
+
+    if (response !== undefined) {
+      Logger.info(`FriendList.removeFriend - got response from delete friend: ${JSON.stringify(response)}`);
+      // Ok, it's removed from the cache, so lets delete the node from AsyncStorage too
+      if (response.result === true) {
+        await NodeService.deleteNode(friendId);
+        await NodeService.deleteRelation(foundRelation.user);
+      }
+    }
+
+    await this.setState({isLoading: false});
   }
 }
 

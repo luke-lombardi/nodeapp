@@ -92,11 +92,14 @@ export default class NotificationService {
         if (newRelation !== undefined) {
           // @ts-ignore
           let newFriendId = newRelation.their_id;
-          Logger.info(`MainMap.handlePushData - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
+          Logger.info(`NotificationService.handleAction - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
 
           let exists = await NodeService.doesRelationExist(fromUserId);
           if (!exists) {
-            Logger.info(`MainMap.handlePushData - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
+            Logger.info(`NotificationService.handleAction - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
+
+            // Store the new relation data in AsyncStorage
+            await NodeService.storeRelation(fromUserId, relationData);
 
             //  If this request includes location tracking, store in the tracked node list separately
             if (locationTracking) {
@@ -126,7 +129,7 @@ export default class NotificationService {
             duration: Snackbar.LENGTH_SHORT,
           });
 
-          Logger.info('MainMap.handleLink - invalid response from AcceptFriendAsync.');
+          Logger.info('NotificationService.handleAction - invalid response from AcceptFriendAsync.');
         }
 
       // If we are adding a new node to tracked node list

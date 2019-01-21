@@ -125,6 +125,27 @@ export default class ApiService {
       return newRelation;
     }
 
+    // Deletes an existing friend
+    public static async DeleteFriendAsync(requestBody: any) {
+
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/deleteFriend', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info(`ApiService.DeleteFriendAsync - Unable to delete friend: ${response.status}`);
+
+        return undefined;
+      }
+
+      let result = await response.json();
+      return result;
+    }
+
     // Updates the users location node
     public static async PostLocationAsync(nodeData: any) {
       let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/postNode', {

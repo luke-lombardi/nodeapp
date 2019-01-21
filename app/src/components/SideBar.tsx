@@ -138,13 +138,12 @@ export class SideBar extends Component<IProps, IState> {
                   }}
                   containerStyle={styles.navItem}
                   badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
-                  key='friends'
+                  key='friendlist'
                   title='People'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'users', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.friendList.length === 0 ?
-                    this.props.navigation.navigate('Friends', {action: 'add_friend'}) :
-                    this.resetNavigation('Friends');
+                  onPress={ () => {
+                    this.resetNavigation('FriendList');
                   }}
                 />
 

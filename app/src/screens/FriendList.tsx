@@ -22,6 +22,9 @@ interface IState {
 }
 
 export class FriendList extends Component<IProps, IState> {
+  private action: any;
+  private nodeId: any;
+
   constructor(props: IProps) {
     super(props);
 
@@ -29,10 +32,16 @@ export class FriendList extends Component<IProps, IState> {
       isLoading: false,
     },
 
+    this.componentWillMount = this.componentWillMount.bind(this);
     this._renderItem = this._renderItem.bind(this);
+    this.shareNode = this.shareNode.bind(this);
     this.removeFriend = this.removeFriend.bind(this);
-
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
+  }
+
+  componentWillMount() {
+    this.action = this.props.navigation.getParam('action', '');
+    this.nodeId = this.props.navigation.getParam('nodeId', '');
   }
 
   _onTouchNode(node: any) {
@@ -60,7 +69,12 @@ export class FriendList extends Component<IProps, IState> {
 
   }
 
+  shareNode(row) {
+    console.log(`sharing ${this.nodeId} with...`, row);
+  }
+
   _renderItem(item) {
+
     let row = item.item;
 
     let swipeBtns = [{
@@ -88,38 +102,52 @@ export class FriendList extends Component<IProps, IState> {
     },
   ];
 
-    return (
-      <Swipeout right={swipeBtns}
-        autoClose={true}
-        backgroundColor='#ffffff'
-      >
+    if (this.action === 'share_node') {
 
+    return (
         <ListItem
-          onPress={() => this.sendPrivateMessage(row)}
+          onPress={() => this.shareNode(row)}
           containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
-          rightElement={
-            <View style={{flexDirection: 'row'}}>
-            <Icon
-              name='eye'
-              type='feather'
-              color='black'
-              size={32}
-              onPress={() => this._onTouchNode(row) }
-              underlayColor={'transparent'}
-              containerStyle={{paddingHorizontal: 20, right: 20}}
-            />
-            <Switch
-            />
-            </View>
-          }
           title={'shinywizard2939'}
           // title={ row.data.title ? row.data.title : row.node_id }
           // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
         />
+    );
+  } else {
 
-      </Swipeout>
+  return (
+    <Swipeout right={swipeBtns}
+      autoClose={true}
+      backgroundColor='#ffffff'
+    >
+
+      <ListItem
+        onPress={() => this.sendPrivateMessage(row)}
+        containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
+        rightElement={
+          <View style={{flexDirection: 'row'}}>
+          <Icon
+            name='eye'
+            type='feather'
+            color='black'
+            size={32}
+            onPress={() => this._onTouchNode(row) }
+            underlayColor={'transparent'}
+            containerStyle={{paddingHorizontal: 20, right: 20}}
+          />
+          <Switch
+          />
+          </View>
+        }
+        title={'shinywizard2939'}
+        // title={ row.data.title ? row.data.title : row.node_id }
+        // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+      />
+
+    </Swipeout>
     );
   }
+}
 
   render() {
     const data = [

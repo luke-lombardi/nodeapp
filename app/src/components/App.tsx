@@ -540,7 +540,7 @@ export class App extends Component<IProps, IState> {
     }
 
     async getPostParams() {
-      await AsyncStorage.clear();
+      // await AsyncStorage.clear();
 
       let currentUUID = undefined;
       try {

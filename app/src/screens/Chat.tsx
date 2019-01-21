@@ -185,7 +185,7 @@ export class Chat extends Component<IProps, IState> {
         'share_location': shareLocation,
       };
 
-      let alreadyAdded = NodeService.doesRelationExist(userInfo.user);
+      let alreadyAdded = await NodeService.doesRelationExist(userInfo.user);
 
       if (alreadyAdded) {
         Snackbar.show({

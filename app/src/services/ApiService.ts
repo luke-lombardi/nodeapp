@@ -207,4 +207,24 @@ export default class ApiService {
       return response;
     }
 
+    // Shares a private node w/ a friend
+    public static async ShareNodeAsync(requestData: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/sendPush', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.ShareNodeAsync - Unable to share node');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
   }

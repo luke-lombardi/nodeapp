@@ -319,13 +319,6 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
-  async closeCreateModal() {
-    await this.setState({
-      createModalVisible: false,
-      pushData: undefined,
-    });
-  }
-
   render() {
     return (
       // Map screen view (exported component)

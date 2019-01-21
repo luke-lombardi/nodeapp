@@ -45,19 +45,6 @@ export default class NotificationService {
             onPress: () => { NavigationService.reset('Notifications', {}); },
           },
         });
-
-        // let index = notifications.indexOf(newNodeId);
-
-        // if (index < 0) {
-        //     // @ts-ignore
-        //     trackedNodes.push(newNodeId);
-
-        //     return false;
-        // } else {
-        //     Logger.info(`NodeService.storeNode: you already are tracking this node.`);
-        //     return true;
-        // }
-
     }
 
     // let notificationTitle = 'Smartshare';
@@ -73,6 +60,7 @@ export default class NotificationService {
       console.log(notification);
 
       if (action === 'confirm_friend') {
+
         /*
           {
             "relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
@@ -147,7 +135,7 @@ export default class NotificationService {
 
           Logger.info('MainMap.handleLink - Adding a tracked node.');
 
-          let exists = false; // await this.nodeService.storeNode(nodeId);
+          let exists = false; // await NodeService.storeNode(nodeId);
           if (!exists) {
 
             // Show success message

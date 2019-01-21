@@ -39,8 +39,7 @@ def delete_relation(rds, relation_id):
         logger.info('Member list: %s' % (member_list))
 
         for member in member_list:
-            logger.info('Member found in %s... accepting relation' % (member_list))
-
+            logger.info('Deleting member ' % (member))
             rds.delete(member)
 
         logger.info('Removing relation %s' % (relation_id))

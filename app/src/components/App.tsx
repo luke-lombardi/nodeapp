@@ -130,7 +130,7 @@ const InternalStack = StackNavigator({
         )) } />,
       }),
   },
-  Friends: { screen: FriendList,
+  FriendList: { screen: FriendList,
       navigationOptions: ({navigation}) => ({
         headerStyle: {backgroundColor: 'black', paddingLeft: 10},
         headerTitleStyle: { color: 'white'},
@@ -159,35 +159,22 @@ const InternalStack = StackNavigator({
   const DrawerStack = DrawerNavigator({
       Main: {
         screen: InternalStack,
+        drawerPosition: 'left',
+      },
+      Chat: {
+        screen: Chat,
+        drawerPosition: 'right',
+        drawerToggleRoute: 'ToggleChat',
       },
     },
     {
       initialRouteName: 'Main',
-      drawerPosition: 'left',
       contentComponent: props => <SideBar {...props} />,
     },
   );
 
-  const ChatStack = DrawerNavigator({
-    Chat: {
-      screen: Chat,
-    },
-  },
-  {
-    navigationOptions: {
-    },
-    drawerPosition: 'right',
-    // drawerWidth: Dimensions.get('window').width,
-    contentComponent: props => <Chat {...props} />,
-    drawerOpenRoute: 'OpenChat',
-    drawerCloseRoute: 'CloseChat',
-    drawerToggleRoute: 'ToggleChat',
-  },
-);
-
   const DrawerNavigation = StackNavigator({
     DrawerStack: { screen: DrawerStack },
-    ChatStack: { screen: ChatStack},
     }, {
       headerMode: 'none',
   });
@@ -195,7 +182,6 @@ const InternalStack = StackNavigator({
 // Manifest of possible screens
 export const RootStack = StackNavigator({
     drawerStack: { screen: DrawerNavigation },
-    chatStack: { screen: DrawerNavigation},
   }, {
     // Default config for all screens
     headerMode: 'none',

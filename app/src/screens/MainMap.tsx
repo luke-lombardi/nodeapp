@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, AsyncStorage, Switch } from 'react-native';
+import { View, AsyncStorage, Switch, Dimensions } from 'react-native';
 
 import {
   StyleSheet,
@@ -85,6 +85,8 @@ interface IState {
   destination: any;
   pushData: string;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export class MainMap extends Component<IProps, IState> {
   timerID: number;
@@ -323,6 +325,7 @@ export class MainMap extends Component<IProps, IState> {
     return (
       // Map screen view (exported component)
       <View style={styles.mainView}>
+
           {
             // Main map view
             <View style={styles.mapView}>
@@ -342,7 +345,6 @@ export class MainMap extends Component<IProps, IState> {
                 // @ts-ignore
                 customMapStyle={mapStyle}
               >
-
               {/* Map markers  */}
               <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }
               visible={this.state.publicNodesVisible} nodeId={this.state.selectedNode} />
@@ -353,6 +355,7 @@ export class MainMap extends Component<IProps, IState> {
               <Friends friendList={this.props.friendList} functions={ {'onNodeSelected': this.onNodeSelected} } />
 
       </MapView>
+      <View style={styles.mapBuffer} />
       <View style={{top: '10%', width: '90%', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'center', flexDirection: 'row'}}>
         <View style={{padding: 10}}>
           <Button
@@ -386,8 +389,8 @@ export class MainMap extends Component<IProps, IState> {
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.transparentButton}
             title=''
-            onPress={() => { this.navigateToPage('Nodes');
-            }}
+            onPress={() => { this.navigateToPage('Nodes'); }
+            }
           />
           </View>
         </View>
@@ -433,6 +436,7 @@ export class MainMap extends Component<IProps, IState> {
           />
           </View>
         }
+
         </View>
           // End map view
         }
@@ -548,16 +552,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    zIndex: 2,
   },
   mapView: {
-    zIndex: 1,
     flex: 14,
   },
   headerView: {
     flex: 1,
-    zIndex: 2,
+    zIndex: 3,
     padding: 10,
+  },
+  mapBuffer: {
+    position: 'absolute',
+    backgroundColor: 'black',
+    left: 0,
+    top: 0,
+    opacity: 0.0,
+    height: Dimensions.get('window').height,
+    width: 20,
   },
   nodeSelectedView: {
     padding: 0,

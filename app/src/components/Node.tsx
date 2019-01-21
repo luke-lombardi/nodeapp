@@ -142,7 +142,7 @@ export default class Node extends Component<IProps, IState> {
   }
 
   shareNode() {
-    this.props.navigation.navigate({key: 'ContactList', routeName: 'ContactList', params: { action: 'share_node', nodeId: this.props.nodeId } });
+    this.props.navigation.navigate({key: 'FriendList', routeName: 'FriendList', params: { action: 'share_node', nodeId: this.props.nodeId } });
   }
 
   async upvoteComment() {
@@ -193,7 +193,7 @@ export default class Node extends Component<IProps, IState> {
               onPress={() => this.upvoteComment()}
               underlayColor={'transparent'}
             />
-            {/* <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{Object.keys(this.props.likes).length}</Text> */}
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.props.likes !== undefined ? Object.keys(this.props.likes).length : ''}</Text>
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'
@@ -244,7 +244,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={this.shareNode}
+              onPress={() => this.shareNode()}
               />
           </View>
           </View>

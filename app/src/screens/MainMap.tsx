@@ -393,8 +393,8 @@ export class MainMap extends Component<IProps, IState> {
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.transparentButton}
             title=''
-            onPress={() => { this.navigateToPage('Nodes');
-            }}
+            onPress={() => { this.navigateToPage('Nodes'); }
+            }
           />
           </View>
         </View>

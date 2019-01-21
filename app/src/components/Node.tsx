@@ -193,7 +193,7 @@ export default class Node extends Component<IProps, IState> {
               onPress={() => this.upvoteComment()}
               underlayColor={'transparent'}
             />
-            {/* <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{Object.keys(this.props.likes).length}</Text> */}
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.props.likes !== undefined ? Object.keys(this.props.likes).length : ''}</Text>
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'

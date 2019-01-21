@@ -114,15 +114,15 @@ export class NodeList extends Component<IProps, IState> {
       rightTitleStyle={{fontWeight: '600', fontSize: 14}}
       rightTitle={
       <View style={{paddingVertical: 5}}>
-        <Text style={{fontWeight: 'bold'}}>{item.data.distance_in_miles.toString()}</Text>
+        <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
         <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
         </View>
       }
       subtitle={
         <View style={{paddingVertical: 5}}>
           <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
-          {/* {
-            Object.keys(item.data.likes).length > 0 &&
+          {
+            item.data.likes !== undefined &&
             <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
           } */}
         </View>

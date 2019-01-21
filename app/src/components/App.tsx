@@ -238,25 +238,33 @@ interface IState {
 //    - Store notifications in async storage so they are persistent until checked by the user
 
 // Subscribe to push notifications
-Pushy.setNotificationListener(async (data) => {
-  Logger.info(`Received push notification: ${JSON.stringify(data)}`);
-
-  if (data.action !== undefined) {
-    await NotificationService.storeNotification(data);
-    // Logger.info(`Received friend request from: ${data.from_username}`);
-    // NavigationService.reset('Map', { showConfirmModal: true, pushData: data});
-  } else {
-    await NotificationService.handleNotification(data);
-  }
+Pushy.setNotificationListener(async (notification) => {
+  Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
+  await processInitialNotification(notification);
 });
 
-function processInitialNotification(notification) {
-  console.log(notification);
+async function processInitialNotification(notification) {
+  // If the notification is being handled by PushNotificationIOS.getInitialNotification
+  // then we need to extract the data from the object
+  // If the app is in the foreground, the pushy listener is called
+  // the Pushy listener takes notification._data as a parameter
+  if (notification._data !== undefined) {
+    notification = notification._data;
+  }
+
+  if (notification.action !== undefined) {
+    await NotificationService.storeNotification(notification);
+  } else {
+    await NotificationService.handleNotification(notification);
+  }
+
+  // Navigate to the notifications panel if app was opened from a notification
+  NavigationService.reset('Notifications', {});
 }
 
-function processDeliveredNotifications(notifications) {
+async function processDeliveredNotifications(notifications) {
   for (let i = 0; i < notifications.length; i++) {
-    NotificationService.storeNotification(notifications[i]);
+    await NotificationService.storeNotification(notifications[i]);
   }
 
   // Clear the notification badges
@@ -270,6 +278,7 @@ PushNotificationIOS.getInitialNotification().then(function (notification) {
 });
 
 PushNotificationIOS.getDeliveredNotifications(processDeliveredNotifications);
+// PushNotificationIOS.addEventListener('notification', processInitialNotification);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // End: Push notification handling logic
@@ -329,7 +338,6 @@ export class App extends Component<IProps, IState> {
 
       this.authService = new AuthService({});
       this.locationService = new LocationService({});
-
     }
 
     componentDidMount() {

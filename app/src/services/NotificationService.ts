@@ -116,11 +116,13 @@ export default class NotificationService {
       if (action === 'confirm_friend') {
 
         /*
-          {"relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
-          "your_id":"friend:0d196ce6-3f71-4cb2-8a4d-35a0742ef7ff",
-          "their_id":"friend:d6748e33-835a-408d-90aa-a8789d023581",
-          "error_msg":"",
-          "location_tracking":true}
+          {
+            "relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
+            "your_id":"friend:0d196ce6-3f71-4cb2-8a4d-35a0742ef7ff",
+            "their_id":"friend:d6748e33-835a-408d-90aa-a8789d023581",
+            "error_msg":"",
+            "location_tracking":true
+          }
         */
 
         let relationId = pushData.relation_id;

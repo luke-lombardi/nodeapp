@@ -39,7 +39,7 @@ def delete_relation(rds, relation_id):
         logger.info('Member list: %s' % (member_list))
 
         for member in member_list:
-            logger.info('Deleting member ' % (member))
+            logger.info('Deleting member %s' % (member))
             rds.delete(member)
 
         logger.info('Removing relation %s' % (relation_id))
@@ -81,13 +81,13 @@ def lambda_handler(event, context):
         return
 
     relation_id = event.get('relation_id', '')
+    response['relation_id'] = relation_id
 
     logger.info('Deleting relation: %s '  % relation_id)
 
     result = delete_relation(rds, relation_id)
     if result:
         logger.info('Success, relation %s removed' % (relation_id))
-        response['relation_id'] = relation_id
         response['result'] = True
         return response
     else:

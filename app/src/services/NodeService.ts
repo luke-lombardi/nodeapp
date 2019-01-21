@@ -53,7 +53,124 @@ export default class NodeService {
 
     private locationService: LocationService;
 
-    constructor(props: IProps) {
+    // Stores a new node in async storage
+    public static async storeNode(newNodeId) {
+      let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+      if (trackedNodes !== null) {
+        trackedNodes = JSON.parse(trackedNodes);
+      } else {
+        // @ts-ignore
+        trackedNodes = [];
+      }
+
+      let index = trackedNodes.indexOf(newNodeId);
+
+      if (index < 0) {
+          // @ts-ignore
+          trackedNodes.push(newNodeId);
+          Logger.info(`NodeService.storeNode: now tracking ${trackedNodes}`);
+
+          await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
+
+          return false;
+      } else {
+          Logger.info(`NodeService.storeNode: you already are tracking this node.`);
+          return true;
+      }
+  }
+
+  public static async doesRelationExist(userId: string) {
+    let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+    if (trackedRelations !== null) {
+        trackedRelations = JSON.parse(trackedRelations);
+    } else {
+        // @ts-ignore
+        trackedRelations = {};
+    }
+
+    if (userId in trackedRelations) {
+      return true;
+    }  else {
+      return false;
+    }
+  }
+
+    // Stores a new friend ID in async storage
+    public static async storeRelation(userId: string, relationData: any) {
+
+      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+      if (trackedRelations !== null) {
+          trackedRelations = JSON.parse(trackedRelations);
+      } else {
+          // @ts-ignore
+          trackedRelations = {};
+      }
+
+      if (!(userId in trackedRelations)) {
+          Logger.info(`NodeService.storeRelation - this is a new relation: ${JSON.stringify(trackedRelations)}`);
+
+          trackedRelations[userId] = relationData;
+
+          Logger.info(`NodeService.storeRelation - Current tracked relations: ${JSON.stringify(trackedRelations)}`);
+
+          await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
+          Logger.info(`NodeService.storeRelation: now tracking ${JSON.stringify(trackedRelations)}`);
+
+          return true;
+      } else {
+          Logger.info(`NodeService.storeRelation: you already are tracking this relation.`);
+
+          return false;
+      }
+  }
+
+    // Delete a node ID from async storage
+    public static async deleteNode(nodeId) {
+        let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+        if (trackedNodes !== null) {
+            trackedNodes = JSON.parse(trackedNodes);
+        } else {
+          // @ts-ignore
+          trackedNodes = [];
+        }
+
+        let index = trackedNodes.indexOf(nodeId);
+
+        if (index >= 0) {
+            // @ts-ignore
+            trackedNodes.splice(index, 1);
+
+            await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
+            Logger.info(`NodeService.deleteNode: removed node: ${trackedNodes}`);
+        } else {
+            Logger.info(`NodeService.deleteNode: you are not tracking this node.`);
+        }
+    }
+
+    // Delete a friend ID from async storage
+    public static async deleteFriend(friendId) {
+        let trackedFriends = await AsyncStorage.getItem('trackedFriends');
+        if (trackedFriends !== null) {
+            trackedFriends = JSON.parse(trackedFriends);
+        } else {
+          // @ts-ignore
+          trackedFriends = [];
+        }
+
+        let index = trackedFriends.indexOf(friendId);
+
+        if (index >= 0) {
+            // @ts-ignore
+            trackedFriends.splice(index, 1);
+
+            await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
+            Logger.info(`NodeService.deleteFriend: removed friend: ${trackedFriends}`);
+        } else {
+            Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
+        }
+    }
+
+  constructor(props: IProps) {
         this.props = props;
 
         // Create services
@@ -86,124 +203,6 @@ export default class NodeService {
     public StopMonitoring() {
         this.stopping = true;
         Logger.info(`NodeService.StopMonitoring -  Disabling monitoring loop.`);
-    }
-
-    // Stores a new node in async storage
-    public async storeNode(newNodeId) {
-        let trackedNodes = await AsyncStorage.getItem('trackedNodes');
-        if (trackedNodes !== null) {
-          trackedNodes = JSON.parse(trackedNodes);
-        } else {
-          // @ts-ignore
-          trackedNodes = [];
-        }
-
-        let index = trackedNodes.indexOf(newNodeId);
-
-        if (index < 0) {
-            // @ts-ignore
-            trackedNodes.push(newNodeId);
-            Logger.info(`NodeService.storeNode: now tracking ${trackedNodes}`);
-
-            await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
-
-            return false;
-        } else {
-            Logger.info(`NodeService.storeNode: you already are tracking this node.`);
-            return true;
-        }
-
-    }
-
-    public async doesRelationExist(userId: string) {
-      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
-      if (trackedRelations !== null) {
-          trackedRelations = JSON.parse(trackedRelations);
-      } else {
-          // @ts-ignore
-          trackedRelations = {};
-      }
-
-      if (userId in trackedRelations) {
-        return true;
-      }  else {
-        return false;
-      }
-    }
-
-    // Stores a new friend ID in async storage
-    public async storeRelation(userId: string, relationData: any) {
-
-      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
-      if (trackedRelations !== null) {
-          trackedRelations = JSON.parse(trackedRelations);
-      } else {
-          // @ts-ignore
-          trackedRelations = {};
-      }
-
-      if (!(userId in trackedRelations)) {
-          Logger.info(`NodeService.storeRelation - this is a new relation: ${JSON.stringify(trackedRelations)}`);
-
-          trackedRelations[userId] = relationData;
-
-          Logger.info(`NodeService.storeRelation - Current tracked relations: ${JSON.stringify(trackedRelations)}`);
-
-          await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
-          Logger.info(`NodeService.storeRelation: now tracking ${JSON.stringify(trackedRelations)}`);
-
-          return true;
-      } else {
-          Logger.info(`NodeService.storeRelation: you already are tracking this relation.`);
-
-          return false;
-      }
-  }
-
-    // Delete a node ID from async storage
-    public async deleteNode(nodeId) {
-        let trackedNodes = await AsyncStorage.getItem('trackedNodes');
-        if (trackedNodes !== null) {
-            trackedNodes = JSON.parse(trackedNodes);
-        } else {
-          // @ts-ignore
-          trackedNodes = [];
-        }
-
-        let index = trackedNodes.indexOf(nodeId);
-
-        if (index >= 0) {
-            // @ts-ignore
-            trackedNodes.splice(index, 1);
-
-            await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
-            Logger.info(`NodeService.deleteNode: removed node: ${trackedNodes}`);
-        } else {
-            Logger.info(`NodeService.deleteNode: you are not tracking this node.`);
-        }
-    }
-
-    // Delete a friend ID from async storage
-    public async deleteFriend(friendId) {
-        let trackedFriends = await AsyncStorage.getItem('trackedFriends');
-        if (trackedFriends !== null) {
-            trackedFriends = JSON.parse(trackedFriends);
-        } else {
-          // @ts-ignore
-          trackedFriends = [];
-        }
-
-        let index = trackedFriends.indexOf(friendId);
-
-        if (index >= 0) {
-            // @ts-ignore
-            trackedFriends.splice(index, 1);
-
-            await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
-            Logger.info(`NodeService.deleteFriend: removed friend: ${trackedFriends}`);
-        } else {
-            Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
-        }
     }
 
     // Private implementation functions

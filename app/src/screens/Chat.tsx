@@ -47,7 +47,6 @@ export class Chat extends Component<IProps, IState> {
   private readonly configGlobal = ConfigGlobalLoader.config;
 
   private authService: AuthService;
-  private nodeService: NodeService;
 
   // @ts-ignore
   private userUuid: string;
@@ -86,7 +85,6 @@ export class Chat extends Component<IProps, IState> {
     };
 
     this.authService = new AuthService({});
-    this.nodeService = new NodeService({});
 
     this._renderItem = this._renderItem.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -187,7 +185,7 @@ export class Chat extends Component<IProps, IState> {
         'share_location': shareLocation,
       };
 
-      let alreadyAdded = await this.nodeService.doesRelationExist(userInfo.user);
+      let alreadyAdded = NodeService.doesRelationExist(userInfo.user);
 
       if (alreadyAdded) {
         Snackbar.show({
@@ -202,7 +200,7 @@ export class Chat extends Component<IProps, IState> {
       let response = await ApiService.AddFriendAsync(requestBody);
       if (response !== undefined) {
         Logger.info(`Chat.startPrivateChat - Received response ${JSON.stringify(response)}`);
-        let stored = await this.nodeService.storeRelation(userInfo.user, response);
+        let stored = await NodeService.storeRelation(userInfo.user, response);
 
         if (!stored) {
           Snackbar.show({
@@ -215,7 +213,7 @@ export class Chat extends Component<IProps, IState> {
         }
 
         if (shareLocation) {
-          await this.nodeService.storeNode(response.their_id);
+          await NodeService.storeNode(response.their_id);
         }
 
         Snackbar.show({

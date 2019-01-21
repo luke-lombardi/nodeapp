@@ -22,8 +22,6 @@ interface IState {
 }
 
 export class FriendList extends Component<IProps, IState> {
-  private nodeService: NodeService;
-
   constructor(props: IProps) {
     super(props);
 
@@ -35,8 +33,6 @@ export class FriendList extends Component<IProps, IState> {
     this.removeFriend = this.removeFriend.bind(this);
 
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
-
-    this.nodeService = new NodeService({});
   }
 
   _onTouchNode(node: any) {
@@ -167,8 +163,8 @@ export class FriendList extends Component<IProps, IState> {
     this.setState({isLoading: true});
     // TODO: call deleteRelation endpoint to remove friend from cache
     let friendId = row.node_id;
-    await this.nodeService.deleteFriend(friendId);
-    await this.nodeService.deleteNode(friendId);
+    await NodeService.deleteFriend(friendId);
+    await NodeService.deleteNode(friendId);
     if (this.props.friendList.length !== initialLength) {
       this.setState({isLoading: false});
     }

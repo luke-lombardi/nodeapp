@@ -9,6 +9,7 @@ import Snackbar from 'react-native-snackbar';
 // services
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
+import NodeService from '../services/NodeService';
 
 // @ts-ignore
 interface IProps {
@@ -59,62 +60,19 @@ export default class NotificationService {
 
     }
 
-    // Delete a notification from async storage
-    public static async deleteNotification(nodeId) {
-        let trackedNodes = await AsyncStorage.getItem('notifications');
-        if (trackedNodes !== null) {
-            trackedNodes = JSON.parse(trackedNodes);
-        } else {
-          // @ts-ignore
-          trackedNodes = [];
-        }
-
-        let index = trackedNodes.indexOf(nodeId);
-
-        if (index >= 0) {
-            // @ts-ignore
-            trackedNodes.splice(index, 1);
-
-            await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
-            Logger.info(`NodeService.deleteNode: removed node: ${trackedNodes}`);
-        } else {
-            Logger.info(`NodeService.deleteNode: you are not tracking this node.`);
-        }
-    }
-
-    // // Delete a friend ID from async storage
-    // public async deleteFriend(friendId) {
-    //     let trackedFriends = await AsyncStorage.getItem('trackedFriends');
-    //     if (trackedFriends !== null) {
-    //         trackedFriends = JSON.parse(trackedFriends);
-    //     } else {
-    //       // @ts-ignore
-    //       trackedFriends = [];
-    //     }
-
-    //     let index = trackedFriends.indexOf(friendId);
-
-    //     if (index >= 0) {
-    //         // @ts-ignore
-    //         trackedFriends.splice(index, 1);
-
-    //         await AsyncStorage.setItem('trackedFriends', JSON.stringify(trackedFriends));
-    //         Logger.info(`NodeService.deleteFriend: removed friend: ${trackedFriends}`);
-    //     } else {
-    //         Logger.info(`NodeService.deleteFriend: you are not tracking this person.`);
-    //     }
-    // }
-
     // let notificationTitle = 'Smartshare';
     // // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
     // let notificationText = data.message || 'Test notification';
     // Display basic system notification
     // Pushy.notify(notificationTitle, notificationText);
 
-    public static async handleAction(pushData: any) {
-      let action = pushData.action;
-      if (action === 'confirm_friend') {
+    public static async handleAction(notification: any) {
+      let action = notification.action;
 
+      console.log('Handling notification');
+      console.log(notification);
+
+      if (action === 'confirm_friend') {
         /*
           {
             "relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
@@ -125,11 +83,12 @@ export default class NotificationService {
           }
         */
 
-        let relationId = pushData.relation_id;
+        let relationId = notification.relation_id;
+
         // @ts-ignore
-        let fromUserId = 'private:' + pushData.from_user;
-        let friendId = pushData.friend_id;
-        let locationTracking = pushData.location_tracking;
+        let fromUserId = 'private:' + notification.from_user;
+        let friendId = notification.friend_id;
+        let locationTracking = notification.location_tracking;
 
         let currentUUID = await AsyncStorage.getItem('user_uuid');
 
@@ -147,13 +106,13 @@ export default class NotificationService {
           let newFriendId = newRelation.their_id;
           Logger.info(`MainMap.handlePushData - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
 
-          let exists = false; // await this.nodeService.storeRelation(fromUserId, relationData);
+          let exists = await NodeService.doesRelationExist(fromUserId);
           if (!exists) {
             Logger.info(`MainMap.handlePushData - this is a new relation, storing: ${JSON.stringify(newRelation)}`);
 
             //  If this request includes location tracking, store in the tracked node list separately
             if (locationTracking) {
-              // await this.nodeService.storeNode(newFriendId);
+              await NodeService.storeNode(newFriendId);
             }
 
             // Show 'added new friend' message
@@ -162,15 +121,16 @@ export default class NotificationService {
               duration: Snackbar.LENGTH_SHORT,
             });
 
+            // Remove the notification from AsyncStorage
+            await this.removeNotification(notification);
             return;
           }
 
-            // Show 'already exists' message
-            Snackbar.show({
-              title: 'You have already added this friend',
-              duration: Snackbar.LENGTH_SHORT,
-            });
-
+          // Show 'already exists' message
+          Snackbar.show({
+            title: 'You have already added this friend',
+            duration: Snackbar.LENGTH_SHORT,
+          });
         } else {
           // Show success message
           Snackbar.show({
@@ -183,7 +143,7 @@ export default class NotificationService {
 
       // If we are adding a new node to tracked node list
       } else if (action === 'add_node') {
-          let nodeId = pushData.node_id;
+          let nodeId = notification.node_id;
 
           Logger.info('MainMap.handleLink - Adding a tracked node.');
 
@@ -211,6 +171,39 @@ export default class NotificationService {
 
     public static async handleNotification(pushData: any) {
       Logger.info(`MainMap.pushData: handling the following push data: ${pushData}`);
+    }
+
+    public static async removeNotification(notification) {
+      let notifications: any = await AsyncStorage.getItem('notifications');
+      if (notifications !== null) {
+        notifications = JSON.parse(notifications);
+      } else {
+        // @ts-ignore
+        notifications = [];
+      }
+
+      let notificationIndex = -1;
+
+      if (notification.action !== undefined) {
+        if (notification.action === 'confirm_friend') {
+          for (let i = 0; i < notifications.length; i++) {
+            if (notifications[i].friend_id === notification.friend_id) {
+              notificationIndex = i;
+              break;
+            }
+          }
+        } else if (notification.action === 'add_node') {
+          console.log('not handled node thing yet');
+        }
+
+      }
+
+      if (notificationIndex >= 0) {
+        notifications.splice(notificationIndex, 1);
+        await AsyncStorage.setItem('notifications', JSON.stringify(notifications));
+        Logger.info(`NotificationService.removeNotification: removed notification: ${notification}`);
+      }
+
     }
 
     // Private implementation functions

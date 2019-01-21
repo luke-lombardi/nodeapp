@@ -23,6 +23,7 @@ import AuthService from '../services/AuthService';
 import moment from 'moment';
 
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import NotificationService from '../services/NotificationService';
 
 interface IProps {
     navigation: any;
@@ -128,6 +129,12 @@ export class Notifications extends Component<IProps, IState> {
                 />
             }
             title='Accept'
+            onPress={
+              async () =>  {
+                await NotificationService.handleAction(item);
+                await this.loadNotifications();
+              }
+            }
             />
           <Button
             style={{width: 90}}
@@ -142,6 +149,10 @@ export class Notifications extends Component<IProps, IState> {
                 />
             }
             title='Reject'
+            onPress={ async () => {
+              await NotificationService.removeNotification(item);
+              await this.loadNotifications();
+              } }
             />
           </View>
         }

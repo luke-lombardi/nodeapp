@@ -41,7 +41,6 @@ interface IState {
 
 export class CreateNode extends Component<IProps, IState> {
   _map: any;
-  private nodeService: NodeService;
   private readonly configGlobal = ConfigGlobalLoader.config;
 
   constructor(props: IProps) {
@@ -59,8 +58,6 @@ export class CreateNode extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.submitCreateNode = this.submitCreateNode.bind(this);
     this.checkForOverlaps = this.checkForOverlaps.bind(this);
-
-    this.nodeService = new NodeService({});
   }
 
   componentWillMount() {
@@ -221,7 +218,7 @@ export class CreateNode extends Component<IProps, IState> {
     let newUuid = await ApiService.CreateNodeAsync(nodeData);
 
     if (newUuid !== undefined && nodeData.private === true) {
-      await this.nodeService.storeNode(newUuid);
+      await NodeService.storeNode(newUuid);
       Logger.info('CreateNode.submitCreateNode - successfully created new private node.');
     } else if (newUuid !== undefined && nodeData.private === false) {
       Logger.info('CreateNode.submitCreateNode - successfully created new public node.');

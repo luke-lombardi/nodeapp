@@ -112,7 +112,7 @@ export class SideBar extends Component<IProps, IState> {
                   }}
                 />
 
-                  <ListItem
+                <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,

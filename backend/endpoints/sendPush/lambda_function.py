@@ -55,6 +55,8 @@ def send_push(push_info, rds):
         from_user = push_info["from_user"]
         to_user = push_info["to_user"]
 
+        from_node_data =  json.loads(rds.get('private:' + from_user))
+
         location_tracking = push_info["location_tracking"]
 
         node_exists = rds.exists(friend_id)
@@ -71,7 +73,7 @@ def send_push(push_info, rds):
           pushy_device_token = node_data.get('device_token', '')
 
           data = {
-              "from_username": node_data.get('topic', 'Anonymous'),
+              "from_username": from_node_data.get('topic', 'Anonymous'),
               "from_user": from_user,
               "action": "confirm_friend",
               "relation_id": relation_id,

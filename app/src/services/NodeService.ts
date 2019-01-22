@@ -336,7 +336,7 @@ export default class NodeService {
 
                     for (let member in relations[key].member_data) {
                       if (relations[key].member_data.hasOwnProperty(member)) {
-                        if (key === currentUUID) {
+                        if (member === currentUUID) {
                           yourFriendId = relations[key].member_data[member].friend_id;
                         } else {
                           theirFriendId = relations[key].member_data[member].friend_id;

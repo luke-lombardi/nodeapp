@@ -86,9 +86,6 @@ interface IState {
   pushData: string;
 }
 
-// @ts-ignore
-const { width, height } = Dimensions.get('window');
-
 export class MainMap extends Component<IProps, IState> {
   timerID: number;
   _map: any;
@@ -435,6 +432,19 @@ export class MainMap extends Component<IProps, IState> {
             title=''
             onPress={() => { this.navigateToPage('CreateNode');
             }}
+          />
+          <Button
+            icon={{
+              name: 'message-circle',
+              type: 'feather',
+              size: 30,
+              color: '#ffffff',
+            }}
+            style={styles.nodeButton}
+            containerStyle={styles.bottomButtonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={() => { this.props.navigation.navigate('Chat', {action: 'general_chat'}); } }
           />
           </View>
         }

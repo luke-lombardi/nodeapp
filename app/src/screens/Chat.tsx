@@ -55,10 +55,12 @@ export class Chat extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingRight: 10},
+      headerStyle: {backgroundColor: 'black', height: 50, paddingLeft: 10, paddingRight: 10},
         headerTitleStyle: { color: 'white'},
         title: 'Chat',
-        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
+        headerLeft:
+          <Icon
+          name='x' type='feather' iconStyle={{right: 30}} containerStyle={{padding: 5, width: 100, height: 50}} size={30} underlayColor={'transparent'} color={'#ffffff'} onPress={ () => {
           navigation.dispatch(NavigationActions.navigate(
                 {
                   key: 'Map',
@@ -90,8 +92,8 @@ export class Chat extends Component<IProps, IState> {
     this.showConfirmModal = this.showConfirmModal.bind(this);
 
     this.startPrivateChat = this.startPrivateChat.bind(this);
-    // this.upvoteComment = this.upvoteComment.bind(this);
-    // this.downvoteComment = this.downvoteComment.bind(this);
+    this.upvoteComment = this.upvoteComment.bind(this);
+    this.downvoteComment = this.downvoteComment.bind(this);
 
     this.submitMessage = this.submitMessage.bind(this);
     this.setMessageText = this.setMessageText.bind(this);
@@ -116,7 +118,7 @@ export class Chat extends Component<IProps, IState> {
       });
 
       // If the message body is empty, don't post the message
-      if (this.state.messageBody === '' || this.state.messageBody.length < 1) {
+      if (this.state.messageBody === '' || this.state.messageBody.length < 10) {
         Snackbar.show({
           title: 'Enter a message to send.',
           duration: Snackbar.LENGTH_SHORT,
@@ -221,13 +223,13 @@ export class Chat extends Component<IProps, IState> {
       }
     }
 
-    // async upvoteComment(item) {
-    //   console.log('upvoting comment....', item);
-    // }
+    async upvoteComment(item) {
+      console.log('upvoting comment....', item);
+    }
 
-    // async downvoteComment(item) {
-    //   console.log('downvoting comment....', item);
-    // }
+    async downvoteComment(item) {
+      console.log('downvoting comment....', item);
+    }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (
@@ -235,28 +237,31 @@ export class Chat extends Component<IProps, IState> {
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,
-          backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
+          //backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
-        // rightElement={
-        //   <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-        //     <Icon
-        //       name='keyboard-arrow-up'
-        //       color='#00aced'
-        //       size={32}
-        //       onPress={() => this.upvoteComment(item)}
-        //     />
-        //     <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
-        //     <Icon
-        //       name='keyboard-arrow-down'
-        //       color='#00aced'
-        //       size={32}
-        //       onPress={() => this.downvoteComment(item)}
-        //     />
-        //   </View>
-        // }
+        rightElement={this.action === 'general_chat' &&
+          <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+            <Icon
+              name='keyboard-arrow-up'
+              color='#00aced'
+              size={32}
+              onPress={() => this.upvoteComment(item)}
+            />
+            <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
+            <Icon
+              name='keyboard-arrow-down'
+              color='#00aced'
+              size={32}
+              onPress={() => this.downvoteComment(item)}
+            />
+          </View>
+        }
         title={
           <View style={styles.titleView}>
-          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}</Text>
+          <Text style={this.userUuid === item.user.slice(0) ?
+            [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}] :
+            [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
+          </Text>
           <Text style={styles.titleText}>{item.message}</Text>
           </View>
         }
@@ -266,6 +271,38 @@ export class Chat extends Component<IProps, IState> {
           {/* ({ item.user.substr(item.user.length - 5)}) */}
           </View>
         }
+
+        // CODE BELOW PUTS USER CHATS ON RIGHT SIDE OF SCREEN
+
+
+        // title={this.userUuid === item.user.slice(8) ?
+        //   <View style={styles.titleView}>
+        //   <Text style={this.userUuid === item.user.slice(0) ?
+        //     [styles.senderRatingText, {paddingTop: index === 0 ? 5 : 0}] :
+        //     [styles.senderRatingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
+        //   </Text>
+        //   <Text style={styles.senderTitleText}>{item.message}</Text>
+        //   </View>
+        //   :
+        //   <View style={styles.titleView}>
+        //   <Text style={this.userUuid === item.user.slice(0) ?
+        //     [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}] :
+        //     [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
+        //   </Text>
+        //   <Text style={styles.titleText}>{item.message}</Text>
+        //   </View>
+        // }
+        // subtitle={this.userUuid === item.user.slice(8) ?
+        //   <View style={styles.senderSubtitleView}>
+        //   <Text style={styles.senderRatingText}>{this.getTime(item)}</Text>
+        //   {/* ({ item.user.substr(item.user.length - 5)}) */}
+        //   </View>
+        //   :
+        //   <View style={styles.subtitleView}>
+        //   <Text style={styles.ratingText}>{this.getTime(item)}</Text>
+        //   {/* ({ item.user.substr(item.user.length - 5)}) */}
+        //   </View>
+        // }
       />
     )
 
@@ -338,6 +375,9 @@ export class Chat extends Component<IProps, IState> {
     }
 
     async monitorMessages() {
+
+      this.userUuid = await this.authService.getUUID();
+
       if (this.monitoring) return;
 
       this.monitoring = true;
@@ -414,7 +454,8 @@ export class Chat extends Component<IProps, IState> {
           {
             this.state.data.length < 1 &&
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>No messages yet!</Text>
+            <Text style={styles.null}>No messages yet.</Text>
+            <Text style={{fontSize: 14, top: '90%', color: 'gray'}}>You can find messages here.</Text>
             </View>
           }
           </View>
@@ -475,18 +516,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
     minHeight: 100,
-    maxHeight: 120,
   },
   null: {
     fontSize: 22,
     color: 'gray',
-    top: 250,
+    top: '80%',
     alignSelf: 'center',
   },
   titleText: {
     color: 'black',
     fontSize: 16,
     paddingTop: 5,
+    //alignSelf: 'flex-end',
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -535,8 +576,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 5,
   },
+  senderSubtitleView: {
+    flexDirection: 'row',
+    paddingTop: 5,
+    alignSelf: 'flex-end',
+  },
   ratingText: {
     color: 'grey',
+  },
+  senderRatingText: {
+    color: 'grey',
+    alignSelf: 'flex-end',
+  },
+  senderTitleText: {
+    alignSelf: 'flex-end',
+    fontSize: 16,
+    paddingTop: 5,
   },
   flatlist: {
     backgroundColor: 'white',

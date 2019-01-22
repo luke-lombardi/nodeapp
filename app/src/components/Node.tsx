@@ -182,7 +182,7 @@ export default class Node extends Component<IProps, IState> {
           { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text> */}
           </View>
-          <View style={{paddingHorizontal: 15, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+          <View style={{paddingHorizontal: 25, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
             <Icon
               name='keyboard-arrow-up'
               color='#00aced'
@@ -190,7 +190,7 @@ export default class Node extends Component<IProps, IState> {
               onPress={() => this.upvoteComment()}
               underlayColor={'transparent'}
             />
-            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.props.likes !== undefined ? Object.keys(this.props.likes).length : ''}</Text>
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.props.likes !== undefined ? Object.keys(this.props.likes).length : 0}</Text>
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     height: 220,
     width: '90%',
     borderRadius: 20,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: 'rgba(44,55,71,.9)',
     borderTopWidth: 0,
     borderWidth: .5,
     borderTopLeftRadius: 0,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     maxHeight: 100,
   },
   countdownContainer: {
-    left: 16,
+    left: 15,
     position: 'relative',
     backgroundColor: 'rgba(44,55,71,.9)',
     alignSelf: 'flex-start',
@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     width: 200,
     height: 50,
+    bottom: 5,
   },
   durationTitle: {
     color: 'white',
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    backgroundColor: 'rgba(44,55,71,.9)',
+    //backgroundColor: 'rgba(44,55,71,.9)',
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',

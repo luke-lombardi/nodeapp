@@ -103,25 +103,15 @@ const InternalStack = StackNavigator({
       }),
   },
   Nodes: { screen: NodeList,
-    navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'black', height: 30, borderBottomColor: 'black'},
-      headerTitleStyle: {color: 'white'},
-      // title: 'Nodes',
-      headerLeft: <Icon
-        name='arrow-left' containerStyle={{paddingHorizontal: 10, top: 20, borderBottomColor: 'black',
-      }} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-        },
-        )) } />,
+    navigationOptions: () => ({
+      // @ts-ignore
+      header: null,
       }),
   },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10},
-      headerTitleStyle: { color: 'white'},
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, borderBottomWidth: 5, borderBottomColor: 'black'},
+      headerTitleStyle: { color: 'white' },
       title: 'Drop Node',
       headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
@@ -163,11 +153,6 @@ const InternalStack = StackNavigator({
         screen: InternalStack,
         drawerPosition: 'left',
       },
-      Chat: {
-        screen: Chat,
-        drawerPosition: 'right',
-        drawerToggleRoute: 'ToggleChat',
-      },
     },
     {
       initialRouteName: 'Main',
@@ -175,8 +160,23 @@ const InternalStack = StackNavigator({
     },
   );
 
+  const ChatStack = DrawerNavigator({
+    Chat: {
+      screen: Chat,
+    },
+  },
+  {
+      drawerPosition: 'right',
+      drawerToggleRoute: 'ToggleChat',
+      drawerOpenRoute: 'OpenChat',
+      drawerCloseRoute: 'CloseChat',
+      contentComponent: props => <Chat {...props} />,
+  },
+);
+
   const DrawerNavigation = StackNavigator({
     DrawerStack: { screen: DrawerStack },
+    ChatStack: { screen: ChatStack },
     }, {
       headerMode: 'none',
   });
@@ -184,6 +184,7 @@ const InternalStack = StackNavigator({
 // Manifest of possible screens
 export const RootStack = StackNavigator({
     drawerStack: { screen: DrawerNavigation },
+    chatStack: { screen: DrawerNavigation },
   }, {
     // Default config for all screens
     headerMode: 'none',

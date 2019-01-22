@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { ListItem, ButtonGroup } from 'react-native-elements';
+import { ListItem, ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
 
@@ -61,8 +61,6 @@ export class NodeList extends Component<IProps, IState> {
         selectedIndex,
         data: this.props.privatePlaceList,
       });
-      console.log('PLACES');
-      console.log(this.props.privatePlaceList);
     }
   }
 
@@ -143,22 +141,33 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   render() {
-    console.log('nodeList', this.props.publicPlaceList);
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
     return (
       <View style={{flex: 1, backgroundColor: 'black'}}>
+      <View style={{height: 110}}>
         <ButtonGroup
           innerBorderStyle={{width: 0.0, color: 'black'}}
-          buttonStyle={styles.button}
-          containerStyle={styles.buttonContainer}
+          containerStyle={{paddingHorizontal: 80, top: '10%', bottom: '10%', borderWidth: 0, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
+          buttonStyle={{height: 20, backgroundColor: 'black'}}
+          // containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
           selectedIndex={selectedIndex}
-          selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black', borderBottomWidth: 3}}
+          selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black'}}
           buttons={buttons}
-          textStyle={{fontWeight: 'bold', fontSize: 16}}
+          textStyle={{fontWeight: 'bold', fontSize: 22}}
         />
-      <View style={{flex: 1, top: -5}}>
+        <Icon
+          name={'arrow-left'}
+          type={'feather'}
+          size={35}
+          underlayColor={'transparent'}
+          color={'#ffffff'}
+          containerStyle={{alignSelf: 'flex-start', padding: 5, top: -10, borderBottomColor: 'black'}}
+          onPress={() => this.props.navigation.navigate('Map')}
+        />
+      </View>
+      <View style={{flex: 1}}>
       <View style={styles.flatlist}>
         <FlatList
          data={this.state.data}
@@ -224,8 +233,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
-    top: -30,
-    marginBottom: -50,
+    marginBottom: -10,
     backgroundColor: 'white',
     height: '100%',
     width: '100%',
@@ -260,8 +268,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   buttonContainer: {
-    height: 100,
-    bottom: 45,
+    height: 50,
+    //bottom: 45,
     paddingHorizontal: 100,
     borderBottomColor: 'black',
     alignSelf: 'center',

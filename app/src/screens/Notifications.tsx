@@ -104,7 +104,7 @@ export class Notifications extends Component<IProps, IState> {
         title={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.from_username}</Text>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.from_username}</Text>
           <Text style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>{this.getTime(item)}</Text>
           </View>
           {/* <Text style={styles.titleText}>{item.message}</Text> */}
@@ -226,8 +226,8 @@ export class Notifications extends Component<IProps, IState> {
           {
             this.state.data.length === 0 &&
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>No Notifications</Text>
-            <Text style={{fontSize: 14, top: 280, color: 'gray'}}>You can find things that require your attention here.</Text>
+            <Text style={styles.null}>No Notifications.</Text>
+            <Text style={{fontSize: 14, top: '50%', color: 'gray'}}>You can find things that require your attention here.</Text>
             </View>
           }
           </View>
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   null: {
     fontSize: 22,
     color: 'gray',
-    top: 250,
+    top: '40%',
     alignSelf: 'center',
   },
   titleText: {
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
   },
   ratingText: {
-    color: 'grey',
+    color: 'black',
     alignSelf: 'flex-start',
     alignItems: 'flex-start',
     fontSize: 16,

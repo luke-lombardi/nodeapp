@@ -91,6 +91,7 @@ export class FriendList extends Component<IProps, IState> {
         <Icon
           name='trash-2'
           type='feather'
+          underlayColor={'transparent'}
           size={30}
           color='white'
         />
@@ -168,7 +169,10 @@ export class FriendList extends Component<IProps, IState> {
 
         {
           this.props.friendList.length === 0 &&
-          <Text style={styles.null}>No friends have been added yet</Text>
+          <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
+          <Text style={styles.null}>No friends yet.</Text>
+          <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
+          </View>
         }
      </View>
      </View>
@@ -237,7 +241,7 @@ const styles = StyleSheet.create({
   null: {
     fontSize: 20,
     color: 'gray',
-    top: 250,
+    top: '40%',
     alignSelf: 'center',
   },
   button: {

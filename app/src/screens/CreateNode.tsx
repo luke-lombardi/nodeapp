@@ -142,6 +142,7 @@ export class CreateNode extends Component<IProps, IState> {
               <Icon
                 name='arrow-right'
                 size={30}
+                underlayColor={'transparent'}
                 color='white'
               />
             }
@@ -186,7 +187,7 @@ export class CreateNode extends Component<IProps, IState> {
     await this.setState({isLoading: true});
 
     // If the node topic is empty, don't post the node
-    if (this.state.topic === '') {
+    if (this.state.topic.length < 10) {
       Snackbar.show({
         title: 'Enter a topic for the node.',
         duration: Snackbar.LENGTH_SHORT,
@@ -256,10 +257,12 @@ const styles = StyleSheet.create({
     padding: 0,
     flex: 1,
     backgroundColor: '#ffffff',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
   },
   miniMapView: {
     flex: 1,
-    padding: 20,
+    padding: 40,
   },
   map: {
   },
@@ -270,6 +273,9 @@ const styles = StyleSheet.create({
   nodeForm: {
     flex: 6,
     alignSelf: 'stretch',
+    backgroundColor: '#ffffff',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
   },
   fullWidthButton: {
     backgroundColor: 'blue',

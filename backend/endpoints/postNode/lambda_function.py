@@ -81,7 +81,11 @@ def update_node(rds, node_id, node_data):
     if public:
         prefix = "public:"
 
-    key_name = prefix + node_id
+    if 'private:' in node_id:
+        key_name = node_id
+    else:
+        key_name = prefix + node_id
+  
     node_type = node_data.get('type', 'place')
 
     if node_type == 'person':
@@ -92,7 +96,7 @@ def update_node(rds, node_id, node_data):
         
         # Not a new user
         else:
-            current_node_data = rds.get(key_name).decode("utf-8")
+            current_node_data = json.loads(rds.get(key_name).decode("utf-8"))
             
             logger.info("Current node data: {}".format(current_node_data))
   

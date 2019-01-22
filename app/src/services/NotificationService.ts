@@ -74,7 +74,7 @@ export default class NotificationService {
         let relationId = notification.relation_id;
 
         // @ts-ignore
-        let fromUserId = 'private:' + notification.from_user;
+        let fromUserId = notification.from_user;
         let friendId = notification.friend_id;
         let locationTracking = notification.location_tracking;
 

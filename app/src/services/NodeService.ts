@@ -313,17 +313,21 @@ export default class NodeService {
                 if (relations.hasOwnProperty(key)) {
 
                     if (relations[key].status === 'not_found') {
-
                       Logger.info(`Cannot find relation ${key}, removing from storage.`);
 
-                      if (trackedRelations) {
-                        let index = trackedRelations.indexOf(key);
-                        if (index !== -1) {
-                          trackedRelations.splice(index, 1);
-                          modified = true;
+                      // TODO: make this make sense
+                      // What it's doing right now is going through the trackedRelations dict
+                      // by user UUID (of the rcpt) and then checking if the relation id matches
+                      // This should be just a map of user UUID : relation UUID so the loop can be
+                      // eliminated here
+                      for (let userId in trackedRelations) {
+                        if (trackedRelations.hasOwnProperty(userId)) {
+                          if (trackedRelations[userId].relation_id === key) {
+                            delete  trackedRelations[userId];
+                            modified = true;
+                          }
                         }
                       }
-                      continue;
                     }
 
                     let currentUUID = await AuthService.getUUID();
@@ -334,6 +338,8 @@ export default class NodeService {
                     let theirFriendId = undefined;
                     let theirUUID = undefined;
 
+                    // Loop through member data in the relation to add detail to the relationList
+                    // This is used for formatting the flatList that stores the relations later
                     for (let member in relations[key].member_data) {
                       if (relations[key].member_data.hasOwnProperty(member)) {
                         if (member === currentUUID) {
@@ -350,8 +356,6 @@ export default class NodeService {
                     relations[key].their_friend_id = theirFriendId;
                     relations[key].their_uuid = theirUUID;
                     relations[key].topic = theirTopicName;
-
-                    console.log(relations[key]);
 
                     relationList.push(relations[key]);
                 }

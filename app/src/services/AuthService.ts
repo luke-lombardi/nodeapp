@@ -20,7 +20,7 @@ export default class AuthService {
     public static async getUUID() {
         let currentUUID = await AsyncStorage.getItem('user_uuid');
         if (currentUUID === null) {
-          let newUUID = uuid.v4();
+          let newUUID = 'private:' + uuid.v4();
           await AsyncStorage.setItem('user_uuid', newUUID);
           currentUUID = await AsyncStorage.getItem('user_uuid');
         }

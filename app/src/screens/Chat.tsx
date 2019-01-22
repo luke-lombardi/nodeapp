@@ -40,6 +40,8 @@ interface IState {
     userInfo: string;
 }
 
+const MINIMUM_MSG_LENGTH = 2;
+
 export class Chat extends Component<IProps, IState> {
   private monitoring: boolean = false;
   private stopping: boolean = false;
@@ -118,7 +120,7 @@ export class Chat extends Component<IProps, IState> {
       });
 
       // If the message body is empty, don't post the message
-      if (this.state.messageBody === '' || this.state.messageBody.length < 10) {
+      if (this.state.messageBody === '' || this.state.messageBody.length < MINIMUM_MSG_LENGTH) {
         Snackbar.show({
           title: 'Enter a message to send.',
           duration: Snackbar.LENGTH_SHORT,
@@ -237,7 +239,7 @@ export class Chat extends Component<IProps, IState> {
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,
-          //backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
+          // backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
         rightElement={this.action === 'general_chat' &&
           <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
@@ -273,7 +275,6 @@ export class Chat extends Component<IProps, IState> {
         }
 
         // CODE BELOW PUTS USER CHATS ON RIGHT SIDE OF SCREEN
-
 
         // title={this.userUuid === item.user.slice(8) ?
         //   <View style={styles.titleView}>
@@ -376,7 +377,7 @@ export class Chat extends Component<IProps, IState> {
 
     async monitorMessages() {
 
-      this.userUuid = await this.authService.getUUID();
+      this.userUuid = await AuthService.getUUID();
 
       if (this.monitoring) return;
 
@@ -527,7 +528,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     paddingTop: 5,
-    //alignSelf: 'flex-end',
+    // alignSelf: 'flex-end',
   },
   iconContainer: {
     backgroundColor: 'white',

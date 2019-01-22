@@ -96,9 +96,9 @@ const InternalStack = StackNavigator({
   },
   GetPermissions: { screen: GetPermissions,
     navigationOptions: () => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
-      title: 'Enable location tracking',
+      title: 'Permissions',
       headerLeft: <View></View>,
       }),
   },

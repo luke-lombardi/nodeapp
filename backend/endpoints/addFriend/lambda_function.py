@@ -44,14 +44,27 @@ def get_new_uuid(rds, prefix):
     return new_uuid
 
 # Create the actual group in the cache
-def insert_relation(rds, relation_id, sender_friend_id, rcpt_friend_id, location_tracking_enabled = False):
+def insert_relation(rds, relation_id, sender_id, sender_friend_id, rcpt_id, rcpt_friend_id, location_tracking_enabled = False):
+    sender_node_data = json.loads(rds.get('private:' + sender_id))
+    rcpt_node_data = json.loads(rds.get(rcpt_id))
+
     relation_data = {
         'members': {
             sender_friend_id: True,
             rcpt_friend_id: False
         },
+        'member_data': {
+            sender_id: {
+              'friend_id': sender_friend_id,
+              'topic': sender_node_data.get('topic', ''),
+            },
+            rcpt_id: {
+              'friend_id': rcpt_friend_id,
+              'topic': rcpt_node_data.get('topic', '')
+            }
+        },
         'location_tracking': location_tracking_enabled,
-        'messages': []
+        'status': 'pending',
     }
 
     logger.info('Inserting this relation data into cache: %s' % (relation_data))
@@ -168,7 +181,9 @@ def lambda_handler(event, context):
     share_location = event.get('share_location', False)
 
     # Add the relation to the cache
-    ret = insert_relation(rds, relation_id, sender_friend_id, rcpt_friend_id, location_tracking_enabled=share_location)
+    ret = insert_relation(rds, relation_id, sender_uuid, sender_friend_id, rcpt_uuid, \
+    rcpt_friend_id, location_tracking_enabled=share_location)
+
     if ret:
         logger.info('Cache insert success: %s' % (ret))
         response['relation_id'] = relation_id

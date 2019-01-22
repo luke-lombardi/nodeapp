@@ -8,6 +8,7 @@ const InitialState: IStoreState = {
   privatePersonList: [],
   privatePlaceList: [],
   friendList: [],
+  relationList: [],
   userRegion: {},
 };
 

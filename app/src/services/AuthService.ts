@@ -15,14 +15,9 @@ export default class AuthService {
     // @ts-ignore
     private readonly configGlobal = ConfigGlobalLoader.config;
 
-    constructor(props: IProps) {
-        this.props = props;
-        Logger.trace(`AuthService.constructor -  Initialized auth service`);
-    }
-
     // Setting the UUID serves as a simple 'account' for each user.
     // It does not contain any real information, but is temporarily bound to the phone
-    public async getUUID() {
+    public static async getUUID() {
         let currentUUID = await AsyncStorage.getItem('user_uuid');
         if (currentUUID === null) {
           let newUUID = uuid.v4();
@@ -31,4 +26,9 @@ export default class AuthService {
         }
         return currentUUID;
     }
+
+    constructor(props: IProps) {
+      this.props = props;
+      Logger.trace(`AuthService.constructor -  Initialized auth service`);
+  }
 }

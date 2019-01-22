@@ -37,7 +37,8 @@ import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
-import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
+import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
+import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 
 // Services
 import NodeService,
@@ -47,6 +48,7 @@ import NodeService,
     IPrivatePersonListUpdated,
     IPrivatePlaceListUpdated,
     IFriendListUpdated,
+    IRelationListUpdated,
   }
   from '../services/NodeService';
 
@@ -198,6 +200,7 @@ interface IProps {
   PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   GroupListUpdated: (groupList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
@@ -207,6 +210,7 @@ interface IProps {
   privatePlaceList: Array<any>;
   groupList: Array<any>;
   friendList: Array<any>;
+  relationList: Array<any>;
 
   challengeSettings: any;
   userRegion: any;
@@ -264,7 +268,6 @@ PushNotificationIOS.getInitialNotification().then(function (notification) {
 });
 
 PushNotificationIOS.getDeliveredNotifications(processDeliveredNotifications);
-// PushNotificationIOS.addEventListener('notification', processInitialNotification);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // End: Push notification handling logic
@@ -275,7 +278,6 @@ export class App extends Component<IProps, IState> {
     private nodeService: NodeService;
     // @ts-ignore
     private locationService: LocationService;
-    private authService: AuthService;
 
     private bearing;
 
@@ -298,9 +300,9 @@ export class App extends Component<IProps, IState> {
       this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
 
       this.gotNewFriendList = this.gotNewFriendList.bind(this);
+      this.gotNewRelationList =  this.gotNewRelationList.bind(this);
 
       this.getUserRegion = this.getUserRegion.bind(this);
-      this.getGroupList = this.getGroupList.bind(this);
 
       // Component methods
       this.componentDidMount = this.componentDidMount.bind(this);
@@ -319,10 +321,10 @@ export class App extends Component<IProps, IState> {
           privatePersonListUpdated: this.gotNewPrivatePersonList,
           privatePlaceListUpdated: this.gotNewPrivatePlaceList,
           friendListUpdated: this.gotNewFriendList,
+          relationListUpdated: this.gotNewRelationList,
           currentUserRegion: this.getUserRegion,
       });
 
-      this.authService = new AuthService({});
       this.locationService = new LocationService({});
     }
 
@@ -530,7 +532,7 @@ export class App extends Component<IProps, IState> {
 
       let currentUUID = undefined;
       try {
-        currentUUID = await this.authService.getUUID();
+        currentUUID = await AuthService.getUUID();
         Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
       } catch (err) {
         Logger.debug(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
@@ -621,6 +623,10 @@ export class App extends Component<IProps, IState> {
       await this.props.PrivatePlaceListUpdated(props.nodeList);
     }
 
+    private async gotNewRelationList(props: IRelationListUpdated) {
+      await this.props.RelationListUpdated(props.relationList);
+    }
+
     private async gotNewFriendList(props: IFriendListUpdated) {
       await this.props.FriendListUpdated(props.friendList);
     }
@@ -635,6 +641,7 @@ function mapStateToProps(state: IStoreState): IProps {
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
     friendList: state.friendList,
+    relationList: state.relationList,
     userRegion: state.userRegion,
   };
 }
@@ -646,7 +653,8 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
-    FriendListUpdated: bindActionCreators(FriendListUpdatedActionCreator, dispatch),
+    FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
+    RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),
   };
 }
 

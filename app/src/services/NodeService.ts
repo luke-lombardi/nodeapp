@@ -9,6 +9,7 @@ import { AsyncStorage } from 'react-native';
 // services
 import LocationService from './LocationService';
 import ApiService from './ApiService';
+import AuthService from './AuthService';
 
 export interface IPublicPersonListUpdated {
     readonly nodeList: Array<any>;
@@ -30,6 +31,10 @@ export interface IFriendListUpdated {
     readonly friendList: Array<any>;
 }
 
+export interface IRelationListUpdated {
+  readonly relationList: Array<any>;
+}
+
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
@@ -40,6 +45,8 @@ interface IProps {
   readonly privatePersonListUpdated?: (props: IPrivatePersonListUpdated) => Promise<void>;
   readonly privatePlaceListUpdated?: (props: IPrivatePlaceListUpdated) => Promise<void>;
   readonly friendListUpdated?: (props: IFriendListUpdated) => Promise<void>;
+  readonly relationListUpdated?: (props: IRelationListUpdated) => Promise<void>;
+
 }
 
 export default class NodeService {
@@ -232,6 +239,7 @@ export default class NodeService {
 
         // Start the monitoring loops - don't await this because it runs forever
         this.MonitorNodeListAsync();
+        this.MonitorRelationsAsync();
     }
 
     public CheckNow() {
@@ -260,6 +268,107 @@ export default class NodeService {
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
             Logger.trace('NodeService.MonitorNodeListAsync - Looping around to check nodes again');
+        }
+    }
+
+      // Monitors the cache for updates to the node list
+      private async MonitorRelationsAsync() {
+        while (true) {
+            if (this.stopping) return;
+
+            // Re-create the check-now trigger in case it was triggered last time
+            this.checkNowTrigger = new DeferredPromise();
+
+            // Load this here so we can remove relations from async that aren't in the cache anymore
+            let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+            if (trackedRelations !== null) {
+              trackedRelations = JSON.parse(trackedRelations);
+            } else {
+              trackedRelations = {};
+            }
+
+            let relationsToGet = [];
+
+            for (let key in trackedRelations) {
+                if (trackedRelations.hasOwnProperty(key)) {
+                  relationsToGet.push(trackedRelations[key].relation_id);
+                }
+            }
+
+            Logger.trace(`ApiService.MonitorRelationsAsync - checking these relations ${JSON.stringify(relationsToGet)}`);
+
+            // @ts-ignore
+            let relations = undefined;
+            try  {
+              relations = await ApiService.getRelations(relationsToGet);
+            } catch (error) {
+              // Do nothing if this fails
+            }
+
+            let relationList = [];
+
+            let modified = false;
+
+            for (let key in relations) {
+                if (relations.hasOwnProperty(key)) {
+
+                    if (relations[key].status === 'not_found') {
+
+                      Logger.info(`Cannot find relation ${key}, removing from storage.`);
+
+                      if (trackedRelations) {
+                        let index = trackedRelations.indexOf(key);
+                        if (index !== -1) {
+                          trackedRelations.splice(index, 1);
+                          modified = true;
+                        }
+                      }
+                      continue;
+                    }
+
+                    let currentUUID = await AuthService.getUUID();
+
+                    // @ts-ignore
+                    let yourFriendId = undefined;
+                    let theirTopicName = undefined;
+                    let theirFriendId = undefined;
+                    let theirUUID = undefined;
+
+                    for (let member in relations[key].member_data) {
+                      if (relations[key].member_data.hasOwnProperty(member)) {
+                        if (key === currentUUID) {
+                          yourFriendId = relations[key].member_data[member].friend_id;
+                        } else {
+                          theirFriendId = relations[key].member_data[member].friend_id;
+                          theirTopicName = relations[key].member_data[member].topic;
+                          theirUUID = member;
+                        }
+                      }
+                    }
+
+                    relations[key].relation_id = key;
+                    relations[key].their_friend_id = theirFriendId;
+                    relations[key].their_uuid = theirUUID;
+                    relations[key].topic = theirTopicName;
+
+                    console.log(relations[key]);
+
+                    relationList.push(relations[key]);
+                }
+            }
+
+            // If any relations were not found in the cache, update the tracked list
+            if (modified) {
+              await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
+            }
+
+            // Update the redux store with the formatted relation list
+            await this.props.relationListUpdated({relationList: relationList});
+
+            const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.relationCheckIntervalMs);
+            await Promise.race([ sleepPromise, this.checkNowTrigger ]);
+
+            Logger.trace('NodeService.MonitorRelationsAsync - Looping around to check relations again');
         }
     }
 

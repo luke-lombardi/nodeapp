@@ -51,6 +51,7 @@ def update_relation(rds, relation_id, your_id, user_uuid):
             logger.info('Member found in %s... accepting relation' % (member_list))
 
             current_relation_data['members'][your_id] = True
+            current_relation_data['status'] = 'accepted'
 
             rds.set(name=relation_id, value=json.dumps(current_relation_data))
 

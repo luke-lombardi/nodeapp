@@ -28,7 +28,6 @@ interface IState {
 }
 
 export default class Node extends Component<IProps, IState> {
-  private authService: AuthService;
   private interval: any;
 
   constructor(props: IProps) {
@@ -54,14 +53,12 @@ export default class Node extends Component<IProps, IState> {
 
     this.countdown = this.countdown.bind(this);
 
-    this.authService = new AuthService({});
-
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
 
   async toggleLikeStatus() {
-    let currentUUID = await this.authService.getUUID();
+    let currentUUID = await AuthService.getUUID();
     let requestBody = {
         'node_id': this.props.nodeId,
         'user_uuid': currentUUID,
@@ -98,7 +95,7 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async updateLikeStatus() {
-    let currentUUID = await this.authService.getUUID();
+    let currentUUID = await AuthService.getUUID();
 
     let requestBody = {
       'node_id': this.props.nodeId,
@@ -146,7 +143,7 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async upvoteComment() {
-    let currentUUID = await this.authService.getUUID();
+    let currentUUID = await AuthService.getUUID();
 
     let requestBody = {
       'node_id': this.props.nodeId,

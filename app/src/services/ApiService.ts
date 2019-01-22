@@ -57,6 +57,25 @@ export default class ApiService {
       return nodeList;
     }
 
+    // Checks which local relations are still present in the cache
+    public static async getRelations(relationsToGet) {
+        Logger.info(`Fetching these relations: ${JSON.stringify(relationsToGet)}`);
+
+        let requestBody = {
+          'relations': relationsToGet,
+        };
+
+        let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getRelations', {
+            method: 'POST',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify(requestBody),
+        });
+
+        // TODO: add error handling here
+        let relationList = await response.json();
+        return relationList;
+    }
+
     // Creates a new node at the users position, this can be either public or private
     public static async CreateNodeAsync(nodeData: any) {
       let requestBody = {

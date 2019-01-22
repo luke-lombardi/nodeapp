@@ -37,7 +37,7 @@ export class GetPermissions extends Component<IProps, IState> {
     };
 
     this.componentDidMount = this.componentDidMount.bind(this);
-    this.checkPermissions = this.checkPermissions.bind(this);
+    this.getPermissions = this.getPermissions.bind(this);
     this.grantNotificationPermissions = this.grantNotificationPermissions.bind(this);
     this.grantLocationPermissions = this.grantLocationPermissions.bind(this);
     this.grantMotionPermissions = this.grantMotionPermissions.bind(this);
@@ -88,10 +88,18 @@ export class GetPermissions extends Component<IProps, IState> {
 
   async getPermissions() {
     let locationPermissions = await Permissions.check('location');
-    console.log('background location permissions', locationPermissions);
     if (locationPermissions === 'authorized') {
       this.setState({locationPermissions: true});
     }
+    let motionPermissions = await Permissions.check('motion');
+    if (motionPermissions === 'authorized') {
+      this.setState({motionPermissions: true});
+    }
+    let notificationPermissions = await Permissions.check('notification');
+    if (notificationPermissions === 'authorized') {
+      this.setState({notificationPermissions: true});
+    }
+    // let permissions = await AuthService.permissionsGranted();
   }
 
   async showSnackbar() {
@@ -107,10 +115,6 @@ export class GetPermissions extends Component<IProps, IState> {
       this.openSettings();
       return;
     }
-
-  async checkPermissions() {
-    //let permissions = await AuthService.permissionsGranted();
-  }
 
   async grantLocationPermissions() {
     this.openSettings();

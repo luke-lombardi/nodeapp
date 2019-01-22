@@ -6,6 +6,8 @@ export interface ConfigGlobal {
     readonly apiStage: string;
 
     readonly nodeCheckIntervalMs: number;
+    readonly relationCheckIntervalMs: number;
+
     readonly messageCheckIntervalMs: number;
     readonly minimumNodeDistance: number;
 

@@ -5,7 +5,8 @@ import { IPublicPlaceListUpdated } from './NodeActions';
 import { IPrivatePersonListUpdated } from './NodeActions';
 import { IPrivatePlaceListUpdated } from './NodeActions';
 
-import { IFriendListUpdated } from './FriendActions';
+import { ITrackedFriendListUpdated } from './TrackedFriendActions';
+import { IRelationListUpdated } from './RelationActions';
 
 import { IUserPositionChanged } from './MapActions';
 
@@ -24,7 +25,9 @@ type ActionTypes =
 
   | IUserPositionChanged
 
-  | IFriendListUpdated
+  | ITrackedFriendListUpdated
+
+  | IRelationListUpdated
 
   ;
 

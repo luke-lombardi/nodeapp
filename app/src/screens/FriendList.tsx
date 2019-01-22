@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Switch, FlatList, StyleSheet, Text, Alert, ActivityIndicator } from 'react-native';
+// @ts-ignore
+import { View, Switch, FlatList, StyleSheet, Text, Alert, ActivityIndicator, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 
@@ -7,16 +8,23 @@ import Logger from '../services/Logger';
 
 // @ts-ignore
 import NodeService from '../services/NodeService';
+// @ts-ignore
+import AuthService from '../services/AuthService';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ApiService from '../services/ApiService';
+
+import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 
 interface IProps {
     navigation: any;
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
     friendList: Array<any>;
+    relationList: Array<any>;
+    RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
@@ -35,15 +43,22 @@ export class FriendList extends Component<IProps, IState> {
     },
 
     this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+
     this._renderItem = this._renderItem.bind(this);
     this.shareNode = this.shareNode.bind(this);
     this.removeFriend = this.removeFriend.bind(this);
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
+
   }
 
   componentWillMount() {
     this.action = this.props.navigation.getParam('action', '');
     this.nodeId = this.props.navigation.getParam('nodeId', '');
+  }
+
+  componentDidMount() {
+    console.log('hi');
   }
 
   _onTouchNode(node: any) {
@@ -102,16 +117,15 @@ export class FriendList extends Component<IProps, IState> {
   ];
 
     if (this.action === 'share_node') {
-
-    return (
-        <ListItem
-          onPress={() => this.shareNode(row)}
-          containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
-          title={'shinywizard2939'}
-          // title={ row.data.title ? row.data.title : row.node_id }
-          // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
-        />
-    );
+      return (
+          <ListItem
+            onPress={() => this.shareNode(row)}
+            containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
+            title={'shinywizard2939'}
+            // title={ row.data.title ? row.data.title : row.node_id }
+            // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+          />
+      );
   } else {
 
   return (
@@ -138,9 +152,8 @@ export class FriendList extends Component<IProps, IState> {
           />
           </View>
         }
-        title={'shinywizard2939'}
-        // title={ row.data.title ? row.data.title : row.node_id }
-        // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+        title={row.topic}
+        subtitle={ 'Status: ' + row.status }
       />
 
     </Swipeout>
@@ -153,11 +166,10 @@ export class FriendList extends Component<IProps, IState> {
       <View style={{backgroundColor: 'white', height: '100%', flex: 1}}>
       <View style={styles.flatlist}>
         <FlatList
-          data={this.props.friendList}
-         // data={this.props.friendList}
+          data={this.props.relationList}
          renderItem={this._renderItem}
          extraData={this.state}
-         // keyExtractor={item => item.node_id}
+         keyExtractor={item => item.relation_id}
         />
 
         {
@@ -168,12 +180,13 @@ export class FriendList extends Component<IProps, IState> {
         }
 
         {
-          this.props.friendList.length === 0 &&
+          this.props.relationList.length === 0 &&
           <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
           <Text style={styles.null}>No friends yet.</Text>
           <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
           </View>
         }
+
      </View>
      </View>
     );
@@ -182,15 +195,15 @@ export class FriendList extends Component<IProps, IState> {
   private async removeFriend(row: any): Promise<any> {
     await this.setState({isLoading: true});
 
-    let friendId = row.node_id;
+    let relationId = row.relation_id;
     let response: any = undefined;
 
-    let foundRelation = await NodeService.getRelation(friendId);
+    // let foundRelation = await NodeService.getRelation(friendId);
 
     // If a matching relation is found in AsyncStorage, delete it
-    if (foundRelation !== undefined) {
+    if (relationId !== undefined) {
       let requestBody = {
-        'relation_id': foundRelation.relation.relation_id,
+        'relation_id': relationId,
       };
 
       // Delete the relation from the cache
@@ -199,13 +212,15 @@ export class FriendList extends Component<IProps, IState> {
 
     if (response !== undefined) {
       Logger.info(`FriendList.removeFriend - got response from delete friend: ${JSON.stringify(response)}`);
+
       // Ok, it's removed from the cache, so lets delete the node from AsyncStorage too
       if (response.result === true) {
-        await NodeService.deleteNode(friendId);
-        await NodeService.deleteRelation(foundRelation.user);
+        await NodeService.deleteNode(row.their_friend_id);
+        await NodeService.deleteRelation(row.their_uuid);
       }
     }
 
+    // await this.props.RelationListUpdated(props.relationList);
     await this.setState({isLoading: false});
   }
 }
@@ -217,12 +232,14 @@ function mapStateToProps(state: IStoreState): IProps {
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
     friendList: state.friendList,
+    relationList: state.relationList,
   };
 }
 
 // @ts-ignore
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
+    RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),
   };
 }
 

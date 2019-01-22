@@ -21,7 +21,7 @@ class Smartshare extends Component {
     Logger.CreateLogger({
       logzToken: 'WyJyaJmkFiduXkqHFVDccOXYWdfxjNFE',  // <-- Put Logz.io (looks like an MD5 hash) here
       toConsole: __DEV__,
-      level: LogLevel.Info,
+      level: LogLevel.Trace,
       sendIntervalMs: 60000,
       logzType: `Smartshare-${Platform.OS}`,
       bufferSize: 1000,

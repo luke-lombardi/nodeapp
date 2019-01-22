@@ -14,8 +14,8 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 interface IProps {
     navigation?: any;
     nodeList: Array<any>;
-    groupList: Array<any>;
     friendList: Array<any>;
+    relationList: Array<any>;
     privatePlaceList: Array<any>;
     publicPlaceList: Array<any>;
 }
@@ -137,7 +137,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.props.relationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   key='friendlist'
                   title='People'
                   titleStyle={{fontSize: 22}}
@@ -216,6 +216,7 @@ export function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     friendList: state.friendList,
+    relationList: state.relationList,
     privatePlaceList: state.privatePlaceList,
     publicPlaceList: state.publicPlaceList,
   };

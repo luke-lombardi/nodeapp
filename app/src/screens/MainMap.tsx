@@ -16,7 +16,7 @@ import { bindActionCreators } from 'redux';
 
 // Redux actions
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
-import { FriendListUpdatedActionCreator } from '../actions/FriendActions';
+import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
 import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
@@ -85,8 +85,6 @@ interface IState {
   destination: any;
   pushData: string;
 }
-
-// const { width, height } = Dimensions.get('window');
 
 export class MainMap extends Component<IProps, IState> {
   timerID: number;
@@ -345,6 +343,7 @@ export class MainMap extends Component<IProps, IState> {
                 // @ts-ignore
                 customMapStyle={mapStyle}
               >
+
               {/* Map markers  */}
               <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }
               visible={this.state.publicNodesVisible} nodeId={this.state.selectedNode} />
@@ -554,7 +553,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
     PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
-    FriendListUpdated: bindActionCreators(FriendListUpdatedActionCreator, dispatch),
+    FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }

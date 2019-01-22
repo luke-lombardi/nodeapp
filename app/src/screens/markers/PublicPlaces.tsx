@@ -20,8 +20,6 @@ interface IState {
 export default class PublicPlaces extends Component<IProps, IState> {
 
     // @ts-ignore
-    // private authService: AuthService;
-    // // @ts-ignore
     // private apiService: ApiService;
 
     constructor(props: IProps) {

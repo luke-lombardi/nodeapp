@@ -46,8 +46,6 @@ export class Chat extends Component<IProps, IState> {
   private checkNowTrigger: DeferredPromise;
   private readonly configGlobal = ConfigGlobalLoader.config;
 
-  private authService: AuthService;
-
   // @ts-ignore
   private userUuid: string;
   private nodeId: string;
@@ -85,8 +83,6 @@ export class Chat extends Component<IProps, IState> {
         textInputHeight: 0,
         userInfo: '',
     };
-
-    this.authService = new AuthService({});
 
     this._renderItem = this._renderItem.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -164,7 +160,7 @@ export class Chat extends Component<IProps, IState> {
     async showConfirmModal(item) {
 
       // @ts-ignore
-      let currentUUID = await this.authService.getUUID();
+      let currentUUID = await AuthService.getUUID();
 
       // If a person is clicking themselves in the list, don't open the confirm modal
       // if ('private:' + currentUUID === item.user) {
@@ -179,7 +175,7 @@ export class Chat extends Component<IProps, IState> {
     async startPrivateChat(userInfo: any, shareLocation: boolean) {
       await this.setState({confirmModalVisible: false});
 
-      let currentUUID = await this.authService.getUUID();
+      let currentUUID = await AuthService.getUUID();
 
       let requestBody = {
         'from': currentUUID,
@@ -224,7 +220,6 @@ export class Chat extends Component<IProps, IState> {
         });
 
         Logger.info(`Chat.startPrivateChat - stored new relation data.`);
-
       }
     }
 
@@ -341,7 +336,7 @@ export class Chat extends Component<IProps, IState> {
 
     // Sends a new message to the API
     async postMessage() {
-      let userUuid = await this.authService.getUUID();
+      let userUuid = await AuthService.getUUID();
 
       let nodeId = this.props.navigation.getParam('nodeId', undefined);
       let messageBody = this.props.navigation.getParam('messageBody', undefined);
@@ -393,7 +388,7 @@ export class Chat extends Component<IProps, IState> {
         // Re-create the check-now trigger in case it was triggered last time
         this.checkNowTrigger = new DeferredPromise();
 
-        let currentUUID = await this.authService.getUUID();
+        let currentUUID = await AuthService.getUUID();
         let requestBody = {
           'node_id': this.nodeId,
           'user_uuid': currentUUID,

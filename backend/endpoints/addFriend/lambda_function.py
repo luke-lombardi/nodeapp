@@ -45,7 +45,8 @@ def get_new_uuid(rds, prefix):
 
 # Create the actual group in the cache
 def insert_relation(rds, relation_id, sender_id, sender_friend_id, rcpt_id, rcpt_friend_id, location_tracking_enabled = False):
-    sender_node_data = json.loads(rds.get('private:' + sender_id))
+    logger.info("Inserting relation w/ sender: {} and rcpt: {}".format(sender_id, rcpt_id))
+    sender_node_data = json.loads(rds.get(sender_id))
     rcpt_node_data = json.loads(rds.get(rcpt_id))
 
     relation_data = {
@@ -152,7 +153,7 @@ def lambda_handler(event, context):
     if sender_uuid:
         logger.info('Invite is from: %s, creating new ID for them' % (sender_uuid))
         sender_friend_id = get_new_uuid(rds, 'friend:')
-        ret = create_mirror_node(rds, 'private:' + sender_uuid, sender_friend_id)
+        ret = create_mirror_node(rds, sender_uuid, sender_friend_id)
 
         # If the node was created and inserted properly, add it to the response body
         if ret:

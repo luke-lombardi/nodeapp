@@ -1,0 +1,36 @@
+#!/usr/bin/python
+
+import sys
+import json
+import subprocess
+import os
+
+def deploy_endpoints():
+  contents = os.listdir('./endpoints')
+  endpointFolders = filter(lambda f: os.path.isdir('./endpoints/' + f), contents) 
+  
+  deployableEndpoints = []
+  for endpoint in endpointFolders:
+    directory_contents = os.listdir('./endpoints/' + endpoint + '/')
+    if 'build_config.json' in directory_contents and endpoint != 'templateEndpoint':
+      deployableEndpoints.append(endpoint)
+
+  error_code = False
+  for endpoint in deployableEndpoints:
+    rc = subprocess.call('./build ' + endpoint, shell=True)
+    rc = subprocess.call('./deploy ' + endpoint, shell=True)
+    
+    if rc != 0:
+      print('Failed to deploy: ' + endpoint)
+      error_code = True
+      break
+
+  return error_code
+
+if __name__ == '__main__':
+    error_code = deploy_endpoints()
+    if error_code:
+      print('Error deploying endpoints...')
+    
+    print('Lambda function endpoints deployed successfully.\n')
+

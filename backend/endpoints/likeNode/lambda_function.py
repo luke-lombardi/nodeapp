@@ -29,7 +29,7 @@ else:
 
 
 def toggle_like_status(rds, node_id, user_uuid, toggle = False):
-    user_data = json.loads(rds.get('private:' + user_uuid).decode("utf-8"))
+    user_data = json.loads(rds.get(user_uuid).decode("utf-8"))
 
     node_exists = rds.exists(node_id)
     node_data = {}
@@ -91,7 +91,7 @@ def lambda_handler(event, context):
     user_uuid = event.get('user_uuid', None)
     toggle = event.get('toggle', False)
 
-    user_exists = rds.exists('private:' + user_uuid)
+    user_exists = rds.exists(user_uuid)
 
     if not user_exists:
         logging.info('User %s does not exist' % (user_uuid))

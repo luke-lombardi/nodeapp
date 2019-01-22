@@ -47,7 +47,7 @@ def send_push(push_info, rds):
     logging.info("Received the following action: {}".format(action))
     
     user_uuid = push_info.get("user_id", "")
-    user_node_id = 'private:' + user_uuid
+    user_node_id = user_uuid
 
     if action == 'send_friend_invite':
         relation_id = push_info["relation_id"]
@@ -55,7 +55,7 @@ def send_push(push_info, rds):
         from_user = push_info["from_user"]
         to_user = push_info["to_user"]
 
-        from_node_data =  json.loads(rds.get('private:' + from_user))
+        from_node_data =  json.loads(rds.get(from_user))
 
         location_tracking = push_info["location_tracking"]
 

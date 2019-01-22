@@ -165,7 +165,7 @@ export class Chat extends Component<IProps, IState> {
       let currentUUID = await AuthService.getUUID();
 
       // If a person is clicking themselves in the list, don't open the confirm modal
-      // if ('private:' + currentUUID === item.user) {
+      // if (currentUUID === item.user) {
       //   return;
       // }
 

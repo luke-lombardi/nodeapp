@@ -32,7 +32,7 @@ RECENT_MESSAGE_TTL = 2
 
 
 def post_message(rds, node_id, message, user_uuid):
-    user_data = json.loads(rds.get('private:' + user_uuid).decode("utf-8"))
+    user_data = json.loads(rds.get(user_uuid).decode("utf-8"))
 
     node_exists = rds.exists(node_id)
 
@@ -47,7 +47,7 @@ def post_message(rds, node_id, message, user_uuid):
         # TODO add a uuid here to hash on
         new_message = {
             "message": message,
-            "user": "private:" + user_uuid,
+            "user": user_uuid,
             "timestamp": datetime.datetime.now().isoformat(),
             "display_name":  user_data.get('topic', '')
         }
@@ -124,7 +124,7 @@ def lambda_handler(event, context):
     message = event.get('message', None)
     user_uuid = event.get('user_uuid', None)
 
-    user_exists = rds.exists('private:' + user_uuid)
+    user_exists = rds.exists(user_uuid)
 
     if not user_exists:
         logging.info('User %s does not exist' % (user_uuid))

@@ -69,10 +69,10 @@ def lambda_handler(event, context):
     node_id = event.get('node_id', 0)
     user_uuid = event.get('user_uuid', None)
 
-    user_exists = rds.exists('private:' + user_uuid)
+    user_exists = rds.exists(user_uuid)
 
     if not user_exists:
-        logging.info('User %s does not exist')
+        logging.info('User %s does not exist'  % (user_uuid))
         return False
 
     logging.info('User %s exists, proceeding to get messages' % (user_uuid))

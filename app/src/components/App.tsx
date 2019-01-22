@@ -345,16 +345,24 @@ export class App extends Component<IProps, IState> {
 
     // TODO: figure out a better way to do this (move to permissions page)
     async checkPermissions() {
-      let backgroundLocationPermission = await Permissions.check('location', { type: 'always'} );
+      let currentPermissions = await AuthService.permissionsGranted();
+
+      // Check the permissions and see if theres anything else we need, if so
+      if (currentPermissions === undefined) {
+        NavigationService.reset('GetPermissions', {});
+        return;
+      }
+
+      // let backgroundLocationPermission = await Permissions.check('location', { type: 'always'} );
 
       // First, check if the user has allowed background location tracking
-      if (backgroundLocationPermission === 'authorized') {
+      if (currentPermissions.background_location === 'authorized') {
         await this.setupLocationTracking();
       // If they haven't, request access
       } else {
-        backgroundLocationPermission = await Permissions.request('location', { type: 'always'} );
+        currentPermissions.background_location = await Permissions.request('location', { type: 'always'} );
         // If we got it this time, setup location tracking
-        if (backgroundLocationPermission === 'authorized') {
+        if (currentPermissions.background_location === 'authorized') {
           await this.setupLocationTracking();
         } else {
           // Otherwise, see if we can get whenInUse location tracking permission

@@ -3,6 +3,7 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 import { AsyncStorage } from 'react-native';
 import uuid from 'react-native-uuid';
+import Permissions from 'react-native-permissions';
 
 // @ts-ignore
 interface IProps {
@@ -25,6 +26,27 @@ export default class AuthService {
           currentUUID = await AsyncStorage.getItem('user_uuid');
         }
         return currentUUID;
+    }
+
+    public static async permissionsGranted() {
+      let permissions: any = await AsyncStorage.getItem('permissions');
+      if (permissions === null) {
+        return undefined;
+      } else  {
+        permissions = JSON.parse(permissions);
+      }
+
+      let locationsPermission = await Permissions.check('location', { type: 'always'} );
+      let pushPermissions = await Permissions.check('location', { type: 'always'} );
+      let motionPermissions = await Permissions.check('location', { type: 'always'} );
+
+      permissions.locations = locationsPermission;
+      permissions.push = pushPermissions;
+      permissions.motion = motionPermissions;
+
+      await AsyncStorage.setItem('permissions', JSON.stringify(permissions));
+
+      return permissions;
     }
 
     constructor(props: IProps) {

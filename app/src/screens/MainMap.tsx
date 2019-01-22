@@ -153,8 +153,6 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-
-    console.log('opening drawer...');
     // this.props.navigation.navigate('RightSideMenuToggle', { key: 'Chat', routeName: 'chat'});
 
     // If there is any message to display, then show a snackbar at the bottom of the map

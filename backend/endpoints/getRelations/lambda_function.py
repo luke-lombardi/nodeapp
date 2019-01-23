@@ -46,7 +46,9 @@ def get_relations(rds, user_id, relations_to_get):
                 current_status = None
 
                 if rds.exists(user_friend_id):
+                    logger.info('User friend ID exists: %s' % (user_friend_id))
                     current_status = rds.get(user_friend_id).decode('utf-8')
+                    logger.info('Current status: %s' % (current_status))
                     if current_status == 'hidden':
                         relations[relation_id]['sharing_location'] = False
                     else:

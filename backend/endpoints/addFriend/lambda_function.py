@@ -72,6 +72,7 @@ def insert_relation(rds, relation_id, sender_id, sender_friend_id, rcpt_id, rcpt
     return ret
 
 def create_mirror_node(rds, private_uuid, friend_id, share_location=False):
+    logger.info('Creating a mirror node, location sharing: %s' % (share_location))
     if not share_location:
         ret = rds.set(name=friend_id, value='hidden')
     else:
@@ -153,6 +154,7 @@ def lambda_handler(event, context):
     # If there is a valid 'from' user id, then create a new mirror node for them
     if sender_uuid:
         logger.info('Invite is from: %s, creating new ID for them' % (sender_uuid))
+        logger.info('Sharing location? %s ' %  (share_location))
         sender_friend_id = get_new_uuid(rds, 'friend:')
         ret = create_mirror_node(rds, sender_uuid, sender_friend_id, share_location = share_location)
 

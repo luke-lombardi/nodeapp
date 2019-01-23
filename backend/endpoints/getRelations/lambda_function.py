@@ -25,7 +25,7 @@ else:
   from config_DEV import Config as ConfigDev
   from config_PROD import Config as ConfigProd
 
-def get_relations(rds, relations_to_get):
+def get_relations(rds, user_id, relations_to_get):
     relations = {}
 
     for relation_id in relations_to_get:
@@ -39,6 +39,18 @@ def get_relations(rds, relations_to_get):
                 relations[relation_id] = {}
             else:
                 relation_data = json.loads(relation_data)
+
+                # Check if you are sharing your location in this relation
+                user_friend_id = relations['member_data'][user_id]['friend_id']
+                current_status = None
+
+                if rds.exists(user_friend_id):
+                    current_status = rds.get(user_friend_id).decode('utf-8')
+                    if current_status == 'hidden':
+                        relations[relation_id]['sharing_location'] = False
+                    else:
+                        relations[relation_id]['sharing_location'] = True
+
                 relations[relation_id] = relation_data
   
         else:
@@ -65,10 +77,17 @@ def lambda_handler(event, context):
     if not rds:
         return
     
-    relations_to_get = event.get('relations', [])
-    relations = get_relations(rds, relations_to_get)
+    user_id = event.get('user_id', None)
 
-    logger.info("Returning relations: {}".format(relations))
+    relations = []
+
+    if user_id is not None and relations_to_get:
+        relations_to_get = event.get('relations', [])
+        relations = get_relations(rds, user_id, relations_to_get)
+        logger.info("Returning relations: {}".format(relations))
+    else:
+        logger.info("Not getting relations for user: {}, {}".format(user_id, relations_to_get))
+  
     return relations
 
 

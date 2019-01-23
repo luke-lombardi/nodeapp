@@ -82,6 +82,20 @@ export class FriendList extends Component<IProps, IState> {
     this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: {row}});
   }
 
+  async toggleLocationSharing(row) {
+    let currentUUID = await AuthService.getUUID();
+    let requestBody = {
+      'user_id': currentUUID,
+      'relation_id': row.relation_id,
+    };
+
+    let response = await ApiService.ToggleLocationSharingAsync(requestBody);
+
+    if (response !== undefined) {
+      Logger.info(`FriendList.toggleLocationSharing: toggled location sharing, response ${JSON.stringify(response)}`);
+    }
+  }
+
   shareNode(row) {
     console.log(`sharing ${this.nodeId} with...`, row);
   }
@@ -153,7 +167,7 @@ export class FriendList extends Component<IProps, IState> {
           </View>
         }
         title={row.topic}
-        subtitle={ 'Status: ' + row.status }
+        subtitle={ 'Status: ' + row.status + '......sharing location? ' + String(row.sharing_location)}
       />
 
     </Swipeout>

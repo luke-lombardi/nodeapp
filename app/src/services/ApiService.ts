@@ -165,6 +165,27 @@ export default class ApiService {
       return result;
     }
 
+    // Deletes an existing friend
+    public static async ToggleLocationSharingAsync(requestBody: any) {
+
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/toggleLocationSharing', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info(`ApiService.ToggleLocationSharingAsync - Unable to toggle location sharing: ${response.status}`);
+
+        return undefined;
+      }
+
+      let result = await response.json();
+      return result;
+    }
+
     // Updates the users location node
     public static async PostLocationAsync(nodeData: any) {
       let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/postNode', {

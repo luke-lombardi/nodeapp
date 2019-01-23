@@ -58,12 +58,8 @@ export default class ApiService {
     }
 
     // Checks which local relations are still present in the cache
-    public static async getRelations(relationsToGet) {
-        Logger.info(`Fetching these relations: ${JSON.stringify(relationsToGet)}`);
-
-        let requestBody = {
-          'relations': relationsToGet,
-        };
+    public static async getRelations(requestBody) {
+        Logger.info(`Fetching these relations: ${JSON.stringify(requestBody)}`);
 
         let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getRelations', {
             method: 'POST',

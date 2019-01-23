@@ -39,9 +39,10 @@ def get_relations(rds, user_id, relations_to_get):
                 relations[relation_id] = {}
             else:
                 relation_data = json.loads(relation_data)
+                relations[relation_id] = relation_data
 
                 # Check if you are sharing your location in this relation
-                user_friend_id = relations['member_data'][user_id]['friend_id']
+                user_friend_id = relations[relation_id]['member_data'][user_id]['friend_id']
                 current_status = None
 
                 if rds.exists(user_friend_id):
@@ -50,8 +51,6 @@ def get_relations(rds, user_id, relations_to_get):
                         relations[relation_id]['sharing_location'] = False
                     else:
                         relations[relation_id]['sharing_location'] = True
-
-                relations[relation_id] = relation_data
   
         else:
             relations[relation_id] = {"status": "not_found"}
@@ -80,9 +79,10 @@ def lambda_handler(event, context):
     user_id = event.get('user_id', None)
 
     relations = []
+    relations_to_get = event.get('relations', [])
 
     if user_id is not None and relations_to_get:
-        relations_to_get = event.get('relations', [])
+        
         relations = get_relations(rds, user_id, relations_to_get)
         logger.info("Returning relations: {}".format(relations))
     else:

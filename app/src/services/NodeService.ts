@@ -297,10 +297,17 @@ export default class NodeService {
 
             Logger.trace(`ApiService.MonitorRelationsAsync - checking these relations ${JSON.stringify(relationsToGet)}`);
 
+            let currentUUID = await AuthService.getUUID();
             // @ts-ignore
             let relations = undefined;
             try  {
-              relations = await ApiService.getRelations(relationsToGet);
+
+              let requestBody = {
+                'relations': relationsToGet,
+                'user_id': currentUUID,
+              };
+
+              relations = await ApiService.getRelations(requestBody);
             } catch (error) {
               // Do nothing if this fails
             }

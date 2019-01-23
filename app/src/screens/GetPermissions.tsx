@@ -109,7 +109,7 @@ export class GetPermissions extends Component<IProps, IState> {
     }
 
   async checkPermissions() {
-    //let permissions = await AuthService.permissionsGranted();
+    // let permissions = await AuthService.permissionsGranted();
   }
 
   async grantLocationPermissions() {
@@ -117,7 +117,7 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async grantNotificationPermissions() {
-    let permissions = await Permissions.request('notification');
+    let permissions = await Permissions.request('notification', { type: ['alert', 'badge'] });
     console.log('notification permissions', permissions);
     if (permissions === 'authorized') {
       this.setState({notificationPermissions: true});
@@ -167,7 +167,7 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            //textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'
@@ -185,7 +185,7 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            //textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'
@@ -203,7 +203,7 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            //textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'

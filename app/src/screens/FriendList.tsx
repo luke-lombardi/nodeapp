@@ -241,6 +241,11 @@ export class FriendList extends Component<IProps, IState> {
       }
     }
 
+    let relationList: any = await NodeService.getRelations();
+    if (relationList !== undefined) {
+      await this.props.RelationListUpdated(relationList);
+    }
+
     // await this.props.RelationListUpdated(props.relationList);
     await this.setState({isLoading: false});
   }

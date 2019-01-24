@@ -120,7 +120,7 @@ export class NodeList extends Component<IProps, IState> {
         <View style={{paddingVertical: 5}}>
           <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
           {
-            item.data.likes !== undefined &&
+            item.data.likes &&
             <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
           } */}
         </View>

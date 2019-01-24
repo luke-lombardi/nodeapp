@@ -49,7 +49,7 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    AuthService.checkPermissions(false);
+    // AuthService.checkPermissions(false);
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
@@ -90,6 +90,8 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'location':
         hasPermissions = await Permissions.check('location', { type: 'always'} );
         if (hasPermissions !== 'authorized') {
+          response = await Permissions.request('location', { type: 'always'} );
+        } else if (!firstRun) {
           OpenSettings.openSettings();
         }
 
@@ -108,7 +110,7 @@ export class GetPermissions extends Component<IProps, IState> {
         Logger.info(`GetPermissions.requestPermissions - permissions: ${hasPermissions}`);
 
         if (hasPermissions !== 'authorized') {
-          response = await Permissions.request('notification');
+          response = await Permissions.request('notification', { type: ['alert', 'badge', 'sound'] });
         }
 
         await this.setState({ notificationPermissions: response});
@@ -122,9 +124,9 @@ export class GetPermissions extends Component<IProps, IState> {
 
   async checkPermissions() {
     if (
-      this.state.notificationPermissions === 'authorized' 
-      //this.state.motionPermissions === 'authorized' &&
-      //this.state.locationPermissions === 'authorized'
+      this.state.notificationPermissions === 'authorized' &&
+      this.state.motionPermissions === 'authorized' &&
+      this.state.locationPermissions === 'authorized'
     ) {
       return true;
     }
@@ -149,6 +151,24 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
+              <Text>Enable Background Location</Text>
+              </View>
+            }
+            iconRight
+            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+            containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
+            checkedIcon='check'
+            uncheckedIcon='circle-o'
+            checkedColor='green'
+            uncheckedColor='gray'
+            onIconPress={async () => { await  this.requestPermissions('location'); }}
+            onPress={async () => { await this.requestPermissions('location'); }}
+            checked={this.state.locationPermissions === 'authorized'}
+            />
+        <CheckBox
+            center
+            title={
+              <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
               <Text>Enable Push Notifications</Text>
               </View>
             }
@@ -166,24 +186,6 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>Enable Background Location</Text>
-              </View>
-            }
-            iconRight
-            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
-            containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
-            checkedIcon='check'
-            uncheckedIcon='circle-o'
-            checkedColor='green'
-            uncheckedColor='gray'
-            onIconPress={async () => { await this.requestPermissions('location'); }}
-            onPress={async () => { await this.requestPermissions('location'); }}
-            checked={this.state.locationPermissions === 'authorized'}
-            />
-        {/* <CheckBox
-            center
-            title={
-              <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
               <Text>Enable Motion</Text>
               </View>
             }
@@ -194,10 +196,10 @@ export class GetPermissions extends Component<IProps, IState> {
             uncheckedIcon='circle-o'
             checkedColor='green'
             uncheckedColor='gray'
+            onPress={async () => { await this.requestPermissions('motion'); }}
             onIconPress={async () => { await this.requestPermissions('motion'); }}
-            onIconPress={async () => { await this.requestPermissions('motion'); }}
-            checked={this.state.motionPermissions === 'authorized}
-            /> */}
+            checked={this.state.motionPermissions === 'authorized'}
+            />
         <Button
           title='Continue'
           containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}

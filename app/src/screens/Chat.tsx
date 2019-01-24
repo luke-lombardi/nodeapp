@@ -144,7 +144,10 @@ export class Chat extends Component<IProps, IState> {
     getTime(item) {
       let easternTime = moment(item.timestamp).utcOffset(14);
 
-      let parsedTimestamp = moment(easternTime).calendar();
+      // make sure it does not return a date that is ahead of the current date
+      let timestamp = moment(easternTime).max(moment());
+
+      let parsedTimestamp = moment(timestamp).calendar();
 
       return parsedTimestamp;
     }

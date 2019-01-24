@@ -162,7 +162,7 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            //textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'

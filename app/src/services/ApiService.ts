@@ -58,12 +58,8 @@ export default class ApiService {
     }
 
     // Checks which local relations are still present in the cache
-    public static async getRelations(relationsToGet) {
-        Logger.info(`Fetching these relations: ${JSON.stringify(relationsToGet)}`);
-
-        let requestBody = {
-          'relations': relationsToGet,
-        };
+    public static async getRelations(requestBody) {
+        Logger.info(`Fetching these relations: ${JSON.stringify(requestBody)}`);
 
         let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getRelations', {
             method: 'POST',
@@ -157,6 +153,27 @@ export default class ApiService {
 
       if (response.status !== HttpStatus.OK) {
         Logger.info(`ApiService.DeleteFriendAsync - Unable to delete friend: ${response.status}`);
+
+        return undefined;
+      }
+
+      let result = await response.json();
+      return result;
+    }
+
+    // Deletes an existing friend
+    public static async ToggleLocationSharingAsync(requestBody: any) {
+
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/toggleLocationSharing', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info(`ApiService.ToggleLocationSharingAsync - Unable to toggle location sharing: ${response.status}`);
 
         return undefined;
       }

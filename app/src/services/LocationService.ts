@@ -74,6 +74,9 @@ export default class LocationService {
                   }
                 }
                 continue;
+              } else if (nodeList[key].status === 'hidden') {
+                Logger.info(`Node ${key}, is hidden.`);
+                continue;
               }
               nodeList[key].node_id = key;
               nodeListArray.push( nodeList[key] );

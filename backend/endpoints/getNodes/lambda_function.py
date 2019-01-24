@@ -51,6 +51,16 @@ def get_nodes(rds, node_ids_to_get):
                 logger.info('Found mirror node: %s, getting data', real_node_id)
             
             logger.info('Node %s exists, getting data', real_node_id)
+
+            if real_node_id == 'hidden':
+                logger.info('Node %s is hidden', node_id)
+
+                nodes[node_id] = {
+                  'status': 'hidden'
+                }
+
+                continue
+
             node_data = rds.get(real_node_id)
 
             if not node_data:

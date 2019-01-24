@@ -39,9 +39,12 @@ def toggle_location_tracking(rds, friend_id, user_id, relation_id):
     if friend_id in current_relation_data['members'].keys():
         if rds.exists(friend_id):
             current_status = rds.get(friend_id).decode('utf-8')
+            logger.info("Current status: {}".format(current_status))
             if current_status == 'hidden':
+                logger.info("Hidden -> Visible: {}, user ID: {}".format(current_status, user_id))
                 rds.set(name=friend_id, value=user_id)
             else:
+                logger.info("Visible -> Hidden: {}".format(current_status))
                 rds.set(name=friend_id, value='hidden')
             
             return True

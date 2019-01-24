@@ -79,17 +79,15 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   async sendPrivateMessage(row) {
-    this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: {row}});
+    this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: { nodeId: row.relation_id }});
   }
 
   async toggleLocationSharing(row) {
-    console.log('SENDING IT');
-    console.log(row);
     let currentUUID = await AuthService.getUUID();
     let requestBody = {
       'user_id': currentUUID,
       'relation_id': row.relation_id,
-      'friend_id': row.their_friend_id,
+      'friend_id': row.your_friend_id,
     };
 
     let response = await ApiService.ToggleLocationSharingAsync(requestBody);
@@ -106,7 +104,6 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   _renderItem(item) {
-
     let row = item.item;
 
     let swipeBtns = [{

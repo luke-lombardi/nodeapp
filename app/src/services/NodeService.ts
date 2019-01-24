@@ -300,6 +300,7 @@ export default class NodeService {
             relations[key].relation_id = key;
             relations[key].their_friend_id = theirFriendId;
             relations[key].their_uuid = theirUUID;
+            relations[key].your_friend_id = yourFriendId;
             relations[key].topic = theirTopicName;
 
             relationList.push(relations[key]);

@@ -60,7 +60,6 @@ export default class NotificationService {
       console.log(notification);
 
       if (action === 'confirm_friend') {
-
         /*
           {
             "relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
@@ -102,9 +101,7 @@ export default class NotificationService {
             await NodeService.storeRelation(fromUserId, relationData);
 
             //  If this request includes location tracking, store in the tracked node list separately
-            if (locationTracking) {
-              await NodeService.storeNode(newFriendId);
-            }
+            await NodeService.storeNode(newFriendId);
 
             // Show 'added new friend' message
             Snackbar.show({
@@ -122,6 +119,7 @@ export default class NotificationService {
             title: 'You have already added this friend',
             duration: Snackbar.LENGTH_SHORT,
           });
+
         } else {
           // Show success message
           Snackbar.show({
@@ -138,7 +136,7 @@ export default class NotificationService {
 
           Logger.info('MainMap.handleLink - Adding a tracked node.');
 
-          let exists = false; // await NodeService.storeNode(nodeId);
+          let exists = await NodeService.storeNode(nodeId);
           if (!exists) {
 
             // Show success message
@@ -147,7 +145,7 @@ export default class NotificationService {
               duration: Snackbar.LENGTH_SHORT,
             });
 
-            Logger.info(`MainMap.handleLink - this is a new node, storing: ${JSON.stringify(nodeId)}`);
+            Logger.info(`MainMap.handleAction - this is a new node, storing: ${JSON.stringify(nodeId)}`);
 
             return;
           }
@@ -157,6 +155,11 @@ export default class NotificationService {
             title: 'You have already added this node',
             duration: Snackbar.LENGTH_SHORT,
           });
+
+      } else if (action === 'got_message') {
+        Logger.info('MainMap.handleAction - Received a DM.');
+
+        // Go to the DM chat
       }
     }
 

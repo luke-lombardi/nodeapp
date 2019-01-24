@@ -6,6 +6,7 @@ import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, Touchable
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
+// @ts-ignore
 import NavigationService from '../services/NavigationService';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -38,6 +39,7 @@ interface IState {
     textInputHeight: number;
     confirmModalVisible: boolean;
     userInfo: string;
+    nodeId: string;
 }
 
 const MINIMUM_MSG_LENGTH = 2;
@@ -84,6 +86,7 @@ export class Chat extends Component<IProps, IState> {
         confirmModalVisible: false,
         textInputHeight: 0,
         userInfo: '',
+        nodeId: '',
     };
 
     this._renderItem = this._renderItem.bind(this);
@@ -113,10 +116,12 @@ export class Chat extends Component<IProps, IState> {
 
     async submitMessage() {
       let nodeId = this.props.navigation.getParam('nodeId');
-
+      console.log('USING THIS NODE ID');
+      console.log(nodeId);
       await this.setState({
         isLoading: true,
         messageBody: this.state.messageBody,
+        nodeId: nodeId,
       });
 
       // If the message body is empty, don't post the message
@@ -127,20 +132,13 @@ export class Chat extends Component<IProps, IState> {
         });
 
         await this.setState({
-          isLoading: false,
+          nodeId: nodeId,
         });
 
         return;
       }
 
-      let userUuid = await AsyncStorage.getItem('user_uuid');
-
-      NavigationService.reset('Chat', {
-        messageBody: this.state.messageBody,
-        action: 'new_message',
-        userUuid: userUuid,
-        nodeId: nodeId,
-      });
+      await this.postMessage();
     }
 
     getTime(item) {
@@ -165,9 +163,9 @@ export class Chat extends Component<IProps, IState> {
       let currentUUID = await AuthService.getUUID();
 
       // If a person is clicking themselves in the list, don't open the confirm modal
-      // if (currentUUID === item.user) {
-      //   return;
-      // }
+      if (currentUUID === item.user) {
+        return;
+      }
 
       // show confirm modal and pass userInfo from chat message
       await this.setState({userInfo: item});
@@ -212,9 +210,7 @@ export class Chat extends Component<IProps, IState> {
           return;
         }
 
-        if (shareLocation) {
-          await NodeService.storeNode(response.their_id);
-        }
+        await NodeService.storeNode(response.their_id);
 
         Snackbar.show({
           title: 'Sent direct message request',
@@ -320,7 +316,6 @@ export class Chat extends Component<IProps, IState> {
         console.log('general chat');
       } else if (this.action === 'new_message') {
         console.log('posting a message');
-        this.postMessage();
       } else if (this.action === 'private_message') {
         console.log('starting private chat...');
       }
@@ -339,32 +334,29 @@ export class Chat extends Component<IProps, IState> {
     async postMessage() {
       let userUuid = await AuthService.getUUID();
 
-      let nodeId = this.props.navigation.getParam('nodeId', undefined);
-      let messageBody = this.props.navigation.getParam('messageBody', undefined);
-
       let requestBody = {
-        node_id:  nodeId,
-        message: messageBody,
+        node_id:  this.state.nodeId,
+        message: this.state.messageBody,
         user_uuid: userUuid,
       };
 
       let response = await ApiService.PostMessageAsync(requestBody);
 
       if (response !== undefined) {
-        // console.log('repsonse');
-        // console.log(response);
+        // Check for new messages
+        await this.CheckNow();
 
-      // Check for new messages
-      await this.CheckNow();
+        if (this.stopping)
+          return;
 
-      if (this.stopping)
-        return;
+        await this.setState({messageBody: '', isLoading: false});
 
-      // Show the success snackbar
-          Snackbar.show({
-            title: 'Updated message list',
-            duration: Snackbar.LENGTH_SHORT,
-          });
+        // Show the success snackbar
+        Snackbar.show({
+          title: 'Updated message list',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+
       // If the response was undefined, display error snackbar
       } else {
         Snackbar.show({
@@ -395,7 +387,7 @@ export class Chat extends Component<IProps, IState> {
           'user_uuid': currentUUID,
         };
 
-        let messages = await ApiService.GetMessagesAsync(requestBody);
+        let messages: any = await ApiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
           console.log('messages');
@@ -405,13 +397,13 @@ export class Chat extends Component<IProps, IState> {
             return;
           }
 
-          // @ts-ignore
           if (messages !== false) {
             try {
               await this.setState({data: messages});
             } catch (error) {
               // If we got here, we unmounted
               // console.log(error);
+              break;
             }
           }
         }

@@ -243,7 +243,13 @@ async function processInitialNotification(notification) {
   }
 
   if (notification.action !== undefined) {
-    await NotificationService.storeNotification(notification);
+
+    if (notification.action !== 'got_message') {
+      await NotificationService.storeNotification(notification);
+    } else {
+      await NotificationService.handleAction(notification);
+    }
+
   } else {
     await NotificationService.handleNotification(notification);
   }
@@ -254,7 +260,16 @@ async function processInitialNotification(notification) {
 
 async function processDeliveredNotifications(notifications) {
   for (let i = 0; i < notifications.length; i++) {
-    await NotificationService.storeNotification(notifications[i]);
+
+    if (notifications[i].action !== 'undefined') {
+
+      // got_message type notifications are only processed as initialNotifications
+      if (notifications[i].action === 'got_message') {
+        continue;
+      }
+
+      await NotificationService.storeNotification(notifications[i]);
+    }
   }
 
   // Clear the notification badges

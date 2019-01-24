@@ -95,6 +95,49 @@ def send_push(push_info, rds):
         else:
           logging.info("Node {} does not exist".format(user_node_id))
   
+
+    elif action == 'send_message':
+        from_user = push_info["from_user"]
+        to_user = push_info["to_user"]
+
+        from_node_data =  json.loads(rds.get(from_user))
+
+        node_exists = rds.exists(friend_id)
+
+        if node_exists:  
+          logger.info("Recipient friend id: {}".format(friend_id))
+          logger.info("Recipient user id: {}".format(user_uuid))
+
+          node_data = json.loads(rds.get(to_user))
+
+          # Grab the recipient push notification device ID
+          pushy_device_token = node_data.get('device_token', '')
+
+          from_username = from_node_data.get('topic', 'Anonymous')
+
+          data = {
+              "from_username": from_username,
+              "from_user": from_user,
+              "action": "got_message",
+          }
+  
+          to = [ pushy_device_token ]
+
+          options = { 
+              'notification': {
+                  'badge': 1,
+                  'sound': 'ping.aiff',
+                  'body': "You received a new message from {}".format(from_username)
+              }
+          }
+
+          # Send the push notification and check the response
+          response = PushyAPI.sendPushNotification(data, to, options)
+          logger.info("Pushy API response: {}".format(response))
+
+        else:
+          logging.info("Node {} does not exist".format(user_node_id))
+
     elif action == 'share_node':
         friend_id = push_info["friend_id"]
         from_user = push_info["from_user"]

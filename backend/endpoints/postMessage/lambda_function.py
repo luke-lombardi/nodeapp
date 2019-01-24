@@ -13,6 +13,7 @@ import logging
 import os
 import datetime
 import hashlib
+import boto3
 
 from modules import cache
 
@@ -29,6 +30,37 @@ else:
 
 
 RECENT_MESSAGE_TTL = 2
+
+lambda_client = boto3.client('lambda', 
+                        aws_access_key_id='AKIAJTWJKPPNEIBU4BSQ', 
+                        aws_secret_access_key='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', 
+                        region_name='us-east-1')
+
+
+# Sends a push notification to the recipient of the message
+def send_push(from_user, to_user):
+    logger.info('Sending push notification...')
+    person_to_alert = {}
+    person_to_alert['action'] = 'send_message'
+    person_to_alert['from_user'] = from_user
+    person_to_alert['to_user'] = to_user
+    person_to_alert['response'] = False
+
+    invoke_response = lambda_client.invoke(FunctionName="Smartshare_sendPush",
+                                          InvocationType='RequestResponse',
+                                          Payload=json.dumps(person_to_alert)
+                                          )
+
+    try:
+        response_data = json.loads(json.loads(invoke_response['Payload'].read()))
+        error_msg = response_data['error']
+    except:
+        error_msg = 'unknown_error'
+
+    if not error_msg:
+        person_to_alert['response'] = True
+
+    return person_to_alert
 
 
 def post_message(rds, node_id, message, user_uuid):
@@ -60,7 +92,11 @@ def post_message(rds, node_id, message, user_uuid):
             logging.info('User has recently posted this message, not sending: %s' % (message_hash, ))
             return False
         else:
-            rds.setex(name='message:' + node_uuid + ':' + message_hash, value=True, time=messages_ttl)
+            if 'relation:' in node_id:
+                rds.set(name='message:' + node_uuid + ':' + message_hash, value=True)
+            else:
+                rds.setex(name='message:' + node_uuid + ':' + message_hash, value=True, time=messages_ttl)
+
 
         # Handle the case where a user recently posted a message
         recent_message = rds.exists('recent_message:' + node_uuid + ':' + user_uuid)
@@ -77,27 +113,50 @@ def post_message(rds, node_id, message, user_uuid):
             messages = []
             messages.append(new_message)
             
-            # Update the messages on the node
-            rds.setex(name='messages:' + node_uuid, value=json.dumps(messages), time=messages_ttl)
+            if 'relation:' in node_id:
+                rds.set(name='messages:' + node_uuid, value=json.dumps(messages))
+            else:
+                # Update the messages on the node
+                rds.setex(name='messages:' + node_uuid, value=json.dumps(messages), time=messages_ttl)
 
         else:
             messages = json.loads(rds.get('messages:' + node_uuid))
             logging.info('Existing messages: %s' % (messages))
 
             messages.append(new_message)
-            rds.setex(name='messages:' + node_uuid, value=json.dumps(messages), time=messages_ttl)
+            
+            if 'relation:' in node_id:
+                rds.set(name='messages:' + node_uuid, value=json.dumps(messages))
+            else:
+                rds.setex(name='messages:' + node_uuid, value=json.dumps(messages), time=messages_ttl)
 
         # Update the message count on the node (for a badge on the market)
         total_messages = len(messages)
         node_data = json.loads(rds.get(node_id))
         node_data['total_messages'] = total_messages
         current_ttl = rds.ttl(node_id)
-        rds.setex(name=node_id, value=json.dumps(node_data), time=current_ttl)
+
+        if 'relation:' in node_id:
+            rds.set(name=node_id, value=json.dumps(node_data))
+        else:
+            rds.setex(name=node_id, value=json.dumps(node_data), time=current_ttl)
     
     else:
         logging.info('Node %s does not exist', node_id)
         return False
 
+    if 'relation:' in node_id:
+        to_user = None
+        relation_data = json.loads(rds.get(node_id).decode("utf-8"))
+        if relation_data:
+            for member in relation_data['member_data'].keys():
+                if member != user_uuid:
+                    to_user = member
+
+        if to_user:
+            logger.info("Sending notification to user {}".format(to_user))
+            send_push(user_uuid, to_user)
+  
     return True
 
 
@@ -130,7 +189,7 @@ def lambda_handler(event, context):
         logging.info('User %s does not exist' % (user_uuid))
         return False
 
-    logging.info('User %s exists, proceeding to post message' % (user_uuid))
+    logging.info('User %s exists, proceeding to post message on node %s' % (user_uuid, node_id))
     
     if node_id and message:
         result = post_message(rds, node_id, message, user_uuid)

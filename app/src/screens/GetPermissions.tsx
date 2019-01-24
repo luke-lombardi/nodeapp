@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet, AsyncStorage, AppState } from 'react-native';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 // @ts-ignore
@@ -37,8 +37,11 @@ export class GetPermissions extends Component<IProps, IState> {
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.setInitialPermissionState = this.setInitialPermissionState.bind(this);
+    this.handleAppStateChange = this.handleAppStateChange.bind(this);
+    this.checkPermissions = this.checkPermissions.bind(this);
   }
 
   componentWillMount() {
@@ -47,6 +50,18 @@ export class GetPermissions extends Component<IProps, IState> {
 
   componentDidMount() {
     AuthService.checkPermissions(false);
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = appState => {
+    Logger.info(`GetPermissions.handleAppStateChange - app state changed: ${appState}`);
+    if (appState === 'active') {
+      this.setInitialPermissionState();
+    }
   }
 
   async setInitialPermissionState() {
@@ -103,6 +118,17 @@ export class GetPermissions extends Component<IProps, IState> {
     }
 
     await AuthService.permissionsGranted();
+  }
+
+  async checkPermissions() {
+    if (
+      this.state.notificationPermissions === 'authorized' 
+      //this.state.motionPermissions === 'authorized' &&
+      //this.state.locationPermissions === 'authorized'
+    ) {
+      return true;
+    }
+    return false;
   }
 
   render() {
@@ -176,7 +202,12 @@ export class GetPermissions extends Component<IProps, IState> {
           title='Continue'
           containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}
           onPress={async () => { await AuthService.checkPermissions(true); }}
-          disabled={false}
+          disabled={
+            this.state.locationPermissions !== 'authorized' &&
+            this.state.motionPermissions !== 'authorized' ?
+            true :
+            false
+          }
         />
       </View>
       );

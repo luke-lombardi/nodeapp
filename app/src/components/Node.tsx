@@ -182,7 +182,7 @@ export default class Node extends Component<IProps, IState> {
           { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text> */}
           </View>
-          <View style={{paddingHorizontal: 25, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+          <View style={{paddingHorizontal: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
             <Icon
               name='keyboard-arrow-up'
               color='#00aced'

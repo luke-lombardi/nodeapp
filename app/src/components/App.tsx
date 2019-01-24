@@ -5,7 +5,6 @@ import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
 import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState } from 'react-native';
-import Permissions from 'react-native-permissions';
 
 // Location services, and user notifications
 import Pushy from 'pushy-react-native';
@@ -345,39 +344,28 @@ export class App extends Component<IProps, IState> {
 
     // TODO: figure out a better way to do this (move to permissions page)
     async checkPermissions() {
+      let firstRun = await AuthService.permissionsSet();
+      if (firstRun) {
+        NavigationService.reset('GetPermissions', {});
+      }
+
       let currentPermissions = await AuthService.permissionsGranted();
 
       // Check the permissions and see if theres anything else we need, if so
-      if (currentPermissions === undefined) {
-        NavigationService.reset('GetPermissions', {});
-        return;
-      }
+      await AuthService.checkPermissions(false);
 
       // let backgroundLocationPermission = await Permissions.check('location', { type: 'always'} );
 
       // First, check if the user has allowed background location tracking
-      if (currentPermissions.background_location === 'authorized') {
+      if (currentPermissions.location === 'authorized') {
         await this.setupLocationTracking();
       // If they haven't, request access
       } else {
-        currentPermissions.background_location = await Permissions.request('location', { type: 'always'} );
-        // If we got it this time, setup location tracking
-        if (currentPermissions.background_location === 'authorized') {
-          await this.setupLocationTracking();
-        } else {
-          // Otherwise, see if we can get whenInUse location tracking permission
-          let inUsePermission = await Permissions.request('location');
-          // If we can, let them proceed with the app, but set a flag so background services are disabled
-          if (inUsePermission === 'authorized') {
-            await this.setupLocationTracking();
-            return;
-          } else {
-            // We have no location permission, the app is useless
-            // Take them to the location disabled screen
-            NavigationService.reset('GetPermissions', {});
-          }
-        }
+        // We have no location permission, the app is useless
+        // Take them to the location disabled screen
+        NavigationService.reset('GetPermissions', {});
       }
+
     }
 
     registerPushy() {

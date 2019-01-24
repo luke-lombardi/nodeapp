@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
-import { View, StyleSheet} from 'react-native';
+// @ts-ignore
+import { View, StyleSheet, AsyncStorage } from 'react-native';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 // @ts-ignore
 import NavigationService from '../services/NavigationService';
 import Permissions from 'react-native-permissions';
-import { Text, Icon, CheckBox } from 'react-native-elements';
-import Snackbar from 'react-native-snackbar';
+import { Text, Icon, CheckBox, Button } from 'react-native-elements';
+// import Snackbar from 'react-native-snackbar';
 import OpenSettings from 'react-native-open-settings';
-import SleepUtil from '../services/SleepUtil';
 
-// import Icon from 'react-native-vector-icons/Ionicons';
-// import ActionButton from 'react-native-circular-action-menu';
-
-// import AuthService from '../services/AuthService';
+// Services
+import Logger from '../services/Logger';
+import AuthService from '../services/AuthService';
 
 interface IProps {
   functions: any;
+  Navigation: any;
 }
 
 interface IState {
-  notificationPermissions: boolean;
-  motionPermissions: boolean;
-  locationPermissions: boolean;
+  notificationPermissions: string;
+  motionPermissions: string;
+  locationPermissions: string;
 }
 
 export class GetPermissions extends Component<IProps, IState> {
@@ -31,119 +31,78 @@ export class GetPermissions extends Component<IProps, IState> {
     super(props);
 
     this.state = {
-      notificationPermissions: false,
-      motionPermissions: false,
-      locationPermissions: false,
+      notificationPermissions: '',
+      motionPermissions: '',
+      locationPermissions: '',
     };
 
+    this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
-    this.getPermissions = this.getPermissions.bind(this);
-    this.grantNotificationPermissions = this.grantNotificationPermissions.bind(this);
-    this.grantLocationPermissions = this.grantLocationPermissions.bind(this);
-    this.grantMotionPermissions = this.grantMotionPermissions.bind(this);
-    this.openSettings = this.openSettings.bind(this);
+    this.setInitialPermissionState = this.setInitialPermissionState.bind(this);
   }
 
-  openSettings() {
-    OpenSettings.openSettings();
+  componentWillMount() {
+    this.setInitialPermissionState();
   }
-
-  // async checkPermissions() {
-  //   let backgroundLocationPermission = await Permissions.check('location', { type: 'always'} );
-
-  //   // First, check if the user has allowed background location tracking
-  //   if (backgroundLocationPermission === 'authorized') {
-  //     NavigationService.reset('Map', {});
-  //   // If they haven't, request access
-  //   } else {
-  //     setTimeout(this.checkMinorPermissions(), 10000);
-  //   }
-  // }
-
-  // async checkMinorPermissions() {
-  //   let backgroundLocationPermission = await Permissions.request('location', { type: 'always'} );
-  //   // If we got it this time, setup location tracking
-  //   if (backgroundLocationPermission === 'authorized') {
-  //     NavigationService.reset('Map', {});
-  //   } else {
-  //     setTimeout(this.checkInUsePermissions(), 10000);
-  //   }
-  // }
-
-  // async checkInUsePermissions() {
-  //     let inUsePermission = await Permissions.request('location');
-  //     // If we can, let them proceed with the app, but set a flag so background services are disabled
-  //     if (inUsePermission === 'authorized') {
-  //       NavigationService.reset('Map', {});
-
-  //       return;
-  //     } else {
-  //       setTimeout(this.showSnackbar(), 10000);
-  //     }
-  //   }
 
   componentDidMount() {
-    this.getPermissions();
+    AuthService.checkPermissions(false);
   }
 
-  async getPermissions() {
-    let locationPermissions = await Permissions.check('location');
-    if (locationPermissions === 'authorized') {
-      this.setState({locationPermissions: true});
-    }
-    let motionPermissions = await Permissions.check('motion');
-    if (motionPermissions === 'authorized') {
-      this.setState({motionPermissions: true});
-    }
-    let notificationPermissions = await Permissions.check('notification');
-    if (notificationPermissions === 'authorized') {
-      this.setState({notificationPermissions: true});
-    }
-    // let permissions = await AuthService.permissionsGranted();
+  async setInitialPermissionState() {
+    let currentPermissions = await AuthService.permissionsGranted();
+    await this.setState({
+      notificationPermissions: currentPermissions.notification,
+      motionPermissions: currentPermissions.motion,
+      locationPermissions: currentPermissions.location,
+    });
   }
 
-  async showSnackbar() {
-      // We have no location permission, the app is useless
-      // Show them a modal saying we need more permissions
-      Snackbar.show({
-        title: 'You must enable location services to use the app.',
-        duration: Snackbar.LENGTH_SHORT,
-      });
-
-      await SleepUtil.SleepAsync(100);
-
-      this.openSettings();
+  async requestPermissions(type: string) {
+    Logger.info(`GetPermissions.requestPermissions - called with type ${type}`);
+    let firstRun = await AuthService.permissionsSet();
+    if (!firstRun) {
+      Logger.info(`GetPermissions.requestPermissions - first run ${firstRun}`);
+      OpenSettings.openSettings();
       return;
     }
 
-  async grantLocationPermissions() {
-    this.openSettings();
-  }
+    let hasPermissions: string = '';
+    let response: string = undefined;
 
-  async grantNotificationPermissions() {
-    let permissions = await Permissions.request('notification');
-    console.log('notification permissions', permissions);
-    if (permissions === 'authorized') {
-      this.setState({notificationPermissions: true});
-    } else {
-      Snackbar.show({
-        title: 'You must enable notifications to use the app.',
-        duration: Snackbar.LENGTH_SHORT,
-      });
-    }
-  }
+    // Check each permission type
+    switch (type) {
+      case 'location':
+        hasPermissions = await Permissions.check('location', { type: 'always'} );
+        if (hasPermissions !== 'authorized') {
+          OpenSettings.openSettings();
+        }
 
-  async grantMotionPermissions() {
-    let permissions = await Permissions.request('motion');
-    console.log('motion permissions', permissions);
-    if (permissions === 'authorized') {
-      this.setState({motionPermissions: true});
-    } else {
-      Snackbar.show({
-        title: 'You must enable motion to use the app.',
-        duration: Snackbar.LENGTH_SHORT,
-      });
+        await this.setState({ locationPermissions: response});
+        break;
+      case 'motion':
+        hasPermissions = await Permissions.check('motion');
+        if (hasPermissions !== 'authorized') {
+          response = await Permissions.request('motion');
+        }
+
+        await this.setState({ motionPermissions: response});
+        break;
+      case 'notification':
+        hasPermissions = await Permissions.check('notification');
+        Logger.info(`GetPermissions.requestPermissions - permissions: ${hasPermissions}`);
+
+        if (hasPermissions !== 'authorized') {
+          response = await Permissions.request('notification');
+        }
+
+        await this.setState({ notificationPermissions: response});
+        break;
+      default:
+        //
     }
+
+    await AuthService.permissionsGranted();
   }
 
   render() {
@@ -160,9 +119,6 @@ export class GetPermissions extends Component<IProps, IState> {
         />
         <Text style={styles.centeredTextLarge}>Please enable required services.</Text>
         <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>Your location is required to use the app and connect with people nearby.</Text>
-        {/* <Text style={styles.centeredTextSmall}> Settings -> Smartshare -> Location -> Always</Text> */}
-        {/* <Button title='Enable Permissions' containerStyle={{width: '80%', height: '30%', marginLeft: 0, alignSelf: 'center'}}
-        onPress={this.checkPermissions} /> */}
         <CheckBox
             center
             title={
@@ -171,15 +127,14 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            //textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'
-            checkedColor='red'
+            checkedColor='green'
             uncheckedColor='gray'
-            onIconPress={() => this.grantNotificationPermissions()}
-            onPress={() => this.grantNotificationPermissions()}
-            checked={this.state.notificationPermissions}
+            onIconPress={async () => { await this.requestPermissions('notification'); }}
+            onPress={async () => { await this.requestPermissions('notification'); }}
+            checked={this.state.notificationPermissions === 'authorized'}
             />
         <CheckBox
             center
@@ -189,17 +144,17 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            //textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'
-            checkedColor='red'
+            checkedColor='green'
             uncheckedColor='gray'
-            onIconPress={() => this.openSettings()}
-            onPress={() => this.openSettings()}
-            checked={this.state.locationPermissions}
+            onIconPress={async () => { await this.requestPermissions('location'); }}
+            onPress={async () => { await this.requestPermissions('location'); }}
+            checked={this.state.locationPermissions === 'authorized'}
             />
-        <CheckBox
+        {/* <CheckBox
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
@@ -211,12 +166,18 @@ export class GetPermissions extends Component<IProps, IState> {
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'
-            checkedColor='red'
+            checkedColor='green'
             uncheckedColor='gray'
-            onPress={() => this.grantMotionPermissions()}
-            onIconPress={() => this.grantMotionPermissions()}
-            checked={this.state.motionPermissions}
-            />
+            onIconPress={async () => { await this.requestPermissions('motion'); }}
+            onIconPress={async () => { await this.requestPermissions('motion'); }}
+            checked={this.state.motionPermissions === 'authorized}
+            /> */}
+        <Button
+          title='Continue'
+          containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}
+          onPress={async () => { await AuthService.checkPermissions(true); }}
+          disabled={false}
+        />
       </View>
       );
     }

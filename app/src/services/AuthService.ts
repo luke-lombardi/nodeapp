@@ -4,6 +4,8 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { AsyncStorage } from 'react-native';
 import uuid from 'react-native-uuid';
 import Permissions from 'react-native-permissions';
+import NavigationService from './NavigationService';
+import Snackbar from 'react-native-snackbar';
 
 // @ts-ignore
 interface IProps {
@@ -28,25 +30,82 @@ export default class AuthService {
         return currentUUID;
     }
 
+    public static async checkPermissions(showSnackbar: boolean) {
+      if (! (await AuthService.hasPermissions()) ) {
+        Logger.info(`AuthService.checkPermissions() - user does not have required permissions`);
+
+        if (showSnackbar) {
+          Snackbar.show({
+            title: 'You must enable all services to use the app.',
+            duration: Snackbar.LENGTH_SHORT,
+          });
+        }
+
+      } else {
+
+        Logger.info(`AuthService.checkPermissions() - permissions set`);
+        NavigationService.reset('Map', {});
+      }
+    }
+
     public static async permissionsGranted() {
       let permissions: any = await AsyncStorage.getItem('permissions');
-      if (permissions === null) {
-        return undefined;
-      } else  {
+
+      if (permissions !== null) {
         permissions = JSON.parse(permissions);
+      } else  {
+        permissions = {};
       }
 
-      let locationsPermission = await Permissions.check('location', { type: 'always'} );
-      let pushPermissions = await Permissions.check('location', { type: 'always'} );
-      let motionPermissions = await Permissions.check('location', { type: 'always'} );
+      let locationPermissions = await Permissions.check('location', { type: 'always'} );
+      let notificationPermissions = await Permissions.check('notification', { type: 'always'} );
+      // let motionPermissions = await Permissions.check('motion', { type: 'always'} );
 
-      permissions.locations = locationsPermission;
-      permissions.push = pushPermissions;
-      permissions.motion = motionPermissions;
+      permissions.location = locationPermissions;
+      permissions.notification = notificationPermissions;
+      // permissions.motion = motionPermissions;
 
+      // Set a flag to say that at some point we have set permissions
+      // This is not set on first run
+      await AsyncStorage.setItem('permissionsSet', 'true');
       await AsyncStorage.setItem('permissions', JSON.stringify(permissions));
 
+      Logger.info(`AuthService.permissionsGranted() - Current permissions ${JSON.stringify(permissions)} `);
+
       return permissions;
+    }
+
+    public static async hasPermissions() {
+      let locationPermissions = await Permissions.check('location', { type: 'always'} );
+      let notificationPermissions = await Permissions.check('notification');
+      // let motionPermissions = await Permissions.check('motion', { type: 'always'} );
+
+      if (locationPermissions !== 'authorized') {
+        return false;
+      }
+
+      if (notificationPermissions !== 'authorized') {
+        return false;
+      }
+
+      Logger.info(`AuthService.hasPermissions() - permissions are set`);
+      // if (motionPermissions !== 'authorized') {
+      //   return false;
+      // }
+
+      return true;
+    }
+
+    public static async permissionsSet() {
+      let set: any = await AsyncStorage.getItem('permissionsSet');
+
+      Logger.info(`AuthService.permissionsSet() - value: ${set}`);
+
+      if (set === null) {
+        return true;
+      }
+
+      return false;
     }
 
     constructor(props: IProps) {

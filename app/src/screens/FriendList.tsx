@@ -24,7 +24,7 @@ interface IProps {
     privatePlaceList: Array<any>;
     friendList: Array<any>;
     relationList: Array<any>;
-    RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    RelationListUpdated: (relationList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
@@ -83,16 +83,21 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   async toggleLocationSharing(row) {
+    console.log('SENDING IT');
+    console.log(row);
     let currentUUID = await AuthService.getUUID();
     let requestBody = {
       'user_id': currentUUID,
       'relation_id': row.relation_id,
+      'friend_id': row.their_friend_id,
     };
 
     let response = await ApiService.ToggleLocationSharingAsync(requestBody);
 
     if (response !== undefined) {
       Logger.info(`FriendList.toggleLocationSharing: toggled location sharing, response ${JSON.stringify(response)}`);
+      let relationList: any = await NodeService.getRelations();
+      await this.props.RelationListUpdated(relationList);
     }
   }
 
@@ -163,11 +168,13 @@ export class FriendList extends Component<IProps, IState> {
             containerStyle={{paddingHorizontal: 20, right: 20}}
           />
           <Switch
+          onTouchEnd={async () => {  await this.toggleLocationSharing(row); }}
+          value={row.sharing_location}
           />
           </View>
         }
         title={row.topic}
-        subtitle={ 'Status: ' + row.status + '......sharing location? ' + String(row.sharing_location)}
+        subtitle={ 'Status: ' + row.status }
       />
 
     </Swipeout>

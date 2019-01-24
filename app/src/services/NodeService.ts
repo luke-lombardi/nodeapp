@@ -216,6 +216,104 @@ export default class NodeService {
         }
   }
 
+  public static async getRelations()  {
+    // Load this here so we can remove relations from async that aren't in the cache anymore
+    let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+    if (trackedRelations !== null) {
+      trackedRelations = JSON.parse(trackedRelations);
+    } else {
+      trackedRelations = {};
+    }
+
+    let relationsToGet = [];
+
+    for (let key in trackedRelations) {
+        if (trackedRelations.hasOwnProperty(key)) {
+          relationsToGet.push(trackedRelations[key].relation_id);
+        }
+    }
+
+    Logger.trace(`ApiService.MonitorRelationsAsync - checking these relations ${JSON.stringify(relationsToGet)}`);
+
+    let currentUUID = await AuthService.getUUID();
+    // @ts-ignore
+    let relations = undefined;
+    try  {
+
+      let requestBody = {
+        'relations': relationsToGet,
+        'user_id': currentUUID,
+      };
+
+      relations = await ApiService.getRelations(requestBody);
+    } catch (error) {
+      // Do nothing if this fails
+    }
+
+    let relationList = [];
+
+    let modified = false;
+
+    for (let key in relations) {
+        if (relations.hasOwnProperty(key)) {
+
+            if (relations[key].status === 'not_found') {
+              Logger.info(`Cannot find relation ${key}, removing from storage.`);
+
+              // TODO: make this make sense
+              // What it's doing right now is going through the trackedRelations dict
+              // by user UUID (of the rcpt) and then checking if the relation id matches
+              // This should be just a map of user UUID : relation UUID so the loop can be
+              // eliminated here
+              for (let userId in trackedRelations) {
+                if (trackedRelations.hasOwnProperty(userId)) {
+                  if (trackedRelations[userId].relation_id === key) {
+                    delete  trackedRelations[userId];
+                    modified = true;
+                  }
+                }
+              }
+            }
+
+            currentUUID = await AuthService.getUUID();
+
+            // @ts-ignore
+            let yourFriendId = undefined;
+            let theirTopicName = undefined;
+            let theirFriendId = undefined;
+            let theirUUID = undefined;
+
+            // Loop through member data in the relation to add detail to the relationList
+            // This is used for formatting the flatList that stores the relations later
+            for (let member in relations[key].member_data) {
+              if (relations[key].member_data.hasOwnProperty(member)) {
+                if (member === currentUUID) {
+                  yourFriendId = relations[key].member_data[member].friend_id;
+                } else {
+                  theirFriendId = relations[key].member_data[member].friend_id;
+                  theirTopicName = relations[key].member_data[member].topic;
+                  theirUUID = member;
+                }
+              }
+            }
+
+            relations[key].relation_id = key;
+            relations[key].their_friend_id = theirFriendId;
+            relations[key].their_uuid = theirUUID;
+            relations[key].topic = theirTopicName;
+
+            relationList.push(relations[key]);
+        }
+    }
+
+    // If any relations were not found in the cache, update the tracked list
+    if (modified) {
+      await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
+    }
+
+    return relationList;
+  }
+
   constructor(props: IProps) {
         this.props = props;
 
@@ -279,101 +377,7 @@ export default class NodeService {
             // Re-create the check-now trigger in case it was triggered last time
             this.checkNowTrigger = new DeferredPromise();
 
-            // Load this here so we can remove relations from async that aren't in the cache anymore
-            let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
-            if (trackedRelations !== null) {
-              trackedRelations = JSON.parse(trackedRelations);
-            } else {
-              trackedRelations = {};
-            }
-
-            let relationsToGet = [];
-
-            for (let key in trackedRelations) {
-                if (trackedRelations.hasOwnProperty(key)) {
-                  relationsToGet.push(trackedRelations[key].relation_id);
-                }
-            }
-
-            Logger.trace(`ApiService.MonitorRelationsAsync - checking these relations ${JSON.stringify(relationsToGet)}`);
-
-            let currentUUID = await AuthService.getUUID();
-            // @ts-ignore
-            let relations = undefined;
-            try  {
-
-              let requestBody = {
-                'relations': relationsToGet,
-                'user_id': currentUUID,
-              };
-
-              relations = await ApiService.getRelations(requestBody);
-            } catch (error) {
-              // Do nothing if this fails
-            }
-
-            let relationList = [];
-
-            let modified = false;
-
-            for (let key in relations) {
-                if (relations.hasOwnProperty(key)) {
-
-                    if (relations[key].status === 'not_found') {
-                      Logger.info(`Cannot find relation ${key}, removing from storage.`);
-
-                      // TODO: make this make sense
-                      // What it's doing right now is going through the trackedRelations dict
-                      // by user UUID (of the rcpt) and then checking if the relation id matches
-                      // This should be just a map of user UUID : relation UUID so the loop can be
-                      // eliminated here
-                      for (let userId in trackedRelations) {
-                        if (trackedRelations.hasOwnProperty(userId)) {
-                          if (trackedRelations[userId].relation_id === key) {
-                            delete  trackedRelations[userId];
-                            modified = true;
-                          }
-                        }
-                      }
-                    }
-
-                    let currentUUID = await AuthService.getUUID();
-
-                    // @ts-ignore
-                    let yourFriendId = undefined;
-                    let theirTopicName = undefined;
-                    let theirFriendId = undefined;
-                    let theirUUID = undefined;
-
-                    // Loop through member data in the relation to add detail to the relationList
-                    // This is used for formatting the flatList that stores the relations later
-                    for (let member in relations[key].member_data) {
-                      if (relations[key].member_data.hasOwnProperty(member)) {
-                        if (member === currentUUID) {
-                          yourFriendId = relations[key].member_data[member].friend_id;
-                        } else {
-                          theirFriendId = relations[key].member_data[member].friend_id;
-                          theirTopicName = relations[key].member_data[member].topic;
-                          theirUUID = member;
-                        }
-                      }
-                    }
-
-                    relations[key].relation_id = key;
-                    relations[key].their_friend_id = theirFriendId;
-                    relations[key].their_uuid = theirUUID;
-                    relations[key].topic = theirTopicName;
-
-                    relationList.push(relations[key]);
-                }
-            }
-
-            // If any relations were not found in the cache, update the tracked list
-            if (modified) {
-              await AsyncStorage.setItem('trackedRelations', JSON.stringify(trackedRelations));
-            }
-
-            // Update the redux store with the formatted relation list
+            let relationList = await NodeService.getRelations();
             await this.props.relationListUpdated({relationList: relationList});
 
             const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.relationCheckIntervalMs);

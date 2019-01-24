@@ -57,8 +57,6 @@ def send_push(push_info, rds):
 
         from_node_data =  json.loads(rds.get(from_user))
 
-        location_tracking = push_info["location_tracking"]
-
         node_exists = rds.exists(friend_id)
 
         if node_exists:
@@ -78,7 +76,6 @@ def send_push(push_info, rds):
               "action": "confirm_friend",
               "relation_id": relation_id,
               "friend_id": friend_id,
-              "location_tracking": location_tracking,
           }
   
           to = [ pushy_device_token ]

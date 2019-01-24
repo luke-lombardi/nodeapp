@@ -72,6 +72,21 @@ export default class ApiService {
         return relationList;
     }
 
+    // Queries a specific relation
+    public static async getRelation(requestBody) {
+      Logger.info(`Fetching this relation: ${JSON.stringify(requestBody)}`);
+
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getRelation', {
+          method: 'POST',
+          headers: {'Content-Type': 'text/plain'},
+          body: JSON.stringify(requestBody),
+      });
+
+      // TODO: add error handling here
+      let relation = await response.json();
+      return relation;
+  }
+
     // Creates a new node at the users position, this can be either public or private
     public static async CreateNodeAsync(nodeData: any) {
       let requestBody = {

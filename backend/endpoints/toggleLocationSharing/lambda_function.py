@@ -82,7 +82,7 @@ def lambda_handler(event, context):
 
     response['relation_id'] = relation_id
 
-    logger.info('Toggling location tracking for: %s '  % friend_id)
+    logger.info('Toggling location tracking for: %s ' % (friend_id))
 
     result = toggle_location_tracking(rds, friend_id, user_id, relation_id)
     if result:

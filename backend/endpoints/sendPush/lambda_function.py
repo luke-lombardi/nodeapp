@@ -102,11 +102,11 @@ def send_push(push_info, rds):
 
         from_node_data =  json.loads(rds.get(from_user))
 
-        node_exists = rds.exists(friend_id)
+        node_exists = rds.exists(to_user)
 
         if node_exists:  
-          logger.info("Recipient friend id: {}".format(friend_id))
-          logger.info("Recipient user id: {}".format(user_uuid))
+          # logger.info("Recipient friend id: {}".format(friend_id))
+          logger.info("Recipient user id: {}".format(to_user))
 
           node_data = json.loads(rds.get(to_user))
 
@@ -145,13 +145,11 @@ def send_push(push_info, rds):
 
         node_exists = rds.exists(friend_id)
 
-        if node_exists:
-          user_uuid = to_user
-  
+        if node_exists:  
           logger.info("Recipient friend id: {}".format(friend_id))
-          logger.info("Recipient user id: {}".format(user_uuid))
+          logger.info("Recipient user id: {}".format(to_user))
 
-          node_data = json.loads(rds.get(user_uuid))
+          node_data = json.loads(rds.get(to_user))
 
           # Grab the recipient push notification device ID
           pushy_device_token = node_data.get('device_token', '')

@@ -348,10 +348,10 @@ export class App extends Component<IProps, IState> {
 
     // TODO: figure out a better way to do this (move to permissions page)
     async checkPermissions() {
-      let firstRun = await AuthService.permissionsSet();
-      if (firstRun) {
-        NavigationService.reset('GetPermissions', {});
-      }
+      // let firstRun = await AuthService.permissionsSet();
+      // if (firstRun) {
+      //   NavigationService.reset('GetPermissions', {});
+      // }
 
       let currentPermissions = await AuthService.permissionsGranted();
 

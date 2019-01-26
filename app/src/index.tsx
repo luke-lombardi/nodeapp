@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, Platform } from 'react-native';
-import App from './components/App';
-// import Splash from './components/Splash';
+// import App from './components/App';
+import Splash from './components/Splash';
 
 import { Provider } from 'react-redux';
 import ConfigureStore from './store/ConfigureStore';
@@ -41,7 +41,7 @@ class Smartshare extends Component {
   render() {
     return (
       <Provider store={store}>
-        <App />
+        <Splash />
       </Provider>
     );
   }

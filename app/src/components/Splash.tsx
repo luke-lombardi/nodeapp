@@ -22,7 +22,7 @@ interface IProps {
 }
 
 interface IState {
-  permissions: boolean;
+  firstRun: boolean;
 }
 
 export class Splash extends Component<IProps, IState> {
@@ -31,7 +31,7 @@ export class Splash extends Component<IProps, IState> {
       super(props);
 
       this.state = {
-        permissions: false,
+        firstRun: false,
       },
 
       this.getPermissions = this.getPermissions.bind(this);
@@ -45,8 +45,8 @@ export class Splash extends Component<IProps, IState> {
     async getPermissions() {
       let firstRun = await AuthService.permissionsSet();
       console.log('PERMISSIONS ON SPLASH', firstRun);
-      if (!firstRun) {
-        this.setState({permissions: true});
+      if (firstRun) {
+        this.setState({firstRun: true});
     }
     return;
   }
@@ -58,7 +58,7 @@ export class Splash extends Component<IProps, IState> {
       const app = <View style={{flex: 1}}> <App /> </View>;
       return (
         <View style={{flex: 1}}>
-          {this.state.permissions ? app : permissions};
+          {this.state.firstRun ? permissions : app};
       </View>
       );
     }

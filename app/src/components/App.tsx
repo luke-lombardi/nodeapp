@@ -326,9 +326,7 @@ export class App extends Component<IProps, IState> {
       this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
       // App state change
-
       this.handleAppStateChange = this.handleAppStateChange.bind(this);
-
 
       // Link handling
       this.handleLink = this.handleLink.bind(this);

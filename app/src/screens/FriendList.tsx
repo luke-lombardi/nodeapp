@@ -173,8 +173,10 @@ export class FriendList extends Component<IProps, IState> {
           />
           </View>
         }
-        title={row.topic}
-        subtitle={ 'Status: ' + row.status }
+        title={
+          <Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
+        subtitle={
+          <Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
       />
 
     </Swipeout>

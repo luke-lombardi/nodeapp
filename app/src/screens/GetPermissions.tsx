@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, AsyncStorage, AppState } from 'react-native';
+import { View, StyleSheet, AsyncStorage, AppState, Alert } from 'react-native';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 // @ts-ignore
@@ -42,6 +42,7 @@ export class GetPermissions extends Component<IProps, IState> {
     this.setInitialPermissionState = this.setInitialPermissionState.bind(this);
     this.handleAppStateChange = this.handleAppStateChange.bind(this);
     this.checkPermissions = this.checkPermissions.bind(this);
+    this.showModal = this.showModal.bind(this);
   }
 
   componentWillMount() {
@@ -73,6 +74,46 @@ export class GetPermissions extends Component<IProps, IState> {
     });
   }
 
+  async showModal(type: string) {
+
+    switch (type) {
+      case 'location':
+      Alert.alert(
+        'Background Location Request',
+        'Dropping nodes works best with background location enabled',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: () => this.requestPermissions(type)},
+        ],
+        { cancelable: false },
+      );
+    break;
+      case 'notification':
+      Alert.alert(
+        'Notification Request',
+        'Enable notifications to receive updates when other users message you',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: () => this.requestPermissions(type)},
+        ],
+        { cancelable: false },
+      );
+    break;
+      case 'motion':
+      Alert.alert(
+        'Motion Request',
+        'Motion tracking helps us keep our node train running on schedule',
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: () => this.requestPermissions(type)},
+        ],
+        { cancelable: false },
+      );
+    break;
+  default:
+  }
+}
+
   async requestPermissions(type: string) {
     Logger.info(`GetPermissions.requestPermissions - called with type ${type}`);
     let firstRun = await AuthService.permissionsSet();
@@ -90,6 +131,11 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'location':
         hasPermissions = await Permissions.check('location', { type: 'always'} );
         if (hasPermissions !== 'authorized') {
+
+          // permission request modal
+
+          // if the user accepts the modal permissions, send the real request
+
           response = await Permissions.request('location', { type: 'always'} );
         } else if (!firstRun) {
           OpenSettings.openSettings();
@@ -100,6 +146,11 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'motion':
         hasPermissions = await Permissions.check('motion');
         if (hasPermissions !== 'authorized') {
+
+          // permission request modal
+
+          // if the user accepts the modal permissions, send the real request
+
           response = await Permissions.request('motion');
         }
 
@@ -110,6 +161,11 @@ export class GetPermissions extends Component<IProps, IState> {
         Logger.info(`GetPermissions.requestPermissions - permissions: ${hasPermissions}`);
 
         if (hasPermissions !== 'authorized') {
+
+          // permission request modal
+
+          // if the user accepts the modal permissions, send the real request
+
           response = await Permissions.request('notification', { type: ['alert', 'badge', 'sound'] });
         }
 
@@ -161,8 +217,8 @@ export class GetPermissions extends Component<IProps, IState> {
             uncheckedIcon='circle-o'
             checkedColor='green'
             uncheckedColor='gray'
-            onIconPress={async () => { await  this.requestPermissions('location'); }}
-            onPress={async () => { await this.requestPermissions('location'); }}
+            onIconPress={async () => { await  this.showModal('location'); }}
+            onPress={async () => { await this.showModal('location'); }}
             checked={this.state.locationPermissions === 'authorized'}
             />
         <CheckBox
@@ -178,8 +234,8 @@ export class GetPermissions extends Component<IProps, IState> {
             uncheckedIcon='circle-o'
             checkedColor='green'
             uncheckedColor='gray'
-            onIconPress={async () => { await this.requestPermissions('notification'); }}
-            onPress={async () => { await this.requestPermissions('notification'); }}
+            onIconPress={async () => { await this.showModal('notification'); }}
+            onPress={async () => { await this.showModal('notification'); }}
             checked={this.state.notificationPermissions === 'authorized'}
             />
         <CheckBox
@@ -196,8 +252,8 @@ export class GetPermissions extends Component<IProps, IState> {
             uncheckedIcon='circle-o'
             checkedColor='green'
             uncheckedColor='gray'
-            onPress={async () => { await this.requestPermissions('motion'); }}
-            onIconPress={async () => { await this.requestPermissions('motion'); }}
+            onPress={async () => { await this.showModal('motion'); }}
+            onIconPress={async () => { await this.showModal('motion'); }}
             checked={this.state.motionPermissions === 'authorized'}
             />
         <Button

@@ -58,14 +58,25 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('hi');
+    // Do nothing
   }
 
-  _onTouchNode(node: any) {
-    if (node.data.status === 'inactive') {
-      Alert.alert(`This invite is still pending.`);
+  async _onTouchNode(node: any) {
+    let friendNode = undefined;
+
+    for (let i = 0; i < this.props.friendList.length; i++) {
+      if (this.props.friendList[i].node_id === node.their_friend_id) {
+        friendNode = this.props.friendList[i];
+        break;
+      }
+    }
+
+    if (friendNode === undefined) {
+      Alert.alert(`This user is not sharing location data`);
       return;
     }
+
+    node = friendNode;
 
     let region = {
       latitude: parseFloat(node.data.latitude),
@@ -76,6 +87,7 @@ export class FriendList extends Component<IProps, IState> {
 
     const nodeType = 'friend';
     this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
+
   }
 
   async sendPrivateMessage(row) {
@@ -160,7 +172,7 @@ export class FriendList extends Component<IProps, IState> {
             type='feather'
             color='black'
             size={32}
-            onPress={() => this._onTouchNode(row) }
+            onPress={async () => { await this._onTouchNode(row); }}
             underlayColor={'transparent'}
             containerStyle={{paddingHorizontal: 20, right: 20}}
           />

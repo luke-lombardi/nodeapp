@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, AsyncStorage } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
@@ -128,11 +128,31 @@ export default class Node extends Component<IProps, IState> {
 
   }
 
-  goToChat() {
-    NavigationService.reset('Chat', {
-      action: 'join_chat', nodeId: this.props.nodeId,
-    });
-  }
+  async goToChat() {
+    let nodeId = this.props.nodeId;
+
+    if (this.props.nodeType === 'friend' ) {
+      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+      if (trackedRelations !== null) {
+        trackedRelations = JSON.parse(trackedRelations);
+      } else {
+        trackedRelations = {};
+      }
+
+      for (let key in trackedRelations) {
+          if (trackedRelations.hasOwnProperty(key)) {
+            if (trackedRelations[key].their_id === this.props.nodeId) {
+              nodeId = trackedRelations[key].relation_id;
+              break;
+            }
+        }
+      }
+    }
+
+  NavigationService.reset('Chat', {
+    action: 'join_chat', nodeId: nodeId,
+  });
+}
 
   goToFinder() {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
@@ -228,7 +248,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={this.goToChat}
+              onPress={ async () => { await this.goToChat(); } }
             />
             <Button
               icon={{

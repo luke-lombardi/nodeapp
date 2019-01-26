@@ -99,10 +99,13 @@ def update_node(rds, node_id, node_data):
             current_node_data = json.loads(rds.get(key_name).decode("utf-8"))
             
             logger.info("Current node data: {}".format(current_node_data))
+            current_username = current_node_data.get('topic', None)
   
             # If they have no username set, create one for them
-            if current_node_data.get('topic', None) is None:
+            if current_username is None or current_username == '':
                 node_data = set_username(node_data)
+            else:
+                node_data['topic'] = current_username
 
         # Update the node data in the cache
         rds.set(name=key_name, value=json.dumps(node_data))

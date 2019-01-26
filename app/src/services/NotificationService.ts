@@ -157,9 +157,11 @@ export default class NotificationService {
           });
 
       } else if (action === 'got_message') {
-        Logger.info('MainMap.handleAction - Received a DM.');
+        Logger.info(`MainMap.handleAction - Received a DM from ${notification.from_username}`);
+        let relationId = notification.relation_id;
 
         // Go to the DM chat
+        NavigationService.reset('Chat', {nodeId: relationId});
       }
     }
 

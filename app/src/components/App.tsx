@@ -244,10 +244,11 @@ async function processInitialNotification(notification) {
 
   if (notification.action !== undefined) {
 
-    if (notification.action !== 'got_message') {
-      await NotificationService.storeNotification(notification);
-    } else {
+    if (notification.action === 'got_message') {
       await NotificationService.handleAction(notification);
+      return;
+    } else {
+      await NotificationService.storeNotification(notification);
     }
 
   } else {

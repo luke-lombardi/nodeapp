@@ -356,9 +356,15 @@ export class App extends Component<IProps, IState> {
       //       this.handleLink({ url });
       //   }
       //  });
+<<<<<<< HEAD
 
       //  RNSimpleCompass.start(3, this.updateBearing);
 
+=======
+
+      //  RNSimpleCompass.start(3, this.updateBearing);
+
+>>>>>>> 6c19fca3338be7e39297f7e1e83780807987cbb3
       //  this.registerPushy();
     }
 

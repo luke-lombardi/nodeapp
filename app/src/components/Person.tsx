@@ -169,7 +169,7 @@ export default class Person extends Component<IProps, IState> {
                 {this.props.topic}
               </Text>
               <Text numberOfLines={1} style={styles.nodeSubtitle}>
-                Last Seen: 12:43
+                {this.props.destination.distance_in_miles} miles away
               </Text>
               <Button
                   icon={{
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     paddingHorizontal: 10,
     maxHeight: 100,
-    width: '50%',
+    width: '90%',
   },
   nodeSubtitle: {
     color: 'white',

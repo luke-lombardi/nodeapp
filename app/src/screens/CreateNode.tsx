@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   fullWidthButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'black',
     height: 70,
     justifyContent: 'center',
     alignItems: 'center',

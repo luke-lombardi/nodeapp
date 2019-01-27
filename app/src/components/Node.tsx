@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
@@ -128,31 +128,11 @@ export default class Node extends Component<IProps, IState> {
 
   }
 
-  async goToChat() {
-    let nodeId = this.props.nodeId;
-
-    if (this.props.nodeType === 'friend' ) {
-      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
-      if (trackedRelations !== null) {
-        trackedRelations = JSON.parse(trackedRelations);
-      } else {
-        trackedRelations = {};
-      }
-
-      for (let key in trackedRelations) {
-          if (trackedRelations.hasOwnProperty(key)) {
-            if (trackedRelations[key].their_id === this.props.nodeId) {
-              nodeId = trackedRelations[key].relation_id;
-              break;
-            }
-        }
-      }
-    }
-
-  NavigationService.reset('Chat', {
-    action: 'join_chat', nodeId: nodeId,
-  });
-}
+  goToChat() {
+    NavigationService.reset('Chat', {
+      action: 'join_chat', nodeId: this.props.nodeId,
+    });
+  }
 
   goToFinder() {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
@@ -248,7 +228,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={ async () => { await this.goToChat(); } }
+              onPress={this.goToChat}
             />
             <Button
               icon={{
@@ -294,13 +274,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    // padding: 10,
     bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
-    // shadowColor: 'black',
-    // shadowOpacity: 0.1,
-    // shadowRadius: 5,
-    // shadowOffset: { width: 2, height: 3 },
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -341,7 +316,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    //backgroundColor: 'rgba(44,55,71,.9)',
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
@@ -364,7 +338,6 @@ const styles = StyleSheet.create({
   mapButton: {
     width: '70%',
     height: '100%',
-    // marginLeft: 15,
   },
   directionsButton: {
     width: '70%',

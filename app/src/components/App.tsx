@@ -109,8 +109,8 @@ const InternalStack = StackNavigator({
   },
   CreateNode: { screen: CreateNode,
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, borderBottomWidth: 5, borderBottomColor: 'black'},
-      headerTitleStyle: { color: 'white' },
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
+      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'Drop Node',
       headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
         navigation.dispatch(NavigationActions.reset(
@@ -123,10 +123,10 @@ const InternalStack = StackNavigator({
   },
   FriendList: { screen: FriendList,
       navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'black', paddingLeft: 10},
-        headerTitleStyle: { color: 'white'},
+        headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
+        headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'People',
-        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 5}} size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
+        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 0}} size={35} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
           navigation.dispatch(NavigationActions.reset(
           {
             index: 0,
@@ -333,6 +333,7 @@ export class App extends Component<IProps, IState> {
       this.checkPermissions = this.checkPermissions.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
+
       this.nodeService = new NodeService(
         {
           publicPersonListUpdated: this.gotNewPublicPersonList,
@@ -348,33 +349,10 @@ export class App extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-
-      // This handles the case where a user clicked a link and the app was closed
-
-      // Linking.getInitialURL().then((url) => {
-      //   if (url) {
-      //       this.handleLink({ url });
-      //   }
-      //  });
-<<<<<<< HEAD
-
-      //  RNSimpleCompass.start(3, this.updateBearing);
-
-=======
-
-      //  RNSimpleCompass.start(3, this.updateBearing);
-
->>>>>>> 6c19fca3338be7e39297f7e1e83780807987cbb3
-      //  this.registerPushy();
     }
 
     // TODO: figure out a better way to do this (move to permissions page)
     async checkPermissions() {
-      // let firstRun = await AuthService.permissionsSet();
-      // if (firstRun) {
-      //   NavigationService.reset('GetPermissions', {});
-      // }
-
       let currentPermissions = await AuthService.permissionsGranted();
 
       // Check the permissions and see if theres anything else we need, if so

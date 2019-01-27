@@ -1,24 +1,16 @@
 import React, {Component} from 'react';
-// import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
-
 // @ts-ignore
 import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState, Text } from 'react-native';
-
 // @ts-ignore
 import Logger from '../services/Logger';
-
-// Redux imports
-import IStoreState from '../store/IStoreState';
-import { connect, Dispatch } from 'react-redux';
-
 import AuthService from '../services/AuthService';
 // @ts-ignore
 import { GetPermissions } from '../screens/GetPermissions';
 import App from '../components/App';
-// import { GetPermissions } from '../screens/GetPermissions';
 
 interface IProps {
-  navigation: any;
+  functions: any;
+  firstRun: boolean;
 }
 
 interface IState {
@@ -35,6 +27,7 @@ export class Splash extends Component<IProps, IState> {
       },
 
       this.getPermissions = this.getPermissions.bind(this);
+      this.setPermissions = this.setPermissions.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
     }
 
@@ -42,9 +35,12 @@ export class Splash extends Component<IProps, IState> {
       this.getPermissions();
     }
 
+    async setPermissions() {
+      this.setState({firstRun: false});
+    }
+
     async getPermissions() {
-      let firstRun = await AuthService.permissionsSet();
-      Logger.info(`SPLASH SCREEN - FIRST RUN: ${firstRun}`);
+      const firstRun = await AuthService.permissionsSet();
       if (firstRun) {
         this.setState({firstRun: true});
     }
@@ -52,29 +48,20 @@ export class Splash extends Component<IProps, IState> {
   }
 
     render() {
-      const props = {};
-      // @ts-ignore
-      const permissions = <View style={{flex: 1}}> <GetPermissions {...props} /> </View>;
+      const permissions =
+      <View style={{flex: 1}}>
+        <GetPermissions
+          functions={{'setPermissions': this.setPermissions}}
+          firstRun={this.state.firstRun}
+        />
+      </View>;
       const app = <View style={{flex: 1}}> <App /> </View>;
       return (
         <View style={{flex: 1}}>
-          {this.state.firstRun ? permissions : app};
+          { this.state.firstRun ? permissions : app };
       </View>
       );
     }
   }
 
-// @ts-ignore
-function mapStateToProps(state: IStoreState): IProps {
-  // @ts-ignore
-  return {
-  };
-}
-
-  // @ts-ignore
-function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
-  return {
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Splash);
+export default Splash;

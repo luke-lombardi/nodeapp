@@ -42,6 +42,7 @@ import ApiService from '../services/ApiService';
 // @ts-ignore
 import Logger from '../services/Logger';
 import Node from '../components/Node';
+import Person from '../components/Person';
 
 // Import various types of map markers
 import PublicPlaces from './markers/PublicPlaces';
@@ -316,6 +317,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   render() {
+    console.log('MAP IS BEING RENDERED!');
     return (
       // Map screen view (exported component)
       <View style={styles.mainView}>
@@ -453,6 +455,19 @@ export class MainMap extends Component<IProps, IState> {
           // Node selected view
           this.state.nodeSelected &&
           <View style={styles.nodeSelectedView}>
+          {
+            this.state.selectedNode.nodeType === 'friend' ?
+            <Person
+              nodeId={this.state.selectedNode.data.node_id}
+              nodeType={ this.state.selectedNode.nodeType }
+              topic={this.state.selectedNode.data.topic}
+              ttl={this.state.selectedNode.data.ttl}
+              origin={this.props.userRegion}
+              destination={this.state.selectedNode.data}
+              navigation={this.props.navigation}
+              likes={this.state.selectedNode.data.likes}
+            />
+            :
             <Node
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
@@ -463,6 +478,7 @@ export class MainMap extends Component<IProps, IState> {
               navigation={this.props.navigation}
               likes={this.state.selectedNode.data.likes}
             />
+          }
           </View>
           // End node selected view
         }

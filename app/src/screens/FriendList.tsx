@@ -121,15 +121,15 @@ export class FriendList extends Component<IProps, IState> {
     let swipeBtns = [{
       component: (
         <View
-            style={{
-              flex: 1,
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'red',
-              borderLeftWidth: 1,
-              borderLeftColor: 'rgba(44,55,71,0.3)',
-            }}
+          style={{
+            flex: 1,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'red',
+            borderLeftWidth: 1,
+            borderLeftColor: 'rgba(44,55,71,0.3)',
+          }}
         >
         <Icon
           name='trash-2'
@@ -138,7 +138,7 @@ export class FriendList extends Component<IProps, IState> {
           size={30}
           color='white'
         />
-        </View>
+      </View>
       ),
       onPress: () => { this.removeFriend(row); },
     },
@@ -146,22 +146,22 @@ export class FriendList extends Component<IProps, IState> {
 
     if (this.action === 'share_node') {
       return (
-          <ListItem
-            onPress={() => this.shareNode(row)}
-            containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
-            title={'shinywizard2939'}
-            // title={ row.data.title ? row.data.title : row.node_id }
-            // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
-          />
+        <ListItem
+          onPress={() => this.shareNode(row)}
+          containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
+          title={'shinywizard2939'}
+          // title={ row.data.title ? row.data.title : row.node_id }
+          // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+        />
       );
   } else {
 
   return (
-    <Swipeout right={swipeBtns}
+    <Swipeout
+      right={swipeBtns}
       autoClose={true}
       backgroundColor='#ffffff'
     >
-
       <ListItem
         onPress={() => this.sendPrivateMessage(row)}
         containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
@@ -176,18 +176,15 @@ export class FriendList extends Component<IProps, IState> {
             underlayColor={'transparent'}
             containerStyle={{paddingHorizontal: 20, right: 20}}
           />
-          <Switch
-          onTouchEnd={async () => {  await this.toggleLocationSharing(row); }}
-          value={row.sharing_location}
-          />
-          </View>
+            <Switch
+              onTouchEnd={async () => {  await this.toggleLocationSharing(row); }}
+              value={row.sharing_location}
+            />
+        </View>
         }
-        title={
-          <Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
-        subtitle={
-          <Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
+        title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
+        subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
       />
-
     </Swipeout>
     );
   }
@@ -196,30 +193,29 @@ export class FriendList extends Component<IProps, IState> {
   render() {
     return (
       <View style={{backgroundColor: 'white', height: '100%', flex: 1}}>
-      <View style={styles.flatlist}>
-        <FlatList
-          data={this.props.relationList}
-         renderItem={this._renderItem}
-         extraData={this.state}
-         keyExtractor={item => item.relation_id}
-        />
+        <View style={styles.flatlist}>
+          <FlatList
+            data={this.props.relationList}
+            renderItem={this._renderItem}
+            extraData={this.state}
+            keyExtractor={item => item.relation_id}
+          />
 
-        {
-          this.state.isLoading &&
-          <View style={[styles.container, styles.horizontal]}>
-          <ActivityIndicator size='large' color='#0000ff' />
+          {
+            this.state.isLoading &&
+              <View style={[styles.container, styles.horizontal]}>
+                <ActivityIndicator size='large' color='#0000ff' />
+              </View>
+          }
+
+          {
+            this.props.relationList.length === 0 &&
+              <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
+                <Text style={styles.null}>No friends yet.</Text>
+                <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
+              </View>
+          }
         </View>
-        }
-
-        {
-          this.props.relationList.length === 0 &&
-          <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
-          <Text style={styles.null}>No friends yet.</Text>
-          <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
-          </View>
-        }
-
-     </View>
      </View>
     );
   }
@@ -284,8 +280,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(FriendList);
 
 const styles = StyleSheet.create({
   friendListItem: {
-    minHeight: 80,
-    maxHeight: 80,
+    minHeight: 100,
+    maxHeight: 120,
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',

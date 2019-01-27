@@ -16,7 +16,7 @@ import AuthService from '../services/AuthService';
 
 interface IProps {
   functions: any;
-  Navigation: any;
+  firstRun: boolean;
 }
 
 interface IState {
@@ -75,6 +75,9 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async showModal(type: string) {
+    // we check firstRun in the splash screen to avoid a race condition with AuthService.permissionsSet()
+    // so if no props are passed, check firstRun from async storage directly
+    let firstRun = this.props.firstRun ? this.props.firstRun : await AuthService.permissionsSet();
 
     switch (type) {
       case 'location':
@@ -83,7 +86,8 @@ export class GetPermissions extends Component<IProps, IState> {
         'Dropping nodes works best with background location enabled',
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: async () => await this.requestPermissions('location')},
+          // background location always requires user to give permission manually, so go directly to settings
+          {text: 'OK', onPress: firstRun ? async () => { await this.requestPermissions('location'); } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -94,7 +98,7 @@ export class GetPermissions extends Component<IProps, IState> {
         'Enable notifications to receive updates when other users message you',
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: async () => await this.requestPermissions('notification')},
+          {text: 'OK', onPress: firstRun ? async () => { await this.requestPermissions('notification'); } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -105,7 +109,7 @@ export class GetPermissions extends Component<IProps, IState> {
         'Motion tracking helps us keep our node train running on schedule',
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: async () => await this.requestPermissions('motion')},
+          {text: 'OK', onPress: firstRun ? async () => { await this.requestPermissions('motion'); } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -116,7 +120,6 @@ export class GetPermissions extends Component<IProps, IState> {
 
   async requestPermissions(type: string) {
     Logger.info(`GetPermissions.requestPermissions - called with type ${type}`);
-    let firstRun = await AuthService.permissionsSet();
 
     let hasPermissions: string = '';
     let response: string = undefined;
@@ -136,9 +139,6 @@ export class GetPermissions extends Component<IProps, IState> {
         hasPermissions = await Permissions.check('motion');
         if (hasPermissions !== 'authorized') {
           response = await Permissions.request('motion');
-          if (!firstRun) {
-            OpenSettings.openSettings();
-          }
         }
 
         await this.setState({ motionPermissions: response});
@@ -149,10 +149,7 @@ export class GetPermissions extends Component<IProps, IState> {
 
         if (hasPermissions !== 'authorized') {
           response = await Permissions.request('notification');
-          if (!firstRun) {
-          OpenSettings.openSettings();
         }
-      }
 
         await this.setState({ notificationPermissions: response});
         break;
@@ -169,7 +166,8 @@ export class GetPermissions extends Component<IProps, IState> {
       this.state.motionPermissions === 'authorized' &&
       this.state.locationPermissions === 'authorized'
     ) {
-      NavigationService.reset('Map', {});
+      // if we have permissions, tell the splash screen to render the app
+      this.props.functions.setPermissions();
       return true;
     }
     return false;
@@ -243,12 +241,11 @@ export class GetPermissions extends Component<IProps, IState> {
         <Button
           title='Continue'
           containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}
-          onPress={async () => { await AuthService.checkPermissions(true); }}
+          onPress={async () => { await this.checkPermissions(); }}
           disabled={
-            this.state.locationPermissions !== 'authorized' &&
-            this.state.motionPermissions !== 'authorized' ?
-            true :
-            false
+            this.state.locationPermissions !== 'authorized' ||
+            this.state.motionPermissions !== 'authorized' ||
+            this.state.notificationPermissions !== 'authorized'
           }
         />
       </View>

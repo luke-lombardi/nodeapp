@@ -158,7 +158,7 @@ export class NodeList extends Component<IProps, IState> {
           textStyle={{fontWeight: 'bold', fontSize: 22}}
         />
         <Icon
-          name={'arrow-left'}
+          name={'x'}
           type={'feather'}
           size={35}
           underlayColor={'transparent'}
@@ -183,7 +183,7 @@ export class NodeList extends Component<IProps, IState> {
         {
           this.state.selectedIndex === 1 && this.props.privatePlaceList.length === 0 &&
           <View style={styles.nullContainer}>
-          <Text style={styles.null}>No nodes have been created yet</Text>
+          <Text style={styles.null}>No nodes have been created yet.</Text>
           <Button
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
@@ -195,7 +195,7 @@ export class NodeList extends Component<IProps, IState> {
         {
           this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
           <View style={styles.nullContainer}>
-          <Text style={styles.null}>No nodes have been created yet</Text>
+          <Text style={styles.null}>No nodes have been created yet.</Text>
           <Button
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
@@ -249,15 +249,20 @@ const styles = StyleSheet.create({
   },
   nullContainer: {
     flex: 1,
-    bottom: 200,
-    backgroundColor: 'white',
+    bottom: '35%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   null: {
-    fontSize: 18,
+    fontSize: 22,
     color: 'gray',
     alignSelf: 'center',
+  },
+  nullSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    top: '40%',
+    paddingVertical: 10,
   },
   button: {
     backgroundColor: 'black',

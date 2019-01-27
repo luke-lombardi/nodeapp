@@ -83,7 +83,7 @@ export class GetPermissions extends Component<IProps, IState> {
         'Dropping nodes works best with background location enabled',
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => this.requestPermissions(type)},
+          {text: 'OK', onPress: async () => await this.requestPermissions('location')},
         ],
         { cancelable: false },
       );
@@ -94,7 +94,7 @@ export class GetPermissions extends Component<IProps, IState> {
         'Enable notifications to receive updates when other users message you',
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => this.requestPermissions(type)},
+          {text: 'OK', onPress: async () => await this.requestPermissions('notification')},
         ],
         { cancelable: false },
       );
@@ -105,7 +105,7 @@ export class GetPermissions extends Component<IProps, IState> {
         'Motion tracking helps us keep our node train running on schedule',
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => this.requestPermissions(type)},
+          {text: 'OK', onPress: async () => await this.requestPermissions('motion')},
         ],
         { cancelable: false },
       );
@@ -117,11 +117,6 @@ export class GetPermissions extends Component<IProps, IState> {
   async requestPermissions(type: string) {
     Logger.info(`GetPermissions.requestPermissions - called with type ${type}`);
     let firstRun = await AuthService.permissionsSet();
-    if (!firstRun) {
-      Logger.info(`GetPermissions.requestPermissions - first run ${firstRun}`);
-      OpenSettings.openSettings();
-      return;
-    }
 
     let hasPermissions: string = '';
     let response: string = undefined;
@@ -131,13 +126,7 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'location':
         hasPermissions = await Permissions.check('location', { type: 'always'} );
         if (hasPermissions !== 'authorized') {
-
-          // permission request modal
-
-          // if the user accepts the modal permissions, send the real request
-
-          response = await Permissions.request('location', { type: 'always'} );
-        } else if (!firstRun) {
+          response = await Permissions.request('location', { type: 'always'});
           OpenSettings.openSettings();
         }
 
@@ -146,12 +135,10 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'motion':
         hasPermissions = await Permissions.check('motion');
         if (hasPermissions !== 'authorized') {
-
-          // permission request modal
-
-          // if the user accepts the modal permissions, send the real request
-
           response = await Permissions.request('motion');
+          if (!firstRun) {
+            OpenSettings.openSettings();
+          }
         }
 
         await this.setState({ motionPermissions: response});
@@ -161,13 +148,11 @@ export class GetPermissions extends Component<IProps, IState> {
         Logger.info(`GetPermissions.requestPermissions - permissions: ${hasPermissions}`);
 
         if (hasPermissions !== 'authorized') {
-
-          // permission request modal
-
-          // if the user accepts the modal permissions, send the real request
-
-          response = await Permissions.request('notification', { type: ['alert', 'badge', 'sound'] });
+          response = await Permissions.request('notification');
+          if (!firstRun) {
+          OpenSettings.openSettings();
         }
+      }
 
         await this.setState({ notificationPermissions: response});
         break;
@@ -184,6 +169,7 @@ export class GetPermissions extends Component<IProps, IState> {
       this.state.motionPermissions === 'authorized' &&
       this.state.locationPermissions === 'authorized'
     ) {
+      NavigationService.reset('Map', {});
       return true;
     }
     return false;
@@ -211,7 +197,6 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'
@@ -246,7 +231,6 @@ export class GetPermissions extends Component<IProps, IState> {
               </View>
             }
             iconRight
-            // textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
             containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
             checkedIcon='check'
             uncheckedIcon='circle-o'

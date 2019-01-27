@@ -44,7 +44,7 @@ export class Splash extends Component<IProps, IState> {
 
     async getPermissions() {
       let firstRun = await AuthService.permissionsSet();
-      console.log('PERMISSIONS ON SPLASH', firstRun);
+      Logger.info(`SPLASH SCREEN - FIRST RUN: ${firstRun}`);
       if (firstRun) {
         this.setState({firstRun: true});
     }

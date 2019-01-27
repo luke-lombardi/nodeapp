@@ -9,6 +9,7 @@ import { GetPermissions } from '../screens/GetPermissions';
 import App from '../components/App';
 
 interface IProps {
+  // @ts-ignore
   functions: any;
   firstRun: boolean;
 }

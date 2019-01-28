@@ -33,6 +33,7 @@ export default class AuthService {
     public static async checkPermissions(showSnackbar: boolean) {
       if (! (await AuthService.hasPermissions()) ) {
         Logger.info(`AuthService.checkPermissions() - user does not have required permissions`);
+        NavigationService.reset('GetPermissions', {});
 
         if (showSnackbar) {
           Snackbar.show({
@@ -58,12 +59,12 @@ export default class AuthService {
       }
 
       let locationPermissions = await Permissions.check('location', { type: 'always'} );
-      let notificationPermissions = await Permissions.check('notification', { type: 'always'} );
-      // let motionPermissions = await Permissions.check('motion', { type: 'always'} );
+      let notificationPermissions = await Permissions.check('notification');
+      let motionPermissions = await Permissions.check('motion');
 
       permissions.location = locationPermissions;
       permissions.notification = notificationPermissions;
-      // permissions.motion = motionPermissions;
+      permissions.motion = motionPermissions;
 
       // Set a flag to say that at some point we have set permissions
       // This is not set on first run
@@ -72,13 +73,15 @@ export default class AuthService {
 
       Logger.info(`AuthService.permissionsGranted() - Current permissions ${JSON.stringify(permissions)} `);
 
+      await AuthService.hasPermissions();
+
       return permissions;
     }
 
     public static async hasPermissions() {
       let locationPermissions = await Permissions.check('location', { type: 'always'} );
       let notificationPermissions = await Permissions.check('notification');
-      // let motionPermissions = await Permissions.check('motion', { type: 'always'} );
+      let motionPermissions = await Permissions.check('motion');
 
       if (locationPermissions !== 'authorized') {
         return false;
@@ -89,10 +92,11 @@ export default class AuthService {
       }
 
       Logger.info(`AuthService.hasPermissions() - permissions are set`);
-      // if (motionPermissions !== 'authorized') {
-      //   return false;
-      // }
+      if (motionPermissions !== 'authorized') {
+        return false;
+      }
 
+      // NavigationService.reset('Map', {});
       return true;
     }
 

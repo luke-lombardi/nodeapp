@@ -51,8 +51,8 @@ export class Notifications extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingRight: 10},
-        headerTitleStyle: { color: 'white'},
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
+      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'Notifications',
         headerLeft:
             <Icon
@@ -228,7 +228,7 @@ export class Notifications extends Component<IProps, IState> {
             this.state.data.length === 0 &&
             <View style={styles.nullContainer}>
             <Text style={styles.null}>No Notifications.</Text>
-            <Text style={{fontSize: 14, top: '50%', color: 'gray'}}>You can find things that require your attention here.</Text>
+            <Text style={styles.nullSubtitle}>You can find things that require your attention here.</Text>
             </View>
           }
           </View>
@@ -269,6 +269,12 @@ const styles = StyleSheet.create({
     color: 'gray',
     top: '40%',
     alignSelf: 'center',
+  },
+  nullSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    top: '40%',
+    paddingVertical: 10,
   },
   titleText: {
     color: 'black',
@@ -336,7 +342,7 @@ const styles = StyleSheet.create({
   },
   nullContainer: {
     flex: 1,
-    bottom: 400,
+    bottom: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -248,7 +248,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={ async () => { await this.goToChat(); } }
+              onPress={this.goToChat}
             />
             <Button
               icon={{
@@ -294,13 +294,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    // padding: 10,
     bottom: 20,
     backgroundColor: 'rgba(44,55,71,.9)',
-    // shadowColor: 'black',
-    // shadowOpacity: 0.1,
-    // shadowRadius: 5,
-    // shadowOffset: { width: 2, height: 3 },
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -341,7 +336,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    //backgroundColor: 'rgba(44,55,71,.9)',
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
@@ -364,7 +358,6 @@ const styles = StyleSheet.create({
   mapButton: {
     width: '70%',
     height: '100%',
-    // marginLeft: 15,
   },
   directionsButton: {
     width: '70%',

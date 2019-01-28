@@ -57,14 +57,14 @@ export class Chat extends Component<IProps, IState> {
 
   // TODO: figure out a smarter way to do this
   static navigationOptions = ({ navigation }) => {
-    // const { params = {} } = navigation.state;
+    const { state: { params = {} } } = navigation;
     return {
-      headerStyle: {backgroundColor: 'black', height: 50, paddingLeft: 10, paddingRight: 10},
-        headerTitleStyle: { color: 'white'},
-        title: 'Chat',
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
+      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
+      title: params.title ? params.title : 'Chat',
         headerLeft:
           <Icon
-          name='x' type='feather' iconStyle={{right: 30}} containerStyle={{padding: 5, width: 100, height: 50}} size={30} underlayColor={'transparent'} color={'#ffffff'} onPress={ () => {
+          name='x' type='feather' containerStyle={{padding: 0}} size={35} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
           navigation.dispatch(NavigationActions.navigate(
                 {
                   key: 'Map',
@@ -72,7 +72,7 @@ export class Chat extends Component<IProps, IState> {
                   params: {},
                   action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
                 })); }
-               } />,
+          } />,
       };
   }
 
@@ -144,7 +144,10 @@ export class Chat extends Component<IProps, IState> {
     getTime(item) {
       let easternTime = moment(item.timestamp).utcOffset(14);
 
-      let parsedTimestamp = moment(easternTime).calendar();
+      // make sure it does not return a date that is ahead of the current date
+      let timestamp = moment(easternTime).max(moment());
+
+      let parsedTimestamp = moment(timestamp).calendar();
 
       return parsedTimestamp;
     }
@@ -308,6 +311,8 @@ export class Chat extends Component<IProps, IState> {
       this.action = this.props.navigation.getParam('action', '');
       this.nodeId = this.props.navigation.getParam('nodeId', '');
 
+      // this.props.navigation.setParams({title: userInfo.user});
+
       // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
 
       if (this.action === '' || undefined) {
@@ -368,6 +373,10 @@ export class Chat extends Component<IProps, IState> {
     }
 
     async monitorMessages() {
+
+      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
+
+      console.log('TRACKED RELATIONS', trackedRelations);
 
       this.userUuid = await AuthService.getUUID();
 
@@ -448,7 +457,7 @@ export class Chat extends Component<IProps, IState> {
             this.state.data.length < 1 &&
             <View style={styles.nullContainer}>
             <Text style={styles.null}>No messages yet.</Text>
-            <Text style={{fontSize: 14, top: '90%', color: 'gray'}}>You can find messages here.</Text>
+            <Text style={styles.nullSubtitle}>You can find messages here.</Text>
             </View>
           }
           </View>
@@ -513,8 +522,14 @@ const styles = StyleSheet.create({
   null: {
     fontSize: 22,
     color: 'gray',
-    top: '80%',
+    top: '40%',
     alignSelf: 'center',
+  },
+  nullSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    top: '40%',
+    paddingVertical: 10,
   },
   titleText: {
     color: 'black',
@@ -593,7 +608,7 @@ const styles = StyleSheet.create({
   },
   nullContainer: {
     flex: 1,
-    bottom: 400,
+    bottom: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },

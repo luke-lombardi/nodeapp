@@ -71,11 +71,23 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app requires background location tracking to connect you with users nearby.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>We need permission to access your location</string>
+	<string>This app requires background location tracking to connect you with users nearby.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need permission to access your location</string>
+	<string>This app requires background location tracking to connect you with users nearby.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Motion updates increase battery efficiency by intelligently toggling location-services when device is detected to be moving</string>
+	<string>This app requires motion location tracking to conserve battery life.</string>
+  <key>NSBluetoothPeripheralUsageDescription</key>
+  <string>This app requires bluetooth.</string>
+  <key>NSCalendarsUsageDescription</key>
+  <string>This app requires your calendar.</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>This app requires access to your photos.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>This app requires access to your photos.</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>This app may analyze your voice.</string>
+  <key>NSAppleMusicUsageDescription</key>
+  <string>This app requires access to Apple Music.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

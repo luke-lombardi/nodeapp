@@ -3,6 +3,7 @@ import { View, StyleSheet, Switch, Text, TextInput, Dimensions  } from 'react-na
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
+import LinearGradient from 'react-native-linear-gradient';
 
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
@@ -102,8 +103,9 @@ export class CreateNode extends Component<IProps, IState> {
                   style={styles.input}
                   maxLength={280}
                   underlineColorAndroid='transparent'
-                  placeholder='Topic'
+                  placeholder='Add a topic...'
               />
+            <Text style={styles.characterCount}>{this.state.topic.length}/280</Text>
             </View>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>{this.state.private ? 'Private (toggle for public)' : 'Public (toggle for private)'}</Text>
@@ -262,13 +264,16 @@ const styles = StyleSheet.create({
   },
   miniMapView: {
     flex: 1,
-    padding: 40,
+    padding: 20,
+    marginBottom: 10,
   },
   map: {
   },
   inputView: {
-    marginTop: 10,
-    marginBottom: 10,
+    width: '100%',
+    flex: 1,
+    top: 20,
+    marginBottom: 20,
   },
   nodeForm: {
     flex: 6,
@@ -292,22 +297,36 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
   },
+  characterCount: {
+    color: 'gray',
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    bottom: -2,
+    padding: 10,
+  },
   switchView: {
+    borderTopWidth: .5,
+    borderTopColor: 'rgba(220,220,220,0.8)',
+    paddingTop: '10%',
     flex: 2,
     alignItems: 'flex-start',
-    marginLeft: 20,
   },
   switch: {
+    marginLeft: 20,
+    top: 5,
     alignSelf: 'flex-start',
   },
   switchText: {
-    paddingVertical: 20,
+    marginLeft: 20,
+    bottom: 10,
     fontSize: 24,
     color: 'black',
     alignSelf: 'flex-start',
   },
   sliderContainer: {
+    marginLeft: 20,
     alignItems: 'flex-start',
+    top: 25,
   },
   sliderText: {
     alignSelf: 'center',
@@ -323,26 +342,23 @@ const styles = StyleSheet.create({
   },
   slider: {
     alignSelf: 'center',
-    width: 350,
+    width: '90%',
   },
   sliderTextContainer: {
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
   privateText: {
     position: 'absolute',
     alignContent: 'flex-start',
-    marginTop: 55,
     marginLeft: 65,
     fontSize: 24,
     color: 'gray',
   },
   input: {
-    paddingHorizontal: 20,
-    borderBottomWidth: .5,
-    borderBottomColor: 'rgba(220,220,220,0.8)',
-    paddingVertical: 10,
-    paddingTop: 25,
     fontSize: 24,
+    bottom: 30,
+    padding: 10,
+    paddingTop: 10,
     color: 'black',
   },
 });

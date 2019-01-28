@@ -95,6 +95,7 @@ export class Chat extends Component<IProps, IState> {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.closeConfirmModal = this.closeConfirmModal.bind(this);
     this.showConfirmModal = this.showConfirmModal.bind(this);
+    this.stackMessages = this.stackMessages.bind(this);
 
     this.startPrivateChat = this.startPrivateChat.bind(this);
     this.upvoteComment = this.upvoteComment.bind(this);
@@ -224,12 +225,22 @@ export class Chat extends Component<IProps, IState> {
       }
     }
 
-    async upvoteComment(item) {
-      console.log('upvoting comment....', item);
+    async upvoteComment() {
+      console.log('upvoting comment....');
     }
 
     async downvoteComment(item) {
       console.log('downvoting comment....', item);
+    }
+
+    stackMessages(index, item) {
+      let previousItem  = this.state.data[(index - 1)];
+      if (previousItem !== undefined) {
+        if (item.user === previousItem.user) {
+          return true;
+        }
+        return false;
+      }
     }
 
     // @ts-ignore
@@ -237,72 +248,53 @@ export class Chat extends Component<IProps, IState> {
       <ListItem
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
+          marginBottom: -15,
           minHeight: 100,
-          // backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
-        rightElement={this.action === 'general_chat' &&
-          <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-            <Icon
-              name='keyboard-arrow-up'
-              color='#00aced'
-              size={32}
-              onPress={() => this.upvoteComment(item)}
-            />
-            <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
-            <Icon
-              name='keyboard-arrow-down'
-              color='#00aced'
-              size={32}
-              onPress={() => this.downvoteComment(item)}
-            />
-          </View>
-        }
-        title={
+        //
+        // UPVOTE DOWNVOTE ARROWS FOR GENERAL CHAT
+        //
+        // rightElement={this.action === 'general_chat' &&
+        //   <View style={{flexDirection: 'column', alignContent: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+        //     <Icon
+        //       name='keyboard-arrow-up'
+        //       color='#00aced'
+        //       size={32}
+        //       onPress={() => this.upvoteComment(item)}
+        //     />
+        //     <Text style={{fontSize: 18, alignSelf: 'center', alignItems: 'center'}}>39</Text>
+        //     <Icon
+        //       name='keyboard-arrow-down'
+        //       color='#00aced'
+        //       size={32}
+        //       onPress={() => this.downvoteComment(item)}
+        //     />
+        //   </View>
+        // }
+        //
+        title={this.stackMessages(index, item) ?
           <View style={styles.titleView}>
           <Text style={this.userUuid === item.user.slice(0) ?
-            [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}] :
-            [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
+            [styles.thisDisplayName, {paddingTop: index === 0 ? 5 : 0}] :
+            [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
           </Text>
+          <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
           <Text style={styles.titleText}>{item.message}</Text>
+          </View>
+          </View>
+          :
+          <View style={styles.titleView}>
+          <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
+          <Text style={styles.titleText}>{item.message}</Text>
+          </View>
           </View>
         }
         subtitle={
           <View style={styles.subtitleView}>
-          <Text style={styles.ratingText}>{this.getTime(item)}</Text>
+          <Text style={styles.timestamp}>{this.getTime(item)}</Text>
           {/* ({ item.user.substr(item.user.length - 5)}) */}
           </View>
         }
-
-        // CODE BELOW PUTS USER CHATS ON RIGHT SIDE OF SCREEN
-
-        // title={this.userUuid === item.user.slice(8) ?
-        //   <View style={styles.titleView}>
-        //   <Text style={this.userUuid === item.user.slice(0) ?
-        //     [styles.senderRatingText, {paddingTop: index === 0 ? 5 : 0}] :
-        //     [styles.senderRatingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
-        //   </Text>
-        //   <Text style={styles.senderTitleText}>{item.message}</Text>
-        //   </View>
-        //   :
-        //   <View style={styles.titleView}>
-        //   <Text style={this.userUuid === item.user.slice(0) ?
-        //     [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}] :
-        //     [styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
-        //   </Text>
-        //   <Text style={styles.titleText}>{item.message}</Text>
-        //   </View>
-        // }
-        // subtitle={this.userUuid === item.user.slice(8) ?
-        //   <View style={styles.senderSubtitleView}>
-        //   <Text style={styles.senderRatingText}>{this.getTime(item)}</Text>
-        //   {/* ({ item.user.substr(item.user.length - 5)}) */}
-        //   </View>
-        //   :
-        //   <View style={styles.subtitleView}>
-        //   <Text style={styles.ratingText}>{this.getTime(item)}</Text>
-        //   {/* ({ item.user.substr(item.user.length - 5)}) */}
-        //   </View>
-        // }
       />
     )
 
@@ -443,15 +435,17 @@ export class Chat extends Component<IProps, IState> {
         <KeyboardAvoidingView
           style={{flex: 1}}
           behavior='padding'
-          keyboardVerticalOffset={65}
+          keyboardVerticalOffset={90}
         >
         <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
            keyboardDismissMode={'on-drag'}
            data={this.state.data}
+           inverted
            renderItem={this._renderItem}
            keyExtractor={item => item.timestamp}
+           ListHeaderComponent={<View style={{ height: 0, marginTop: 15 }}></View>}
           />
           {
             this.state.data.length < 1 &&
@@ -473,6 +467,8 @@ export class Chat extends Component<IProps, IState> {
             underlineColorAndroid={'transparent'}
             multiline
             blurOnSubmit
+            autoCorrect
+            autoFocus
             maxLength={500}
             allowFontScaling
             onSubmitEditing={this.submitMessage}
@@ -517,7 +513,7 @@ const styles = StyleSheet.create({
   nodeListItem: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
-    minHeight: 100,
+    minHeight: 10,
   },
   null: {
     fontSize: 22,
@@ -533,9 +529,9 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: 'black',
-    fontSize: 16,
-    paddingTop: 5,
-    // alignSelf: 'flex-end',
+    fontSize: 18,
+    top: -5,
+    left: 2,
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -566,7 +562,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: .5,
     borderColor: 'rgba(220,220,220,0.8)',
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: 'white',
   },
   submitChatButton: {
@@ -578,19 +574,47 @@ const styles = StyleSheet.create({
   },
   titleView: {
     flexDirection: 'column',
-    paddingTop: 5,
   },
   subtitleView: {
     flexDirection: 'row',
-    paddingTop: 5,
   },
   senderSubtitleView: {
     flexDirection: 'row',
-    paddingTop: 5,
     alignSelf: 'flex-end',
   },
   ratingText: {
     color: 'grey',
+    // paddingTop: 5,
+    left: -1,
+  },
+  thisDisplayName: {
+    color: 'rgba(140, 20, 252, 1)',
+    paddingBottom: 5,
+    left: -1,
+    fontWeight: 'bold',
+  },
+  thatDisplayName: {
+    color: 'rgba(52, 152, 219, 1)',
+    paddingBottom: 5,
+    left: -1,
+    fontWeight: 'bold',
+  },
+  thisUser: {
+    paddingTop: 5,
+    borderLeftWidth: 3,
+    borderLeftColor: 'rgba(140, 20, 252, 1)',
+    paddingHorizontal: 5,
+  },
+  thatUser: {
+    paddingTop: 5,
+    borderLeftWidth: 3,
+    borderLeftColor: 'rgba(52, 152, 219, 1)',
+    paddingHorizontal: 5,
+  },
+  timestamp: {
+    color: 'grey',
+    paddingTop: 5,
+    left: -1,
   },
   senderRatingText: {
     color: 'grey',
@@ -599,7 +623,6 @@ const styles = StyleSheet.create({
   senderTitleText: {
     alignSelf: 'flex-end',
     fontSize: 16,
-    paddingTop: 5,
   },
   flatlist: {
     backgroundColor: 'white',

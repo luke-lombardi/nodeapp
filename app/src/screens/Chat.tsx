@@ -257,8 +257,9 @@ export class Chat extends Component<IProps, IState> {
           return false;
         }
         return true;
+      }
+      return false;
     }
-  }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (

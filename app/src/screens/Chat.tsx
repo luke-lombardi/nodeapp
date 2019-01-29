@@ -95,7 +95,10 @@ export class Chat extends Component<IProps, IState> {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.closeConfirmModal = this.closeConfirmModal.bind(this);
     this.showConfirmModal = this.showConfirmModal.bind(this);
+
+    // chat display functions
     this.stackMessages = this.stackMessages.bind(this);
+    this.isSameDay = this.isSameDay.bind(this);
 
     this.startPrivateChat = this.startPrivateChat.bind(this);
     this.upvoteComment = this.upvoteComment.bind(this);
@@ -146,7 +149,7 @@ export class Chat extends Component<IProps, IState> {
       let easternTime = moment(item.timestamp).utcOffset(14);
 
       // make sure it does not return a date that is ahead of the current date
-      let timestamp = moment(easternTime).max(moment());
+      let timestamp = moment(easternTime).max(moment().min(easternTime));
 
       let parsedTimestamp = moment(timestamp).calendar();
 
@@ -233,23 +236,37 @@ export class Chat extends Component<IProps, IState> {
       console.log('downvoting comment....', item);
     }
 
+    // @ts-ignore
     stackMessages(index, item) {
-      let previousItem  = this.state.data[(index - 1)];
+      let previousItem  = this.state.data[(index.length - 1)];
       if (previousItem !== undefined) {
         if (item.user === previousItem.user) {
           return true;
+        } else if (previousItem === undefined) {
+          return false;
         }
         return false;
       }
     }
+
+    isSameDay(item, index) {
+      let previousItem  = this.state.data[(index - 1)];
+      if (previousItem !== undefined) {
+        if (moment(item.timestamp).startOf('day') === moment(previousItem).startOf('day')) {
+          return false;
+        }
+        return true;
+    }
+  }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
+          top: 0,
           marginBottom: -15,
-          minHeight: 100,
+          minHeight: 50,
         }}
         //
         // UPVOTE DOWNVOTE ARROWS FOR GENERAL CHAT
@@ -272,14 +289,14 @@ export class Chat extends Component<IProps, IState> {
         //   </View>
         // }
         //
-        title={this.stackMessages(index, item) ?
+        title={!this.stackMessages(index, item) ?
           <View style={styles.titleView}>
           <Text style={this.userUuid === item.user.slice(0) ?
             [styles.thisDisplayName, {paddingTop: index === 0 ? 5 : 0}] :
             [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
           </Text>
           <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
-          <Text style={styles.titleText}>{item.message}</Text>
+          <Text style={styles.myTitleText}>{item.message}</Text>
           </View>
           </View>
           :
@@ -289,10 +306,14 @@ export class Chat extends Component<IProps, IState> {
           </View>
           </View>
         }
-        subtitle={
+        subtitle={this.stackMessages(index, item) ?
+          <View style={styles.subtitleView}>
+          {/* <Text style={styles.timestamp}>{this.getTime(item)}</Text> */}
+          {/* ({ item.user.substr(item.user.length - 5)}) */}
+          </View>
+          :
           <View style={styles.subtitleView}>
           <Text style={styles.timestamp}>{this.getTime(item)}</Text>
-          {/* ({ item.user.substr(item.user.length - 5)}) */}
           </View>
         }
       />
@@ -356,6 +377,7 @@ export class Chat extends Component<IProps, IState> {
 
       // If the response was undefined, display error snackbar
       } else {
+        this.setState({isLoading: false});
         Snackbar.show({
           title: 'Error sending message, try again',
           duration: Snackbar.LENGTH_SHORT,
@@ -365,12 +387,6 @@ export class Chat extends Component<IProps, IState> {
     }
 
     async monitorMessages() {
-
-      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
-
-      console.log('TRACKED RELATIONS', trackedRelations);
-
-      this.userUuid = await AuthService.getUUID();
 
       if (this.monitoring) return;
 
@@ -437,7 +453,6 @@ export class Chat extends Component<IProps, IState> {
           behavior='padding'
           keyboardVerticalOffset={90}
         >
-        <View style={{flex: 1}}>
         <View style={styles.flatlist}>
           <FlatList
            keyboardDismissMode={'on-drag'}
@@ -445,7 +460,7 @@ export class Chat extends Component<IProps, IState> {
            inverted
            renderItem={this._renderItem}
            keyExtractor={item => item.timestamp}
-           ListHeaderComponent={<View style={{ height: 0, marginTop: 15 }}></View>}
+           ListHeaderComponent={<View style={{ height: 0, marginTop: 20 }}></View>}
           />
           {
             this.state.data.length < 1 &&
@@ -487,7 +502,6 @@ export class Chat extends Component<IProps, IState> {
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
           />
         </View>
-      </View>
       </KeyboardAvoidingView>
       </View>
       );
@@ -533,6 +547,12 @@ const styles = StyleSheet.create({
     top: -5,
     left: 2,
   },
+  myTitleText: {
+    color: 'black',
+    fontSize: 18,
+    top: -10,
+    left: 2,
+  },
   iconContainer: {
     backgroundColor: 'white',
     bottom: 2,
@@ -574,6 +594,7 @@ const styles = StyleSheet.create({
   },
   titleView: {
     flexDirection: 'column',
+    marginTop: -1,
   },
   subtitleView: {
     flexDirection: 'row',
@@ -626,7 +647,7 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     backgroundColor: 'white',
-    flex: 1,
+    flex: 3,
     marginBottom: 40,
   },
   nullContainer: {

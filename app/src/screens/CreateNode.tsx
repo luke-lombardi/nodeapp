@@ -3,7 +3,6 @@ import { View, StyleSheet, Switch, Text, TextInput, Dimensions  } from 'react-na
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
-import LinearGradient from 'react-native-linear-gradient';
 
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';

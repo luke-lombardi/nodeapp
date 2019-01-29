@@ -245,7 +245,9 @@ async function processInitialNotification(notification, initialNotification: boo
   if (notification.action !== undefined) {
 
     if (notification.action === 'got_message') {
-      await NotificationService.handleAction(notification);
+      if (initialNotification) {
+        await NotificationService.handleAction(notification);
+      }
       return;
     } else {
       await NotificationService.storeNotification(notification);

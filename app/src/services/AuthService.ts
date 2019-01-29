@@ -34,8 +34,6 @@ export default class AuthService {
     public static async checkPermissions(showSnackbar: boolean) {
       if (! (await AuthService.hasPermissions()) ) {
         Logger.info(`AuthService.checkPermissions() - user does not have required permissions`);
-        // NavigationService.reset('GetPermissions', {});
-
         if (showSnackbar) {
           Snackbar.show({
             title: 'You must enable all services to use the app.',
@@ -44,9 +42,7 @@ export default class AuthService {
         }
 
       } else {
-
         Logger.info(`AuthService.checkPermissions() - permissions set`);
-        // NavigationService.reset('Map', {});
       }
     }
 
@@ -93,10 +89,11 @@ export default class AuthService {
         return false;
       }
 
-      Logger.info(`AuthService.hasPermissions() - permissions are set`);
       if (motionPermissions !== 'authorized') {
         return false;
       }
+
+      Logger.info(`AuthService.hasPermissions() - permissions are set`);
 
       return true;
     }

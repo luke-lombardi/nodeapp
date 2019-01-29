@@ -120,10 +120,9 @@ export class Chat extends Component<IProps, IState> {
 
     async submitMessage() {
       let nodeId = this.props.navigation.getParam('nodeId');
-      console.log('USING THIS NODE ID');
-      console.log(nodeId);
+
       await this.setState({
-        isLoading: true,
+        isLoading: false,
         messageBody: this.state.messageBody,
         nodeId: nodeId,
       });
@@ -131,7 +130,7 @@ export class Chat extends Component<IProps, IState> {
       // If the message body is empty, don't post the message
       if (this.state.messageBody === '' || this.state.messageBody.length < MINIMUM_MSG_LENGTH) {
         Snackbar.show({
-          title: 'Enter a message to send.',
+          title: 'Enter a message to send (has to be longer than 2 characters).',
           duration: Snackbar.LENGTH_SHORT,
         });
 
@@ -238,7 +237,7 @@ export class Chat extends Component<IProps, IState> {
 
     // @ts-ignore
     stackMessages(index, item) {
-      let previousItem = this.state.data[index - 1];
+      let previousItem = this.state.data[index + 1];
       if (previousItem !== undefined) {
         if (item.user === previousItem.user) {
           return true;
@@ -295,7 +294,8 @@ export class Chat extends Component<IProps, IState> {
           <View style={styles.titleView}>
           <Text style={this.userUuid === item.user.slice(0) ?
             [styles.thisDisplayName, {paddingTop: index === 0 ? 5 : 0}] :
-            [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name}
+            [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name + '- ' + this.getTime(item)}
+
           </Text>
           <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
           <Text style={styles.myTitleText}>{item.message}</Text>
@@ -315,7 +315,6 @@ export class Chat extends Component<IProps, IState> {
           </View>
           :
           <View style={styles.subtitleView}>
-          <Text style={styles.timestamp}>{this.getTime(item)}</Text>
           </View>
         }
       />
@@ -483,7 +482,7 @@ export class Chat extends Component<IProps, IState> {
             onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
             underlineColorAndroid={'transparent'}
             multiline
-            blurOnSubmit
+            blurOnSubmit={false}
             autoCorrect
             autoFocus
             maxLength={500}

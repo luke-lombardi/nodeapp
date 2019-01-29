@@ -120,6 +120,8 @@ export default class NotificationService {
             duration: Snackbar.LENGTH_SHORT,
           });
 
+          await this.removeNotification(notification);
+
         } else {
           // Show success message
           Snackbar.show({
@@ -147,6 +149,7 @@ export default class NotificationService {
 
             Logger.info(`MainMap.handleAction - this is a new node, storing: ${JSON.stringify(nodeId)}`);
 
+            await this.removeNotification(notification);
             return;
           }
 
@@ -155,6 +158,8 @@ export default class NotificationService {
             title: 'You have already added this node',
             duration: Snackbar.LENGTH_SHORT,
           });
+
+          await this.removeNotification(notification);
 
       } else if (action === 'got_message') {
         Logger.info(`MainMap.handleAction - Received a DM from ${notification.from_username}`);

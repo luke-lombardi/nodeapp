@@ -93,12 +93,11 @@ export default class AuthService {
         return false;
       }
 
-      // Logger.info(`AuthService.hasPermissions() - permissions are set`);
-      // if (motionPermissions !== 'authorized') {
-      //   return false;
-      // }
+      Logger.info(`AuthService.hasPermissions() - permissions are set`);
+      if (motionPermissions !== 'authorized') {
+        return false;
+      }
 
-      // NavigationService.reset('Map', {});
       return true;
     }
 

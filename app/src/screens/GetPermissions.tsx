@@ -30,7 +30,7 @@ export class GetPermissions extends Component<IProps, IState> {
 
     this.state = {
       notificationPermissions: '',
-      motionPermissions: 'authorized',
+      motionPermissions: '',
       locationPermissions: '',
     };
 
@@ -67,7 +67,7 @@ export class GetPermissions extends Component<IProps, IState> {
     let currentPermissions = await AuthService.permissionsGranted();
     await this.setState({
       notificationPermissions: currentPermissions.notification,
-      motionPermissions: 'authorized', // currentPermissions.motion,
+      motionPermissions: currentPermissions.motion,
       locationPermissions: currentPermissions.location,
     });
   }

@@ -61,18 +61,27 @@ export class Chat extends Component<IProps, IState> {
     return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-      title: params.title ? params.title : 'Chat',
+        title: 'Chat',
         headerLeft:
           <Icon
-          name='x' type='feather' containerStyle={{padding: 0}} size={35} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () => {
-          navigation.dispatch(NavigationActions.navigate(
-                {
-                  key: 'Map',
-                  routeName: 'Map',
-                  params: {},
-                  action: NavigationActions.navigate({ key: 'Map', routeName: 'Map' }),
-                })); }
-          } />,
+            name='menu'
+            type='feather'
+            containerStyle={{padding: 5}}
+            size={30}
+            underlayColor={'black'}
+            color={'#ffffff'}
+            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+          />,
+          headerRight:
+            <Icon
+              name='arrow-right'
+              type='feather'
+              containerStyle={{padding: 5, right: 15}}
+              size={30}
+              underlayColor={'black'}
+              color={'#ffffff'}
+              onPress={ () => { navigation.navigate('Map'); }}
+            />,
       };
   }
 
@@ -255,10 +264,9 @@ export class Chat extends Component<IProps, IState> {
         if (moment(item.timestamp).startOf('day') === moment(previousItem).startOf('day')) {
           return false;
         }
-        return true;
-      }
-      return false;
     }
+    return true;
+  }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (
@@ -290,7 +298,7 @@ export class Chat extends Component<IProps, IState> {
         //   </View>
         // }
         //
-        title={!this.stackMessages(index, item) ?
+        title={this.stackMessages(index, item) ?
           <View style={styles.titleView}>
           <Text style={this.userUuid === item.user.slice(0) ?
             [styles.thisDisplayName, {paddingTop: index === 0 ? 5 : 0}] :
@@ -545,7 +553,7 @@ const styles = StyleSheet.create({
   myTitleText: {
     color: 'black',
     fontSize: 18,
-    top: -10,
+    top: -5,
     left: 2,
   },
   iconContainer: {

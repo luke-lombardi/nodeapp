@@ -60,7 +60,7 @@ export class Notifications extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'rgba(44,55,71, 0.7)'}
+            underlayColor={'black'}
             color={'#ffffff'}
             onPress={ () => { navigation.navigate('DrawerToggle'); }}
             />,
@@ -87,6 +87,7 @@ export class Notifications extends Component<IProps, IState> {
     }
 
     getTime(item) {
+      console.log('THIS ITEM', item);
       let easternTime = moment(item.timestamp).utcOffset(14);
 
       let parsedTimestamp = moment(easternTime).calendar();
@@ -105,9 +106,13 @@ export class Notifications extends Component<IProps, IState> {
         title={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.action === 'add_node' ? 'Add Node' : 'Add Friend' }</Text>
           <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.from_username}</Text>
-          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>{this.getTime(item)}</Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
+            {item.action === 'add_node' ? 'Add Node' : 'Add Friend'}
+          </Text>
           </View>
           {/* <Text style={styles.titleText}>{item.message}</Text> */}
           </View>

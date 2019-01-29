@@ -294,7 +294,7 @@ export class Chat extends Component<IProps, IState> {
           <View style={styles.titleView}>
           <Text style={this.userUuid === item.user.slice(0) ?
             [styles.thisDisplayName, {paddingTop: index === 0 ? 5 : 0}] :
-            [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name + '- ' + this.getTime(item)}
+            [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name + '  - ' + this.getTime(item)}
 
           </Text>
           <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
@@ -483,7 +483,7 @@ export class Chat extends Component<IProps, IState> {
             underlineColorAndroid={'transparent'}
             multiline
             blurOnSubmit={false}
-            autoCorrect
+            autoCorrect={true}
             autoFocus
             maxLength={500}
             allowFontScaling

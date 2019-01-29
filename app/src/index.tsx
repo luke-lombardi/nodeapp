@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AppRegistry, Platform } from 'react-native';
-// import App from './components/App';
+// @ts-ignore
 import Splash from './components/Splash';
 
 import { Provider } from 'react-redux';

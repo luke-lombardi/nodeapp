@@ -28,7 +28,7 @@ else:
   from config_PROD import Config as ConfigProd
 
 
-def toggle_like_status(rds, node_id, user_uuid, toggle = False):
+def vote_for_node(rds, node_id, user_uuid, vote=None):
     user_data = json.loads(rds.get(user_uuid).decode("utf-8"))
 
     node_exists = rds.exists(node_id)
@@ -38,23 +38,34 @@ def toggle_like_status(rds, node_id, user_uuid, toggle = False):
         logging.info('Node %s exists', node_id)
 
         node_data = json.loads(rds.get(node_id))
-        if not toggle:
-          return node_data
 
-        # Get the current likes on the node
-        current_likes = node_data.get('likes', {})
-        user_like_status = current_likes.get(user_uuid, None)
+        # Get the current votes on the node
+        current_votes = node_data.get('votes', {})
+        if vote is None:
+            return node_data
+
+        user_vote_status = current_votes.get(user_uuid, None)
 
         logger.info("Node data: %s", node_data)
-        logger.info("User like status: %s", user_like_status)
+        logger.info("User vote status: %s", user_vote_status)
 
-        if user_like_status is None or user_like_status is {}:
-          current_likes[user_uuid] = True
-        elif user_like_status == True or user_like_status == False:
-          del current_likes[user_uuid]
+        if user_vote_status is None:
+          current_votes[user_uuid] = 0
 
-        logger.info("Toggling like status on node %s", node_id)
-        node_data['likes'] = current_likes
+        if(current_votes[user_uuid] == 1 and vote == 1):
+            current_votes[user_uuid] = 1
+        elif (current_votes[user_uuid] == 0 and vote == 1):
+            current_votes[user_uuid] = 1
+        elif (current_votes[user_uuid] == 0 and vote == -1):
+            current_votes[user_uuid] = -1
+        elif (current_votes[user_uuid] == 1 and vote == -1):
+            current_votes[user_uuid] = 0
+        elif (current_votes[user_uuid] == -1 and vote == 1):
+            current_votes[user_uuid] = 0
+        elif (current_votes[user_uuid] == -1 and vote == -1):
+            current_votes[user_uuid] = -1
+
+        node_data['votes'] = current_votes
 
         logging.info('Node data: %s', node_data)
 
@@ -89,7 +100,7 @@ def lambda_handler(event, context):
     
     node_id = event.get('node_id', 0)
     user_uuid = event.get('user_uuid', None)
-    toggle = event.get('toggle', False)
+    vote = event.get('vote', None)
 
     user_exists = rds.exists(user_uuid)
 
@@ -101,7 +112,7 @@ def lambda_handler(event, context):
     logging.info('Event payload %s' % (event))
 
     if node_id:
-        result = toggle_like_status(rds, node_id, user_uuid, toggle=toggle)
+        result = vote_for_node(rds, node_id, user_uuid, vote=vote)
         logger.info("Returning this node data: %s", result)
 
     return result
@@ -111,7 +122,7 @@ def run():
     test_event = {
         "node_id": "public:4fadd3f2-116c-4106-9209-d72eb4cf48df",
         "user_uuid": "0b1a92f6-949d-48c0-a10d-dbc530f5a02f",
-        "toggle": True,
+        "vote": None,
     }
     
     test_context = {

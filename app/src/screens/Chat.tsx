@@ -238,7 +238,7 @@ export class Chat extends Component<IProps, IState> {
 
     // @ts-ignore
     stackMessages(index, item) {
-      let previousItem  = this.state.data[(index.length - 1)];
+      let previousItem = this.state.data[index - 1];
       if (previousItem !== undefined) {
         if (item.user === previousItem.user) {
           return true;
@@ -247,6 +247,7 @@ export class Chat extends Component<IProps, IState> {
         }
         return false;
       }
+      return false;
     }
 
     isSameDay(item, index) {
@@ -370,10 +371,10 @@ export class Chat extends Component<IProps, IState> {
         await this.setState({messageBody: '', isLoading: false});
 
         // Show the success snackbar
-        Snackbar.show({
-          title: 'Updated message list',
-          duration: Snackbar.LENGTH_SHORT,
-        });
+        // Snackbar.show({
+        //   title: 'Updated message list',
+        //   duration: Snackbar.LENGTH_SHORT,
+        // });
 
       // If the response was undefined, display error snackbar
       } else {

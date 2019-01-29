@@ -17,6 +17,8 @@ import { bindActionCreators } from 'redux';
 import ApiService from '../services/ApiService';
 
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
+// @ts-ignore
+import NavigationService from '../services/NavigationService';
 
 interface IProps {
     navigation: any;
@@ -111,8 +113,35 @@ export class FriendList extends Component<IProps, IState> {
     }
   }
 
-  shareNode(row) {
-    console.log(`sharing ${this.nodeId} with...`, row);
+  async shareNode(row) {
+    Logger.info(`FriendList.shareNode: sharing ${this.nodeId} node with ${JSON.stringify(row)}`);
+
+    let currentUUID = await AuthService.getUUID();
+    let toUser = undefined;
+
+    for (let member in row.member_data) {
+        if (row.member_data.hasOwnProperty(member)) {
+          if (member !== currentUUID) {
+            toUser = member;
+            break;
+          }
+        }
+    }
+
+    let requestBody = {
+      'from_user': currentUUID,
+      'friend_id': row.their_friend_id,
+      'to_user': toUser,
+      'node_id': this.nodeId,
+      'action': 'share_node',
+    };
+
+    let response = await ApiService.ShareNodeAsync(requestBody);
+
+    if (response !== undefined) {
+      Logger.info(`FriendList.shareNode: shared node with user, response ${JSON.stringify(response)}`);
+      NavigationService.reset('Map', {showMessage: true, messageText: `Shared node with ${row.topic}`});
+    }
   }
 
   _renderItem(item) {
@@ -147,11 +176,10 @@ export class FriendList extends Component<IProps, IState> {
     if (this.action === 'share_node') {
       return (
         <ListItem
-          onPress={() => this.shareNode(row)}
+          onPress={async () => { await this.shareNode(row); } }
           containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
-          title={'shinywizard2939'}
-          // title={ row.data.title ? row.data.title : row.node_id }
-          // subtitle={ 'Status: ' + (row.data.status === 'inactive' ? 'pending' : 'active')  }
+          title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
+          subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
         />
       );
   } else {

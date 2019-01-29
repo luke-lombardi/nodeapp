@@ -25,6 +25,7 @@ interface IState {
   likeIconOpacity: number;
   time: any;
   elaspedTime: number;
+  totalVoteCount: number;
 }
 
 export default class Node extends Component<IProps, IState> {
@@ -38,44 +39,61 @@ export default class Node extends Component<IProps, IState> {
       likeIconOpacity: 0.4,
       time: '',
       elaspedTime: 0,
+      totalVoteCount: 0,
     };
 
     this.goToFinder = this.goToFinder.bind(this);
     this.goToChat = this.goToChat.bind(this);
     this.shareNode = this.shareNode.bind(this);
 
-    this.toggleLikeStatus = this.toggleLikeStatus.bind(this);
-    this.updateLikeStatus = this.updateLikeStatus.bind(this);
-    this.updateLikeIcon  = this.updateLikeIcon.bind(this);
-
-    this.upvoteComment = this.upvoteComment.bind(this);
-    this.downvoteComment = this.downvoteComment.bind(this);
+    this.updateVote = this.updateVote.bind(this);
+    this.updateVoteStatus = this.updateVoteStatus.bind(this);
+    this.calculateVotes = this.calculateVotes.bind(this);
+    // this.updateVoteIcon  = this.updateLikeIcon.bind(this);
 
     this.countdown = this.countdown.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
 
-  async toggleLikeStatus() {
+  async updateVote(vote: number) {
     let currentUUID = await AuthService.getUUID();
     let requestBody = {
         'node_id': this.props.nodeId,
         'user_uuid': currentUUID,
-        'toggle': true,
+        'vote': vote,
     };
 
-    await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
+    // await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
 
     let response  = await ApiService.LikeNodeAsync(requestBody);
-    await this.updateLikeIcon(currentUUID, response);
+
+    let totalVoteCount: number = await this.calculateVotes(response);
+    await this.setState({totalVoteCount: totalVoteCount});
+    // await this.updateLikeIcon(currentUUID, response);
+  }
+
+  async calculateVotes(response: any) {
+    let totalVoteCount = 0;
+    for (let user in response.votes) {
+      if (response.votes.hasOwnProperty(user)) {
+        console.log(response.votes[user]);
+        totalVoteCount += response.votes[user];
+      }
+    }
+    return totalVoteCount;
   }
 
   componentWillMount() {
     clearInterval(this.interval);
     this.interval = setInterval(() => { this.countdown(); }, 1000);
-    this.updateLikeStatus();
     this.countdown();
+  }
+
+  componentDidMount() {
+    this.updateVoteStatus();
   }
 
   componentWillUnmount() {
@@ -94,19 +112,21 @@ export default class Node extends Component<IProps, IState> {
     });
   }
 
-  async updateLikeStatus() {
+  async updateVoteStatus() {
     let currentUUID = await AuthService.getUUID();
 
     let requestBody = {
       'node_id': this.props.nodeId,
       'user_uuid': currentUUID,
-      'toggle': false,
+      'vote': undefined,
     };
 
     await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
 
     let response  = await ApiService.LikeNodeAsync(requestBody);
-    await this.updateLikeIcon(currentUUID, response);
+    // await this.updateLikeIcon(currentUUID, response);
+    let totalVoteCount: number = await this.calculateVotes(response);
+    await this.setState({totalVoteCount: totalVoteCount});
   }
 
   async updateLikeIcon(uuid: string, response: any) {
@@ -162,23 +182,6 @@ export default class Node extends Component<IProps, IState> {
     this.props.navigation.navigate({key: 'FriendList', routeName: 'FriendList', params: { action: 'share_node', nodeId: this.props.nodeId } });
   }
 
-  async upvoteComment() {
-    let currentUUID = await AuthService.getUUID();
-
-    let requestBody = {
-      'node_id': this.props.nodeId,
-      'user_uuid': currentUUID,
-      'toggle': false,
-    };
-
-    let response  = await ApiService.LikeNodeAsync(requestBody);
-    console.log('upvoting comment....', response);
-  }
-
-  async downvoteComment() {
-    console.log('downvoting comment....');
-  }
-
   render() {
     return (
       <View style={styles.view}>
@@ -207,15 +210,15 @@ export default class Node extends Component<IProps, IState> {
               name='keyboard-arrow-up'
               color='#00aced'
               size={40}
-              onPress={() => this.upvoteComment()}
+              onPress={async () => { await this.updateVote(1); }}
               underlayColor={'transparent'}
             />
-            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.props.likes !== undefined ? Object.keys(this.props.likes).length : 0}</Text>
+            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.state.totalVoteCount}</Text>
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'
               size={40}
-              onPress={() => this.downvoteComment()}
+              onPress={async () => { await this.updateVote(-1); }}
               underlayColor={'transparent'}
             />
           </View>
@@ -233,7 +236,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={this.toggleLikeStatus}
+              // onPress={}
               disabled={this.state.loadingLikeIcon}
               disabledStyle={{backgroundColor: 'rgba(44,55,71,.9)'}}
             />

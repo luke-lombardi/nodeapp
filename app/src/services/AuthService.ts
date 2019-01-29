@@ -4,6 +4,7 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { AsyncStorage } from 'react-native';
 import uuid from 'react-native-uuid';
 import Permissions from 'react-native-permissions';
+// @ts-ignore
 import NavigationService from './NavigationService';
 import Snackbar from 'react-native-snackbar';
 
@@ -33,7 +34,7 @@ export default class AuthService {
     public static async checkPermissions(showSnackbar: boolean) {
       if (! (await AuthService.hasPermissions()) ) {
         Logger.info(`AuthService.checkPermissions() - user does not have required permissions`);
-        NavigationService.reset('GetPermissions', {});
+        // NavigationService.reset('GetPermissions', {});
 
         if (showSnackbar) {
           Snackbar.show({
@@ -45,7 +46,7 @@ export default class AuthService {
       } else {
 
         Logger.info(`AuthService.checkPermissions() - permissions set`);
-        NavigationService.reset('Map', {});
+        // NavigationService.reset('Map', {});
       }
     }
 
@@ -81,6 +82,7 @@ export default class AuthService {
     public static async hasPermissions() {
       let locationPermissions = await Permissions.check('location', { type: 'always'} );
       let notificationPermissions = await Permissions.check('notification');
+      // @ts-ignore
       let motionPermissions = await Permissions.check('motion');
 
       if (locationPermissions !== 'authorized') {
@@ -91,10 +93,10 @@ export default class AuthService {
         return false;
       }
 
-      Logger.info(`AuthService.hasPermissions() - permissions are set`);
-      if (motionPermissions !== 'authorized') {
-        return false;
-      }
+      // Logger.info(`AuthService.hasPermissions() - permissions are set`);
+      // if (motionPermissions !== 'authorized') {
+      //   return false;
+      // }
 
       // NavigationService.reset('Map', {});
       return true;

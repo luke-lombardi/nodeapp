@@ -12,14 +12,11 @@ import { GetPermissions } from '../screens/GetPermissions';
 import App from '../components/App';
 
 interface IProps {
-  // @ts-ignore
-  functions: any;
-  firstRun: boolean;
 }
 
 interface IState {
   firstRun: boolean;
-  mounted: boolean;
+  pageToRender: any;
 }
 
 export class Splash extends Component<IProps, IState> {
@@ -29,11 +26,11 @@ export class Splash extends Component<IProps, IState> {
 
       this.state = {
         firstRun: false,
-        mounted: true,
+        pageToRender: undefined,
       },
 
       this.getPermissions = this.getPermissions.bind(this);
-      this.setPermissions = this.setPermissions.bind(this);
+      this.renderApp = this.renderApp.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
       this.componentDidMount = this.componentWillMount.bind(this);
     }
@@ -46,29 +43,42 @@ export class Splash extends Component<IProps, IState> {
       //
     }
 
-    async setPermissions() {
-      await this.setState({firstRun: false});
+    async renderApp() {
+      await this.setPageToRender();
+    }
+
+    async setPageToRender() {
+      const permissions =
+      <View style={{flex: 1}}>
+        <GetPermissions
+          firstRun={this.state.firstRun}
+          functions={{renderApp: this.renderApp }}
+        />
+      </View>;
+
+      const app = <App />;
+
+      if (this.state.firstRun || !( await AuthService.hasPermissions() ) ) {
+        await this.setState({pageToRender: permissions});
+      } else {
+        await this.setState({pageToRender: app});
+      }
     }
 
     async getPermissions() {
       const firstRun = await AuthService.permissionsSet();
       if (firstRun) {
         await this.setState({firstRun: true});
+      }
+
+      await this.setPageToRender();
+      return;
     }
-    return;
-  }
 
     render() {
-      const permissions =
-      <View style={{flex: 1}}>
-        <GetPermissions
-          functions={{'setPermissions': this.setPermissions}}
-          firstRun={this.state.firstRun}
-        />
-      </View>;
       return (
         <View style={{flex: 1}}>
-           {(this.state.firstRun  ? permissions : <App />)};
+           { this.state.pageToRender }
         </View>
       );
     }

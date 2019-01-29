@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { View, StyleSheet, AsyncStorage, AppState, Alert } from 'react-native';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-// @ts-ignore
-import NavigationService from '../services/NavigationService';
 import Permissions from 'react-native-permissions';
 import { Text, Icon, CheckBox, Button } from 'react-native-elements';
 // import Snackbar from 'react-native-snackbar';
@@ -15,8 +13,8 @@ import Logger from '../services/Logger';
 import AuthService from '../services/AuthService';
 
 interface IProps {
-  functions: any;
   firstRun: boolean;
+  functions: any;
 }
 
 interface IState {
@@ -32,7 +30,7 @@ export class GetPermissions extends Component<IProps, IState> {
 
     this.state = {
       notificationPermissions: '',
-      motionPermissions: '',
+      motionPermissions: 'authorized',
       locationPermissions: '',
     };
 
@@ -69,7 +67,7 @@ export class GetPermissions extends Component<IProps, IState> {
     let currentPermissions = await AuthService.permissionsGranted();
     await this.setState({
       notificationPermissions: currentPermissions.notification,
-      motionPermissions: currentPermissions.motion,
+      motionPermissions: 'authorized', // currentPermissions.motion,
       locationPermissions: currentPermissions.location,
     });
   }
@@ -161,16 +159,7 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async checkPermissions() {
-    if (
-      this.state.notificationPermissions === 'authorized' &&
-      this.state.motionPermissions === 'authorized' &&
-      this.state.locationPermissions === 'authorized'
-    ) {
-      // if we have permissions, tell the splash screen to render the app
-      this.props.functions.setPermissions();
-      return true;
-    }
-    return false;
+    await this.props.functions.renderPage();
   }
 
   render() {
@@ -241,7 +230,7 @@ export class GetPermissions extends Component<IProps, IState> {
         <Button
           title='Continue'
           containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}
-          onPress={async () => { await this.checkPermissions(); }}
+          onPress={ async () => { await this.checkPermissions(); } }
           disabled={
             this.state.locationPermissions !== 'authorized' ||
             this.state.motionPermissions !== 'authorized' ||

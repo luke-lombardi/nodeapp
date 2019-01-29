@@ -42,8 +42,6 @@ class Smartshare extends Component {
     return (
       <Provider store={store}>
         <Splash
-          functions={{'setPermissions': {} }}
-          firstRun={false}
           />
       </Provider>
     );

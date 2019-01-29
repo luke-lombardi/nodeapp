@@ -105,6 +105,7 @@ export class Notifications extends Component<IProps, IState> {
         title={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
+          <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.action === 'add_node' ? 'Add Node' : 'Add Friend' }</Text>
           <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.from_username}</Text>
           <Text style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>{this.getTime(item)}</Text>
           </View>

@@ -145,6 +145,7 @@ def send_push(push_info, rds):
 		friend_id = push_info["friend_id"]
 		from_user = push_info["from_user"]
 		to_user = push_info["to_user"]
+		node_id = push_info["node_id"]
 
 		node_exists = rds.exists(friend_id)
 
@@ -162,6 +163,7 @@ def send_push(push_info, rds):
 			  "from_user": from_user,
 			  "action": "add_node",
 			  "friend_id": friend_id,
+        "node_id": node_id,
 		  }
   
 		  to = [ pushy_device_token ]
@@ -188,7 +190,7 @@ def send_push(push_info, rds):
 	return False
 
 
-def lambda_handler(contact_info, context):
+def lambda_handler(event, context):
 	# If we are running locally, use the DEV config file
 	if not context:
 		rds = cache.connect_to_cache('DEV')
@@ -216,7 +218,7 @@ def lambda_handler(contact_info, context):
 	valid_user = True
 
 	if valid_user:
-		result = send_push(contact_info, rds)
+		result = send_push(event, rds)
 
 		if not result: 
 			response["error"] = "Could not send the push notification."

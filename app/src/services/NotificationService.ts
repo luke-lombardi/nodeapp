@@ -181,16 +181,17 @@ export default class NotificationService {
       let notificationIndex = -1;
 
       if (notification.action !== undefined) {
-        if (notification.action === 'confirm_friend') {
+        if (notification.action === 'confirm_friend' || notification.action === 'add_node') {
           for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].friend_id === notification.friend_id) {
               notificationIndex = i;
               break;
             }
           }
-        } else if (notification.action === 'add_node') {
-          console.log('not handled node thing yet');
         }
+        // else if (notification.action === 'add_node') {
+        //   console.log('not handled node thing yet');
+        // }
 
       }
 

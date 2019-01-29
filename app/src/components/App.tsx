@@ -230,10 +230,10 @@ interface IState {
 // Subscribe to push notifications
 Pushy.setNotificationListener(async (notification) => {
   Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
-  await processInitialNotification(notification);
+  await processInitialNotification(notification, false);
 });
 
-async function processInitialNotification(notification) {
+async function processInitialNotification(notification, initialNotification: boolean = true) {
   // If the notification is being handled by PushNotificationIOS.getInitialNotification
   // then we need to extract the data from the object
   // If the app is in the foreground, the pushy listener is called
@@ -256,7 +256,10 @@ async function processInitialNotification(notification) {
   }
 
   // Navigate to the notifications panel if app was opened from a notification
-  NavigationService.reset('Notifications', {});
+  if (initialNotification) {
+    NavigationService.reset('Notifications', {});
+  }
+
 }
 
 async function processDeliveredNotifications(notifications) {
@@ -279,7 +282,7 @@ async function processDeliveredNotifications(notifications) {
 
 PushNotificationIOS.getInitialNotification().then(function (notification) {
   if (notification !== null) {
-    processInitialNotification(notification);
+    processInitialNotification(notification, true);
   }
 });
 
@@ -349,6 +352,7 @@ export class App extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+      //
     }
 
     // TODO: figure out a better way to do this (move to permissions page)

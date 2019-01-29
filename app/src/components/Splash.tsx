@@ -5,6 +5,9 @@ import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState, 
 import Logger from '../services/Logger';
 import AuthService from '../services/AuthService';
 // @ts-ignore
+import NavigationService from '../services/NavigationService';
+
+// @ts-ignore
 import { GetPermissions } from '../screens/GetPermissions';
 import App from '../components/App';
 
@@ -16,6 +19,7 @@ interface IProps {
 
 interface IState {
   firstRun: boolean;
+  mounted: boolean;
 }
 
 export class Splash extends Component<IProps, IState> {
@@ -25,25 +29,31 @@ export class Splash extends Component<IProps, IState> {
 
       this.state = {
         firstRun: false,
+        mounted: true,
       },
 
       this.getPermissions = this.getPermissions.bind(this);
       this.setPermissions = this.setPermissions.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
+      this.componentDidMount = this.componentWillMount.bind(this);
     }
 
     componentWillMount() {
       this.getPermissions();
     }
 
+    componentDidMount() {
+      //
+    }
+
     async setPermissions() {
-      this.setState({firstRun: false});
+      await this.setState({firstRun: false});
     }
 
     async getPermissions() {
       const firstRun = await AuthService.permissionsSet();
       if (firstRun) {
-        this.setState({firstRun: true});
+        await this.setState({firstRun: true});
     }
     return;
   }
@@ -56,11 +66,10 @@ export class Splash extends Component<IProps, IState> {
           firstRun={this.state.firstRun}
         />
       </View>;
-      const app = <View style={{flex: 1}}> <App /> </View>;
       return (
         <View style={{flex: 1}}>
-          { this.state.firstRun ? permissions : app };
-      </View>
+           {(this.state.firstRun  ? permissions : <App />)};
+        </View>
       );
     }
   }

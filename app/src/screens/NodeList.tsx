@@ -174,6 +174,7 @@ export class NodeList extends Component<IProps, IState> {
          renderItem={this._renderItem}
          extraData={this.state}
          onEndReachedThreshold={0}
+         ListHeaderComponent={<View style={{ height: 0, marginTop: 0 }}></View>}
          showsVerticalScrollIndicator={true}
          keyExtractor={item => item.node_id}
          refreshing={this.state.isRefreshing ? true : false}

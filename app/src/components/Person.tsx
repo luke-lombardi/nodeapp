@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { View, StyleSheet, AsyncStorage } from 'react-native';
 import { Card, Text, Button } from 'react-native-elements';
+// @ts-ignore
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';

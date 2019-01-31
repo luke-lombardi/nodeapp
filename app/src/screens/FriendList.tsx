@@ -38,6 +38,7 @@ export class FriendList extends Component<IProps, IState> {
   private nodeId: any;
 
   static navigationOptions = ({ navigation }) => {
+    // @ts-ignore
     const { state: { params = {} } } = navigation;
     return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
@@ -57,6 +58,7 @@ export class Chat extends Component<IProps, IState> {
 
   // TODO: figure out a smarter way to do this
   static navigationOptions = ({ navigation }) => {
+    // @ts-ignore
     const { state: { params = {} } } = navigation;
     return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},

@@ -101,6 +101,7 @@ export class MainMap extends Component<IProps, IState> {
   selectedNode: string;
   index: number;
   animation: any;
+  regionTimeout: any;
 
   // @ts-ignore
   private nodeService: NodeService;
@@ -140,11 +141,10 @@ export class MainMap extends Component<IProps, IState> {
 
     this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
-
-    this.scrollToNode = this.scrollToNode.bind(this);
-
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+
+    this.startAnimating = this.startAnimating.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -165,6 +165,8 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    // start listening for scrollview events
+    this.startAnimating();
     // If there is any message to display, then show a snackbar at the bottom of the map
     let showMessage = this.props.navigation.getParam('showMessage', true);
     if (showMessage) {
@@ -228,11 +230,42 @@ export class MainMap extends Component<IProps, IState> {
         }
       }, 5);
     }
+  }
 
+  startAnimating() {
+    // Atach a listener to the animation so we can get access to the scroll value
+    this.animation.addListener(({ value }) => {
+      let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
+      // prevent list from scrolling beyond its length
+      if (index >= this.props.publicPlaceList.length) {
+        index = this.props.publicPlaceList.length - 1;
+      }
+      if (index <= 0) {
+        index = 0;
+      }
+
+      clearTimeout(this.regionTimeout);
+      if (this.props.userRegion.latitude === undefined) {
+        this.waitForUserPosition();
+      }
+      this.regionTimeout = setTimeout(() => {
+        if (this.index !== index) {
+          this.index = index;
+          // TODO: set region to current marker region so it animates to the actual node being viewed
+          this._map.animateToRegion(
+            {
+              latitudeDelta: this.props.userRegion.latitudeDelta,
+              longitudeDelta: this.props.userRegion.longitudeDelta,
+            },
+            350,
+          );
+        }
+      }, 10);
+    });
   }
 
   componentWillMount() {
-    // set the default index for the horizontal node list
+    // set the index for the horizontal node list
     this.index = 0;
     this.animation = new Animated.Value(0);
 
@@ -331,40 +364,6 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
-  async scrollToNode(e, node) {
-    console.log('current node', node);
-    console.log('event', e);
-    console.log('public place list', this.props.publicPlaceList);
-
-    let thisNode = this.props.publicPlaceList.findIndex(
-      n => n.data.node_id === node.node_id,
-    );
-    console.log('got this node', thisNode);
-
-    let nearbyNode = this.props.publicPlaceList[thisNode + 1];
-    console.log('got nearby node', nearbyNode);
-    return nearbyNode;
-  }
-    // const coordinate = e.nativeEvent.coordinate;
-    // this.selectedNode = node;
-    // let nodeListToSearch = this.getNodeListToSearch();
-
-    // const marker = nodeListToSearch.find(
-    //   m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
-    // );
-
-    // if (marker) {
-    //   marker.node = node;
-    //   this.setState({
-    //     selectedNode: marker,
-    //     nodeSelected: true,
-    //     destination: {
-    //         latitude: marker.data.latitude,
-    //         longitude: marker.data.longitude,
-    //     },
-    //   });
-    // }
-
   onSwipeRight(state) {
     console.log('SWIPED RIGHT');
     console.log(state);
@@ -376,7 +375,26 @@ export class MainMap extends Component<IProps, IState> {
       directionalOffsetThreshold: 80,
     };
 
-    // console.log('MAP IS BEING RENDERED!');
+    // adjusts size of node card based on its position in the list
+    const interpolations = this.props.publicPlaceList.map((marker, index) => {
+      const inputRange = [
+        (index - 1) * CARD_WIDTH,
+        index * CARD_WIDTH,
+        ((index + 1) * CARD_WIDTH),
+      ];
+      const scale = this.animation.interpolate({
+        inputRange,
+        outputRange: [1, 2.5, 1],
+        extrapolate: 'clamp',
+      });
+      const opacity = this.animation.interpolate({
+        inputRange,
+        outputRange: [0.35, 1, 0.35],
+        extrapolate: 'clamp',
+      });
+      return { scale, opacity };
+    });
+
     return (
       // Map screen view (exported component)
       <GestureRecognizer
@@ -410,6 +428,17 @@ export class MainMap extends Component<IProps, IState> {
 
               {/* Map markers  */}
               {this.props.publicPlaceList.map((marker, index) => {
+                // TODO: pass styles to marker to dynamically adjust marker size as the user scrolls through the list
+                const scaleStyle = {
+                  transform: [
+                    {
+                      scale: interpolations[index].scale,
+                    },
+                  ],
+                };
+                const opacityStyle = {
+                  opacity: interpolations[index].opacity,
+                };
                 return (
                 <PublicPlaces
                   index={index}

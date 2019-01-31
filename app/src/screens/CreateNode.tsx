@@ -188,7 +188,7 @@ export class CreateNode extends Component<IProps, IState> {
     await this.setState({isLoading: true});
 
     // If the node topic is empty, don't post the node
-    if (this.state.topic.length < 10) {
+    if (this.state.topic.length < 1) {
       Snackbar.show({
         title: 'Enter a topic for the node.',
         duration: Snackbar.LENGTH_SHORT,

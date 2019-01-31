@@ -152,12 +152,12 @@ export class NodeList extends Component<IProps, IState> {
           size={30}
           underlayColor={'black'}
           color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-start', top: 40, paddingHorizontal: 5}}
+          containerStyle={{alignSelf: 'flex-start', top: 40, paddingHorizontal: 10, paddingVertical: 0}}
           onPress={() => this.props.navigation.navigate('DrawerToggle')}
         />
         <ButtonGroup
           innerBorderStyle={{width: 0.0, color: 'black'}}
-          containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
+          containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 5, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
           buttonStyle={{height: 20, backgroundColor: 'black'}}
           // containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
@@ -172,7 +172,7 @@ export class NodeList extends Component<IProps, IState> {
           size={30}
           underlayColor={'black'}
           color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 30, paddingHorizontal: 5}}
+          containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 25, paddingHorizontal: 5}}
           onPress={() => this.props.navigation.navigate('Map')}
         />
       </View>

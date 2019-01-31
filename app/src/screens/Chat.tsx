@@ -69,6 +69,7 @@ export class Chat extends Component<IProps, IState> {
         username = '';
       }
     } catch (error) {
+      username = '';
       // Do nothing if there is no node id defined for now
     }
 

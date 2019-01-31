@@ -123,7 +123,7 @@ export class FriendList extends Component<IProps, IState> {
   }
 
   async sendPrivateMessage(row) {
-    this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: { nodeId: row.relation_id }});
+    this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: { nodeId: row.relation_id, username: row.topic }});
   }
 
   async toggleLocationSharing(row) {

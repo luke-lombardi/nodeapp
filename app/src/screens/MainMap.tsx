@@ -317,7 +317,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   render() {
-    console.log('MAP IS BEING RENDERED!');
+    // console.log('MAP IS BEING RENDERED!');
     return (
       // Map screen view (exported component)
       <View style={styles.mainView}>
@@ -575,6 +575,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 // End Redux setup functions
+
 // Local styles
 const styles = StyleSheet.create({
   mainView: {

@@ -44,6 +44,7 @@ export default class Person extends Component<IProps, IState> {
 
   async goToChat() {
     let nodeId = undefined;
+    let username = this.props.topic;
 
     let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
     if (trackedRelations !== null) {
@@ -64,6 +65,7 @@ export default class Person extends Component<IProps, IState> {
     if (nodeId !== undefined) {
       NavigationService.reset('Chat', {
         action: 'join_chat', nodeId: nodeId,
+        username: username,
       });
     }
   }

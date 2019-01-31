@@ -100,11 +100,11 @@ export class CreateNode extends Component<IProps, IState> {
                   blurOnSubmit
                   multiline
                   style={styles.input}
-                  maxLength={280}
+                  maxLength={90}
                   underlineColorAndroid='transparent'
                   placeholder='Add a topic...'
               />
-            <Text style={styles.characterCount}>{this.state.topic.length}/280</Text>
+            <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
             </View>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>{this.state.private ? 'Private (toggle for public)' : 'Public (toggle for private)'}</Text>
@@ -188,9 +188,9 @@ export class CreateNode extends Component<IProps, IState> {
     await this.setState({isLoading: true});
 
     // If the node topic is empty, don't post the node
-    if (this.state.topic.length < 1) {
+    if (this.state.topic.length < 5) {
       Snackbar.show({
-        title: 'Enter a topic for the node.',
+        title: 'Topic must be at least 5 characters.',
         duration: Snackbar.LENGTH_SHORT,
       });
 
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
   fullWidthButton: {
     backgroundColor: 'black',
-    height: 70,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',

@@ -42,6 +42,7 @@ interface IState {
     userInfo: string;
     nodeId: string;
     userUuid: string;
+    username: string;
 }
 
 const MINIMUM_MSG_LENGTH = 2;
@@ -59,12 +60,25 @@ export class Chat extends Component<IProps, IState> {
 
   // TODO: figure out a smarter way to do this
   static navigationOptions = ({ navigation }) => {
+    let username: string = undefined;
+    const {params = {}} = navigation.state;
+
+    try {
+      if (params.nodeId.includes('relation')) {
+        username = ':  ' + params.username;
+      } else {
+        username = '';
+      }
+    } catch (error) {
+      username = '';
+      // Do nothing if there is no node id defined for now
+    }
+
     // @ts-ignore
-    const { state: { params = {} } } = navigation;
-    return {
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
-      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-        title: 'Chat',
+      return {
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingTop: -10, height: 70},
+      headerTitleStyle: { color: 'white', fontSize: 16, fontWeight: 'bold', paddingLeft: -20 },
+        title: 'Chat' + username ,
         headerLeft:
           <Icon
             name='menu'
@@ -83,7 +97,7 @@ export class Chat extends Component<IProps, IState> {
               size={30}
               underlayColor={'black'}
               color={'#ffffff'}
-              onPress={ () => { navigation.navigate('Map'); }}
+              onPress={ () => { NavigationService.reset('Map', {}); }}
             />,
       };
   }
@@ -100,6 +114,7 @@ export class Chat extends Component<IProps, IState> {
         userInfo: '',
         nodeId: '',
         userUuid: '',
+        username: '',
     };
 
     this._renderItem = this._renderItem.bind(this);
@@ -126,8 +141,17 @@ export class Chat extends Component<IProps, IState> {
     this.postMessage = this.postMessage.bind(this);
 
     this.getTime = this.getTime.bind(this);
+    this.setUsername = this.setUsername.bind(this);
     }
 
+    async setUsername() {
+      if (this.state.nodeId.includes('relation')) {
+        console.log('its a relation for sure');
+      } else {
+        console.log('IT DOESNT');
+        console.log(this.state.nodeId);
+      }
+    }
     async closeConfirmModal() {
       await this.setState({confirmModalVisible: false});
     }
@@ -289,6 +313,7 @@ export class Chat extends Component<IProps, IState> {
         containerStyle={{
           marginBottom: -15,
         }}
+
         //
         // UPVOTE DOWNVOTE ARROWS FOR GENERAL CHAT
         //
@@ -355,6 +380,7 @@ export class Chat extends Component<IProps, IState> {
       // Updates the message data for the node
       this.monitorMessages();
       this.getUserInfo();
+      this.setUsername();
     }
 
     componentWillUnmount() {

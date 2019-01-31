@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { View, StyleSheet, AsyncStorage } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
@@ -151,27 +152,9 @@ export default class Node extends Component<IProps, IState> {
   async goToChat() {
     let nodeId = this.props.nodeId;
 
-    if (this.props.nodeType === 'friend' ) {
-      let trackedRelations: any = await AsyncStorage.getItem('trackedRelations');
-      if (trackedRelations !== null) {
-        trackedRelations = JSON.parse(trackedRelations);
-      } else {
-        trackedRelations = {};
-      }
-
-      for (let key in trackedRelations) {
-          if (trackedRelations.hasOwnProperty(key)) {
-            if (trackedRelations[key].their_id === this.props.nodeId) {
-              nodeId = trackedRelations[key].relation_id;
-              break;
-            }
-        }
-      }
-    }
-
-  NavigationService.reset('Chat', {
-    action: 'join_chat', nodeId: nodeId,
-  });
+    NavigationService.reset('Chat', {
+      action: 'join_chat', nodeId: nodeId,
+    });
 }
 
   goToFinder() {

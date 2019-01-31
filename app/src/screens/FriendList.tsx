@@ -224,19 +224,20 @@ export class FriendList extends Component<IProps, IState> {
         onPress={() => this.sendPrivateMessage(row)}
         containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
         rightElement={
-          <View style={{flexDirection: 'row'}}>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingHorizontal: 20}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingRight: 20}}>
           <Icon
             name='eye'
             type='feather'
             color='black'
-            size={32}
+            size={31}
             onPress={async () => { await this._onTouchNode(row); }}
             underlayColor={'transparent'}
           />
           <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>View</Text>
           </View>
-          <View style={{flexDirection: 'column', alignItems: 'center'}}>
+          <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 20}}>
             <Switch
               onTouchEnd={async () => {  await this.toggleLocationSharing(row); }}
               value={row.sharing_location}

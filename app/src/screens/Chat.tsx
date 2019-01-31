@@ -65,12 +65,12 @@ export class Chat extends Component<IProps, IState> {
 
     try {
       if (params.nodeId.includes('relation')) {
-        username = ':  ' + params.username;
+        username = '  ' + params.username;
       } else {
         username = '';
       }
     } catch (error) {
-      username = '';
+      username = 'Chat';
       // Do nothing if there is no node id defined for now
     }
 
@@ -78,7 +78,7 @@ export class Chat extends Component<IProps, IState> {
       return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingTop: -10, height: 70},
       headerTitleStyle: { color: 'white', fontSize: 16, fontWeight: 'bold', paddingLeft: -20 },
-        title: 'Chat' + username ,
+        title: username ,
         headerLeft:
           <Icon
             name='menu'
@@ -184,7 +184,7 @@ export class Chat extends Component<IProps, IState> {
 
     async getUserInfo() {
       let userInfo = await AuthService.getUUID();
-  
+
       if (userInfo !== undefined) {
         await this.setState({userInfo: userInfo});
       }
@@ -680,14 +680,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   flatlist: {
-    flex: 1,
     backgroundColor: 'white',
     marginBottom: 40,
     top: -10,
   },
   nullContainer: {
-    flex: 1,
-    bottom: '50%',
+    marginVertical: '30%',
     justifyContent: 'center',
     alignItems: 'center',
   },

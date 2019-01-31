@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet, AsyncStorage, Dimensions } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
@@ -8,6 +8,10 @@ import AuthService from '../services/AuthService';
 
 // @ts-ignore
 import Moment from 'moment';
+
+const { width, height } = Dimensions.get('window');
+const CARD_HEIGHT = height / 4;
+const CARD_WIDTH = CARD_HEIGHT - 50;
 
 interface IProps {
   topic: string;

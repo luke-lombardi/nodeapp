@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, AsyncStorage, Switch, Dimensions } from 'react-native';
+import { View, AsyncStorage, Switch, Dimensions, Animated, ScrollView } from 'react-native';
+// @ts-ignore
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import {
   StyleSheet,
@@ -53,6 +55,10 @@ import Friends from './markers/Friends';
 
 import { mapStyle } from '../config/map';
 
+const { width, height } = Dimensions.get('window');
+const CARD_HEIGHT = height / 4;
+const CARD_WIDTH = CARD_HEIGHT - 50;
+
 interface IProps {
     navigation: any;
     publicNodesVisible: boolean;
@@ -92,6 +98,9 @@ export class MainMap extends Component<IProps, IState> {
   _map: any;
   currentMarkerRegion: any;
   selectedNodeType: string;
+  selectedNode: string;
+  index: number;
+  animation: any;
 
   // @ts-ignore
   private nodeService: NodeService;
@@ -131,6 +140,8 @@ export class MainMap extends Component<IProps, IState> {
 
     this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
+
+    this.scrollToNode = this.scrollToNode.bind(this);
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -221,6 +232,10 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentWillMount() {
+    // set the default index for the horizontal node list
+    this.index = 0;
+    this.animation = new Animated.Value(0);
+
     let shouldUpdate = this.props.navigation.getParam('updateNodes', false);
 
     if (shouldUpdate) {
@@ -316,12 +331,63 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
+  async scrollToNode(e, node) {
+    console.log('current node', node);
+    console.log('event', e);
+    console.log('public place list', this.props.publicPlaceList);
+
+    let thisNode = this.props.publicPlaceList.findIndex(
+      n => n.data.node_id === node.node_id,
+    );
+    console.log('got this node', thisNode);
+
+    let nearbyNode = this.props.publicPlaceList[thisNode + 1];
+    console.log('got nearby node', nearbyNode);
+    return nearbyNode;
+  }
+    // const coordinate = e.nativeEvent.coordinate;
+    // this.selectedNode = node;
+    // let nodeListToSearch = this.getNodeListToSearch();
+
+    // const marker = nodeListToSearch.find(
+    //   m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
+    // );
+
+    // if (marker) {
+    //   marker.node = node;
+    //   this.setState({
+    //     selectedNode: marker,
+    //     nodeSelected: true,
+    //     destination: {
+    //         latitude: marker.data.latitude,
+    //         longitude: marker.data.longitude,
+    //     },
+    //   });
+    // }
+
+  onSwipeRight(state) {
+    console.log('SWIPED RIGHT');
+    console.log(state);
+  }
+
   render() {
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80,
+    };
+
     // console.log('MAP IS BEING RENDERED!');
     return (
       // Map screen view (exported component)
-      <View style={styles.mainView}>
-
+      <GestureRecognizer
+      // onSwipe={(direction, state) => this.onSwipe(direction, state)}
+      // onSwipeUp={(state) => this.onSwipeUp(state)}
+      // onSwipeDown={(state) => this.onSwipeDown(state)}
+      // onSwipeLeft={(state) => this.onSwipeLeft(state)}
+      onSwipeRight={(state) => this.onSwipeRight(state)}
+      config={config}
+      style={styles.mainView}
+      >
           {
             // Main map view
             <View style={styles.mapView}>
@@ -343,8 +409,18 @@ export class MainMap extends Component<IProps, IState> {
               >
 
               {/* Map markers  */}
-              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }
-              visible={this.state.publicNodesVisible} nodeId={this.state.selectedNode} />
+              {this.props.publicPlaceList.map((marker, index) => {
+                return (
+                <PublicPlaces
+                  index={index}
+                  coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
+                  publicPlaceList={this.props.publicPlaceList}
+                  functions={ {'onNodeSelected': this.onNodeSelected} }
+                  visible={this.state.publicNodesVisible}
+                  nodeId={this.state.selectedNode}
+                />
+                );
+            })}
               <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} }
               visible={this.state.publicNodesVisible} />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
@@ -431,7 +507,7 @@ export class MainMap extends Component<IProps, IState> {
             onPress={() => { this.navigateToPage('CreateNode');
             }}
           />
-          <Button
+          {/* <Button
             icon={{
               name: 'message-circle',
               type: 'feather',
@@ -443,7 +519,7 @@ export class MainMap extends Component<IProps, IState> {
             buttonStyle={styles.transparentButton}
             title=''
             onPress={() => { this.props.navigation.navigate('Chat', {action: 'general_chat'}); } }
-          />
+          /> */}
           </View>
         }
 
@@ -457,7 +533,6 @@ export class MainMap extends Component<IProps, IState> {
           <View>
           {
             this.state.selectedNode.nodeType === 'friend' ?
-            <View style={styles.personSelectedView}>
             <Person
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
@@ -467,26 +542,47 @@ export class MainMap extends Component<IProps, IState> {
               destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
             />
-            </View>
             :
-            <View style={styles.nodeSelectedView}>
+            <Animated.ScrollView
+              horizontal
+              scrollEventThrottle={1}
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={CARD_WIDTH}
+              onScroll={Animated.event(
+                [
+                  {
+                    nativeEvent: {
+                      contentOffset: {
+                        x: this.animation,
+                      },
+                    },
+                  },
+                ],
+                { useNativeDriver: true },
+              )}
+              style={styles.scrollView}
+              contentContainerStyle={styles.endPadding}
+            >
+            {this.props.publicPlaceList.map((marker, index) => (
             <Node
-              nodeId={this.state.selectedNode.data.node_id}
-              nodeType={ this.state.selectedNode.nodeType }
-              topic={this.state.selectedNode.data.topic}
-              ttl={this.state.selectedNode.data.ttl}
-              origin={this.props.userRegion}
-              destination={this.state.selectedNode.data}
+              key={index}
+              nodeId={marker.data.node_id}
+              nodeType={ marker.nodeType }
+              topic={marker.data.topic}
+              ttl={marker.data.ttl}
+              origin={marker.userRegion}
+              destination={marker.data}
               navigation={this.props.navigation}
-              likes={this.state.selectedNode.data.likes}
+              likes={marker.data.likes}
             />
-            </View>
+            ))}
+            </Animated.ScrollView>
           }
           </View>
           // End node selected view
         }
 
-     </View>
+      </GestureRecognizer>
      // End map screen view (exported component)
     );
   }
@@ -702,5 +798,15 @@ const styles = StyleSheet.create({
     margin: 10,
     // marginLeft: '20%',
     alignSelf: 'center',
+  },
+  scrollView: {
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
+    paddingVertical: 10,
+  },
+  endPadding: {
+    paddingRight: width - CARD_WIDTH,
   },
 });

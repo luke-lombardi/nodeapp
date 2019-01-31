@@ -466,7 +466,6 @@ export class MainMap extends Component<IProps, IState> {
               origin={this.props.userRegion}
               destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
-              likes={this.state.selectedNode.data.likes}
             />
             </View>
             :

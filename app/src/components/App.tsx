@@ -379,7 +379,7 @@ export class App extends Component<IProps, IState> {
         RNSimpleCompass.start(3, this.updateBearing);
       }
 
-      // If they haven't, request access
+      // If they haven't, request access on the permissions page
       } else {
         // We have no location permission, the app is useless
         // Take them to the location disabled screen

@@ -370,12 +370,6 @@ export class Chat extends Component<IProps, IState> {
 
         await this.setState({messageBody: '', isLoading: false});
 
-        // Show the success snackbar
-        // Snackbar.show({
-        //   title: 'Updated message list',
-        //   duration: Snackbar.LENGTH_SHORT,
-        // });
-
       // If the response was undefined, display error snackbar
       } else {
         this.setState({isLoading: false});

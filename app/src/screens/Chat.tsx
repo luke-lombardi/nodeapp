@@ -41,6 +41,7 @@ interface IState {
     confirmModalVisible: boolean;
     userInfo: string;
     nodeId: string;
+    userUuid: string;
     username: string;
 }
 
@@ -112,6 +113,7 @@ export class Chat extends Component<IProps, IState> {
         textInputHeight: 0,
         userInfo: '',
         nodeId: '',
+        userUuid: '',
         username: '',
     };
 
@@ -125,6 +127,7 @@ export class Chat extends Component<IProps, IState> {
     // chat display functions
     this.stackMessages = this.stackMessages.bind(this);
     this.isSameDay = this.isSameDay.bind(this);
+    this.getUserInfo = this.getUserInfo.bind(this);
 
     this.startPrivateChat = this.startPrivateChat.bind(this);
     this.upvoteComment = this.upvoteComment.bind(this);
@@ -177,6 +180,15 @@ export class Chat extends Component<IProps, IState> {
       }
 
       await this.postMessage();
+    }
+
+    async getUserInfo() {
+      let userInfo = await AuthService.getUUID();
+  
+      if (userInfo !== undefined) {
+        await this.setState({userInfo: userInfo});
+      }
+      return;
     }
 
     getTime(item) {
@@ -299,9 +311,7 @@ export class Chat extends Component<IProps, IState> {
       <ListItem
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
-          top: 0,
           marginBottom: -15,
-          minHeight: 50,
         }}
 
         //
@@ -325,32 +335,22 @@ export class Chat extends Component<IProps, IState> {
         //   </View>
         // }
         //
-
-        title={this.stackMessages(index, item) ?
+        title={!this.stackMessages(index, item) ?
           <View style={styles.titleView}>
-          <Text style={this.userUuid === item.user.slice(0) ?
-            [styles.thisDisplayName, {paddingTop: index === 0 ? 5 : 0}] :
-            [styles.thatDisplayName, {paddingTop: index === 0 ? 5 : 0}]}>{item.display_name + '  - ' + this.getTime(item)}
+          <Text style={this.state.userInfo === item.user ?
+            [styles.thisDisplayName, {marginTop: index === 0 ? 10 : 10}] :
+            [styles.thatDisplayName, {marginTop: index === 0 ? 10 : 10}]}>{item.display_name + '  - ' + this.getTime(item)}
 
           </Text>
-          <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
+          <View style={this.state.userInfo === item.user ? styles.thisUser : styles.thatUser}>
           <Text style={styles.myTitleText}>{item.message}</Text>
           </View>
           </View>
           :
           <View style={styles.titleView}>
-          <View style={this.userUuid === item.user.slice(0) ? styles.thisUser : styles.thatUser}>
+          <View style={this.state.userInfo === item.user ? styles.thisUser : styles.thatUser}>
           <Text style={styles.titleText}>{item.message}</Text>
           </View>
-          </View>
-        }
-        subtitle={this.stackMessages(index, item) ?
-          <View style={styles.subtitleView}>
-          {/* <Text style={styles.timestamp}>{this.getTime(item)}</Text> */}
-          {/* ({ item.user.substr(item.user.length - 5)}) */}
-          </View>
-          :
-          <View style={styles.subtitleView}>
           </View>
         }
       />
@@ -379,7 +379,7 @@ export class Chat extends Component<IProps, IState> {
     componentDidMount() {
       // Updates the message data for the node
       this.monitorMessages();
-
+      this.getUserInfo();
       this.setUsername();
     }
 
@@ -470,6 +470,13 @@ export class Chat extends Component<IProps, IState> {
 
     render() {
       return (
+
+      <KeyboardAvoidingView
+        style={{flex: 1, backgroundColor: 'white'}}
+        behavior='padding'
+        contentContainerStyle={{flex: 1}}
+        keyboardVerticalOffset={90}
+      >
       <View style={{flex: 1}}>
       {
         this.state.confirmModalVisible &&
@@ -481,11 +488,6 @@ export class Chat extends Component<IProps, IState> {
         data={this.state.userInfo}
         />
       }
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior='padding'
-          keyboardVerticalOffset={90}
-        >
         <View style={styles.flatlist}>
           <FlatList
            keyboardDismissMode={'on-drag'}
@@ -493,7 +495,7 @@ export class Chat extends Component<IProps, IState> {
            inverted
            renderItem={this._renderItem}
            keyExtractor={item => item.timestamp}
-           ListHeaderComponent={<View style={{ height: 0, marginTop: 20 }}></View>}
+           ListHeaderComponent={<View style={{ height: 0, marginTop: 40 }}></View>}
           />
           {
             this.state.data.length < 1 &&
@@ -514,8 +516,8 @@ export class Chat extends Component<IProps, IState> {
             onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
             underlineColorAndroid={'transparent'}
             multiline
-            blurOnSubmit={false}
-            autoCorrect={true}
+            blurOnSubmit
+            autoCorrect
             autoFocus
             maxLength={500}
             allowFontScaling
@@ -535,8 +537,8 @@ export class Chat extends Component<IProps, IState> {
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
           />
         </View>
-      </KeyboardAvoidingView>
       </View>
+      </KeyboardAvoidingView>
       );
     }
   }
@@ -577,14 +579,14 @@ const styles = StyleSheet.create({
   titleText: {
     color: 'black',
     fontSize: 18,
-    top: -5,
     left: 2,
+    paddingVertical: 2,
   },
   myTitleText: {
     color: 'black',
     fontSize: 18,
-    top: -5,
     left: 2,
+    paddingVertical: 2,
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -596,7 +598,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   chatMessageContainer: {
-    marginTop: -20,
+    position: 'absolute',
     bottom: 10,
     paddingHorizontal: 10,
     width: '100%',
@@ -628,6 +630,7 @@ const styles = StyleSheet.create({
   titleView: {
     flexDirection: 'column',
     marginTop: -1,
+    marginBottom: -15,
   },
   subtitleView: {
     flexDirection: 'row',
@@ -643,24 +646,22 @@ const styles = StyleSheet.create({
   },
   thisDisplayName: {
     color: 'rgba(140, 20, 252, 1)',
-    paddingBottom: 5,
+    marginVertical: 5,
     left: -1,
     fontWeight: 'bold',
   },
   thatDisplayName: {
     color: 'rgba(52, 152, 219, 1)',
-    paddingBottom: 5,
+    marginVertical: 5,
     left: -1,
     fontWeight: 'bold',
   },
   thisUser: {
-    paddingTop: 5,
     borderLeftWidth: 3,
     borderLeftColor: 'rgba(140, 20, 252, 1)',
     paddingHorizontal: 5,
   },
   thatUser: {
-    paddingTop: 5,
     borderLeftWidth: 3,
     borderLeftColor: 'rgba(52, 152, 219, 1)',
     paddingHorizontal: 5,
@@ -679,9 +680,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   flatlist: {
+    flex: 1,
     backgroundColor: 'white',
-    flex: 3,
     marginBottom: 40,
+    top: -10,
   },
   nullContainer: {
     flex: 1,

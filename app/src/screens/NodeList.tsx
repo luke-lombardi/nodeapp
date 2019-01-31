@@ -157,22 +157,22 @@ export class NodeList extends Component<IProps, IState> {
         />
         <ButtonGroup
           innerBorderStyle={{width: 0.0, color: 'black'}}
-          containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 5, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
+          containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 15, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
           buttonStyle={{height: 20, backgroundColor: 'black'}}
           // containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
           selectedIndex={selectedIndex}
           selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black'}}
           buttons={buttons}
-          textStyle={{fontWeight: 'bold', fontSize: 22}}
+          textStyle={{fontWeight: 'bold', fontSize: 18}}
         />
         <Icon
           name={'arrow-right'}
           type={'feather'}
-          size={30}
+          size={35}
           underlayColor={'black'}
           color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 25, paddingHorizontal: 5}}
+          containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 20, paddingHorizontal: 10}}
           onPress={() => this.props.navigation.navigate('Map')}
         />
       </View>

@@ -144,11 +144,20 @@ export class NodeList extends Component<IProps, IState> {
     const buttons = ['Public', 'Private'];
     const { selectedIndex } = this.state;
     return (
-      <View style={{flex: 1, backgroundColor: 'black'}}>
-      <View style={{height: 110}}>
+      <View style={{flex: 1}}>
+      <View style={{paddingTop: 5, height: 100, backgroundColor: 'black', flexDirection: 'row'}}>
+      <Icon
+          name={'menu'}
+          type={'feather'}
+          size={30}
+          underlayColor={'black'}
+          color={'#ffffff'}
+          containerStyle={{alignSelf: 'flex-start', top: 40, paddingHorizontal: 5}}
+          onPress={() => this.props.navigation.navigate('DrawerToggle')}
+        />
         <ButtonGroup
           innerBorderStyle={{width: 0.0, color: 'black'}}
-          containerStyle={{paddingHorizontal: 80, top: '10%', bottom: '10%', borderWidth: 0, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
+          containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
           buttonStyle={{height: 20, backgroundColor: 'black'}}
           // containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
@@ -158,16 +167,15 @@ export class NodeList extends Component<IProps, IState> {
           textStyle={{fontWeight: 'bold', fontSize: 22}}
         />
         <Icon
-          name={'x'}
+          name={'arrow-right'}
           type={'feather'}
-          size={35}
-          underlayColor={'transparent'}
+          size={30}
+          underlayColor={'black'}
           color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-start', padding: 5, top: -10, borderBottomColor: 'black'}}
+          containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 30, paddingHorizontal: 5}}
           onPress={() => this.props.navigation.navigate('Map')}
         />
       </View>
-      <View style={{flex: 1}}>
       <View style={styles.flatlist}>
         <FlatList
          data={this.state.data}
@@ -205,7 +213,6 @@ export class NodeList extends Component<IProps, IState> {
           />
           </View>
         }
-        </View>
         </View>
      </View>
     );

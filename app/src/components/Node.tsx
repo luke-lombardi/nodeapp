@@ -251,7 +251,7 @@ export default class Node extends Component<IProps, IState> {
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              onPress={this.goToChat}
+              onPress={ async () => { await this.goToChat(); } }
             />
             <Button
               icon={{

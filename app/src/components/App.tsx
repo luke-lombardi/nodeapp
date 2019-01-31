@@ -112,29 +112,13 @@ const InternalStack = StackNavigator({
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'Drop Node',
-      headerLeft: <Icon name='arrow-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-        navigation.dispatch(NavigationActions.reset(
-        {
-          index: 0,
-          actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-        },
-        )) } />,
+      headerLeft: <Icon name='menu' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
+      color={'#ffffff'} onPress={ () =>
+        navigation.navigate('DrawerToggle') }
+      />,
       }),
   },
-  FriendList: { screen: FriendList,
-      navigationOptions: ({navigation}) => ({
-        headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
-        headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-        title: 'People',
-        headerLeft: <Icon name='x' type='feather' containerStyle={{padding: 0}} size={35} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
-          navigation.dispatch(NavigationActions.reset(
-          {
-            index: 0,
-            actions: [ NavigationActions.navigate({ routeName: 'Map', key: 'Map' }) ],
-          },
-          )) } />,
-        }),
-      },
+  FriendList: { screen: FriendList },
   Chat: { screen: Chat },
   Notifications: { screen: Notifications },
   },
@@ -165,7 +149,7 @@ const InternalStack = StackNavigator({
     },
   },
   {
-      drawerPosition: 'right',
+      drawerPosition: 'left',
       drawerToggleRoute: 'ToggleChat',
       drawerOpenRoute: 'OpenChat',
       drawerCloseRoute: 'CloseChat',

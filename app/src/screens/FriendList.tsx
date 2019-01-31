@@ -37,6 +37,35 @@ export class FriendList extends Component<IProps, IState> {
   private action: any;
   private nodeId: any;
 
+  static navigationOptions = ({ navigation }) => {
+    const { state: { params = {} } } = navigation;
+    return {
+      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
+      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
+        title: 'Friends',
+        headerLeft:
+          <Icon
+            name='menu'
+            type='feather'
+            containerStyle={{padding: 5}}
+            size={30}
+            underlayColor={'black'}
+            color={'#ffffff'}
+            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+          />,
+          headerRight:
+            <Icon
+              name='arrow-right'
+              type='feather'
+              containerStyle={{padding: 5, right: 15}}
+              size={30}
+              underlayColor={'black'}
+              color={'#ffffff'}
+              onPress={ () => { navigation.navigate('Map'); }}
+            />,
+      };
+  }
+
   constructor(props: IProps) {
     super(props);
 
@@ -195,6 +224,7 @@ export class FriendList extends Component<IProps, IState> {
         containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
         rightElement={
           <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingHorizontal: 20}}>
           <Icon
             name='eye'
             type='feather'
@@ -202,13 +232,18 @@ export class FriendList extends Component<IProps, IState> {
             size={32}
             onPress={async () => { await this._onTouchNode(row); }}
             underlayColor={'transparent'}
-            containerStyle={{paddingHorizontal: 20, right: 20}}
           />
+          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>View</Text>
+          </View>
+          <View style={{flexDirection: 'column', alignItems: 'center'}}>
             <Switch
               onTouchEnd={async () => {  await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
+            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>Share Location</Text>
+          </View>
         </View>
+
         }
         title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
         subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}

@@ -454,9 +454,10 @@ export class MainMap extends Component<IProps, IState> {
         {
           // Node selected view
           this.state.nodeSelected &&
-          <View style={styles.nodeSelectedView}>
+          <View>
           {
             this.state.selectedNode.nodeType === 'friend' ?
+            <View style={styles.personSelectedView}>
             <Person
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
@@ -467,7 +468,9 @@ export class MainMap extends Component<IProps, IState> {
               navigation={this.props.navigation}
               likes={this.state.selectedNode.data.likes}
             />
+            </View>
             :
+            <View style={styles.nodeSelectedView}>
             <Node
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
@@ -478,6 +481,7 @@ export class MainMap extends Component<IProps, IState> {
               navigation={this.props.navigation}
               likes={this.state.selectedNode.data.likes}
             />
+            </View>
           }
           </View>
           // End node selected view
@@ -602,6 +606,14 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 0,
     height: 300,
+    width: '100%',
+    zIndex: 1,
+  },
+  personSelectedView: {
+    flexDirection: 'column',
+    position: 'absolute',
+    bottom: 0,
+    height: 100,
     width: '100%',
     zIndex: 1,
   },

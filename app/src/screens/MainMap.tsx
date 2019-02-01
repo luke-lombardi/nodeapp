@@ -35,6 +35,7 @@ import NodeService,
   }
   from '../services/NodeService';
 
+// @ts-ignore
 import NavigationService from '../services/NavigationService';
 
 import SleepUtil from '../services/SleepUtil';
@@ -92,6 +93,7 @@ interface IState {
   confirmModalVisible: boolean;
   destination: any;
   pushData: string;
+  selectedNodeIndex: number;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -111,23 +113,6 @@ export class MainMap extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-
-    this.state = {
-      lastLat: '0.0',
-      lastLong: '0.0',
-      mapRegion: {},
-      walletVisible: false,
-      nodeSelected: false,
-      selectedNode: {},
-      publicNodesVisible: true,
-      createModalVisible: false,
-      confirmModalVisible: false,
-      destination: {
-        latitude: '',
-        longitude: '',
-      },
-      pushData: undefined,
-    };
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
@@ -167,11 +152,29 @@ export class MainMap extends Component<IProps, IState> {
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
 
     this.scrollToNode = this.scrollToNode.bind(this);
+    this.setSelectedNode = this.setSelectedNode.bind(this);
+
+    this.state = {
+      lastLat: '0.0',
+      lastLong: '0.0',
+      mapRegion: {},
+      walletVisible: false,
+      nodeSelected: false,
+      selectedNode: {},
+      selectedNodeIndex: this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
+      publicNodesVisible: true,
+      createModalVisible: false,
+      confirmModalVisible: false,
+      destination: {
+        latitude: '',
+        longitude: '',
+      },
+      pushData: undefined,
+    };
   }
 
   componentDidMount() {
     // start listening for scrollview events
-    this.startAnimating();
     // If there is any message to display, then show a snackbar at the bottom of the map
     let showMessage = this.props.navigation.getParam('showMessage', true);
     if (showMessage) {
@@ -185,13 +188,13 @@ export class MainMap extends Component<IProps, IState> {
       }
     }
 
+    // Listen for scroll events -- causes the map to move to the location of the current marker
+    // in Animated.ScrollView
+    this.startAnimating();
+
     // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
     if (this.selectedNodeIndex !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
-
-      console.log(nodeListToSearch);
-      console.log('GOT SELECTED NODE INDEX');
-      console.log(this.selectedNodeIndex);
 
       let selectedNode = nodeListToSearch[this.selectedNodeIndex];
 
@@ -244,11 +247,16 @@ export class MainMap extends Component<IProps, IState> {
     this._scrollView.getNode.scrollTo({x: 0, animated : true});
   }
 
-  startAnimating() {
+  async setSelectedNode(index: number) {
+    await this.setState({ selectedNodeIndex: index });
+  }
+
+  async startAnimating() {
     // Atach a listener to the animation so we can get access to the scroll value
-    this.animation.addListener(({ value }) => {
+    this.animation.addListener( ({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
       // prevent list from scrolling beyond its length
+
       if (index >= this.props.publicPlaceList.length) {
         index = this.props.publicPlaceList.length - 1;
       }
@@ -256,25 +264,30 @@ export class MainMap extends Component<IProps, IState> {
         index = 0;
       }
 
+      this.setSelectedNode(index);
+
       clearTimeout(this.regionTimeout);
-      if (this.props.userRegion.latitude === undefined) {
-        this.waitForUserPosition();
-      }
+
       this.regionTimeout = setTimeout(() => {
         if (this.index !== index) {
           this.index = index;
+
+          let node = this.props.publicPlaceList[index];
+
           // TODO: set region to current marker region so it animates to the actual node being viewed
           this._map.animateToRegion(
             {
-              latitudeDelta: this.props.userRegion.latitudeDelta,
-              longitudeDelta: this.props.userRegion.longitudeDelta,
+              latitudeDelta: 0.00122 * 1.5,
+              longitudeDelta: 0.00121 * 1.5,
+              latitude: node.data.latitude,
+              longitude: node.data.longitude,
             },
-            350,
+            100,
           );
         }
       }, 10);
-    });
-  }
+  });
+}
 
   componentWillMount() {
     // set the index for the horizontal node list
@@ -312,11 +325,7 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
-  viewNodeList() {
-    NavigationService.reset('Nodes', {});
-  }
-
-  onNodeSelected(e, nodeType) {
+   onNodeSelected(e, nodeType) {
     const coordinate = e.nativeEvent.coordinate;
     this.selectedNodeType = nodeType;
     let nodeListToSearch = this.getNodeListToSearch();
@@ -335,12 +344,13 @@ export class MainMap extends Component<IProps, IState> {
             longitude: marker.data.longitude,
         },
       });
+
     }
   }
 
   clearSelectedNode(e) {
     if (e.nativeEvent.action !== 'marker-press') {
-      this.setState({nodeSelected: false});
+      this.setState({nodeSelected: false, selectedNode: undefined});
       return;
     }
   }
@@ -456,6 +466,7 @@ export class MainMap extends Component<IProps, IState> {
                 };
                 return (
                 <PublicPlaces
+                  key={index}
                   index={index}
                   coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                   publicPlaceList={this.props.publicPlaceList}
@@ -590,12 +601,15 @@ export class MainMap extends Component<IProps, IState> {
             <Animated.ScrollView
               horizontal
               ref={ component => { this._scrollView = component; } }
-              scrollEventThrottle={1}
+              scrollEventThrottle={16}
               showsHorizontalScrollIndicator={false}
               snapToInterval={CARD_WIDTH}
-              // centerContent={true}
+              // snapToAlignment={'center'}
+              decelerationRate={'fast'}
+              contentOffset={{x: (CARD_WIDTH * this.state.selectedNodeIndex) + 0.3, y: 0}}
+              // pagingEnabled
               onScroll={Animated.event(
-                [
+              [
                   {
                     nativeEvent: {
                       contentOffset: {
@@ -608,7 +622,7 @@ export class MainMap extends Component<IProps, IState> {
               )}
               style={styles.scrollView}
               contentContainerStyle={{
-                flex: 1,
+                // flex: 1,
                 alignContent: 'flex-start',
                 paddingRight: width - CARD_WIDTH,
               }}

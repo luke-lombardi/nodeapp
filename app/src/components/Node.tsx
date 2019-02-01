@@ -9,9 +9,12 @@ import AuthService from '../services/AuthService';
 // @ts-ignore
 import Moment from 'moment';
 
+// @ts-ignore
 const { width, height } = Dimensions.get('window');
+// @ts-ignore
 const CARD_HEIGHT = height / 4;
-const CARD_WIDTH = CARD_HEIGHT - 50;
+// @ts-ignore
+const CARD_WIDTH = width;
 
 interface IProps {
   topic: string;
@@ -265,8 +268,7 @@ export default class Node extends Component<IProps, IState> {
 // @ts-ignore
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-    flexDirection: 'row',
+    width: CARD_WIDTH,
     alignItems: 'center',
   },
   nodeCardContainer: {

@@ -64,7 +64,7 @@ export class NodeList extends Component<IProps, IState> {
     }
   }
 
-  _onTouchNode(node: any) {
+  _onTouchNode(node: any, index: number) {
     let region = {
       latitude: parseFloat(node.data.latitude),
       longitude: parseFloat(node.data.longitude),
@@ -87,6 +87,7 @@ export class NodeList extends Component<IProps, IState> {
     NavigationService.reset('Map', {
       region: region,
       nodeType: nodeType,
+      nodeIndex: index,
     });
   }
 
@@ -103,9 +104,9 @@ export class NodeList extends Component<IProps, IState> {
       });
     }
 
-  _renderItem = ({item}) => (
+  _renderItem = ({item, index}) => (
     <ListItem
-      onPress={() => this._onTouchNode(item)}
+      onPress={() => this._onTouchNode(item, index)}
       containerStyle={styles.nodeListItem}
       titleStyle={{fontWeight: 'bold', fontSize: 14}}
       title={item.data.topic}

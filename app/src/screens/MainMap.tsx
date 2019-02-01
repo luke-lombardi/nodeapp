@@ -56,8 +56,9 @@ import Friends from './markers/Friends';
 import { mapStyle } from '../config/map';
 
 const { width, height } = Dimensions.get('window');
+// @ts-ignore
 const CARD_HEIGHT = height / 4;
-const CARD_WIDTH = CARD_HEIGHT - 50;
+const CARD_WIDTH = width;
 
 interface IProps {
     navigation: any;
@@ -96,9 +97,11 @@ interface IState {
 export class MainMap extends Component<IProps, IState> {
   timerID: number;
   _map: any;
+  _scrollView: any;
   currentMarkerRegion: any;
   selectedNodeType: string;
   selectedNode: string;
+  selectedNodeIndex: number;
   index: number;
   animation: any;
   regionTimeout: any;
@@ -158,10 +161,10 @@ export class MainMap extends Component<IProps, IState> {
 
     let markerRegion = this.props.navigation.getParam('region', undefined);
     this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
+    this.selectedNodeIndex = this.props.navigation.getParam('nodeIndex', undefined);
 
     this.currentMarkerRegion = markerRegion;
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
-
   }
 
   componentDidMount() {
@@ -181,12 +184,14 @@ export class MainMap extends Component<IProps, IState> {
     }
 
     // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
-    if (this.currentMarkerRegion !== undefined) {
+    if (this.selectedNodeIndex !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
 
-      let selectedNode = nodeListToSearch.find(
-        m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude,
-      );
+      console.log(nodeListToSearch);
+      console.log('GOT SELECTED NODE INDEX');
+      console.log(this.selectedNodeIndex);
+
+      let selectedNode = nodeListToSearch[this.selectedNodeIndex];
 
       // If we found the node in the list, move the map location to the node location
       if (selectedNode) {
@@ -194,11 +199,6 @@ export class MainMap extends Component<IProps, IState> {
           this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
           this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
           selectedNode.nodeType = this.selectedNodeType;
-
-          this.setState({
-            selectedNode: selectedNode,
-            nodeSelected: true,
-          } );
         } catch (error) {
           // If we got here, we unmounted
           console.log(error);
@@ -207,6 +207,7 @@ export class MainMap extends Component<IProps, IState> {
         setTimeout(() => {
           try {
             this._map.animateToRegion(this.currentMarkerRegion, 10);
+            this.scrollToNode(selectedNode);
           } catch (error) {
             // If we got here, we unmounted
             console.log(error);
@@ -574,9 +575,11 @@ export class MainMap extends Component<IProps, IState> {
             :
             <Animated.ScrollView
               horizontal
+              ref={ component => { this._scrollView = component; } }
               scrollEventThrottle={1}
               showsHorizontalScrollIndicator={false}
               snapToInterval={CARD_WIDTH}
+              // centerContent={true}
               onScroll={Animated.event(
                 [
                   {
@@ -590,7 +593,11 @@ export class MainMap extends Component<IProps, IState> {
                 { useNativeDriver: true },
               )}
               style={styles.scrollView}
-              contentContainerStyle={styles.endPadding}
+              contentContainerStyle={{
+                flex: 1,
+                alignContent: 'flex-start',
+                paddingRight: width - CARD_WIDTH,
+              }}
             >
             {this.props.publicPlaceList.map((marker, index) => (
             <Node
@@ -834,8 +841,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingVertical: 10,
-  },
-  endPadding: {
-    paddingRight: width - CARD_WIDTH,
+    flex: 1,
   },
 });

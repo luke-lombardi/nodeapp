@@ -121,42 +121,33 @@ DEPENDENCIES:
   - ViroReact (from `../node_modules/react-viro/ios/`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - CocoaLumberjack
-    - Crashlytics
-    - Fabric
-    - Google-Maps-iOS-Utils
-    - GoogleMaps
-    - GooglePlaces
-
 EXTERNAL SOURCES:
   React:
-    :path: "../node_modules/react-native"
+    :path: ../node_modules/react-native
   react-native-blur:
-    :path: "../node_modules/react-native-blur"
+    :path: ../node_modules/react-native-blur
   react-native-contacts:
-    :path: "../node_modules/react-native-contacts"
+    :path: ../node_modules/react-native-contacts
   react-native-google-maps:
-    :path: "../node_modules/react-native-maps"
+    :path: ../node_modules/react-native-maps
   react-native-maps:
-    :path: "../node_modules/react-native-maps"
+    :path: ../node_modules/react-native-maps
   ReactNativeFabric:
-    :path: "../node_modules/react-native-fabric"
+    :path: ../node_modules/react-native-fabric
   ReactNativePermissions:
-    :path: "../node_modules/react-native-permissions"
+    :path: ../node_modules/react-native-permissions
   RNBackgroundFetch:
-    :path: "../node_modules/react-native-background-fetch"
+    :path: ../node_modules/react-native-background-fetch
   RNBackgroundGeolocation:
-    :path: "../node_modules/react-native-background-geolocation"
+    :path: ../node_modules/react-native-background-geolocation
   RNSnackbar:
-    :path: "../node_modules/react-native-snackbar"
+    :path: ../node_modules/react-native-snackbar
   ViroKit_static_lib:
-    :path: "../node_modules/react-viro/ios/dist/ViroRenderer/static_lib"
+    :path: ../node_modules/react-viro/ios/dist/ViroRenderer/static_lib
   ViroReact:
-    :path: "../node_modules/react-viro/ios/"
+    :path: ../node_modules/react-viro/ios/
   yoga:
-    :path: "../node_modules/react-native/ReactCommon/yoga"
+    :path: ../node_modules/react-native/ReactCommon/yoga
 
 SPEC CHECKSUMS:
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
@@ -181,4 +172,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 9def7354a7005dab9909ed8512adffba6c99b301
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.4.0

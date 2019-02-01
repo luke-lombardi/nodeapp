@@ -131,6 +131,7 @@ export class MainMap extends Component<IProps, IState> {
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
     this.startAnimating = this.startAnimating.bind(this);
 
@@ -239,6 +240,8 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async scrollToNode(selectedNode) {
+    // do not scroll to next card if card is last or first in list
+    if (this.selectedNodeIndex !== this.props.publicPlaceList.length || this.props.publicPlaceList[0]) {
     await this.setState({
       selectedNode: selectedNode,
       nodeSelected: true,
@@ -246,6 +249,7 @@ export class MainMap extends Component<IProps, IState> {
 
     this._scrollView.getNode.scrollTo({x: 0, animated : true});
   }
+}
 
   async setSelectedNode(index: number) {
     await this.setState({ selectedNodeIndex: index });
@@ -256,7 +260,6 @@ export class MainMap extends Component<IProps, IState> {
     this.animation.addListener( ({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
       // prevent list from scrolling beyond its length
-
       if (index >= this.props.publicPlaceList.length) {
         index = this.props.publicPlaceList.length - 1;
       }
@@ -274,7 +277,6 @@ export class MainMap extends Component<IProps, IState> {
 
           let node = this.props.publicPlaceList[index];
 
-          // TODO: set region to current marker region so it animates to the actual node being viewed
           this._map.animateToRegion(
             {
               latitudeDelta: 0.00122 * 1.5,
@@ -299,6 +301,10 @@ export class MainMap extends Component<IProps, IState> {
     if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
+  }
+
+  componentWillUnmount() {
+      this.animation.removeAllListeners();
   }
 
   async waitForUserPosition() {
@@ -601,13 +607,10 @@ export class MainMap extends Component<IProps, IState> {
             <Animated.ScrollView
               horizontal
               ref={ component => { this._scrollView = component; } }
-              scrollEventThrottle={16}
+              scrollEventThrottle={1}
               showsHorizontalScrollIndicator={false}
               snapToInterval={CARD_WIDTH}
-              // snapToAlignment={'center'}
-              decelerationRate={'fast'}
-              contentOffset={{x: (CARD_WIDTH * this.state.selectedNodeIndex) + 0.3, y: 0}}
-              // pagingEnabled
+              decellerationRate={.8}
               onScroll={Animated.event(
               [
                   {
@@ -623,7 +626,6 @@ export class MainMap extends Component<IProps, IState> {
               style={styles.scrollView}
               contentContainerStyle={{
                 // flex: 1,
-                alignContent: 'flex-start',
                 paddingRight: width - CARD_WIDTH,
               }}
             >
@@ -869,6 +871,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingVertical: 10,
-    flex: 1,
   },
 });

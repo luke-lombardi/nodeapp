@@ -165,6 +165,8 @@ export class MainMap extends Component<IProps, IState> {
 
     this.currentMarkerRegion = markerRegion;
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
+
+    this.scrollToNode = this.scrollToNode.bind(this);
   }
 
   componentDidMount() {
@@ -231,6 +233,15 @@ export class MainMap extends Component<IProps, IState> {
         }
       }, 5);
     }
+  }
+
+  async scrollToNode(selectedNode) {
+    await this.setState({
+      selectedNode: selectedNode,
+      nodeSelected: true,
+    });
+
+    this._scrollView.getNode.scrollTo({x: 0, animated : true});
   }
 
   startAnimating() {
@@ -377,6 +388,7 @@ export class MainMap extends Component<IProps, IState> {
     };
 
     // adjusts size of node card based on its position in the list
+    // @ts-ignore
     const interpolations = this.props.publicPlaceList.map((marker, index) => {
       const inputRange = [
         (index - 1) * CARD_WIDTH,
@@ -430,6 +442,7 @@ export class MainMap extends Component<IProps, IState> {
               {/* Map markers  */}
               {this.props.publicPlaceList.map((marker, index) => {
                 // TODO: pass styles to marker to dynamically adjust marker size as the user scrolls through the list
+               // @ts-ignore
                 const scaleStyle = {
                   transform: [
                     {
@@ -437,6 +450,7 @@ export class MainMap extends Component<IProps, IState> {
                     },
                   ],
                 };
+                // @ts-ignore
                 const opacityStyle = {
                   opacity: interpolations[index].opacity,
                 };

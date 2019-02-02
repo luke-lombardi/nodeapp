@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, Animated, ScrollView,TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -57,6 +57,7 @@ export class Chat extends Component<IProps, IState> {
   private userUuid: string;
   private nodeId: string;
   private action: any;
+  private _textInput: any;
 
   // TODO: figure out a smarter way to do this
   static navigationOptions = ({ navigation }) => {
@@ -143,19 +144,11 @@ export class Chat extends Component<IProps, IState> {
     this.CheckNow = this.CheckNow.bind(this);
     this.monitorMessages = this.monitorMessages.bind(this);
     this.postMessage = this.postMessage.bind(this);
+    this.onBlur = this.onBlur.bind(this);
 
     this.getTime = this.getTime.bind(this);
-    this.setUsername = this.setUsername.bind(this);
     }
 
-    async setUsername() {
-      if (this.state.nodeId.includes('relation')) {
-        console.log('its a relation for sure');
-      } else {
-        console.log('IT DOESNT');
-        console.log(this.state.nodeId);
-      }
-    }
     async closeConfirmModal() {
       await this.setState({confirmModalVisible: false});
     }
@@ -384,7 +377,6 @@ export class Chat extends Component<IProps, IState> {
       // Updates the message data for the node
       this.monitorMessages();
       this.getUserInfo();
-      this.setUsername();
     }
 
     componentWillUnmount() {
@@ -468,6 +460,11 @@ export class Chat extends Component<IProps, IState> {
 
     }
 
+    onBlur() {
+      console.log('CALLING ON BLUE');
+      this._textInput.focus();
+    }
+
     public CheckNow() {
       this.checkNowTrigger.resolve();
     }
@@ -495,6 +492,7 @@ export class Chat extends Component<IProps, IState> {
         <View style={styles.flatlist}>
           <FlatList
            keyboardDismissMode={'on-drag'}
+           keyboardShouldPersistTaps
            data={this.state.data}
            inverted
            renderItem={this._renderItem}
@@ -517,17 +515,19 @@ export class Chat extends Component<IProps, IState> {
             ]}
           >
           <TextInput
+            ref= {(el) => { this._textInput = el; }}
             onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
             underlineColorAndroid={'transparent'}
             multiline
-            blurOnSubmit
             autoCorrect
             autoFocus
             maxLength={500}
             allowFontScaling
+            onBlur={this.onBlur}
             onSubmitEditing={this.submitMessage}
+            blurOnSubmit={true}
             placeholder={'Type your message...'}
-            returnKeyType='send'
+            returnKeyType='done'
             style={[
               styles.chatInput, {
                 height: Math.min(120, Math.max(50, this.state.textInputHeight)),

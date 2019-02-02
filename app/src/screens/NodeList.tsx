@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { ListItem, ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
@@ -28,6 +28,7 @@ interface IState {
   selectedIndex: number;
   data: Array<any>;
   isRefreshing: boolean;
+  isLoading: boolean;
   elaspedTime: number;
   time: any;
 }
@@ -41,6 +42,7 @@ export class NodeList extends Component<IProps, IState> {
       selectedIndex: 0,
       data: this.props.publicPlaceList,
       isRefreshing: false,
+      isLoading: false,
       elaspedTime: 0,
       time: '',
     };
@@ -51,15 +53,18 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   updateIndex (selectedIndex) {
+    this.setState({isLoading: true});
     if (selectedIndex === 0) {
       this.setState({
         selectedIndex,
         data: this.props.publicPlaceList,
+        isLoading: false,
       });
     } else if (selectedIndex === 1) {
       this.setState({
         selectedIndex,
         data: this.props.privatePlaceList,
+        isLoading: false,
       });
     }
   }
@@ -180,6 +185,10 @@ export class NodeList extends Component<IProps, IState> {
         />
       </View>
       <View style={styles.flatlist}>
+      {
+        this.state.isLoading &&
+          <ActivityIndicator size={'large'} />
+      }
         <FlatList
          data={this.state.data}
          renderItem={this._renderItem}

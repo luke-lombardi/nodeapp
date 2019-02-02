@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Switch, Text, TextInput, Dimensions  } from 'react-native';
+import { View, StyleSheet, Switch, Text, TextInput, Dimensions, TouchableOpacity  } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
@@ -40,6 +40,7 @@ interface IState {
 }
 
 export class CreateNode extends Component<IProps, IState> {
+  _textInput: any;
   _map: any;
   private readonly configGlobal = ConfigGlobalLoader.config;
 
@@ -93,19 +94,24 @@ export class CreateNode extends Component<IProps, IState> {
               </MapView>
            }
           </View>
-          <View style={styles.inputView}>
-            <TextInput
-                  onChangeText={(topic) => this.setState({topic: topic})}
-                  value={this.state.topic}
-                  blurOnSubmit
-                  multiline
-                  style={styles.input}
-                  maxLength={90}
-                  underlineColorAndroid='transparent'
-                  placeholder='Add a topic...'
-              />
+          <TouchableOpacity
+            onPress={() => { this._textInput.focus(); }}
+            style={styles.inputView}
+            activeOpacity={0.9}
+          >
+          <TextInput
+                onChangeText={(topic) => this.setState({topic: topic})}
+                value={this.state.topic}
+                blurOnSubmit
+                multiline
+                ref={ component => { this._textInput = component; } }
+                style={styles.input}
+                maxLength={90}
+                underlineColorAndroid='transparent'
+                placeholder='Add a topic...'
+            />
             <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>{this.state.private ? 'Private (toggle for public)' : 'Public (toggle for private)'}</Text>
             <Switch
@@ -132,7 +138,6 @@ export class CreateNode extends Component<IProps, IState> {
             />
             </View>
           </View>
-
           <Button
             style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'black'}}
             onPress={this.submitCreateNode}
@@ -264,15 +269,15 @@ const styles = StyleSheet.create({
   miniMapView: {
     flex: 1,
     padding: 20,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   map: {
   },
   inputView: {
     width: '100%',
     flex: 1,
-    top: 20,
-    marginBottom: 20,
+    // top: 20,
+    // marginBottom: 20,
   },
   nodeForm: {
     flex: 6,
@@ -283,7 +288,7 @@ const styles = StyleSheet.create({
   },
   fullWidthButton: {
     backgroundColor: 'black',
-    height: 50,
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -305,7 +310,7 @@ const styles = StyleSheet.create({
   },
   switchView: {
     borderTopWidth: .5,
-    borderTopColor: 'rgba(220,220,220,0.8)',
+    borderTopColor: 'rgba(220,220,220,1)',
     paddingTop: '10%',
     flex: 2,
     alignItems: 'flex-start',
@@ -325,7 +330,7 @@ const styles = StyleSheet.create({
   sliderContainer: {
     marginLeft: 20,
     alignItems: 'flex-start',
-    top: 25,
+    top: 10,
   },
   sliderText: {
     alignSelf: 'center',
@@ -355,7 +360,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 24,
-    bottom: 30,
+    // bottom: 30,
     padding: 10,
     paddingTop: 10,
     color: 'black',

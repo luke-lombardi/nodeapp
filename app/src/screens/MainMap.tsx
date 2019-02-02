@@ -59,6 +59,7 @@ import { mapStyle } from '../config/map';
 const { width, height } = Dimensions.get('window');
 // @ts-ignore
 const CARD_HEIGHT = height / 4;
+// @ts-ignore
 const CARD_WIDTH = width;
 
 interface IProps {
@@ -94,6 +95,7 @@ interface IState {
   destination: any;
   pushData: string;
   selectedNodeIndex: number;
+  direction: number;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -115,6 +117,7 @@ export class MainMap extends Component<IProps, IState> {
     super(props);
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
+    this.animateToNodeLocation = this.animateToNodeLocation.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.refreshNodes = this.refreshNodes.bind(this);
 
@@ -133,8 +136,6 @@ export class MainMap extends Component<IProps, IState> {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
-    this.startAnimating = this.startAnimating.bind(this);
-
     this.nodeService = new NodeService(
       {
         publicPersonListUpdated: this.gotNewPublicPersonList,
@@ -152,8 +153,9 @@ export class MainMap extends Component<IProps, IState> {
     this.currentMarkerRegion = markerRegion;
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
 
-    this.scrollToNode = this.scrollToNode.bind(this);
     this.setSelectedNode = this.setSelectedNode.bind(this);
+    this.onSwipeLeft = this.onSwipeLeft.bind(this);
+    this.onSwipeRight = this.onSwipeRight.bind(this);
 
     this.state = {
       lastLat: '0.0',
@@ -171,6 +173,7 @@ export class MainMap extends Component<IProps, IState> {
         longitude: '',
       },
       pushData: undefined,
+      direction: -1 * CARD_WIDTH,
     };
   }
 
@@ -189,39 +192,9 @@ export class MainMap extends Component<IProps, IState> {
       }
     }
 
-    // Listen for scroll events -- causes the map to move to the location of the current marker
-    // in Animated.ScrollView
-    this.startAnimating();
-
-    // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
-    if (this.selectedNodeIndex !== undefined) {
-      let nodeListToSearch = this.getNodeListToSearch();
-
-      let selectedNode = nodeListToSearch[this.selectedNodeIndex];
-
-      // If we found the node in the list, move the map location to the node location
-      if (selectedNode) {
-        try {
-          this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
-          this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
-          selectedNode.nodeType = this.selectedNodeType;
-        } catch (error) {
-          // If we got here, we unmounted
-          console.log(error);
-        }
-
-        setTimeout(() => {
-          try {
-            this._map.animateToRegion(this.currentMarkerRegion, 10);
-            this.scrollToNode(selectedNode);
-          } catch (error) {
-            // If we got here, we unmounted
-            console.log(error);
-          }
-        }, 5);
-
-        return;
-      }
+    let didAnimate: boolean = this.animateToNodeLocation();
+    if (didAnimate) {
+      return;
     }
 
     // If we are unable to find the user region, wait until we get it
@@ -239,56 +212,77 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
-  async scrollToNode(selectedNode) {
-    // do not scroll to next card if card is last or first in list
-    if (this.selectedNodeIndex !== this.props.publicPlaceList.length || this.props.publicPlaceList[0]) {
-    await this.setState({
-      selectedNode: selectedNode,
-      nodeSelected: true,
-    });
+ animateToNodeLocation() {
+    // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
+    if (this.selectedNodeIndex !== undefined) {
+      let nodeListToSearch = this.getNodeListToSearch();
 
-    this._scrollView.getNode.scrollTo({x: 0, animated : true});
+      let selectedNode = nodeListToSearch[this.selectedNodeIndex];
+
+      // If we found the node in the list, move the map location to the node location
+      if (selectedNode) {
+
+        this.setState({
+          selectedNode: selectedNode,
+          nodeSelected: true,
+          selectedNodeIndex: this.selectedNodeIndex,
+        });
+
+        try {
+          selectedNode.nodeType = this.selectedNodeType;
+        } catch (error) {
+          // If we got here, we unmounted
+          console.log(error);
+        }
+
+        setTimeout(() => {
+          try {
+            this._map.animateToRegion({
+              latitude: selectedNode.data.latitude,
+              longitude: selectedNode.data.longitude,
+              latitudeDelta: 0.00122 * 1.5,
+              longitudeDelta: 0.00121 * 1.5,
+            }, 300);
+          } catch (error) {
+            // If we got here, we unmounted
+            console.log(error);
+          }
+        }, 5);
+
+        return true;
+      }
+    }
+
+    return false;
   }
-}
 
   async setSelectedNode(index: number) {
     await this.setState({ selectedNodeIndex: index });
   }
 
-  async startAnimating() {
-    // Atach a listener to the animation so we can get access to the scroll value
-    this.animation.addListener( ({ value }) => {
-      let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
-      // prevent list from scrolling beyond its length
-      if (index >= this.props.publicPlaceList.length) {
-        index = this.props.publicPlaceList.length - 1;
+  async animateToNode() {
+
+    this.setSelectedNode(this.state.selectedNodeIndex);
+
+    clearTimeout(this.regionTimeout);
+
+    this.regionTimeout = setTimeout(() => {
+      if (this.selectedNodeIndex !== this.state.selectedNodeIndex) {
+        this.selectedNodeIndex = this.state.selectedNodeIndex;
+
+        let node = this.props.publicPlaceList[this.state.selectedNodeIndex];
+
+        this._map.animateToRegion(
+          {
+            latitudeDelta: 0.00122 * 1.5,
+            longitudeDelta: 0.00121 * 1.5,
+            latitude: node.data.latitude,
+            longitude: node.data.longitude,
+          },
+          100,
+        );
       }
-      if (index <= 0) {
-        index = 0;
-      }
-
-      this.setSelectedNode(index);
-
-      clearTimeout(this.regionTimeout);
-
-      this.regionTimeout = setTimeout(() => {
-        if (this.index !== index) {
-          this.index = index;
-
-          let node = this.props.publicPlaceList[index];
-
-          this._map.animateToRegion(
-            {
-              latitudeDelta: 0.00122 * 1.5,
-              longitudeDelta: 0.00121 * 1.5,
-              latitude: node.data.latitude,
-              longitude: node.data.longitude,
-            },
-            100,
-          );
-        }
-      }, 10);
-  });
+    }, 10);
 }
 
   componentWillMount() {
@@ -331,7 +325,7 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
-   onNodeSelected(e, nodeType) {
+   async onNodeSelected(e, nodeType) {
     const coordinate = e.nativeEvent.coordinate;
     this.selectedNodeType = nodeType;
     let nodeListToSearch = this.getNodeListToSearch();
@@ -340,17 +334,24 @@ export class MainMap extends Component<IProps, IState> {
       m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
     );
 
+    const nodeIndex = nodeListToSearch.findIndex(
+      m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
+    );
+
     if (marker) {
       marker.nodeType = nodeType;
-      this.setState({
+
+      this.selectedNodeIndex = nodeIndex;
+
+      await this.setState({
         selectedNode: marker,
+        selectedNodeIndex: nodeIndex,
         nodeSelected: true,
         destination: {
             latitude: marker.data.latitude,
             longitude: marker.data.longitude,
         },
       });
-
     }
   }
 
@@ -392,9 +393,28 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
-  onSwipeRight(state) {
-    console.log('SWIPED RIGHT');
-    console.log(state);
+  // @ts-ignore
+  async onSwipeRight(state) {
+    await this.setState({ direction: 1 * CARD_WIDTH} );
+    this.selectedNodeIndex = this.state.selectedNodeIndex + 1;
+
+    if (this.selectedNodeIndex >= this.props.publicPlaceList.length) {
+      this.selectedNodeIndex = this.props.publicPlaceList.length - 1;
+    }
+
+    this.animateToNodeLocation();
+  }
+
+  // @ts-ignore
+  async onSwipeLeft(state) {
+    await this.setState({ direction: -1 * CARD_WIDTH} );
+    this.selectedNodeIndex = this.state.selectedNodeIndex - 1;
+
+    if (this.selectedNodeIndex <= 0) {
+      this.selectedNodeIndex = 0;
+    }
+
+    this.animateToNodeLocation();
   }
 
   render() {
@@ -403,38 +423,9 @@ export class MainMap extends Component<IProps, IState> {
       directionalOffsetThreshold: 80,
     };
 
-    // adjusts size of node card based on its position in the list
-    // @ts-ignore
-    const interpolations = this.props.publicPlaceList.map((marker, index) => {
-      const inputRange = [
-        (index - 1) * CARD_WIDTH,
-        index * CARD_WIDTH,
-        ((index + 1) * CARD_WIDTH),
-      ];
-      const scale = this.animation.interpolate({
-        inputRange,
-        outputRange: [1, 2.5, 1],
-        extrapolate: 'clamp',
-      });
-      const opacity = this.animation.interpolate({
-        inputRange,
-        outputRange: [0.35, 1, 0.35],
-        extrapolate: 'clamp',
-      });
-      return { scale, opacity };
-    });
-
     return (
       // Map screen view (exported component)
-      <GestureRecognizer
-      // onSwipe={(direction, state) => this.onSwipe(direction, state)}
-      // onSwipeUp={(state) => this.onSwipeUp(state)}
-      // onSwipeDown={(state) => this.onSwipeDown(state)}
-      // onSwipeLeft={(state) => this.onSwipeLeft(state)}
-      onSwipeRight={(state) => this.onSwipeRight(state)}
-      config={config}
-      style={styles.mainView}
-      >
+      <View style={styles.mainView} >
           {
             // Main map view
             <View style={styles.mapView}>
@@ -456,32 +447,8 @@ export class MainMap extends Component<IProps, IState> {
               >
 
               {/* Map markers  */}
-              {this.props.publicPlaceList.map((marker, index) => {
-                // TODO: pass styles to marker to dynamically adjust marker size as the user scrolls through the list
-               // @ts-ignore
-                const scaleStyle = {
-                  transform: [
-                    {
-                      scale: interpolations[index].scale,
-                    },
-                  ],
-                };
-                // @ts-ignore
-                const opacityStyle = {
-                  opacity: interpolations[index].opacity,
-                };
-                return (
-                <PublicPlaces
-                  key={index}
-                  index={index}
-                  coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
-                  publicPlaceList={this.props.publicPlaceList}
-                  functions={ {'onNodeSelected': this.onNodeSelected} }
-                  visible={this.state.publicNodesVisible}
-                  nodeId={this.state.selectedNode}
-                />
-                );
-            })}
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }
+              visible={this.state.publicNodesVisible} nodeId={this.state.selectedNode} />
               <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} }
               visible={this.state.publicNodesVisible} />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
@@ -557,7 +524,7 @@ export class MainMap extends Component<IProps, IState> {
           />
           <Button
             icon={{
-              name: 'add',
+               name: 'add',
               size: 35,
               color: '#ffffff',
             }}
@@ -594,6 +561,7 @@ export class MainMap extends Component<IProps, IState> {
           <View>
           {
             this.state.selectedNode.nodeType === 'friend' ?
+            <View style={styles.personSelectedView}>
             <Person
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
@@ -603,52 +571,36 @@ export class MainMap extends Component<IProps, IState> {
               destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
             />
+            </View>
             :
-            <Animated.ScrollView
-              horizontal
-              ref={ component => { this._scrollView = component; } }
-              scrollEventThrottle={1}
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={CARD_WIDTH}
-              decellerationRate={.8}
-              onScroll={Animated.event(
-              [
-                  {
-                    nativeEvent: {
-                      contentOffset: {
-                        x: this.animation,
-                      },
-                    },
-                  },
-                ],
-                { useNativeDriver: true },
-              )}
-              style={styles.scrollView}
-              contentContainerStyle={{
-                // flex: 1,
-                paddingRight: width - CARD_WIDTH,
-              }}
+            <GestureRecognizer
+            // onSwipe={(direction, state) => this.onSwipe(direction, state)}
+            // onSwipeUp={(state) => this.onSwipeUp(state)}
+            // onSwipeDown={(state) => this.onSwipeDown(state)}
+            onSwipeLeft={async (state) => { await this.onSwipeLeft(state); } }
+            onSwipeRight={async (state) => { await this.onSwipeRight(state); } }
+            config={config}
+            style={styles.nodeSelectedView}
             >
-            {this.props.publicPlaceList.map((marker, index) => (
             <Node
-              key={index}
-              nodeId={marker.data.node_id}
-              nodeType={ marker.nodeType }
-              topic={marker.data.topic}
-              ttl={marker.data.ttl}
-              origin={marker.userRegion}
-              destination={marker.data}
+              index={this.state.selectedNodeIndex}
+              nodeId={this.state.selectedNode.data.node_id}
+              nodeType={ this.state.selectedNode.nodeType }
+              topic={this.state.selectedNode.data.topic}
+              ttl={this.state.selectedNode.data.ttl}
+              origin={this.props.userRegion}
+              destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
-              likes={marker.data.likes}
+              likes={this.state.selectedNode.data.likes}
+              direction={this.state.direction}
             />
-            ))}
-            </Animated.ScrollView>
+            </GestureRecognizer>
           }
           </View>
           // End node selected view
         }
 
-      </GestureRecognizer>
+      </View>
      // End map screen view (exported component)
     );
   }

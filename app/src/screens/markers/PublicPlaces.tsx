@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Marker } from 'react-native-maps';
+import { Marker }   from 'react-native-maps';
 // @ts-ignore
 import { Image, StyleSheet, Text, View }   from 'react-native';
 // import AuthService from '../../services/AuthService';
@@ -10,8 +10,6 @@ interface IProps {
     nodeId: string;
     functions: any;
     visible: boolean;
-    coordinate: any;
-    index: number;
 }
 
 interface IState {
@@ -44,15 +42,14 @@ export default class PublicPlaces extends Component<IProps, IState> {
             this.props.visible &&
             this.props.publicPlaceList.map(marker => (
               marker.node_id !== undefined ?
-              // TODO: set key to index instead of node ID
               <View key={marker.node_id}>
                 <Marker
-                    coordinate={this.props.coordinate}
+                    coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }
                     title={marker.data.title}
                     // description={}
                     anchor={{ x: .5, y: .6 }}
                     onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPlace'); }}
-                    key={this.props.index}
+                    key={marker.node_id}
                 >
                 <View style={marker.data.total_messages === undefined ? styles.nullMarker : styles.markerText}>
                   <Text style={styles.markerTitle}>{marker.data.total_messages}</Text>

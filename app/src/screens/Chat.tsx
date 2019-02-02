@@ -97,7 +97,11 @@ export class Chat extends Component<IProps, IState> {
               size={30}
               underlayColor={'black'}
               color={'#ffffff'}
-              onPress={ () => { NavigationService.reset('Map', {}); }}
+              onPress={ () => {
+                NavigationService.reset('Map', {
+                nodeType: params.nodeType,
+                nodeIndex: params.nodeIndex,
+              }); }}
             />,
       };
   }

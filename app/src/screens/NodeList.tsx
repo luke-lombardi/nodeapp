@@ -130,15 +130,17 @@ export class NodeList extends Component<IProps, IState> {
   )
 
   async onRefresh() {
-    this.setState({isRefreshing: true});
-    let newList = await this.props.publicPlaceList;
-    // @ts-ignore
-    let newPrivateList = await this.props.privatePlaceList;
-    if (newList) {
-      this.setState({isRefreshing: false});
-    } else {
-      return;
-    }
+    await this.setState({isRefreshing: true});
+    await this.setState({isRefreshing: false});
+
+    // let newList = await this.props.publicPlaceList;
+    // // @ts-ignore
+    // let newPrivateList = await this.props.privatePlaceList;
+    // if (newList) {
+    //   this.setState({isRefreshing: false});
+    // } else {
+    //   return;
+    // }
   }
 
   render() {

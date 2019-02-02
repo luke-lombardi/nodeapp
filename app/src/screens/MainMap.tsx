@@ -261,28 +261,38 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async animateToNode() {
+    try {
+      this.setSelectedNode(this.state.selectedNodeIndex);
+    } catch (error) {
+      // Component unmounted, do nothing
+      return;
+    }
 
-    this.setSelectedNode(this.state.selectedNodeIndex);
+    try {
+      clearTimeout(this.regionTimeout);
 
-    clearTimeout(this.regionTimeout);
+      this.regionTimeout = setTimeout(() => {
+        if (this.selectedNodeIndex !== this.state.selectedNodeIndex) {
+          this.selectedNodeIndex = this.state.selectedNodeIndex;
 
-    this.regionTimeout = setTimeout(() => {
-      if (this.selectedNodeIndex !== this.state.selectedNodeIndex) {
-        this.selectedNodeIndex = this.state.selectedNodeIndex;
+          let node = this.props.publicPlaceList[this.state.selectedNodeIndex];
 
-        let node = this.props.publicPlaceList[this.state.selectedNodeIndex];
+          this._map.animateToRegion(
+            {
+              latitudeDelta: 0.00122 * 1.5,
+              longitudeDelta: 0.00121 * 1.5,
+              latitude: node.data.latitude,
+              longitude: node.data.longitude,
+            },
+            100,
+          );
+        }
+      }, 10);
+    } catch (error) {
+      // Component unmounted, do nothing
+      return;
+    }
 
-        this._map.animateToRegion(
-          {
-            latitudeDelta: 0.00122 * 1.5,
-            longitudeDelta: 0.00121 * 1.5,
-            latitude: node.data.latitude,
-            longitude: node.data.longitude,
-          },
-          100,
-        );
-      }
-    }, 10);
 }
 
   componentWillMount() {

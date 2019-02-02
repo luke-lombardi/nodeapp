@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, AsyncStorage, Switch, Dimensions } from 'react-native';
+import { View, AsyncStorage, Switch, Dimensions, Animated, ScrollView } from 'react-native';
+// @ts-ignore
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import {
   StyleSheet,
@@ -33,6 +35,7 @@ import NodeService,
   }
   from '../services/NodeService';
 
+// @ts-ignore
 import NavigationService from '../services/NavigationService';
 
 import SleepUtil from '../services/SleepUtil';
@@ -52,6 +55,12 @@ import PrivatePeople from './markers/PrivatePeople';
 import Friends from './markers/Friends';
 
 import { mapStyle } from '../config/map';
+
+const { width, height } = Dimensions.get('window');
+// @ts-ignore
+const CARD_HEIGHT = height / 4;
+// @ts-ignore
+const CARD_WIDTH = width;
 
 interface IProps {
     navigation: any;
@@ -85,13 +94,21 @@ interface IState {
   confirmModalVisible: boolean;
   destination: any;
   pushData: string;
+  selectedNodeIndex: number;
+  direction: number;
 }
 
 export class MainMap extends Component<IProps, IState> {
   timerID: number;
   _map: any;
+  _scrollView: any;
   currentMarkerRegion: any;
   selectedNodeType: string;
+  selectedNode: string;
+  selectedNodeIndex: number;
+  index: number;
+  animation: any;
+  regionTimeout: any;
 
   // @ts-ignore
   private nodeService: NodeService;
@@ -99,24 +116,8 @@ export class MainMap extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
-    this.state = {
-      lastLat: '0.0',
-      lastLong: '0.0',
-      mapRegion: {},
-      walletVisible: false,
-      nodeSelected: false,
-      selectedNode: {},
-      publicNodesVisible: true,
-      createModalVisible: false,
-      confirmModalVisible: false,
-      destination: {
-        latitude: '',
-        longitude: '',
-      },
-      pushData: undefined,
-    };
-
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
+    this.animateToNodeLocation = this.animateToNodeLocation.bind(this);
     this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.refreshNodes = this.refreshNodes.bind(this);
 
@@ -131,9 +132,9 @@ export class MainMap extends Component<IProps, IState> {
 
     this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
-
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -147,13 +148,37 @@ export class MainMap extends Component<IProps, IState> {
 
     let markerRegion = this.props.navigation.getParam('region', undefined);
     this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
+    this.selectedNodeIndex = this.props.navigation.getParam('nodeIndex', undefined);
 
     this.currentMarkerRegion = markerRegion;
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
 
+    this.setSelectedNode = this.setSelectedNode.bind(this);
+    this.onSwipeLeft = this.onSwipeLeft.bind(this);
+    this.onSwipeRight = this.onSwipeRight.bind(this);
+
+    this.state = {
+      lastLat: '0.0',
+      lastLong: '0.0',
+      mapRegion: {},
+      walletVisible: false,
+      nodeSelected: false,
+      selectedNode: {},
+      selectedNodeIndex: this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
+      publicNodesVisible: true,
+      createModalVisible: false,
+      confirmModalVisible: false,
+      destination: {
+        latitude: '',
+        longitude: '',
+      },
+      pushData: undefined,
+      direction: -1 * CARD_WIDTH,
+    };
   }
 
   componentDidMount() {
+    // start listening for scrollview events
     // If there is any message to display, then show a snackbar at the bottom of the map
     let showMessage = this.props.navigation.getParam('showMessage', true);
     if (showMessage) {
@@ -167,41 +192,9 @@ export class MainMap extends Component<IProps, IState> {
       }
     }
 
-    // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
-    if (this.currentMarkerRegion !== undefined) {
-      let nodeListToSearch = this.getNodeListToSearch();
-
-      let selectedNode = nodeListToSearch.find(
-        m => parseFloat(m.data.latitude) === this.currentMarkerRegion.latitude && parseFloat(m.data.longitude) === this.currentMarkerRegion.longitude,
-      );
-
-      // If we found the node in the list, move the map location to the node location
-      if (selectedNode) {
-        try {
-          this.currentMarkerRegion.latitudeDelta =  0.00122 * 1.5;
-          this.currentMarkerRegion.longitudeDelta =  0.00121 * 1.5;
-          selectedNode.nodeType = this.selectedNodeType;
-
-          this.setState({
-            selectedNode: selectedNode,
-            nodeSelected: true,
-          } );
-        } catch (error) {
-          // If we got here, we unmounted
-          console.log(error);
-        }
-
-        setTimeout(() => {
-          try {
-            this._map.animateToRegion(this.currentMarkerRegion, 10);
-          } catch (error) {
-            // If we got here, we unmounted
-            console.log(error);
-          }
-        }, 5);
-
-        return;
-      }
+    let didAnimate: boolean = this.animateToNodeLocation();
+    if (didAnimate) {
+      return;
     }
 
     // If we are unable to find the user region, wait until we get it
@@ -217,15 +210,105 @@ export class MainMap extends Component<IProps, IState> {
         }
       }, 5);
     }
-
   }
 
+ animateToNodeLocation() {
+    // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
+    if (this.selectedNodeIndex !== undefined) {
+      let nodeListToSearch = this.getNodeListToSearch();
+
+      let selectedNode = nodeListToSearch[this.selectedNodeIndex];
+
+      // If we found the node in the list, move the map location to the node location
+      if (selectedNode) {
+
+        this.setState({
+          selectedNode: selectedNode,
+          nodeSelected: true,
+          selectedNodeIndex: this.selectedNodeIndex,
+        });
+
+        try {
+          selectedNode.nodeType = this.selectedNodeType;
+        } catch (error) {
+          // If we got here, we unmounted
+          console.log(error);
+        }
+
+        setTimeout(() => {
+          try {
+            this._map.animateToRegion({
+              latitude: selectedNode.data.latitude,
+              longitude: selectedNode.data.longitude,
+              latitudeDelta: 0.00122 * 1.5,
+              longitudeDelta: 0.00121 * 1.5,
+            }, 300);
+          } catch (error) {
+            // If we got here, we unmounted
+            console.log(error);
+          }
+        }, 5);
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  async setSelectedNode(index: number) {
+    await this.setState({ selectedNodeIndex: index });
+  }
+
+  async animateToNode() {
+    try {
+      this.setSelectedNode(this.state.selectedNodeIndex);
+    } catch (error) {
+      // Component unmounted, do nothing
+      return;
+    }
+
+    try {
+      clearTimeout(this.regionTimeout);
+
+      this.regionTimeout = setTimeout(() => {
+        if (this.selectedNodeIndex !== this.state.selectedNodeIndex) {
+          this.selectedNodeIndex = this.state.selectedNodeIndex;
+
+          let node = this.props.publicPlaceList[this.state.selectedNodeIndex];
+
+          this._map.animateToRegion(
+            {
+              latitudeDelta: 0.00122 * 1.5,
+              longitudeDelta: 0.00121 * 1.5,
+              latitude: node.data.latitude,
+              longitude: node.data.longitude,
+            },
+            100,
+          );
+        }
+      }, 10);
+    } catch (error) {
+      // Component unmounted, do nothing
+      return;
+    }
+
+}
+
   componentWillMount() {
+    // set the index for the horizontal node list
+    this.index = 0;
+    this.animation = new Animated.Value(0);
+
     let shouldUpdate = this.props.navigation.getParam('updateNodes', false);
 
     if (shouldUpdate) {
       this.nodeService.CheckNow();
     }
+  }
+
+  componentWillUnmount() {
+      this.animation.removeAllListeners();
   }
 
   async waitForUserPosition() {
@@ -252,11 +335,7 @@ export class MainMap extends Component<IProps, IState> {
     }
   }
 
-  viewNodeList() {
-    NavigationService.reset('Nodes', {});
-  }
-
-  onNodeSelected(e, nodeType) {
+   async onNodeSelected(e, nodeType) {
     const coordinate = e.nativeEvent.coordinate;
     this.selectedNodeType = nodeType;
     let nodeListToSearch = this.getNodeListToSearch();
@@ -265,10 +344,18 @@ export class MainMap extends Component<IProps, IState> {
       m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
     );
 
+    const nodeIndex = nodeListToSearch.findIndex(
+      m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
+    );
+
     if (marker) {
       marker.nodeType = nodeType;
-      this.setState({
+
+      this.selectedNodeIndex = nodeIndex;
+
+      await this.setState({
         selectedNode: marker,
+        selectedNodeIndex: nodeIndex,
         nodeSelected: true,
         destination: {
             latitude: marker.data.latitude,
@@ -280,7 +367,7 @@ export class MainMap extends Component<IProps, IState> {
 
   clearSelectedNode(e) {
     if (e.nativeEvent.action !== 'marker-press') {
-      this.setState({nodeSelected: false});
+      this.setState({nodeSelected: false, selectedNode: undefined});
       return;
     }
   }
@@ -316,12 +403,39 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
+  // @ts-ignore
+  async onSwipeRight(state) {
+    await this.setState({ direction: 1 * CARD_WIDTH} );
+    this.selectedNodeIndex = this.state.selectedNodeIndex + 1;
+
+    if (this.selectedNodeIndex >= this.props.publicPlaceList.length) {
+      this.selectedNodeIndex = this.props.publicPlaceList.length - 1;
+    }
+
+    this.animateToNodeLocation();
+  }
+
+  // @ts-ignore
+  async onSwipeLeft(state) {
+    await this.setState({ direction: -1 * CARD_WIDTH} );
+    this.selectedNodeIndex = this.state.selectedNodeIndex - 1;
+
+    if (this.selectedNodeIndex <= 0) {
+      this.selectedNodeIndex = 0;
+    }
+
+    this.animateToNodeLocation();
+  }
+
   render() {
-    // console.log('MAP IS BEING RENDERED!');
+    const config = {
+      velocityThreshold: 0.3,
+      directionalOffsetThreshold: 80,
+    };
+
     return (
       // Map screen view (exported component)
-      <View style={styles.mainView}>
-
+      <View style={styles.mainView} >
           {
             // Main map view
             <View style={styles.mapView}>
@@ -420,7 +534,7 @@ export class MainMap extends Component<IProps, IState> {
           />
           <Button
             icon={{
-              name: 'add',
+               name: 'add',
               size: 35,
               color: '#ffffff',
             }}
@@ -431,7 +545,7 @@ export class MainMap extends Component<IProps, IState> {
             onPress={() => { this.navigateToPage('CreateNode');
             }}
           />
-          <Button
+          {/* <Button
             icon={{
               name: 'message-circle',
               type: 'feather',
@@ -443,7 +557,7 @@ export class MainMap extends Component<IProps, IState> {
             buttonStyle={styles.transparentButton}
             title=''
             onPress={() => { this.props.navigation.navigate('Chat', {action: 'general_chat'}); } }
-          />
+          /> */}
           </View>
         }
 
@@ -469,8 +583,17 @@ export class MainMap extends Component<IProps, IState> {
             />
             </View>
             :
-            <View style={styles.nodeSelectedView}>
+            <GestureRecognizer
+            // onSwipe={(direction, state) => this.onSwipe(direction, state)}
+            // onSwipeUp={(state) => this.onSwipeUp(state)}
+            // onSwipeDown={(state) => this.onSwipeDown(state)}
+            onSwipeLeft={async (state) => { await this.onSwipeLeft(state); } }
+            onSwipeRight={async (state) => { await this.onSwipeRight(state); } }
+            config={config}
+            style={styles.nodeSelectedView}
+            >
             <Node
+              index={this.state.selectedNodeIndex}
               nodeId={this.state.selectedNode.data.node_id}
               nodeType={ this.state.selectedNode.nodeType }
               topic={this.state.selectedNode.data.topic}
@@ -479,14 +602,15 @@ export class MainMap extends Component<IProps, IState> {
               destination={this.state.selectedNode.data}
               navigation={this.props.navigation}
               likes={this.state.selectedNode.data.likes}
+              direction={this.state.direction}
             />
-            </View>
+            </GestureRecognizer>
           }
           </View>
           // End node selected view
         }
 
-     </View>
+      </View>
      // End map screen view (exported component)
     );
   }
@@ -702,5 +826,12 @@ const styles = StyleSheet.create({
     margin: 10,
     // marginLeft: '20%',
     alignSelf: 'center',
+  },
+  scrollView: {
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
+    paddingVertical: 10,
   },
 });

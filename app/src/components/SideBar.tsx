@@ -147,7 +147,7 @@ export class SideBar extends Component<IProps, IState> {
                   }}
                 />
 
-                <ListItem
+                {/* <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,
@@ -163,7 +163,7 @@ export class SideBar extends Component<IProps, IState> {
                     this.props.navigation.navigate('Chat', {action: 'general_chat'}) :
                     this.resetNavigation('Chat');
                   }}
-                />
+                /> */}
 
                 {/* <ListItem
                   scaleProps={{

@@ -75,6 +75,7 @@
     "react-native-simple-compass": "^1.0.0",
     "react-native-snackbar": "^0.5.1",
     "react-native-stars-rating": "^0.1.7",
+    "react-native-swipe-gestures": "^1.0.3",
     "react-native-swipeout": "^2.3.6",
     "react-native-switch": "^1.5.0",
     "react-native-tab-view": "^1.0.2",

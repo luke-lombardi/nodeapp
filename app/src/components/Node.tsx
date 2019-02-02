@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, AsyncStorage } from 'react-native';
+import { View, StyleSheet, AsyncStorage, Dimensions, Animated } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
@@ -8,6 +8,13 @@ import AuthService from '../services/AuthService';
 
 // @ts-ignore
 import Moment from 'moment';
+
+// @ts-ignore
+const { width, height } = Dimensions.get('window');
+// @ts-ignore
+const CARD_HEIGHT = height / 4;
+// @ts-ignore
+const CARD_WIDTH = width;
 
 interface IProps {
   topic: string;
@@ -18,6 +25,8 @@ interface IProps {
   origin: any;
   destination: any;
   likes: any;
+  direction: number;
+  index: number;
 }
 
 interface IState {
@@ -27,6 +36,7 @@ interface IState {
   time: any;
   elaspedTime: number;
   totalVoteCount: number;
+  x: any;
 }
 
 export default class Node extends Component<IProps, IState> {
@@ -34,6 +44,7 @@ export default class Node extends Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
+
     this.state = {
       loadingLikeIcon: true,
       currentLikeIcon: 'loader',
@@ -41,6 +52,7 @@ export default class Node extends Component<IProps, IState> {
       time: '',
       elaspedTime: 0,
       totalVoteCount: 0,
+      x: new Animated.Value(this.props.direction),
     };
 
     this.goToFinder = this.goToFinder.bind(this);
@@ -57,6 +69,7 @@ export default class Node extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.slideIn = this.slideIn.bind(this);
   }
 
   async updateVote(vote: number) {
@@ -95,6 +108,13 @@ export default class Node extends Component<IProps, IState> {
 
   componentDidMount() {
     this.updateVoteStatus();
+    this.slideIn();
+  }
+
+  slideIn() {
+    Animated.spring(this.state.x, {
+      toValue: 0,
+    }).start();
   }
 
   componentWillUnmount() {
@@ -150,11 +170,12 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async goToChat() {
-    let nodeId = this.props.nodeId;
-
     NavigationService.reset('Chat', {
-      action: 'join_chat', nodeId: nodeId,
-    });
+      action: 'join_chat',
+      nodeId: this.props.nodeId,
+      nodeType: this.props.nodeType,
+      nodeIndex: this.props.index,
+     });
 }
 
   goToFinder() {
@@ -167,7 +188,15 @@ export default class Node extends Component<IProps, IState> {
 
   render() {
     return (
-      <View style={styles.view}>
+      <Animated.View
+          style={[styles.view, {
+            transform: [
+              {
+                translateX: this.state.x,
+              },
+            ],
+          }]}
+        >
         <View style={styles.nodeCardContainer}>
         <View style={styles.countdownContainer}>
         <Icon
@@ -181,6 +210,7 @@ export default class Node extends Component<IProps, IState> {
         </View>
         <Card containerStyle={styles.nodeCard}>
         <View style={{width: '80%', maxHeight: 150, minHeight: 100}}>
+
             <Text numberOfLines={6} style={styles.nodeTopic}>
             {this.props.topic}
             </Text>
@@ -188,11 +218,11 @@ export default class Node extends Component<IProps, IState> {
           { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
           </Text> */}
           </View>
-          <View style={{paddingHorizontal: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+          <View style={{paddingHorizontal: 29, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
             <Icon
               name='keyboard-arrow-up'
               color='#00aced'
-              size={40}
+              size={30}
               onPress={async () => { await this.updateVote(1); }}
               underlayColor={'transparent'}
             />
@@ -200,7 +230,7 @@ export default class Node extends Component<IProps, IState> {
             <Icon
               name='keyboard-arrow-down'
               color='#00aced'
-              size={40}
+              size={30}
               onPress={async () => { await this.updateVote(-1); }}
               underlayColor={'transparent'}
             />
@@ -253,7 +283,7 @@ export default class Node extends Component<IProps, IState> {
           </View>
         </Card>
         </View>
-      </View>
+      </Animated.View>
     );
   }
 }
@@ -261,17 +291,18 @@ export default class Node extends Component<IProps, IState> {
 // @ts-ignore
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
-    flexDirection: 'row',
+    width: CARD_WIDTH,
     alignItems: 'center',
   },
   nodeCardContainer: {
     backgroundColor: 'transparent',
     width: '100%',
     height: '100%',
+    alignContent: 'center',
+    bottom: 0,
   },
   nodeCard: {
-    height: 220,
+    height: 180,
     width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(44,55,71,.9)',
@@ -280,7 +311,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    bottom: 20,
+    bottom: 0,
     backgroundColor: 'rgba(44,55,71,.9)',
   },
   nodeTopic: {
@@ -301,7 +332,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     width: 200,
     height: 50,
-    bottom: 5,
+    bottom: -15,
   },
   durationTitle: {
     color: 'white',
@@ -325,7 +356,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
-    height: 50,
+    height: 80,
     width: '100%',
   },
   buttonView: {
@@ -334,6 +365,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     alignContent: 'center',
+    borderColor: 'rgba(255,255,255,.1)',
+    paddingTop: 5,
+    marginTop: 20,
+    borderTopWidth: 0.5,
   },
   middleButton: {
     width: '70%',

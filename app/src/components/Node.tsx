@@ -237,7 +237,7 @@ export default class Node extends Component<IProps, IState> {
           </View>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
-            <Button
+            {/* <Button
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'feather',
@@ -252,7 +252,7 @@ export default class Node extends Component<IProps, IState> {
               // onPress={}
               disabled={this.state.loadingLikeIcon}
               disabledStyle={{backgroundColor: 'rgba(44,55,71,.9)'}}
-            />
+            /> */}
              <Button
               icon={{
                 name: 'message-circle',

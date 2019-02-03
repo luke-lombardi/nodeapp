@@ -46,24 +46,14 @@ export class FriendList extends Component<IProps, IState> {
         title: 'Friends',
         headerLeft:
           <Icon
-            name='menu'
+            name='x'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
             underlayColor={'black'}
             color={'#ffffff'}
-            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+            onPress={ () => { navigation.navigate('Map'); }}
           />,
-          headerRight:
-            <Icon
-              name='arrow-right'
-              type='feather'
-              containerStyle={{padding: 5, right: 15}}
-              size={30}
-              underlayColor={'black'}
-              color={'#ffffff'}
-              onPress={ () => { navigation.navigate('Map'); }}
-            />,
       };
   }
 

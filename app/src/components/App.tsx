@@ -115,9 +115,9 @@ const InternalStack = createStackNavigator({
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'Drop Node',
-      headerLeft: <Icon name='menu' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
+      headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
       color={'#ffffff'} onPress={ () =>
-        navigation.navigate('DrawerToggle') }
+        navigation.navigate('Map') }
       />,
       }),
   },

@@ -56,13 +56,13 @@ export class Notifications extends Component<IProps, IState> {
         title: 'Notifications',
         headerLeft:
             <Icon
-            name='menu'
+            name='x'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
             underlayColor={'black'}
             color={'#ffffff'}
-            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+            onPress={ () => { navigation.navigate('Map'); }}
             />,
       };
   }

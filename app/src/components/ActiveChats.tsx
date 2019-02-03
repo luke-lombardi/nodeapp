@@ -6,7 +6,6 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import NavigationService from '../services/NavigationService';
 import { ButtonGroup, ListItem } from 'react-native-elements';
-import { NavigationActions } from 'react-navigation';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
 interface IProps {
@@ -43,9 +42,6 @@ export class ActiveChats extends Component<IProps, IState> {
           data: this.props.relationList,
         };
 
-        this.navigateToScreen = this.navigateToScreen.bind(this);
-        this.resetNavigation = this.resetNavigation.bind(this);
-
         this.componentWillMount = this.componentWillMount.bind(this);
         this.updateIndex = this.updateIndex.bind(this);
     }
@@ -65,23 +61,6 @@ export class ActiveChats extends Component<IProps, IState> {
           isLoading: false,
         });
       }
-    }
-
-    resetNavigation(route) {
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: route }),
-        ],
-      });
-      this.props.navigation.dispatch(resetAction);
-    }
-
-    navigateToScreen = (route) => () => {
-      const navigateAction = NavigationActions.navigate({
-        routeName: route,
-      });
-      this.props.navigation.dispatch(navigateAction);
     }
 
     componentWillMount() {

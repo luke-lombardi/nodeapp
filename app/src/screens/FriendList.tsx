@@ -231,7 +231,7 @@ export class FriendList extends Component<IProps, IState> {
           <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
           <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 20}}>
             <Switch
-              onTouchEnd={async () => {  await this.toggleLocationSharing(row); }}
+              onTouchStart={async () => { await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
             <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>Share Location</Text>

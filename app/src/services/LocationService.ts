@@ -195,7 +195,8 @@ export default class LocationService {
           orderedFriendList.push(currentNode);
         }
 
-        if (await NodeService.nodeTracked(currentNode.node_id) && currentNode.data.type !== 'person') {
+        if (await NodeService.nodeTracked(currentNode.node_id)
+          && (currentNode.data.type !== 'person' && currentNode.data.type !== 'friend')) {
           orderedTrackedNodeList.push(currentNode);
         }
 

@@ -216,8 +216,13 @@ export class MainMap extends Component<IProps, IState> {
     // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
     if (this.selectedNodeIndex !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
+      let selectedNode = undefined;
 
-      let selectedNode = nodeListToSearch[this.selectedNodeIndex];
+      try {
+        selectedNode = nodeListToSearch[this.selectedNodeIndex];
+      } catch (error) {
+        return false;
+      }
 
       // If we found the node in the list, move the map location to the node location
       if (selectedNode) {

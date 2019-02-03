@@ -155,17 +155,17 @@ export class NodeList extends Component<IProps, IState> {
       <View style={{flex: 1}}>
       <View style={{paddingTop: 5, height: 100, backgroundColor: 'black', flexDirection: 'row'}}>
       <Icon
-          name={'menu'}
+          name={'x'}
           type={'feather'}
           size={30}
           underlayColor={'black'}
           color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-start', top: 40, paddingHorizontal: 10, paddingVertical: 0}}
-          onPress={() => this.props.navigation.navigate('DrawerToggle')}
+          containerStyle={{alignSelf: 'flex-start', top: 40, left: 10, paddingVertical: 0}}
+          onPress={() => this.props.navigation.navigate('Map')}
         />
         <ButtonGroup
           innerBorderStyle={{width: 0.0, color: 'black'}}
-          containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 15, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
+          containerStyle={{flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 15, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
           buttonStyle={{height: 20, backgroundColor: 'black'}}
           // containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
@@ -173,15 +173,6 @@ export class NodeList extends Component<IProps, IState> {
           selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black'}}
           buttons={buttons}
           textStyle={{fontWeight: 'bold', fontSize: 18}}
-        />
-        <Icon
-          name={'arrow-right'}
-          type={'feather'}
-          size={35}
-          underlayColor={'black'}
-          color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 20, paddingHorizontal: 10}}
-          onPress={() => this.props.navigation.navigate('Map')}
         />
       </View>
       <View style={styles.flatlist}>

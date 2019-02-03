@@ -82,28 +82,18 @@ export class Chat extends Component<IProps, IState> {
         title: username ,
         headerLeft:
           <Icon
-            name='menu'
+            name='x'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
             underlayColor={'black'}
             color={'#ffffff'}
-            onPress={ () => { navigation.navigate('DrawerToggle'); }}
+            onPress={ () => {
+              NavigationService.reset('Map', {
+              nodeType: params.nodeType,
+              nodeIndex: params.nodeIndex,
+            }); }}
           />,
-          headerRight:
-            <Icon
-              name='arrow-right'
-              type='feather'
-              containerStyle={{padding: 5, right: 15}}
-              size={30}
-              underlayColor={'black'}
-              color={'#ffffff'}
-              onPress={ () => {
-                NavigationService.reset('Map', {
-                nodeType: params.nodeType,
-                nodeIndex: params.nodeIndex,
-              }); }}
-            />,
       };
   }
 

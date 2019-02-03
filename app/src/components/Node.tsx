@@ -84,12 +84,12 @@ export default class Node extends Component<IProps, IState> {
 
     let response  = await ApiService.LikeNodeAsync(requestBody);
 
-    let totalVoteCount: number = await this.calculateVotes(response);
+    let totalVoteCount: number = this.calculateVotes(response);
     await this.setState({totalVoteCount: totalVoteCount});
     // await this.updateLikeIcon(currentUUID, response);
   }
 
-  async calculateVotes(response: any) {
+  calculateVotes(response: any) {
     let totalVoteCount = 0;
     for (let user in response.votes) {
       if (response.votes.hasOwnProperty(user)) {

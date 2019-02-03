@@ -52,18 +52,11 @@ def vote_for_node(rds, node_id, user_uuid, vote=None):
         if user_vote_status is None:
           current_votes[user_uuid] = 0
 
-        if(current_votes[user_uuid] == 1 and vote == 1):
-            current_votes[user_uuid] = 1
-        elif (current_votes[user_uuid] == 0 and vote == 1):
-            current_votes[user_uuid] = 1
-        elif (current_votes[user_uuid] == 0 and vote == -1):
-            current_votes[user_uuid] = -1
-        elif (current_votes[user_uuid] == 1 and vote == -1):
-            current_votes[user_uuid] = 0
-        elif (current_votes[user_uuid] == -1 and vote == 1):
-            current_votes[user_uuid] = 0
-        elif (current_votes[user_uuid] == -1 and vote == -1):
-            current_votes[user_uuid] = -1
+        current_votes[user_uuid] += vote
+        if current_votes[user_uuid] > 1:
+          current_votes[user_uuid] = 1
+        elif current_votes[user_uuid] < -1:
+          current_votes[user_uuid] = -1
 
         node_data['votes'] = current_votes
 

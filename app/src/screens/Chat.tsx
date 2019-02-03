@@ -144,8 +144,6 @@ export class Chat extends Component<IProps, IState> {
     this.CheckNow = this.CheckNow.bind(this);
     this.monitorMessages = this.monitorMessages.bind(this);
     this.postMessage = this.postMessage.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-
     this.getTime = this.getTime.bind(this);
     }
 
@@ -403,6 +401,7 @@ export class Chat extends Component<IProps, IState> {
           return;
 
         await this.setState({messageBody: '', isLoading: false});
+        this._textInput.focus();
 
       // If the response was undefined, display error snackbar
       } else {
@@ -458,11 +457,6 @@ export class Chat extends Component<IProps, IState> {
         await Promise.race([ sleepPromise, this.checkNowTrigger ]);
       }
 
-    }
-
-    onBlur() {
-      console.log('CALLING ON BLUE');
-      this._textInput.focus();
     }
 
     public CheckNow() {
@@ -523,7 +517,6 @@ export class Chat extends Component<IProps, IState> {
             autoFocus
             maxLength={500}
             allowFontScaling
-            onBlur={this.onBlur}
             onSubmitEditing={this.submitMessage}
             blurOnSubmit={true}
             placeholder={'Type your message...'}

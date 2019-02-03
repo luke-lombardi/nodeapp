@@ -18,6 +18,7 @@ interface IProps {
     privatePersonList: Array<any>;
     publicPlaceList: Array<any>;
     publicPersonList: Array<any>;
+    trackedNodeList: Array<any>;
 }
 
 interface IState {
@@ -39,7 +40,7 @@ export class ActiveChats extends Component<IProps, IState> {
           isLoading: true,
           numberOfNotifications: undefined,
           selectedIndex: 1,
-          data: this.props.publicPlaceList,
+          data: this.props.relationList,
         };
 
         this.navigateToScreen = this.navigateToScreen.bind(this);
@@ -54,12 +55,10 @@ export class ActiveChats extends Component<IProps, IState> {
       if (selectedIndex === 0) {
         this.setState({
           selectedIndex,
-          data: this.props.publicPlaceList,
+          data: this.props.trackedNodeList,
           isLoading: false,
         });
       } else if (selectedIndex === 1) {
-        console.log('HEY');
-        console.log(this.props.relationList);
         this.setState({
           selectedIndex,
           data: this.props.relationList,
@@ -89,15 +88,10 @@ export class ActiveChats extends Component<IProps, IState> {
       //
     }
 
+    // @ts-ignore
     _onTouchNode(node: any, index: number) {
       if (this.state.selectedIndex === 0) {
-        let region = {
-          latitude: parseFloat(node.data.latitude),
-          longitude: parseFloat(node.data.longitude),
-          latitudeDelta: parseFloat(node.data.latDelta),
-          longitudeDelta: parseFloat(node.data.longDelta),
-        };
-
+        // @ts-ignore
         let nodeType = undefined;
 
         if (node.data.type === 'place' && node.data.private) {
@@ -110,11 +104,7 @@ export class ActiveChats extends Component<IProps, IState> {
           nodeType = 'publicPerson';
         }
 
-        NavigationService.reset('Map', {
-          region: region,
-          nodeType: nodeType,
-          nodeIndex: index,
-        });
+        NavigationService.reset('Chat', { nodeId: node.node_id} );
       } else {
         NavigationService.reset('Chat', { nodeId: node.relation_id, username: node.topic } );
       }
@@ -196,6 +186,7 @@ export class ActiveChats extends Component<IProps, IState> {
       privatePlaceList: state.privatePlaceList,
       publicPersonList: state.publicPersonList,
       publicPlaceList: state.publicPlaceList,
+      trackedNodeList: state.trackedNodeList,
       relationList: state.relationList,
     };
   }

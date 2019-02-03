@@ -85,10 +85,12 @@ export class FriendList extends Component<IProps, IState> {
 
   async _onTouchNode(node: any) {
     let friendNode = undefined;
+    let nodeIndex = undefined;
 
     for (let i = 0; i < this.props.friendList.length; i++) {
       if (this.props.friendList[i].node_id === node.their_friend_id) {
         friendNode = this.props.friendList[i];
+        nodeIndex = i;
         break;
       }
     }
@@ -108,7 +110,7 @@ export class FriendList extends Component<IProps, IState> {
     };
 
     const nodeType = 'friend';
-    NavigationService.reset('Map', {region: region, nodeType: nodeType} );
+    NavigationService.reset('Map', {region: region, nodeType: nodeType, nodeIndex: nodeIndex } );
 
   }
 

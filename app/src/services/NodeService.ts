@@ -27,6 +27,10 @@ export interface IPrivatePlaceListUpdated {
     readonly nodeList: Array<any>;
 }
 
+export interface ITrackedNodeListUpdated {
+  readonly nodeList: Array<any>;
+}
+
 export interface IFriendListUpdated {
     readonly friendList: Array<any>;
 }
@@ -44,6 +48,7 @@ interface IProps {
   readonly publicPlaceListUpdated?: (props: IPublicPlaceListUpdated) => Promise<void>;
   readonly privatePersonListUpdated?: (props: IPrivatePersonListUpdated) => Promise<void>;
   readonly privatePlaceListUpdated?: (props: IPrivatePlaceListUpdated) => Promise<void>;
+  readonly trackedNodeListUpdated?: (props: ITrackedNodeListUpdated) => Promise<void>;
   readonly friendListUpdated?: (props: IFriendListUpdated) => Promise<void>;
   readonly relationListUpdated?: (props: IRelationListUpdated) => Promise<void>;
 
@@ -190,6 +195,25 @@ export default class NodeService {
       } else {
           Logger.info(`NodeService.storeNode: you already are tracking this node.`);
           return true;
+      }
+    }
+
+    // Checks if a node is stored in async storage
+    public static async nodeTracked(nodeId) {
+      let trackedNodes = await AsyncStorage.getItem('trackedNodes');
+      if (trackedNodes !== null) {
+        trackedNodes = JSON.parse(trackedNodes);
+      } else {
+        // @ts-ignore
+        trackedNodes = [];
+      }
+      let index = trackedNodes.indexOf(nodeId);
+
+      if (index >= 0) {
+          Logger.info(`NodeService.nodeTracked: tracking node ${nodeId}`);
+          return true;
+      } else {
+          return false;
       }
     }
 
@@ -404,6 +428,7 @@ export default class NodeService {
         await this.props.publicPlaceListUpdated({nodeList: orderedNodes.publicPlaceList});
         await this.props.privatePersonListUpdated({nodeList: orderedNodes.privatePersonList});
         await this.props.privatePlaceListUpdated({nodeList: orderedNodes.privatePlaceList});
+        await this.props.trackedNodeListUpdated({nodeList: orderedNodes.trackedNodeList});
         await this.props.friendListUpdated({friendList: orderedNodes.friendList});
       }
     }

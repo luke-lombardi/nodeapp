@@ -225,7 +225,7 @@ export class CreateNode extends Component<IProps, IState> {
 
     let newUuid = await ApiService.CreateNodeAsync(nodeData);
 
-    if (newUuid !== undefined && nodeData.private === true) {
+    if (newUuid !== undefined) {
       await NodeService.storeNode(newUuid);
       Logger.info('CreateNode.submitCreateNode - successfully created new private node.');
     } else if (newUuid !== undefined && nodeData.private === false) {

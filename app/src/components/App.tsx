@@ -37,6 +37,7 @@ import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
 import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
+import { TrackedNodeListUpdatedActionCreator } from '../actions/TrackedNodeActions';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
@@ -48,6 +49,7 @@ import NodeService,
     IPublicPlaceListUpdated,
     IPrivatePersonListUpdated,
     IPrivatePlaceListUpdated,
+    ITrackedNodeListUpdated,
     IFriendListUpdated,
     IRelationListUpdated,
   }
@@ -180,6 +182,7 @@ interface IProps {
   PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  TrackedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   GroupListUpdated: (groupList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
@@ -190,6 +193,7 @@ interface IProps {
   publicPlaceList: Array<any>;
   privatePersonList: Array<any>;
   privatePlaceList: Array<any>;
+  trackedNodeList:  Array<any>;
   groupList: Array<any>;
   friendList: Array<any>;
   relationList: Array<any>;
@@ -301,6 +305,7 @@ export class App extends Component<IProps, IState> {
       this.gotNewPublicPlaceList = this.gotNewPublicPlaceList.bind(this);
       this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
       this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
+      this.gotNewTrackedNodeList =  this.gotNewTrackedNodeList.bind(this);
 
       this.gotNewFriendList = this.gotNewFriendList.bind(this);
       this.gotNewRelationList =  this.gotNewRelationList.bind(this);
@@ -327,6 +332,7 @@ export class App extends Component<IProps, IState> {
           publicPlaceListUpdated: this.gotNewPublicPlaceList,
           privatePersonListUpdated: this.gotNewPrivatePersonList,
           privatePlaceListUpdated: this.gotNewPrivatePlaceList,
+          trackedNodeListUpdated: this.gotNewTrackedNodeList,
           friendListUpdated: this.gotNewFriendList,
           relationListUpdated: this.gotNewRelationList,
           currentUserRegion: this.getUserRegion,
@@ -622,6 +628,10 @@ export class App extends Component<IProps, IState> {
       await this.props.PrivatePersonListUpdated(props.nodeList);
     }
 
+    private async gotNewTrackedNodeList(props: ITrackedNodeListUpdated) {
+      await this.props.TrackedNodeListUpdated(props.nodeList);
+    }
+
     private async gotNewPrivatePlaceList(props: IPrivatePlaceListUpdated) {
       await this.props.PrivatePlaceListUpdated(props.nodeList);
     }
@@ -643,6 +653,7 @@ function mapStateToProps(state: IStoreState): IProps {
     publicPlaceList: state.publicPlaceList,
     privatePersonList: state.privatePersonList,
     privatePlaceList: state.privatePlaceList,
+    trackedNodeList: state.trackedNodeList,
     friendList: state.friendList,
     relationList: state.relationList,
     userRegion: state.userRegion,
@@ -655,6 +666,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
     PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
     PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
+    TrackedNodeListUpdated: bindActionCreators(TrackedNodeListUpdatedActionCreator, dispatch),
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
     FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
     RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),

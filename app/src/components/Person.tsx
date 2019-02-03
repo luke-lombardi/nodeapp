@@ -9,6 +9,8 @@ import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
 import Moment from 'moment';
+import ApiService from '../services/ApiService';
+import AuthService from '../services/AuthService';
 
 interface IProps {
   topic: string;
@@ -53,18 +55,39 @@ export default class Person extends Component<IProps, IState> {
       trackedRelations = {};
     }
 
+    // TODO: return more data for the rcpt so this looping isn't necessary
+    let relationsToGet = [];
     for (let key in trackedRelations) {
         if (trackedRelations.hasOwnProperty(key)) {
-          if (trackedRelations[key].their_id === this.props.nodeId) {
-            nodeId = trackedRelations[key].relation_id;
-            break;
+            relationsToGet.push(trackedRelations[key].relation_id);
+      }
+    }
+
+    let currentUUID  = await AuthService.getUUID();
+    let requestBody = {
+      'relations': relationsToGet,
+      'user_id': currentUUID,
+    };
+
+    let relations = await ApiService.getRelations(requestBody);
+
+    for (let relationId in relations) {
+      if (relations.hasOwnProperty(relationId)) {
+        for (let member in relations[relationId].members) {
+          if (relations[relationId].members.hasOwnProperty(member)) {
+              if (member === this.props.nodeId) {
+                nodeId = relationId;
+                break;
+              }
           }
+        }
       }
     }
 
     if (nodeId !== undefined) {
       NavigationService.reset('Chat', {
-        action: 'join_chat', nodeId: nodeId,
+        action: 'join_chat',
+        nodeId: nodeId,
         username: username,
       });
     }

@@ -2,6 +2,8 @@ import Logger from './Logger';
 // @ts-ignore
 import SleepUtil from './SleepUtil';
 // import ApiService from '../services/ApiService';
+import NodeService from '../services/NodeService';
+
 import { AsyncStorage } from 'react-native';
 import geolib from 'geolib';
 
@@ -122,6 +124,7 @@ export default class LocationService {
       let orderedPublicPlaceList = [];
       let orderedPrivatePersonList = [];
       let orderedPrivatePlaceList = [];
+      let orderedTrackedNodeList = [];
       let orderedFriendList = [];
 
       for (let i = 0; i < orderedList.length; i++) {
@@ -192,6 +195,10 @@ export default class LocationService {
           orderedFriendList.push(currentNode);
         }
 
+        if (await NodeService.nodeTracked(currentNode.node_id) && currentNode.data.type !== 'person') {
+          orderedTrackedNodeList.push(currentNode);
+        }
+
       }
 
       let nodes = {
@@ -199,6 +206,7 @@ export default class LocationService {
         'publicPlaceList': orderedPublicPlaceList,
         'privatePersonList': orderedPrivatePersonList,
         'privatePlaceList': orderedPrivatePlaceList,
+        'trackedNodeList': orderedTrackedNodeList,
         'friendList': orderedFriendList,
       };
 

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, Alert, Animated, ScrollView,TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, Animated, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -393,6 +393,11 @@ export class Chat extends Component<IProps, IState> {
         await this.setState({messageBody: '', isLoading: false});
         this._textInput.focus();
 
+        // When a message is successfully posted, track the node
+        let exists = await NodeService.storeNode(this.state.nodeId);
+        if (!exists) {
+          //
+        }
       // If the response was undefined, display error snackbar
       } else {
         this.setState({isLoading: false});

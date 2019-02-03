@@ -48,6 +48,7 @@ export class Notifications extends Component<IProps, IState> {
   private action: any;
 
   // TODO: figure out a smarter way to do this
+  // @ts-ignore
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
@@ -62,7 +63,7 @@ export class Notifications extends Component<IProps, IState> {
             size={30}
             underlayColor={'black'}
             color={'#ffffff'}
-            onPress={ () => { navigation.navigate('Map'); }}
+            onPress={ () => { NavigationService.reset('Map', {}); }}
             />,
       };
   }

@@ -38,7 +38,7 @@ export class ActiveChats extends Component<IProps, IState> {
         this.state  = {
           isLoading: true,
           numberOfNotifications: undefined,
-          selectedIndex: 0,
+          selectedIndex: 1,
           data: this.props.publicPlaceList,
         };
 
@@ -58,9 +58,11 @@ export class ActiveChats extends Component<IProps, IState> {
           isLoading: false,
         });
       } else if (selectedIndex === 1) {
+        console.log('HEY');
+        console.log(this.props.relationList);
         this.setState({
           selectedIndex,
-          data: this.props.privatePlaceList,
+          data: this.props.relationList,
           isLoading: false,
         });
       }
@@ -88,30 +90,35 @@ export class ActiveChats extends Component<IProps, IState> {
     }
 
     _onTouchNode(node: any, index: number) {
-      let region = {
-        latitude: parseFloat(node.data.latitude),
-        longitude: parseFloat(node.data.longitude),
-        latitudeDelta: parseFloat(node.data.latDelta),
-        longitudeDelta: parseFloat(node.data.longDelta),
-      };
+      if (this.state.selectedIndex === 0) {
+        let region = {
+          latitude: parseFloat(node.data.latitude),
+          longitude: parseFloat(node.data.longitude),
+          latitudeDelta: parseFloat(node.data.latDelta),
+          longitudeDelta: parseFloat(node.data.longDelta),
+        };
 
-      let nodeType = undefined;
+        let nodeType = undefined;
 
-      if (node.data.type === 'place' && node.data.private) {
-        nodeType = 'privatePlace';
-      } else if (node.data.type === 'person' && node.data.private) {
-        nodeType = 'privatePerson';
-      } else if (node.data.type === 'place' && !node.data.private) {
-        nodeType = 'publicPlace';
-      } else if (node.data.type === 'person' && !node.data.private) {
-        nodeType = 'publicPerson';
+        if (node.data.type === 'place' && node.data.private) {
+          nodeType = 'privatePlace';
+        } else if (node.data.type === 'person' && node.data.private) {
+          nodeType = 'privatePerson';
+        } else if (node.data.type === 'place' && !node.data.private) {
+          nodeType = 'publicPlace';
+        } else if (node.data.type === 'person' && !node.data.private) {
+          nodeType = 'publicPerson';
+        }
+
+        NavigationService.reset('Map', {
+          region: region,
+          nodeType: nodeType,
+          nodeIndex: index,
+        });
+      } else {
+        NavigationService.reset('Chat', { nodeId: node.relation_id, username: node.topic } );
       }
 
-      NavigationService.reset('Map', {
-        region: region,
-        nodeType: nodeType,
-        nodeIndex: index,
-      });
     }
 
     _renderItem = ({item, index}) => (
@@ -119,18 +126,26 @@ export class ActiveChats extends Component<IProps, IState> {
         onPress={() => this._onTouchNode(item, index)}
         containerStyle={styles.nodeListItem}
         titleStyle={{fontWeight: 'bold', fontSize: 14}}
-        title={item.data.topic}
+        title={this.state.selectedIndex === 0 ? item.data.topic : item.topic}
         rightTitleStyle={{fontWeight: '600', fontSize: 14}}
         rightTitle={
-        <View style={{paddingVertical: 5}}>
-          <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
-          <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
+        this.state.selectedIndex  ===  0 ?
+          <View style={{paddingVertical: 5}}>
+            <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
+            <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
+          </View>
+          : <View>
+            {}
           </View>
         }
         subtitle={
           <View style={{paddingVertical: 5}}>
+          { this.state.selectedIndex === 0 ?
             <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
-            {
+            :
+            undefined
+          }
+            { this.state.selectedIndex === 0  &&
               item.data.likes &&
               <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
             } */}
@@ -140,7 +155,7 @@ export class ActiveChats extends Component<IProps, IState> {
     )
 
     render() {
-      const buttons = ['Nodes', 'Friends'];
+      const buttons = ['Saved Nodes', 'Friends'];
       const { selectedIndex } = this.state;
       return (
         <View style={{flex: 1}}>
@@ -165,7 +180,7 @@ export class ActiveChats extends Component<IProps, IState> {
            onEndReachedThreshold={0}
            ListHeaderComponent={<View style={{ height: 0, marginTop: 0 }}></View>}
            showsVerticalScrollIndicator={true}
-           keyExtractor={item => item.node_id}
+           keyExtractor={item => (this.state.selectedIndex === 0 ? item.node_id : item.relation_id) }
           />
           </View>
        </View>
@@ -181,6 +196,7 @@ export class ActiveChats extends Component<IProps, IState> {
       privatePlaceList: state.privatePlaceList,
       publicPersonList: state.publicPersonList,
       publicPlaceList: state.publicPlaceList,
+      relationList: state.relationList,
     };
   }
 

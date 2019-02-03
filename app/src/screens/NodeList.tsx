@@ -161,7 +161,7 @@ export class NodeList extends Component<IProps, IState> {
           underlayColor={'black'}
           color={'#ffffff'}
           containerStyle={{alignSelf: 'flex-start', top: 40, left: 10, paddingVertical: 0}}
-          onPress={() => this.props.navigation.navigate('Map')}
+          onPress={() => NavigationService.reset('Map', {})}
         />
         <ButtonGroup
           innerBorderStyle={{width: 0.0, color: 'black'}}

@@ -52,7 +52,7 @@ export class FriendList extends Component<IProps, IState> {
             size={30}
             underlayColor={'black'}
             color={'#ffffff'}
-            onPress={ () => { navigation.navigate('Map'); }}
+            onPress={ () => { NavigationService.reset('Map', {}); }}
           />,
       };
   }

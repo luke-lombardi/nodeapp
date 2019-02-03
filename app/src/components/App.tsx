@@ -111,13 +111,14 @@ const InternalStack = createStackNavigator({
       }),
   },
   CreateNode: { screen: CreateNode,
+    // @ts-ignore
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'Drop Node',
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
       color={'#ffffff'} onPress={ () =>
-        navigation.navigate('Map') }
+        NavigationService.reset('Map', {}) }
       />,
       }),
   },

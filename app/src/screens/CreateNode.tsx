@@ -107,6 +107,7 @@ export class CreateNode extends Component<IProps, IState> {
                 ref={ component => { this._textInput = component; } }
                 style={styles.input}
                 maxLength={90}
+                returnKeyType='done'
                 underlineColorAndroid='transparent'
                 placeholder='Add a topic...'
             />

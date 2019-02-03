@@ -178,10 +178,10 @@ export class Chat extends Component<IProps, IState> {
     }
 
     async getUserInfo() {
-      let userInfo = await AuthService.getUUID();
+      let userUuid = await AuthService.getUUID();
 
-      if (userInfo !== undefined) {
-        await this.setState({userInfo: userInfo});
+      if (userUuid !== undefined) {
+        await this.setState({userUuid: userUuid});
       }
       return;
     }
@@ -206,6 +206,12 @@ export class Chat extends Component<IProps, IState> {
       }
     }
     async showConfirmModal(item) {
+
+      console.log('THIS.STATE.USERINFO');
+      console.log(this.state.userUuid);
+
+      console.log('ITEM.USER');
+      console.log(item.user);
 
       // @ts-ignore
       let currentUUID = await AuthService.getUUID();
@@ -332,18 +338,18 @@ export class Chat extends Component<IProps, IState> {
         //
         title={!this.stackMessages(index, item) ?
           <View style={styles.titleView}>
-          <Text style={this.state.userInfo === item.user ?
+          <Text style={this.state.userUuid === item.user ?
             [styles.thisDisplayName, {marginTop: index === 0 ? 10 : 10}] :
             [styles.thatDisplayName, {marginTop: index === 0 ? 10 : 10}]}>{item.display_name + '  - ' + this.getTime(item)}
 
           </Text>
-          <View style={this.state.userInfo === item.user ? styles.thisUser : styles.thatUser}>
+          <View style={this.state.userUuid === item.user ? styles.thisUser : styles.thatUser}>
           <Text style={styles.myTitleText}>{item.message}</Text>
           </View>
           </View>
           :
           <View style={styles.titleView}>
-          <View style={this.state.userInfo === item.user ? styles.thisUser : styles.thatUser}>
+          <View style={this.state.userUuid === item.user ? styles.thisUser : styles.thatUser}>
           <Text style={styles.titleText}>{item.message}</Text>
           </View>
           </View>

@@ -668,7 +668,7 @@ export class MainMap extends Component<IProps, IState> {
         console.log('Page not found');
     }
 
-    this.props.navigation.navigate({key: pageName, routeName: pageName, params: params});
+    NavigationService.reset(pageName, params);
   }
 
 }

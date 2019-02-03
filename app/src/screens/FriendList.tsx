@@ -118,12 +118,12 @@ export class FriendList extends Component<IProps, IState> {
     };
 
     const nodeType = 'friend';
-    this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {region: region, nodeType: nodeType}});
+    NavigationService.reset('Map', {region: region, nodeType: nodeType} );
 
   }
 
   async sendPrivateMessage(row) {
-    this.props.navigation.navigate({Key: 'Chat', routeName: 'Chat', params: { nodeId: row.relation_id, username: row.topic }});
+    NavigationService.reset('Chat', { nodeId: row.relation_id, username: row.topic } );
   }
 
   async toggleLocationSharing(row) {

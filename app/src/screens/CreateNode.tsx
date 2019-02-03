@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
+import NavigationService from '../services/NavigationService';
 
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { bindActionCreators } from 'redux';
@@ -218,7 +219,7 @@ export class CreateNode extends Component<IProps, IState> {
         isLoading: false,
       });
 
-      this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {updateNodes: true}});
+      NavigationService.reset('Map', {updateNodes: true});
       return;
     }
 
@@ -234,7 +235,7 @@ export class CreateNode extends Component<IProps, IState> {
     }
 
     await this.setState({isLoading: false});
-    this.props.navigation.navigate({Key: 'Map', routeName: 'Map', params: {updateNodes: true}});
+    NavigationService.reset('Map', {updateNodes: true});
   }
 
 }

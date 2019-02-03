@@ -183,7 +183,7 @@ export default class Node extends Component<IProps, IState> {
   }
 
   shareNode() {
-    this.props.navigation.navigate({key: 'FriendList', routeName: 'FriendList', params: { action: 'share_node', nodeId: this.props.nodeId } });
+    NavigationService.reset('FriendList', { action: 'share_node', nodeId: this.props.nodeId } );
   }
 
   render() {

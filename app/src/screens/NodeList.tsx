@@ -181,7 +181,7 @@ export class NodeList extends Component<IProps, IState> {
           underlayColor={'black'}
           color={'#ffffff'}
           containerStyle={{alignSelf: 'flex-end', right: 5, paddingVertical: 20, paddingHorizontal: 10}}
-          onPress={() => this.props.navigation.navigate('Map')}
+          onPress={() => NavigationService.reset('Map', {}) }
         />
       </View>
       <View style={styles.flatlist}>
@@ -209,7 +209,7 @@ export class NodeList extends Component<IProps, IState> {
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
             title={'Create Node'}
-            onPress = {() => this.props.navigation.navigate('CreateNode')}
+            onPress = {() => NavigationService.reset('CreateNode', {})}
           />
           </View>
         }
@@ -221,7 +221,7 @@ export class NodeList extends Component<IProps, IState> {
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
             title={'Create Node'}
-            onPress = {() => this.props.navigation.navigate('CreateNode')}
+            onPress = {() => NavigationService.reset('CreateNode', {})}
           />
           </View>
         }

@@ -200,7 +200,7 @@ export class NodeList extends Component<IProps, IState> {
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
             title={'Create Node'}
-            onPress = {() => this.props.navigation.navigate('CreateNode')}
+            onPress = {() => NavigationService.reset('CreateNode', {})}
           />
           </View>
         }
@@ -212,7 +212,7 @@ export class NodeList extends Component<IProps, IState> {
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
             title={'Create Node'}
-            onPress = {() => this.props.navigation.navigate('CreateNode')}
+            onPress = {() => NavigationService.reset('CreateNode', {})}
           />
           </View>
         }

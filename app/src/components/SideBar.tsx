@@ -8,8 +8,8 @@ import { UserLoggedInActionCreator } from '../actions/AuthActions';
 
 import { ListItem } from 'react-native-elements';
 
-import { NavigationActions } from 'react-navigation';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import NavigationService from '../services/NavigationService';
 
 interface IProps {
     navigation?: any;
@@ -37,28 +37,7 @@ export class SideBar extends Component<IProps, IState> {
           numberOfNotifications: undefined,
         };
 
-        this.resetAction = NavigationActions.replace({ routeName: 'Map' });
-        this.navigateToScreen = this.navigateToScreen.bind(this);
-        this.resetNavigation = this.resetNavigation.bind(this);
-
         this.componentWillMount = this.componentWillMount.bind(this);
-    }
-
-    resetNavigation(route) {
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: route }),
-        ],
-      });
-      this.props.navigation.dispatch(resetAction);
-    }
-
-    navigateToScreen = (route) => () => {
-      const navigateAction = NavigationActions.navigate({
-        routeName: route,
-      });
-      this.props.navigation.dispatch(navigateAction);
     }
 
     componentWillMount() {
@@ -108,7 +87,7 @@ export class SideBar extends Component<IProps, IState> {
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'map', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
-                    this.resetNavigation('Map');
+                    NavigationService.reset('Map', {});
                   }}
                 />
 
@@ -125,8 +104,8 @@ export class SideBar extends Component<IProps, IState> {
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'map-pin', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.privatePlaceList.length && this.props.publicPlaceList.length === 0 ?
-                    this.resetNavigation('CreateNode') :
-                    this.resetNavigation('Nodes');
+                    NavigationService.reset('CreateNode', {}) :
+                    NavigationService.reset('Nodes', {});
                   }}
                 />
 
@@ -143,7 +122,7 @@ export class SideBar extends Component<IProps, IState> {
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'users', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
-                    this.resetNavigation('FriendList');
+                    NavigationService.reset('FriendList', {});
                   }}
                 />
 
@@ -197,7 +176,8 @@ export class SideBar extends Component<IProps, IState> {
                   leftIcon={{name: 'bell', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.state.numberOfNotifications === 0 ?
                     this.props.navigation.navigate('Notifications') :
-                    this.resetNavigation('Notifications');
+                    NavigationService.reset('Notifications', {});
+
                   }}
                 />
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
-import { StackNavigator, DrawerNavigator, NavigationActions } from 'react-navigation';
+// @ts-ignore
+import { NavigationActions, createStackNavigator, createDrawerNavigator, createAppContainer, DrawerActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
@@ -10,6 +11,7 @@ import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState }
 import Pushy from 'pushy-react-native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import RNSimpleCompass from 'react-native-simple-compass';
+import 'react-native-gesture-handler';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -61,6 +63,7 @@ import NotificationService from '../services/NotificationService';
 import { setCustomText } from 'react-native-global-props';
 import SleepUtil from '../services/SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import ActiveChats from './ActiveChats';
 // import { Notifications } from '../screens/Notifications';
 
 const customTextProps = {
@@ -72,7 +75,7 @@ const customTextProps = {
 setCustomText(customTextProps);
 // END SET GLOBAL PROPS //
 
-const InternalStack = StackNavigator({
+const InternalStack = createStackNavigator({
   Finder: { screen: Finder,
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
@@ -131,7 +134,7 @@ const InternalStack = StackNavigator({
   },
 );
 
-  const DrawerStack = DrawerNavigator({
+  const SideBarDrawer = createDrawerNavigator({
       Main: {
         screen: InternalStack,
         drawerPosition: 'left',
@@ -139,41 +142,35 @@ const InternalStack = StackNavigator({
     },
     {
       initialRouteName: 'Main',
+      // @ts-ignore
+      getCustomActionCreators: (route, stateKey) => { return { toggleLeftDrawer: () => DrawerActions.toggleDrawer({ key: stateKey }) }; },
       contentComponent: props => <SideBar {...props} />,
     },
   );
 
-  const ChatStack = DrawerNavigator({
-    Chat: {
-      screen: Chat,
+  const MainDrawer = createDrawerNavigator(
+    {
+        Drawer: SideBarDrawer,
     },
-  },
-  {
-      drawerPosition: 'left',
-      drawerToggleRoute: 'ToggleChat',
-      drawerOpenRoute: 'OpenChat',
-      drawerCloseRoute: 'CloseChat',
-      contentComponent: props => <Chat {...props} />,
-  },
-);
-
-  const DrawerNavigation = StackNavigator({
-    DrawerStack: { screen: DrawerStack },
-    ChatStack: { screen: ChatStack },
-    }, {
-      headerMode: 'none',
-  });
+    {
+        drawerPosition: 'right',
+        // @ts-ignore
+        getCustomActionCreators: (route, stateKey) => { return { toggleRightDrawer: () => DrawerActions.toggleDrawer({ key: stateKey }) }; },
+        contentComponent: props => <ActiveChats {...props} />,
+    },
+    );
 
 // Manifest of possible screens
-export const RootStack = StackNavigator({
-    drawerStack: { screen: DrawerNavigation },
-    chatStack: { screen: DrawerNavigation },
+export const RootStack = createStackNavigator({
+    Home: MainDrawer,
   }, {
     // Default config for all screens
     headerMode: 'none',
     title: 'Main',
-    initialRouteName: 'drawerStack',
+    initialRouteName: 'Home',
   });
+
+const AppContainer = createAppContainer(RootStack);
 
 interface IProps {
   navigation: any;
@@ -596,10 +593,9 @@ export class App extends Component<IProps, IState> {
       return (
         <View style={{flex: 1}}>
           <StatusBar barStyle='light-content'/>
-          <RootStack
-            ref={navigatorRef => {
+          <AppContainer ref={navigatorRef => {
                 NavigationService.setTopLevelNavigator(navigatorRef);
-             }}
+             }} />
            />
         </View>
       );
@@ -607,10 +603,6 @@ export class App extends Component<IProps, IState> {
 
     public getUserRegion(): any {
       return this.props.userRegion;
-    }
-
-    public getGroupList(): any {
-      return this.props.groupList;
     }
 
     // Private implementation functions

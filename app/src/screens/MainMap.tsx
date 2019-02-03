@@ -477,7 +477,7 @@ export class MainMap extends Component<IProps, IState> {
               underlayColor: 'rgba(44,55,71, 0.7)',
               color: '#ffffff',
             }}
-            onPress={() => { this.props.navigation.navigate('DrawerToggle'); } }
+            onPress={() => { this.props.navigation.toggleLeftDrawer(); } }
             style={styles.refreshButton}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.transparentButton}
@@ -545,7 +545,7 @@ export class MainMap extends Component<IProps, IState> {
             onPress={() => { this.navigateToPage('CreateNode');
             }}
           />
-          {/* <Button
+          <Button
             icon={{
               name: 'message-circle',
               type: 'feather',
@@ -556,11 +556,11 @@ export class MainMap extends Component<IProps, IState> {
             containerStyle={styles.bottomButtonContainer}
             buttonStyle={styles.transparentButton}
             title=''
-            onPress={() => { this.props.navigation.navigate('Chat', {action: 'general_chat'}); } }
-          /> */}
+            onPress={() => {  this.props.navigation.toggleRightDrawer(); } }
+          />
           </View>
         }
-
+      {/* */}
         </View>
           // End map view
         }
@@ -668,7 +668,7 @@ export class MainMap extends Component<IProps, IState> {
         console.log('Page not found');
     }
 
-    this.props.navigation.navigate({key: pageName, routeName: pageName, params: params});
+    NavigationService.reset(pageName, params);
   }
 
 }

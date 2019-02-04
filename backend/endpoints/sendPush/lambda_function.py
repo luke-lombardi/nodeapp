@@ -70,8 +70,10 @@ def send_push(push_info, rds):
 		  # Grab the recipient push notification device ID
 		  pushy_device_token = node_data.get('device_token', '')
 
+		  from_username = from_node_data.get('topic', 'Anonymous')
+
 		  data = {
-			  "from_username": from_node_data.get('topic', 'Anonymous'),
+			  "from_username": from_username,
 			  "from_user": from_user,
 			  "action": "confirm_friend",
 			  "relation_id": relation_id,
@@ -80,11 +82,11 @@ def send_push(push_info, rds):
   
 		  to = [ pushy_device_token ]
 
-		  options = { 
+		  options = {
 			  'notification': {
 				  'badge': 1,
 				  'sound': 'ping.aiff',
-				  'body': u'You have received a chat request'
+				  'body': "You have received a chat request from {}".format(from_username)
 			  }
 		  }
 
@@ -114,6 +116,7 @@ def send_push(push_info, rds):
 		  pushy_device_token = node_data.get('device_token', '')
 
 		  from_username = from_node_data.get('topic', 'Anonymous')
+		  message = push_info['message']
 		  relation_id = push_info['relation_id']
 		
 
@@ -121,6 +124,7 @@ def send_push(push_info, rds):
 			  "from_username": from_username,
 			  "from_user": from_user,
 			  "relation_id": relation_id,
+        "message": message,
 			  "action": "got_message",
 		  }
   
@@ -130,7 +134,7 @@ def send_push(push_info, rds):
 			  'notification': {
 				  'badge': 1,
 				  'sound': 'ping.aiff',
-				  'body': "You received a new message from {}".format(from_username)
+				  'body': "{}: {}".format(from_username, message)
 			  }
 		  }
 

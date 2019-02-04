@@ -27,6 +27,16 @@ else:
   from config_DEV import Config as ConfigDev
   from config_PROD import Config as ConfigProd
 
+MIN_SCORE = -5
+
+def calculate_total_votes(current_votes):
+    total_vote_count = 0
+  
+    for user_uuid, vote in current_votes.items():
+        total_vote_count += current_votes[user_uuid]
+  
+    return total_vote_count
+
 
 def vote_for_node(rds, node_id, user_uuid, vote=None):
     user_data = json.loads(rds.get(user_uuid).decode("utf-8"))
@@ -59,6 +69,12 @@ def vote_for_node(rds, node_id, user_uuid, vote=None):
           current_votes[user_uuid] = -1
 
         node_data['votes'] = current_votes
+
+        total_vote_count = calculate_total_votes(current_votes)
+        if total_vote_count <= MIN_SCORE:
+            logging.info("Node {} hit minimum threshold score, deleting.".format(node_id))
+            rds.delete(node_id)
+            return node_data
 
         logging.info('Node data: %s', node_data)
 

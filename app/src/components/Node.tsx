@@ -176,7 +176,7 @@ export default class Node extends Component<IProps, IState> {
       nodeType: this.props.nodeType,
       nodeIndex: this.props.index,
      });
-}
+  }
 
   goToFinder() {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});

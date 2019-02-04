@@ -38,7 +38,7 @@ lambda_client = boto3.client('lambda',
 
 
 # Sends a push notification to the recipient of the message
-def send_push(from_user, to_user, relation_id):
+def send_push(from_user, to_user, relation_id, message=''):
     logger.info('Sending push notification...')
     person_to_alert = {}
     person_to_alert['action'] = 'send_message'
@@ -46,6 +46,7 @@ def send_push(from_user, to_user, relation_id):
     person_to_alert['to_user'] = to_user
     person_to_alert['response'] = False
     person_to_alert['relation_id'] = relation_id
+    person_to_alert['message'] = message
 
     invoke_response = lambda_client.invoke(FunctionName="Smartshare_sendPush",
                                           InvocationType='RequestResponse',
@@ -157,7 +158,7 @@ def post_message(rds, node_id, message, user_uuid):
 
         if to_user:
             logger.info("Sending notification to user {}".format(to_user))
-            send_push(user_uuid, to_user, relation_id)
+            send_push(user_uuid, to_user, relation_id, message=message)
   
     return True
 

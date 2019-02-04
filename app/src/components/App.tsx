@@ -183,7 +183,6 @@ interface IProps {
   PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   TrackedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-  GroupListUpdated: (groupList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
@@ -194,7 +193,6 @@ interface IProps {
   privatePersonList: Array<any>;
   privatePlaceList: Array<any>;
   trackedNodeList:  Array<any>;
-  groupList: Array<any>;
   friendList: Array<any>;
   relationList: Array<any>;
 
@@ -233,6 +231,8 @@ async function processInitialNotification(notification, initialNotification: boo
     if (notification.action === 'got_message') {
       if (initialNotification) {
         await NotificationService.handleAction(notification);
+      } else {
+        await NotificationService.notifyUser(notification);
       }
       return;
     } else {

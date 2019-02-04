@@ -47,11 +47,24 @@ export default class NotificationService {
         });
     }
 
-    // let notificationTitle = 'Smartshare';
-    // // Attempt to extract the "message" property from the payload: {"message":"Hello World!"}
-    // let notificationText = data.message || 'Test notification';
-    // Display basic system notification
-    // Pushy.notify(notificationTitle, notificationText);
+    public static async notifyUser(notification: any) {
+      if (notification.action === 'got_message') {
+        Snackbar.show({
+          title: `Received new message from ${notification.from_username}.`,
+          duration: Snackbar.LENGTH_INDEFINITE,
+          action: {
+            title: 'View',
+            color: 'white',
+            onPress: () => { NavigationService.reset('Chat', {
+              action: 'join_chat',
+              nodeId: notification.relation_id,
+              username: notification.from_username,
+            }); },
+          },
+        });
+      }
+
+    }
 
     public static async handleAction(notification: any) {
       let action = notification.action;
@@ -60,16 +73,6 @@ export default class NotificationService {
       console.log(notification);
 
       if (action === 'confirm_friend') {
-        /*
-          {
-            "relation_id":"relation:87a46a97-050a-463a-a293-0d284604f050",
-            "your_id":"friend:0d196ce6-3f71-4cb2-8a4d-35a0742ef7ff",
-            "their_id":"friend:d6748e33-835a-408d-90aa-a8789d023581",
-            "error_msg":"",
-            "location_tracking":true
-          }
-        */
-
         let relationId = notification.relation_id;
 
         // @ts-ignore

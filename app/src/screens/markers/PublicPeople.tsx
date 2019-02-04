@@ -6,7 +6,6 @@ import Pulse from 'react-native-pulse';
 interface IProps {
     publicPersonList: any;
     functions: any;
-    visible: boolean;
 }
 
 interface IState {
@@ -21,7 +20,6 @@ export default class PublicPeople extends Component<IProps, IState> {
 
     render() {
         return (
-            this.props.visible &&
             this.props.publicPersonList.map(marker => (
             <Marker
                 coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }

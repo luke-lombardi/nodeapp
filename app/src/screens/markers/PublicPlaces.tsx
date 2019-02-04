@@ -9,7 +9,6 @@ interface IProps {
     publicPlaceList: any;
     nodeId: string;
     functions: any;
-    visible: boolean;
 }
 
 interface IState {
@@ -39,7 +38,6 @@ export default class PublicPlaces extends Component<IProps, IState> {
 
     render() {
         return (
-            this.props.visible &&
             this.props.publicPlaceList.map(marker => (
               marker.node_id !== undefined ?
               <View key={marker.node_id}>

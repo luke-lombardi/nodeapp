@@ -48,20 +48,18 @@ export class Splash extends Component<IProps, IState> {
     }
 
     async setPageToRender() {
-      const permissions =
-      <View style={{flex: 1}}>
-        <GetPermissions
-          firstRun={this.state.firstRun}
-          functions={{renderApp: this.renderApp }}
-        />
-      </View>;
-
-      const app = <App />;
-
       if (this.state.firstRun || !( await AuthService.hasPermissions() ) ) {
-        await this.setState({pageToRender: permissions});
+        await this.setState({
+          pageToRender:
+            <View style={{flex: 1}}>
+              <GetPermissions
+                firstRun={this.state.firstRun}
+                functions={{renderApp: this.renderApp }}
+              />
+            </View>,
+          });
       } else {
-        await this.setState({pageToRender: app});
+        await this.setState({pageToRender: <App />});
       }
     }
 

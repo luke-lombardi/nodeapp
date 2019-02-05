@@ -37,6 +37,7 @@ interface IState {
   time: any;
   elaspedTime: number;
   totalVoteCount: number;
+  vote: number;
   x: any;
 }
 
@@ -48,11 +49,12 @@ export default class Node extends Component<IProps, IState> {
 
     this.state = {
       loadingLikeIcon: true,
-      currentLikeIcon: 'loader',
+      currentLikeIcon: 'heart',
       likeIconOpacity: 0.4,
       time: '',
       elaspedTime: 0,
       totalVoteCount: 0,
+      vote: 0,
       x: new Animated.Value(this.props.direction),
     };
 
@@ -74,6 +76,9 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async updateVote(vote: number) {
+
+    await this.setState({vote: vote});
+
     let currentUUID = await AuthService.getUUID();
     let requestBody = {
         'node_id': this.props.nodeId,
@@ -143,7 +148,7 @@ export default class Node extends Component<IProps, IState> {
       'vote': undefined,
     };
 
-    await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
+    await this.setState({loadingLikeIcon: true, currentLikeIcon: 'heart'});
 
     let response  = await ApiService.LikeNodeAsync(requestBody);
     // await this.updateLikeIcon(currentUUID, response);
@@ -211,34 +216,30 @@ export default class Node extends Component<IProps, IState> {
         </View>
         <Card containerStyle={styles.nodeCard}>
         <View style={{width: '80%', maxHeight: 150, minHeight: 100}}>
-
-            <Text numberOfLines={6} style={styles.nodeTopic}>
+          <Text numberOfLines={6} style={styles.nodeTopic}>
             {this.props.topic}
-            </Text>
-          {/* <Text numberOfLines={1} style={styles.durationTitle}>
-          { (this.props.ttl > 0) ? 'Expires in ' + (this.props.ttl / 3600).toFixed(1) + ' hours' : undefined }
-          </Text> */}
-          </View>
-          <View style={{paddingHorizontal: 29, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+          </Text>
+        </View>
+          <View style={{right: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
             <Icon
               name='keyboard-arrow-up'
-              color='#00aced'
-              size={30}
+              color={this.state.vote === 1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
+              size={34}
               onPress={async () => { await this.updateVote(1); }}
               underlayColor={'transparent'}
             />
             <Text style={{fontSize: 20, color: 'white', alignSelf: 'center', alignItems: 'center'}}>{this.state.totalVoteCount}</Text>
             <Icon
               name='keyboard-arrow-down'
-              color='#00aced'
-              size={30}
+              color={this.state.vote === -1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
+              size={34}
               onPress={async () => { await this.updateVote(-1); }}
               underlayColor={'transparent'}
             />
           </View>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
-            {/* <Button
+            <Button
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'feather',
@@ -253,7 +254,7 @@ export default class Node extends Component<IProps, IState> {
               // onPress={}
               disabled={this.state.loadingLikeIcon}
               disabledStyle={{backgroundColor: 'rgba(44,55,71,.9)'}}
-            /> */}
+            />
              <Button
               icon={{
                 name: 'message-circle',
@@ -303,7 +304,7 @@ const styles = ScaledSheet.create({
     bottom: 0,
   },
   nodeCard: {
-    height: 180,
+    height: '200@vs',
     width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(44,55,71,.9)',
@@ -358,7 +359,7 @@ const styles = ScaledSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
-    height: 80,
+    height: 50,
     width: '100%',
   },
   buttonView: {
@@ -368,8 +369,6 @@ const styles = ScaledSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     borderColor: 'rgba(255,255,255,.1)',
-    paddingTop: 5,
-    marginTop: 20,
     borderTopWidth: 0.5,
   },
   middleButton: {

@@ -69,7 +69,7 @@ export class Chat extends Component<IProps, IState> {
       if (params.nodeId.includes('relation')) {
         username = '  ' + params.username;
       } else {
-        username = '';
+        username = 'Chat';
       }
     } catch (error) {
       username = 'Chat';
@@ -79,7 +79,7 @@ export class Chat extends Component<IProps, IState> {
     // @ts-ignore
       return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingTop: -10, height: 70},
-      headerTitleStyle: { color: 'white', fontSize: 16, fontWeight: 'bold', paddingLeft: -20 },
+      headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
         title: username ,
         headerLeft:
           <Icon
@@ -189,7 +189,7 @@ export class Chat extends Component<IProps, IState> {
       let easternTime = moment(item.timestamp).utcOffset(14);
 
       // make sure it does not return a date that is ahead of the current date
-      let timestamp = moment(easternTime).max(moment().min(easternTime));
+      let timestamp = moment(easternTime).max(moment(easternTime));
 
       let parsedTimestamp = moment(timestamp).calendar();
 
@@ -498,7 +498,7 @@ export class Chat extends Component<IProps, IState> {
         <View style={styles.flatlist}>
           <FlatList
            keyboardDismissMode={'on-drag'}
-           keyboardShouldPersistTaps
+           keyboardShouldPersistTaps='always'
            data={this.state.data}
            inverted
            renderItem={this._renderItem}

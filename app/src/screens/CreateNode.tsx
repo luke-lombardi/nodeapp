@@ -3,6 +3,7 @@ import { View, StyleSheet, Switch, Text, TextInput, Dimensions, TouchableOpacity
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
+import { scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
 
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
@@ -130,7 +131,7 @@ export class CreateNode extends Component<IProps, IState> {
             <Slider
               style={[styles.slider, { width: WINDOW_WIDTH * .9 }]}
               value={this.state.ttl}
-              thumbTouchSize={{width: 50, height: 50}}
+              thumbTouchSize={{width: scale(50), height: verticalScale(50)}}
               onValueChange={(ttl) => this.setState({ttl: ttl})}
               minimumValue={1}
               maximumValue={24}
@@ -260,7 +261,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateNode);
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     padding: 0,
     flex: 1,
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
   },
   miniMapView: {
     flex: 1,
-    padding: 20,
+    padding: '20@s',
     // marginBottom: 10,
   },
   map: {
@@ -290,57 +291,56 @@ const styles = StyleSheet.create({
   },
   fullWidthButton: {
     backgroundColor: 'black',
-    height: 70,
+    height: '70@vs',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     position: 'absolute',
     bottom: 0,
-    padding: 0,
   },
   loading: {
     alignSelf: 'center',
-    width: 300,
-    height: 50,
+    width: '300@s',
+    height: '50@vs',
   },
   characterCount: {
     color: 'gray',
     position: 'absolute',
     alignSelf: 'flex-end',
-    bottom: -2,
-    padding: 10,
+    bottom: '-2@vs',
+    padding: '10@s',
   },
   switchView: {
     borderTopWidth: .5,
     borderTopColor: 'rgba(220,220,220,1)',
-    paddingTop: '10%',
+    paddingTop: '20@vs',
     flex: 2,
     alignItems: 'flex-start',
   },
   switch: {
-    marginLeft: 20,
-    top: 5,
+    marginLeft: '20@s',
+    top: '5@vs',
     alignSelf: 'flex-start',
   },
   switchText: {
-    marginLeft: 20,
-    bottom: 10,
-    fontSize: 24,
+    marginLeft: '20@s',
+    bottom: '5@vs',
+    fontSize: '24@vs',
     color: 'black',
     alignSelf: 'flex-start',
   },
   sliderContainer: {
-    marginLeft: 20,
+    marginLeft: '20@s',
     alignItems: 'flex-start',
-    top: 10,
+    top: '5@vs',
   },
   sliderText: {
     alignSelf: 'center',
-    fontSize: 24,
+    fontSize: '24@vs',
     color: 'gray',
   },
   hourText: {
-    fontSize: 24,
+    fontSize: '24@vs',
     alignSelf: 'center',
     color: 'black',
   },
@@ -348,23 +348,23 @@ const styles = StyleSheet.create({
   },
   slider: {
     alignSelf: 'center',
-    width: '90%',
+    width: '90%@vs',
   },
   sliderTextContainer: {
-    paddingVertical: 10,
+    paddingVertical: '10@vs',
   },
   privateText: {
     position: 'absolute',
     alignContent: 'flex-start',
-    marginLeft: 65,
-    fontSize: 24,
+    marginLeft: '65@s',
+    fontSize: '24@s',
     color: 'gray',
   },
   input: {
-    fontSize: 24,
+    fontSize: '24@s',
     // bottom: 30,
-    padding: 10,
-    paddingTop: 10,
+    padding: '10@vs',
+    paddingTop: '10@vs',
     color: 'black',
   },
 });

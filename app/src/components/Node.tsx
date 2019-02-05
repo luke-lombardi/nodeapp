@@ -5,6 +5,7 @@ import { Card, Text, Button, Icon } from 'react-native-elements';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
+import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import Moment from 'moment';
@@ -289,7 +290,7 @@ export default class Node extends Component<IProps, IState> {
 }
 
 // @ts-ignore
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   view: {
     width: CARD_WIDTH,
     alignItems: 'center',
@@ -319,9 +320,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     alignSelf: 'flex-start',
-    marginVertical: 5,
+    marginVertical: '5@vs',
+    bottom: '5@vs',
     paddingHorizontal: 10,
-    maxHeight: 100,
+    maxHeight: '100@vs',
   },
   countdownContainer: {
     left: 15,

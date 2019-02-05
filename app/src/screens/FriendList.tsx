@@ -340,8 +340,8 @@ const styles = StyleSheet.create({
     minHeight: 100,
     maxHeight: 120,
     width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+    borderBottomWidth: .5,
+    borderBottomColor: 'rgba(51, 51, 51, 0.1)',
   },
   flatlist: {
   },

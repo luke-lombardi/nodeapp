@@ -489,6 +489,7 @@ export class Chat extends Component<IProps, IState> {
         <ConfirmModal functions={{
           'closeConfirmModal': this.closeConfirmModal,
           'startPrivateChat': this.startPrivateChat,
+          'reportUser': this.reportUser,
         }}
         action={'add_friend'}
         data={this.state.userInfo}

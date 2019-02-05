@@ -53,7 +53,6 @@ export default class ApiService {
 
       // TODO: add error handling here
       let nodeList = await response.json();
-      console.log(nodeList);
       return nodeList;
     }
 

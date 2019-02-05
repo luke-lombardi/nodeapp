@@ -88,7 +88,6 @@ export class Notifications extends Component<IProps, IState> {
     }
 
     getTime(item) {
-      console.log('THIS ITEM', item);
       let easternTime = moment(item.timestamp).utcOffset(14);
 
       let parsedTimestamp = moment(easternTime).calendar();
@@ -170,13 +169,13 @@ export class Notifications extends Component<IProps, IState> {
       // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
 
       if (this.action === '' || undefined) {
-        console.log('my chats');
+        // console.log('my chats');
       } else if (this.action === 'general_chat') {
-        console.log('general chat');
+        // console.log('general chat');
       } else if (this.action === 'new_message') {
-        console.log('posting a message');
+        // console.log('posting a message');
       } else if (this.action === 'private_message') {
-        console.log('starting private chat...');
+        // console.log('starting private chat...');
       }
 
       // Load existing notifications from AsyncStorage
@@ -201,9 +200,6 @@ export class Notifications extends Component<IProps, IState> {
         // @ts-ignore
         notifications = [];
       }
-
-      console.log('LOADED THESE NOTIFICATIONS');
-      console.log(notifications);
 
       // Parse out notifications that are actual requests
       let parsedNotifications = [];

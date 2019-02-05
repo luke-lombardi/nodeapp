@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import { View, Dimensions, Animated } from 'react-native';
 // @ts-ignore
-import { View, AsyncStorage, Switch, Dimensions, Animated, ScrollView } from 'react-native';
-// @ts-ignore
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
 import {
   StyleSheet,
@@ -35,12 +34,8 @@ import NodeService,
   }
   from '../services/NodeService';
 
-// @ts-ignore
 import NavigationService from '../services/NavigationService';
-
 import SleepUtil from '../services/SleepUtil';
-// @ts-ignore
-import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -197,7 +192,7 @@ export class MainMap extends Component<IProps, IState> {
           this._map.animateToRegion(this.props.userRegion, 10);
         } catch (error) {
           // If we got here, we unmounted
-          console.log(error);
+          // console.log(error);
         }
       }, 5);
     }
@@ -228,7 +223,7 @@ export class MainMap extends Component<IProps, IState> {
           selectedNode.nodeType = this.selectedNodeType;
         } catch (error) {
           // If we got here, we unmounted
-          console.log(error);
+          // console.log(error);
         }
 
         setTimeout(() => {
@@ -241,7 +236,7 @@ export class MainMap extends Component<IProps, IState> {
             }, 300);
           } catch (error) {
             // If we got here, we unmounted
-            console.log(error);
+            // console.log(error);
           }
         }, 5);
 
@@ -317,7 +312,7 @@ export class MainMap extends Component<IProps, IState> {
       this._map.animateToRegion(this.props.userRegion, 100);
     } catch (error) {
       // If we get this, we unmounted
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -327,7 +322,7 @@ export class MainMap extends Component<IProps, IState> {
       this.clearSelectedNode({nativeEvent: {action: ''}});
     } catch (error) {
       // If we get this, we unmounted
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -442,7 +437,6 @@ export class MainMap extends Component<IProps, IState> {
                 // scrollEnabled={false}
                 // pitchEnabled={false}
                 // rotateEnabled={false}
-                // @ts-ignore
                 customMapStyle={mapStyle}
               >
               {/* Map markers  */}
@@ -644,7 +638,7 @@ export class MainMap extends Component<IProps, IState> {
         };
         break;
       default:
-        console.log('Page not found');
+        // console.log('Page not found');
     }
 
     NavigationService.reset(pageName, params);

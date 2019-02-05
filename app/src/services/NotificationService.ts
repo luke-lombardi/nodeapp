@@ -69,8 +69,8 @@ export default class NotificationService {
     public static async handleAction(notification: any) {
       let action = notification.action;
 
-      console.log('Handling notification');
-      console.log(notification);
+      // console.log('Handling notification');
+      // console.log(notification);
 
       if (action === 'confirm_friend') {
         let relationId = notification.relation_id;

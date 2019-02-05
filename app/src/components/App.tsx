@@ -13,7 +13,6 @@ import BackgroundGeolocation from 'react-native-background-geolocation';
 import RNSimpleCompass from 'react-native-simple-compass';
 import 'react-native-gesture-handler';
 
-// @ts-ignore
 import Logger from '../services/Logger';
 
 // Screen imports
@@ -26,6 +25,7 @@ import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
 import Notifications from '../screens/Notifications';
 import GetPermissions from '../screens/GetPermissions';
+import ActiveChats from './ActiveChats';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -55,9 +55,6 @@ import NodeService,
   }
   from '../services/NodeService';
 
-// import ApiService from '../services/ApiService';
-
-import LocationService from '../services/LocationService';
 import AuthService from '../services/AuthService';
 import NotificationService from '../services/NotificationService';
 
@@ -65,8 +62,6 @@ import NotificationService from '../services/NotificationService';
 import { setCustomText } from 'react-native-global-props';
 import SleepUtil from '../services/SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import ActiveChats from './ActiveChats';
-// import { Notifications } from '../screens/Notifications';
 
 const customTextProps = {
   style: {
@@ -185,7 +180,6 @@ interface IProps {
   TrackedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
@@ -195,12 +189,11 @@ interface IProps {
   trackedNodeList:  Array<any>;
   friendList: Array<any>;
   relationList: Array<any>;
-
-  challengeSettings: any;
   userRegion: any;
 }
 
 interface IState {
+  onPage: boolean;
 }
 
 // Begin: Push notification handling logic
@@ -283,8 +276,7 @@ export class App extends Component<IProps, IState> {
 
     // Private services
     private nodeService: NodeService;
-    // @ts-ignore
-    private locationService: LocationService;
+    private monitoringLocation: boolean = false;
 
     private bearing;
 
@@ -297,6 +289,7 @@ export class App extends Component<IProps, IState> {
       this.onLocation = this.onLocation.bind(this);
       this.getPostParams = this.getPostParams.bind(this);
       this.setupLocationTracking = this.setupLocationTracking.bind(this);
+      this.monitorLocation = this.monitorLocation.bind(this);
       this.setupPushNotifications = this.setupPushNotifications.bind(this);
       this.updateBearing = this.updateBearing.bind(this);
 
@@ -338,7 +331,10 @@ export class App extends Component<IProps, IState> {
           currentUserRegion: this.getUserRegion,
       });
 
-      this.locationService = new LocationService({});
+      this.state = {
+        onPage: true,
+      };
+
     }
 
     componentDidMount() {
@@ -418,7 +414,6 @@ export class App extends Component<IProps, IState> {
 
       // Stop listening to background app state
       AppState.removeEventListener('change', this.handleAppStateChange);
-
     }
 
     // Location listeners and helper methods
@@ -428,6 +423,13 @@ export class App extends Component<IProps, IState> {
     }
 
     async setupLocationTracking() {
+      // If we already set up location tracking, definitely do not do it again
+      if (this.monitoringLocation) {
+        Logger.info('App.setupLocationTracking - we already set up location tracking, returning');
+        return;
+      }
+
+      Logger.info('App.setupLocationTracking - setting up location tracking.');
 
       // Create request object for postNode API endpoint
       let params = await this.getPostParams();
@@ -487,11 +489,20 @@ export class App extends Component<IProps, IState> {
     }
 
     async monitorLocation() {
+      this.monitoringLocation = true;
+
       while (true) {
         // Promise API
         // should call this function to track your location
         BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
         await SleepUtil.SleepAsync(5000);
+
+        try {
+          await this.setState({onPage: true});
+        } catch (error) {
+          // If we got here, we unmounted, return
+          return;
+        }
       }
     }
 
@@ -613,8 +624,6 @@ export class App extends Component<IProps, IState> {
     }
 
     // Private implementation functions
-
-    // Either get or set the users UUID (creates it on first run)
 
     private async gotNewPublicPersonList(props: IPublicPersonListUpdated) {
       await this.props.PublicPersonListUpdated(props.nodeList);

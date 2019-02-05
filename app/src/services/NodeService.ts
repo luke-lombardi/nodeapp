@@ -131,7 +131,6 @@ export default class NodeService {
         if (trackedRelations.hasOwnProperty(property)) {
           let currentRelation = trackedRelations[property];
 
-          console.log('THESE CURRENT RELATIONS', currentRelation);
           // If the friend ID matches, break & return
           if (currentRelation.their_id === friendId) {
             foundRelation = {

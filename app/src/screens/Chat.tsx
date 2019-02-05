@@ -197,11 +197,11 @@ export class Chat extends Component<IProps, IState> {
     }
     async showConfirmModal(item) {
 
-      console.log('THIS.STATE.USERINFO');
-      console.log(this.state.userUuid);
+      // console.log('THIS.STATE.USERINFO');
+      // console.log(this.state.userUuid);
 
-      console.log('ITEM.USER');
-      console.log(item.user);
+      // console.log('ITEM.USER');
+      // console.log(item.user);
 
       // @ts-ignore
       let currentUUID = await AuthService.getUUID();
@@ -357,13 +357,13 @@ export class Chat extends Component<IProps, IState> {
       // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
 
       if (this.action === '' || undefined) {
-        console.log('my chats');
+        // console.log('my chats');
       } else if (this.action === 'general_chat') {
-        console.log('general chat');
+        // console.log('general chat');
       } else if (this.action === 'new_message') {
-        console.log('posting a message');
+        // console.log('posting a message');
       } else if (this.action === 'private_message') {
-        console.log('starting private chat...');
+        // console.log('starting private chat...');
       }
     }
 
@@ -436,8 +436,8 @@ export class Chat extends Component<IProps, IState> {
         let messages: any = await ApiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
-          console.log('messages');
-          console.log(messages);
+          // console.log('messages');
+          // console.log(messages);
 
           if (this.stopping) {
             return;

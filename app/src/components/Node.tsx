@@ -93,7 +93,7 @@ export default class Node extends Component<IProps, IState> {
     let totalVoteCount = 0;
     for (let user in response.votes) {
       if (response.votes.hasOwnProperty(user)) {
-        console.log(response.votes[user]);
+        // console.log(response.votes[user]);
         totalVoteCount += response.votes[user];
       }
     }

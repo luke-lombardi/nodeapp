@@ -39,7 +39,7 @@ export class ActiveChats extends Component<IProps, IState> {
         this.state  = {
           isLoading: true,
           numberOfNotifications: undefined,
-          selectedIndex: 1,
+          selectedIndex: 0,
           data: this.props.relationList,
         };
 
@@ -96,7 +96,11 @@ export class ActiveChats extends Component<IProps, IState> {
         onPress={() => this._onTouchNode(item, index)}
         containerStyle={styles.nodeListItem}
         titleStyle={{fontWeight: 'bold', fontSize: 14}}
-        title={this.state.selectedIndex === 0 ? item.data.topic : item.topic}
+        title={
+          <Text style={{fontWeight: 'bold'}} numberOfLines={1} ellipsizeMode='tail'>
+          {this.state.selectedIndex === 0 ? item.data.topic : item.topic}
+          </Text>
+        }
         rightTitleStyle={{fontWeight: '600', fontSize: 14}}
         rightTitle={
         this.state.selectedIndex  ===  0 ?
@@ -125,7 +129,7 @@ export class ActiveChats extends Component<IProps, IState> {
     )
 
     render() {
-      const buttons = ['Saved Nodes', 'Friends'];
+      const buttons = ['Nodes', 'Friends'];
       const { selectedIndex } = this.state;
       return (
         <View style={{flex: 1}}>
@@ -205,12 +209,11 @@ export class ActiveChats extends Component<IProps, IState> {
     },
     nodeListItem: {
       width: '100%',
-      marginTop: 10,
-      marginBottom: 5,
+      marginVertical: 5,
       borderBottomWidth: .5,
       borderBottomColor: 'rgba(51, 51, 51, 0.1)',
-      minHeight: 100,
-      maxHeight: 120,
+      minHeight: 50,
+      maxHeight: 80,
     },
     nullSubtitle: {
       fontSize: 14,

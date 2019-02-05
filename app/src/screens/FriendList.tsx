@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, Switch, FlatList, StyleSheet, Text, Alert, ActivityIndicator, AsyncStorage } from 'react-native';
+import { View, Switch, FlatList, StyleSheet, Text, Alert, Dimensions, ActivityIndicator, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Snackbar from 'react-native-snackbar';
@@ -19,6 +19,8 @@ import ApiService from '../services/ApiService';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 // @ts-ignore
 import NavigationService from '../services/NavigationService';
+
+const { height } = Dimensions.get('window');
 
 interface IProps {
     navigation: any;
@@ -96,7 +98,7 @@ export class FriendList extends Component<IProps, IState> {
     }
 
     if (friendNode === undefined) {
-      Alert.alert(`This user is not sharing location data`);
+      Alert.alert(`${node.topic} is not sharing location data`);
       return;
     }
 
@@ -195,10 +197,15 @@ export class FriendList extends Component<IProps, IState> {
     },
   ];
 
-    if (this.action === 'share_node' && row.status === 'accepted') {
+    if (this.action === 'share_node') {
       return (
         <ListItem
-          onPress={async () => { await this.shareNode(row); } }
+          onPress={async () => row.status === 'accepted' ?
+          await this.shareNode(row) :
+          Snackbar.show({
+            title: `${row.topic} has not accepted your friend request.`,
+            duration: Snackbar.LENGTH_SHORT,
+          })}
           containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
           title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
           subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status}</Text>}
@@ -216,7 +223,7 @@ export class FriendList extends Component<IProps, IState> {
         onPress={() => item.status === 'accepted' ?
         this.sendPrivateMessage(row) :
         Snackbar.show({
-          title: 'You can start chatting once the user accepts your friend request.',
+          title: `${row.topic} has not accepted your friend request.`,
           duration: Snackbar.LENGTH_SHORT,
         })
       }
@@ -245,7 +252,7 @@ export class FriendList extends Component<IProps, IState> {
         </View>
 
         }
-        title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
+        title={<Text numberOfLines={1} ellipsizeMode={'tail'} style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
         subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
       />
     </Swipeout>
@@ -262,20 +269,17 @@ export class FriendList extends Component<IProps, IState> {
             renderItem={this._renderItem}
             extraData={this.state}
             keyExtractor={item => item.relation_id}
+            ListEmptyComponent={
+              <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
+                <Text style={styles.null}>No friends yet.</Text>
+                <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
+              </View>
+             }
           />
-
           {
             this.state.isLoading &&
               <View style={[styles.container, styles.horizontal]}>
                 <ActivityIndicator size='large' color='#0000ff' />
-              </View>
-          }
-
-          {
-            this.props.relationList.length === 0 &&
-              <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
-                <Text style={styles.null}>No friends yet.</Text>
-                <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
               </View>
           }
         </View>
@@ -356,6 +360,11 @@ const styles = StyleSheet.create({
     color: 'gray',
     top: '40%',
     alignSelf: 'center',
+  },
+  nullContainer: {
+    marginTop: height / 3,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
   },

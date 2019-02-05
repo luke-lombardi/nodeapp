@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Text, ActivityIndicator } from 'react-native';
+// @ts-ignore
+import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
-
 // import LinearGradient from 'react-native-linear-gradient';
 
 import NavigationService from '../services/NavigationService';
 
 // import Logger from '../services/Logger';
+// @ts-ignore
 import IStoreState from '../store/IStoreState';
+// @ts-ignore
 import { connect, Dispatch } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 
@@ -50,6 +52,7 @@ export class NodeList extends Component<IProps, IState> {
     this.updateIndex = this.updateIndex.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
     this.countdown = this.countdown.bind(this);
+    this.reportNode = this.reportNode.bind(this);
   }
 
   updateIndex (selectedIndex) {
@@ -109,8 +112,14 @@ export class NodeList extends Component<IProps, IState> {
       });
     }
 
+    async reportNode(item) {
+      console.log('reporting node...', item);
+      //
+    }
+
   _renderItem = ({item, index}) => (
     <ListItem
+      onLongPress={() => this.reportNode(item)}
       onPress={() => this._onTouchNode(item, index)}
       containerStyle={styles.nodeListItem}
       titleStyle={{fontWeight: 'bold', fontSize: 14}}
@@ -136,16 +145,15 @@ export class NodeList extends Component<IProps, IState> {
 
   async onRefresh() {
     await this.setState({isRefreshing: true});
-    await this.setState({isRefreshing: false});
-
-    // let newList = await this.props.publicPlaceList;
-    // // @ts-ignore
-    // let newPrivateList = await this.props.privatePlaceList;
-    // if (newList) {
-    //   this.setState({isRefreshing: false});
-    // } else {
-    //   return;
-    // }
+    let newList = await this.props.publicPlaceList;
+    // @ts-ignore
+    let newPrivateList = await this.props.privatePlaceList;
+    if (newList) {
+      this.setState({isRefreshing: false});
+    } else {
+      await this.setState({isRefreshing: false});
+      return;
+    }
   }
 
   render() {
@@ -176,10 +184,6 @@ export class NodeList extends Component<IProps, IState> {
         />
       </View>
       <View style={styles.flatlist}>
-      {
-        this.state.isLoading &&
-          <ActivityIndicator size={'large'} />
-      }
         <FlatList
          data={this.state.data}
          renderItem={this._renderItem}
@@ -190,32 +194,18 @@ export class NodeList extends Component<IProps, IState> {
          keyExtractor={item => item.node_id}
          refreshing={this.state.isRefreshing ? true : false}
          onRefresh={this.onRefresh}
+         ListEmptyComponent={
+          <View style={styles.nullContainer}>
+          <Text style={styles.null}>No nodes have been created yet.</Text>
+          <Button
+            containerStyle={styles.createNodeButton}
+            buttonStyle={{borderRadius: 10}}
+            title={'Create Node'}
+            onPress = {() => NavigationService.reset('CreateNode', {})}
+          />
+          </View>
+         }
         />
-
-        {
-          this.state.selectedIndex === 1 && this.props.privatePlaceList.length === 0 &&
-          <View style={styles.nullContainer}>
-          <Text style={styles.null}>No nodes have been created yet.</Text>
-          <Button
-            containerStyle={styles.createNodeButton}
-            buttonStyle={{borderRadius: 10}}
-            title={'Create Node'}
-            onPress = {() => NavigationService.reset('CreateNode', {})}
-          />
-          </View>
-        }
-        {
-          this.state.selectedIndex === 0 && this.props.publicPlaceList.length === 0 &&
-          <View style={styles.nullContainer}>
-          <Text style={styles.null}>No nodes have been created yet.</Text>
-          <Button
-            containerStyle={styles.createNodeButton}
-            buttonStyle={{borderRadius: 10}}
-            title={'Create Node'}
-            onPress = {() => NavigationService.reset('CreateNode', {})}
-          />
-          </View>
-        }
         </View>
      </View>
     );
@@ -253,26 +243,25 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     marginBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+    borderBottomWidth: .5,
+    borderBottomColor: 'rgba(51, 51, 51, 0.1)',
     minHeight: 100,
     maxHeight: 120,
   },
   nullContainer: {
     flex: 1,
-    bottom: '35%',
+    marginTop: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   null: {
-    fontSize: 22,
+    fontSize: 18,
     color: 'gray',
     alignSelf: 'center',
   },
   nullSubtitle: {
     fontSize: 14,
     color: 'gray',
-    top: '40%',
     paddingVertical: 10,
   },
   button: {

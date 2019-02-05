@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
-// @ts-ignore
 import { NavigationActions, createStackNavigator, createDrawerNavigator, createAppContainer, DrawerActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 
-// @ts-ignore
-import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState } from 'react-native';
+import { View, StatusBar, PushNotificationIOS, AppState } from 'react-native';
 
 // Location services, and user notifications
 import Pushy from 'pushy-react-native';
@@ -13,7 +11,6 @@ import BackgroundGeolocation from 'react-native-background-geolocation';
 import RNSimpleCompass from 'react-native-simple-compass';
 import 'react-native-gesture-handler';
 
-// @ts-ignore
 import Logger from '../services/Logger';
 
 // Screen imports
@@ -26,6 +23,7 @@ import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
 import Notifications from '../screens/Notifications';
 import GetPermissions from '../screens/GetPermissions';
+import ActiveChats from './ActiveChats';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -41,6 +39,7 @@ import { TrackedNodeListUpdatedActionCreator } from '../actions/TrackedNodeActio
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
+import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
 // Services
 import NodeService,
@@ -55,9 +54,6 @@ import NodeService,
   }
   from '../services/NodeService';
 
-// import ApiService from '../services/ApiService';
-
-import LocationService from '../services/LocationService';
 import AuthService from '../services/AuthService';
 import NotificationService from '../services/NotificationService';
 
@@ -65,8 +61,6 @@ import NotificationService from '../services/NotificationService';
 import { setCustomText } from 'react-native-global-props';
 import SleepUtil from '../services/SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import ActiveChats from './ActiveChats';
-// import { Notifications } from '../screens/Notifications';
 
 const customTextProps = {
   style: {
@@ -185,8 +179,8 @@ interface IProps {
   TrackedNodeListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
   publicPlaceList: Array<any>;
@@ -195,96 +189,19 @@ interface IProps {
   trackedNodeList:  Array<any>;
   friendList: Array<any>;
   relationList: Array<any>;
-
-  challengeSettings: any;
   userRegion: any;
+  notificationList: any;
 }
 
 interface IState {
+  onPage: boolean;
 }
-
-// Begin: Push notification handling logic
-////////////////////////////////////////////////////////////////////////////////////////////////
-// We have a few things to do here:
-//    - Subscribe to push notifications w/ pushy
-//    - Handle the case where the app is opened from a push notification
-//    - Clear the notification area of existing notifications and clear the 'badge'
-//    - Store notifications in async storage so they are persistent until checked by the user
-
-// Subscribe to push notifications
-Pushy.setNotificationListener(async (notification) => {
-  Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
-  await processInitialNotification(notification, false);
-});
-
-async function processInitialNotification(notification, initialNotification: boolean = true) {
-  // If the notification is being handled by PushNotificationIOS.getInitialNotification
-  // then we need to extract the data from the object
-  // If the app is in the foreground, the pushy listener is called
-  // the Pushy listener takes notification._data as a parameter
-  if (notification._data !== undefined) {
-    notification = notification._data;
-  }
-
-  if (notification.action !== undefined) {
-
-    if (notification.action === 'got_message') {
-      if (initialNotification) {
-        await NotificationService.handleAction(notification);
-      } else {
-        await NotificationService.notifyUser(notification);
-      }
-      return;
-    } else {
-      await NotificationService.storeNotification(notification);
-    }
-
-  } else {
-    await NotificationService.handleNotification(notification);
-  }
-
-  // Navigate to the notifications panel if app was opened from a notification
-  if (initialNotification) {
-    NavigationService.reset('Notifications', {});
-  }
-
-}
-
-async function processDeliveredNotifications(notifications) {
-  for (let i = 0; i < notifications.length; i++) {
-
-    if (notifications[i].action !== 'undefined') {
-
-      // got_message type notifications are only processed as initialNotifications
-      if (notifications[i].action === 'got_message') {
-        continue;
-      }
-
-      await NotificationService.storeNotification(notifications[i]);
-    }
-  }
-
-  // Clear the notification badges
-  PushNotificationIOS.setApplicationIconBadgeNumber(0);
-}
-
-PushNotificationIOS.getInitialNotification().then(function (notification) {
-  if (notification !== null) {
-    processInitialNotification(notification, true);
-  }
-});
-
-PushNotificationIOS.getDeliveredNotifications(processDeliveredNotifications);
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// End: Push notification handling logic
 
 export class App extends Component<IProps, IState> {
 
     // Private services
     private nodeService: NodeService;
-    // @ts-ignore
-    private locationService: LocationService;
+    private monitoringLocation: boolean = false;
 
     private bearing;
 
@@ -297,6 +214,7 @@ export class App extends Component<IProps, IState> {
       this.onLocation = this.onLocation.bind(this);
       this.getPostParams = this.getPostParams.bind(this);
       this.setupLocationTracking = this.setupLocationTracking.bind(this);
+      this.monitorLocation = this.monitorLocation.bind(this);
       this.setupPushNotifications = this.setupPushNotifications.bind(this);
       this.updateBearing = this.updateBearing.bind(this);
 
@@ -320,7 +238,11 @@ export class App extends Component<IProps, IState> {
       // App state change
       this.handleAppStateChange = this.handleAppStateChange.bind(this);
 
-      // Link handling
+      // Link & Notification handling
+      this.processInitialNotification =  this.processInitialNotification.bind(this);
+      this.processDeliveredNotifications =  this.processDeliveredNotifications.bind(this);
+
+      this.registerPushy = this.registerPushy.bind(this);
       this.handleLink = this.handleLink.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
 
@@ -338,11 +260,89 @@ export class App extends Component<IProps, IState> {
           currentUserRegion: this.getUserRegion,
       });
 
-      this.locationService = new LocationService({});
+      this.state = {
+        onPage: true,
+      };
+
     }
 
     componentDidMount() {
       //
+    }
+
+    // Begin: Push notification handling logic
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // We have a few things to do here:
+    //    - Subscribe to push notifications w/ pushy
+    //    - Handle the case where the app is opened from a push notification
+    //    - Clear the notification area of existing notifications and clear the 'badge'
+    //    - Store notifications in async storage so they are persistent until checked by the user
+
+    async processDeliveredNotifications(notifications) {
+      for (let i = 0; i < notifications.length; i++) {
+
+        if (notifications[i].action !== 'undefined') {
+
+          // got_message type notifications are only processed as initialNotifications
+          if (notifications[i].action === 'got_message') {
+            continue;
+          }
+
+          await NotificationService.storeNotification(notifications[i]);
+
+          let newNotificationList = this.props.notificationList;
+          newNotificationList.push(notifications);
+
+          await this.props.NotificationListChanged(newNotificationList);
+        }
+      }
+
+      // Clear the notification badges
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // End: Push notification handling logic
+
+    async processInitialNotification(notification, initialNotification: boolean = true) {
+      PushNotificationIOS.getApplicationIconBadgeNumber( (badgeNumber: number) => {
+        PushNotificationIOS.setApplicationIconBadgeNumber(badgeNumber - 1);
+      });
+
+      // If the notification is being handled by PushNotificationIOS.getInitialNotification
+      // then we need to extract the data from the object
+      // If the app is in the foreground, the pushy listener is called
+      // the Pushy listener takes notification._data as a parameter
+      if (notification._data !== undefined) {
+        notification = notification._data;
+      }
+
+      if (notification.action !== undefined) {
+
+        if (notification.action === 'got_message') {
+          if (initialNotification) {
+            await NotificationService.handleAction(notification);
+          } else {
+            await NotificationService.notifyUser(notification);
+          }
+          return;
+        } else {
+          await NotificationService.storeNotification(notification);
+
+          let newNotificationList = this.props.notificationList;
+          newNotificationList.push(notification);
+
+          await this.props.NotificationListChanged(newNotificationList);
+        }
+
+      } else {
+        await NotificationService.handleNotification(notification);
+      }
+
+      // Navigate to the notifications panel if app was opened from a notification
+      if (initialNotification) {
+        NavigationService.reset('Notifications', {});
+      }
     }
 
     // TODO: figure out a better way to do this (move to permissions page)
@@ -379,6 +379,12 @@ export class App extends Component<IProps, IState> {
     registerPushy() {
       // Handle push notifications
       Pushy.listen();
+
+      // Subscribe to push notifications
+      Pushy.setNotificationListener(async (notification) => {
+        Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
+        await this.processInitialNotification(notification, false);
+      });
     }
 
     // Handle a link clicked from a text message
@@ -406,6 +412,18 @@ export class App extends Component<IProps, IState> {
       // Listen for incoming URL
       // Linking.addEventListener('url', this.handleLink);
       AppState.addEventListener('change', this.handleAppStateChange);
+
+      // Set up push notification handling for iOS
+      PushNotificationIOS.getInitialNotification().then(function (notification) {
+        if (notification !== null) {
+          this.processInitialNotification(notification, true);
+        }
+
+        // Clear the notification badges
+        PushNotificationIOS.setApplicationIconBadgeNumber(0);
+      });
+
+      PushNotificationIOS.getDeliveredNotifications(this.processDeliveredNotifications);
     }
 
     componentWillUnmount() {
@@ -418,7 +436,6 @@ export class App extends Component<IProps, IState> {
 
       // Stop listening to background app state
       AppState.removeEventListener('change', this.handleAppStateChange);
-
     }
 
     // Location listeners and helper methods
@@ -428,6 +445,13 @@ export class App extends Component<IProps, IState> {
     }
 
     async setupLocationTracking() {
+      // If we already set up location tracking, definitely do not do it again
+      if (this.monitoringLocation) {
+        Logger.info('App.setupLocationTracking - we already set up location tracking, returning');
+        return;
+      }
+
+      Logger.info('App.setupLocationTracking - setting up location tracking.');
 
       // Create request object for postNode API endpoint
       let params = await this.getPostParams();
@@ -487,11 +511,20 @@ export class App extends Component<IProps, IState> {
     }
 
     async monitorLocation() {
+      this.monitoringLocation = true;
+
       while (true) {
         // Promise API
         // should call this function to track your location
         BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
         await SleepUtil.SleepAsync(5000);
+
+        try {
+          await this.setState({onPage: true});
+        } catch (error) {
+          // If we got here, we unmounted, return
+          return;
+        }
       }
     }
 
@@ -614,8 +647,6 @@ export class App extends Component<IProps, IState> {
 
     // Private implementation functions
 
-    // Either get or set the users UUID (creates it on first run)
-
     private async gotNewPublicPersonList(props: IPublicPersonListUpdated) {
       await this.props.PublicPersonListUpdated(props.nodeList);
     }
@@ -657,6 +688,7 @@ function mapStateToProps(state: IStoreState): IProps {
     friendList: state.friendList,
     relationList: state.relationList,
     userRegion: state.userRegion,
+    notificationList: state.notificationList,
   };
 }
 
@@ -670,6 +702,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
     FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
     RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),
+    NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

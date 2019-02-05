@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { NavigationActions } from 'react-navigation';
+import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
-// @ts-ignore
-import NavigationService from '../services/NavigationService';
+
 import ConfirmModal from '../components/ConfirmModal';
 
 // Redux imports
@@ -19,14 +19,15 @@ import { connect, Dispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
 import NodeService from '../services/NodeService';
-
-// @ts-ignore
-import moment from 'moment';
-
+import NavigationService from '../services/NavigationService';
 import SleepUtil from '../services/SleepUtil';
+import Logger from '../services/Logger';
+
+import moment from 'moment';
+import uuid from 'react-native-uuid';
+
 import DeferredPromise from '../services/DeferredPromise';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import Logger from '../services/Logger';
 
 interface IProps {
     navigation: any;
@@ -205,11 +206,11 @@ export class Chat extends Component<IProps, IState> {
     }
     async showConfirmModal(item) {
 
-      console.log('THIS.STATE.USERINFO');
-      console.log(this.state.userUuid);
+      // console.log('THIS.STATE.USERINFO');
+      // console.log(this.state.userUuid);
 
-      console.log('ITEM.USER');
-      console.log(item.user);
+      // console.log('ITEM.USER');
+      // console.log(item.user);
 
       // @ts-ignore
       let currentUUID = await AuthService.getUUID();
@@ -336,7 +337,7 @@ export class Chat extends Component<IProps, IState> {
         //
         title={!this.stackMessages(index, item) ?
           <View style={styles.titleView}>
-          <Text style={this.state.userUuid === item.user ?
+          <Text numberOfLines={1} ellipsizeMode={'tail'} style={this.state.userUuid === item.user ?
             [styles.thisDisplayName, {marginTop: index === 0 ? 10 : 10}] :
             [styles.thatDisplayName, {marginTop: index === 0 ? 10 : 10}]}>{item.display_name + '  - ' + this.getTime(item)}
 
@@ -365,13 +366,13 @@ export class Chat extends Component<IProps, IState> {
       // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
 
       if (this.action === '' || undefined) {
-        console.log('my chats');
+        // console.log('my chats');
       } else if (this.action === 'general_chat') {
-        console.log('general chat');
+        // console.log('general chat');
       } else if (this.action === 'new_message') {
-        console.log('posting a message');
+        // console.log('posting a message');
       } else if (this.action === 'private_message') {
-        console.log('starting private chat...');
+        // console.log('starting private chat...');
       }
     }
 
@@ -393,6 +394,7 @@ export class Chat extends Component<IProps, IState> {
         node_id:  this.state.nodeId,
         message: this.state.messageBody,
         user_uuid: userUuid,
+        message_uuid: uuid.v4(),
       };
 
       let response = await ApiService.PostMessageAsync(requestBody);
@@ -444,8 +446,8 @@ export class Chat extends Component<IProps, IState> {
         let messages: any = await ApiService.GetMessagesAsync(requestBody);
 
         if (messages !== undefined) {
-          console.log('messages');
-          console.log(messages);
+          // console.log('messages');
+          // console.log(messages);
 
           if (this.stopping) {
             return;
@@ -564,7 +566,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   nodeListItem: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
@@ -605,8 +607,8 @@ const styles = StyleSheet.create({
   },
   chatMessageContainer: {
     position: 'absolute',
-    bottom: 10,
-    paddingHorizontal: 10,
+    bottom: '10@vs',
+    paddingHorizontal: '10@s',
     width: '100%',
     justifyContent: 'flex-start',
     flexDirection: 'row',

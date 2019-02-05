@@ -2,7 +2,6 @@ import IStoreState from '../store/IStoreState';
 
 const InitialState: IStoreState = {
   nav: '' ,
-  loggedIn: false,
   publicPersonList: [],
   publicPlaceList: [],
   privatePersonList: [],
@@ -11,6 +10,7 @@ const InitialState: IStoreState = {
   friendList: [],
   relationList: [],
   userRegion: {},
+  notificationList: [],
 };
 
 export default InitialState;

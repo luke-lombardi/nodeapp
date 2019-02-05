@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import { View, Dimensions, Animated } from 'react-native';
 // @ts-ignore
-import { View, AsyncStorage, Switch, Dimensions, Animated, ScrollView } from 'react-native';
-// @ts-ignore
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
 import {
   StyleSheet,
@@ -35,12 +34,8 @@ import NodeService,
   }
   from '../services/NodeService';
 
-// @ts-ignore
 import NavigationService from '../services/NavigationService';
-
 import SleepUtil from '../services/SleepUtil';
-// @ts-ignore
-import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import Logger from '../services/Logger';
@@ -86,14 +81,10 @@ interface IState {
   mapRegion: any;
   lastLat: string;
   lastLong: string;
-  walletVisible: boolean;
   nodeSelected: boolean;
   selectedNode: any;
-  publicNodesVisible: boolean;
-  createModalVisible: boolean;
   confirmModalVisible: boolean;
   destination: any;
-  pushData: string;
   selectedNodeIndex: number;
   direction: number;
 }
@@ -118,7 +109,6 @@ export class MainMap extends Component<IProps, IState> {
 
     this.zoomToUserLocation = this.zoomToUserLocation.bind(this);
     this.animateToNodeLocation = this.animateToNodeLocation.bind(this);
-    this.togglePublicVisible = this.togglePublicVisible.bind(this);
     this.refreshNodes = this.refreshNodes.bind(this);
 
     this.onNodeSelected = this.onNodeSelected.bind(this);
@@ -161,18 +151,14 @@ export class MainMap extends Component<IProps, IState> {
       lastLat: '0.0',
       lastLong: '0.0',
       mapRegion: {},
-      walletVisible: false,
       nodeSelected: false,
       selectedNode: {},
       selectedNodeIndex: this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
-      publicNodesVisible: true,
-      createModalVisible: false,
       confirmModalVisible: false,
       destination: {
         latitude: '',
         longitude: '',
       },
-      pushData: undefined,
       direction: -1 * CARD_WIDTH,
     };
   }
@@ -206,7 +192,7 @@ export class MainMap extends Component<IProps, IState> {
           this._map.animateToRegion(this.props.userRegion, 10);
         } catch (error) {
           // If we got here, we unmounted
-          console.log(error);
+          // console.log(error);
         }
       }, 5);
     }
@@ -237,7 +223,7 @@ export class MainMap extends Component<IProps, IState> {
           selectedNode.nodeType = this.selectedNodeType;
         } catch (error) {
           // If we got here, we unmounted
-          console.log(error);
+          // console.log(error);
         }
 
         setTimeout(() => {
@@ -250,7 +236,7 @@ export class MainMap extends Component<IProps, IState> {
             }, 300);
           } catch (error) {
             // If we got here, we unmounted
-            console.log(error);
+            // console.log(error);
           }
         }, 5);
 
@@ -313,7 +299,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentWillUnmount() {
-      this.animation.removeAllListeners();
+    //
   }
 
   async waitForUserPosition() {
@@ -326,7 +312,7 @@ export class MainMap extends Component<IProps, IState> {
       this._map.animateToRegion(this.props.userRegion, 100);
     } catch (error) {
       // If we get this, we unmounted
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -336,7 +322,7 @@ export class MainMap extends Component<IProps, IState> {
       this.clearSelectedNode({nativeEvent: {action: ''}});
     } catch (error) {
       // If we get this, we unmounted
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -375,11 +361,6 @@ export class MainMap extends Component<IProps, IState> {
       this.setState({nodeSelected: false, selectedNode: undefined});
       return;
     }
-  }
-
-  // Sets public node visibility
-  togglePublicVisible() {
-    this.setState({ publicNodesVisible: !this.state.publicNodesVisible });
   }
 
   getNodeListToSearch() {
@@ -444,36 +425,31 @@ export class MainMap extends Component<IProps, IState> {
           {
             // Main map view
             <View style={styles.mapView}>
-
               <MapView
                 provider='google'
                 ref={ component => { this._map = component; } }
                 style={ StyleSheet.absoluteFillObject }
                 showsUserLocation={true}
-                followsUserLocation={true}
+                followsUserLocation={false}
                 showsIndoorLevelPicker={false}
                 onPress={this.clearSelectedNode}
                 // zoomEnabled={false}
                 // scrollEnabled={false}
                 // pitchEnabled={false}
                 // rotateEnabled={false}
-                // @ts-ignore
                 customMapStyle={mapStyle}
               >
-
               {/* swipe buffer to let user open sidebar menus */}
               <View style={{ position: 'absolute', top: 0, bottom: 0, right: -20, left: width - 20, backgroundColor: 'transparent' }}></View>
-
+              
               {/* Map markers  */}
-              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} }
-              visible={this.state.publicNodesVisible} nodeId={this.state.selectedNode} />
-              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} }
-              visible={this.state.publicNodesVisible} />
+              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } nodeId={this.state.selectedNode} />
+              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
               <Friends friendList={this.props.friendList} functions={ {'onNodeSelected': this.onNodeSelected} } />
+            </MapView>
 
-      </MapView>
       <View style={styles.mapBuffer} />
       <View style={{top: '10%', width: '90%', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'center', flexDirection: 'row'}}>
         <View style={{padding: 10}}>
@@ -491,43 +467,38 @@ export class MainMap extends Component<IProps, IState> {
             buttonStyle={styles.transparentButton}
             title=''
             />
-          {/* <Switch
-            style={styles.center}
-            value={!this.props.publicNodesVisible}
-            onValueChange={ () => { this.togglePublicVisible(); } }
-          /> */}
         </View>
           <View style={{padding: 10}}>
-          <Button
-            icon={{
-              name: 'search',
-              size: 30,
-              color: '#ffffff',
-            }}
-            style={styles.nodeButton}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={() => { this.navigateToPage('Nodes'); }
-            }
-          />
+            <Button
+              icon={{
+                name: 'search',
+                size: 30,
+                color: '#ffffff',
+              }}
+              style={styles.nodeButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={() => { this.navigateToPage('Nodes'); }
+              }
+            />
           </View>
         </View>
         {
-        !this.state.nodeSelected &&
+        (!this.state.nodeSelected) &&
         <View style={{flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', padding: 30, alignSelf: 'flex-end', bottom: 0, position: 'absolute'}}>
-        <Button
-            icon={{
-              name: 'refresh',
-              size: 35,
-              color: '#ffffff',
-            }}
-            style={styles.nodeButton}
-            containerStyle={styles.bottomButtonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={this.refreshNodes}
-          />
+          <Button
+              icon={{
+                name: 'refresh',
+                size: 35,
+                color: '#ffffff',
+              }}
+              style={styles.nodeButton}
+              containerStyle={styles.bottomButtonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={this.refreshNodes}
+            />
           <Button
             icon={{
               name: 'location-searching',
@@ -566,7 +537,7 @@ export class MainMap extends Component<IProps, IState> {
             title=''
             onPress={() => {  this.props.navigation.toggleRightDrawer(); } }
           />
-          </View>
+        </View>
         }
       {/* */}
         </View>
@@ -580,38 +551,35 @@ export class MainMap extends Component<IProps, IState> {
           {
             this.state.selectedNode.nodeType === 'friend' ?
             <View style={styles.personSelectedView}>
-            <Person
-              nodeId={this.state.selectedNode.data.node_id}
-              nodeType={ this.state.selectedNode.nodeType }
-              topic={this.state.selectedNode.data.topic}
-              ttl={this.state.selectedNode.data.ttl}
-              origin={this.props.userRegion}
-              destination={this.state.selectedNode.data}
-              navigation={this.props.navigation}
-            />
+              <Person
+                nodeId={this.state.selectedNode.data.node_id}
+                nodeType={ this.state.selectedNode.nodeType }
+                topic={this.state.selectedNode.data.topic}
+                ttl={this.state.selectedNode.data.ttl}
+                origin={this.props.userRegion}
+                destination={this.state.selectedNode.data}
+                navigation={this.props.navigation}
+              />
             </View>
             :
             <GestureRecognizer
-            // onSwipe={(direction, state) => this.onSwipe(direction, state)}
-            // onSwipeUp={(state) => this.onSwipeUp(state)}
-            // onSwipeDown={(state) => this.onSwipeDown(state)}
             onSwipeLeft={async (state) => { await this.onSwipeLeft(state); } }
             onSwipeRight={async (state) => { await this.onSwipeRight(state); } }
             config={config}
             style={styles.nodeSelectedView}
             >
-            <Node
-              index={this.state.selectedNodeIndex}
-              nodeId={this.state.selectedNode.data.node_id}
-              nodeType={ this.state.selectedNode.nodeType }
-              topic={this.state.selectedNode.data.topic}
-              ttl={this.state.selectedNode.data.ttl}
-              origin={this.props.userRegion}
-              destination={this.state.selectedNode.data}
-              navigation={this.props.navigation}
-              likes={this.state.selectedNode.data.likes}
-              direction={this.state.direction}
-            />
+              <Node
+                index={this.state.selectedNodeIndex}
+                nodeId={this.state.selectedNode.data.node_id}
+                nodeType={ this.state.selectedNode.nodeType }
+                topic={this.state.selectedNode.data.topic}
+                ttl={this.state.selectedNode.data.ttl}
+                origin={this.props.userRegion}
+                destination={this.state.selectedNode.data}
+                navigation={this.props.navigation}
+                likes={this.state.selectedNode.data.likes}
+                direction={this.state.direction}
+              />
             </GestureRecognizer>
           }
           </View>
@@ -673,7 +641,7 @@ export class MainMap extends Component<IProps, IState> {
         };
         break;
       default:
-        console.log('Page not found');
+        // console.log('Page not found');
     }
 
     NavigationService.reset(pageName, params);

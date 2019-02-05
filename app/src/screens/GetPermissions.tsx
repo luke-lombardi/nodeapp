@@ -159,7 +159,6 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async checkPermissions() {
-    console.log('CHECKING PERMISSIONS');
     await this.props.functions.renderApp();
   }
 

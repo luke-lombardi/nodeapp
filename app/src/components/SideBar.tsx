@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Linking, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Text, Linking, Alert } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { UserLoggedInActionCreator } from '../actions/AuthActions';
+import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
 import { ListItem } from 'react-native-elements';
 
@@ -18,11 +18,12 @@ interface IProps {
     relationList: Array<any>;
     privatePlaceList: Array<any>;
     publicPlaceList: Array<any>;
+    notificationList: Array<any>;
+
+    NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
-  numberOfNotifications: number;
-  isLoading: boolean;
 }
 
 export class SideBar extends Component<IProps, IState> {
@@ -33,42 +34,13 @@ export class SideBar extends Component<IProps, IState> {
         super(props);
 
         this.state  = {
-          isLoading: true,
-          numberOfNotifications: undefined,
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
     }
 
     componentWillMount() {
-      this.loadNotifications();
-    }
-
-    async loadNotifications() {
-
-      // Pull notifications from async storage
-      let notifications: any = await AsyncStorage.getItem('notifications');
-      if (notifications !== null) {
-        notifications = JSON.parse(notifications);
-      } else {
-        // @ts-ignore
-        notifications = [];
-      }
-
-      // Parse out notifications that are actual requests
-      let parsedNotifications = [];
-
-      for (let i = 0; i < notifications.length; i++) {
-        if (notifications[i].action !== undefined) {
-          parsedNotifications.push(notifications[i]);
-        }
-      }
-
-      // Update the state w/ parsed notifications
-      await this.setState({
-        isLoading: false,
-        numberOfNotifications: parsedNotifications.length,
-      });
+    //
     }
 
     render() {
@@ -169,12 +141,12 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.state.numberOfNotifications, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   // key='chat'
                   title='Notifications'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'bell', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.state.numberOfNotifications === 0 ?
+                  onPress={ () => { this.props.notificationList.length === 0 ?
                     this.props.navigation.navigate('Notifications') :
                     NavigationService.reset('Notifications', {});
 
@@ -183,8 +155,16 @@ export class SideBar extends Component<IProps, IState> {
 
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
-        onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}
-        style={styles.legal}>Legal</Text>
+        onPress={() => Alert.alert(
+          'How can we help?',
+          '',
+          [
+            {text: 'Contact Support', onPress: () => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')},
+            {text: 'View User Agreement', onPress: () => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')},
+          ],
+          { cancelable: true},
+        )}
+        style={styles.legal}>Help</Text>
 
         </View>
       );
@@ -199,13 +179,14 @@ export function mapStateToProps(state: IStoreState): IProps {
     relationList: state.relationList,
     privatePlaceList: state.privatePlaceList,
     publicPlaceList: state.publicPlaceList,
+    notificationList: state.notificationList,
   };
 }
 
 // @ts-ignore
 export function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    UserLoggedIn: bindActionCreators(UserLoggedInActionCreator, dispatch),
+    NotificationListChanged: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

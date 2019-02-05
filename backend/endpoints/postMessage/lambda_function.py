@@ -29,7 +29,7 @@ else:
   from config_PROD import Config as ConfigProd
 
 
-RECENT_MESSAGE_TTL = 2
+RECENT_MESSAGE_TTL = 1
 
 lambda_client = boto3.client('lambda', 
                         aws_access_key_id='AKIAJTWJKPPNEIBU4BSQ', 
@@ -65,7 +65,7 @@ def send_push(from_user, to_user, relation_id, message=''):
     return person_to_alert
 
 
-def post_message(rds, node_id, message, user_uuid):
+def post_message(rds, node_id, message, user_uuid, message_uuid):
     user_data = json.loads(rds.get(user_uuid).decode("utf-8"))
 
     node_exists = rds.exists(node_id)
@@ -86,18 +86,15 @@ def post_message(rds, node_id, message, user_uuid):
             "display_name":  user_data.get('topic', '')
         }
 
-        # Calculate message hash to prevent duplicate messages
-        str_to_hash = new_message['message'] +  new_message['user']
-        message_hash = hashlib.sha1(str_to_hash.encode('utf-8')).hexdigest()
-        message_exists = rds.exists('message:' + node_uuid + ':' + message_hash)
+        message_exists = rds.exists('message:' + node_uuid + ':' + message_uuid)
         if message_exists:
-            logging.info('User has recently posted this message, not sending: %s' % (message_hash, ))
+            logging.info('User has recently posted this message, not sending: %s' % (message_uuid, ))
             return False
         else:
             if 'relation:' in node_id:
-                rds.set(name='message:' + node_uuid + ':' + message_hash, value=True)
+                rds.set(name='message:' + node_uuid + ':' + message_uuid, value=True)
             else:
-                rds.setex(name='message:' + node_uuid + ':' + message_hash, value=True, time=messages_ttl)
+                rds.setex(name='message:' + node_uuid + ':' + message_uuid, value=True, time=messages_ttl)
 
 
         # Handle the case where a user recently posted a message
@@ -185,6 +182,7 @@ def lambda_handler(event, context):
     node_id = event.get('node_id', 0)
     message = event.get('message', None)
     user_uuid = event.get('user_uuid', None)
+    message_uuid = event.get('message_uuid', None)
 
     user_exists = rds.exists(user_uuid)
 
@@ -195,7 +193,7 @@ def lambda_handler(event, context):
     logging.info('User %s exists, proceeding to post message on node %s' % (user_uuid, node_id))
     
     if node_id and message:
-        result = post_message(rds, node_id, message, user_uuid)
+        result = post_message(rds, node_id, message, user_uuid, message_uuid)
 
     return result
 

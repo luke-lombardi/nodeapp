@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import IStoreState from '../store/IStoreState';
 
 import { navReducer } from './NavReducers';
-import { userLoggedInReducer as  loggedIn } from './AuthReducers';
 
 import { publicPersonListUpdatedReducer as publicPersonList } from './NodeReducers';
 import { publicPlaceListUpdatedReducer as publicPlaceList } from './NodeReducers';
@@ -15,10 +14,11 @@ import { relationListChangedReducer as relationList } from './RelationReducers';
 
 import { userPositionChangedReducer as userRegion } from './MapReducers';
 
+import { notificationListChangedReducer as notificationList } from './NotificationReducers';
+
 const RootReducer = combineReducers<IStoreState>({
   // NOTE: The reducer names in this list MUST match the state member names
   navReducer,
-  loggedIn,
   publicPersonList,
   publicPlaceList,
   privatePersonList,
@@ -27,6 +27,7 @@ const RootReducer = combineReducers<IStoreState>({
   friendList,
   relationList,
   userRegion,
+  notificationList,
 });
 
 export default RootReducer;

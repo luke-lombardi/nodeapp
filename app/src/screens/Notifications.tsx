@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // import { NavigationActions } from 'react-navigation';
+import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
@@ -88,7 +89,6 @@ export class Notifications extends Component<IProps, IState> {
     }
 
     getTime(item) {
-      console.log('THIS ITEM', item);
       let easternTime = moment(item.timestamp).utcOffset(14);
 
       let parsedTimestamp = moment(easternTime).calendar();
@@ -170,13 +170,13 @@ export class Notifications extends Component<IProps, IState> {
       // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
 
       if (this.action === '' || undefined) {
-        console.log('my chats');
+        // console.log('my chats');
       } else if (this.action === 'general_chat') {
-        console.log('general chat');
+        // console.log('general chat');
       } else if (this.action === 'new_message') {
-        console.log('posting a message');
+        // console.log('posting a message');
       } else if (this.action === 'private_message') {
-        console.log('starting private chat...');
+        // console.log('starting private chat...');
       }
 
       // Load existing notifications from AsyncStorage
@@ -201,9 +201,6 @@ export class Notifications extends Component<IProps, IState> {
         // @ts-ignore
         notifications = [];
       }
-
-      console.log('LOADED THESE NOTIFICATIONS');
-      console.log(notifications);
 
       // Parse out notifications that are actual requests
       let parsedNotifications = [];
@@ -230,14 +227,13 @@ export class Notifications extends Component<IProps, IState> {
            data={this.state.data}
            renderItem={this._renderItem}
            keyExtractor={item => item.friend_id}
-          />
-          {
-            this.state.data.length === 0 &&
+           ListEmptyComponent={
             <View style={styles.nullContainer}>
             <Text style={styles.null}>No Notifications.</Text>
             <Text style={styles.nullSubtitle}>You can find things that require your attention here.</Text>
             </View>
-          }
+           }
+          />
           </View>
           <Spinner
             visible={this.state.isLoading}
@@ -264,24 +260,24 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   nodeListItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+    borderBottomWidth: .5,
+    borderBottomColor: 'rgba(51, 51, 51, 0.1)',
     minHeight: 100,
     maxHeight: 120,
   },
   null: {
-    fontSize: 22,
+    fontSize: '22@s',
     color: 'gray',
-    top: '40%',
+    top: '40@vs',
     alignSelf: 'center',
   },
   nullSubtitle: {
-    fontSize: 14,
+    fontSize: '14@s',
     color: 'gray',
-    top: '40%',
-    paddingVertical: 10,
+    top: '50@vs',
+    paddingVertical: '10@vs',
   },
   titleText: {
     color: 'black',
@@ -350,7 +346,7 @@ const styles = StyleSheet.create({
   },
   nullContainer: {
     flex: 1,
-    bottom: '50%',
+    top: '150@vs',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Switch, FlatList, StyleSheet, Text, Alert, ActivityIndicator, AsyncStorage } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
-
+import Snackbar from 'react-native-snackbar';
 import Logger from '../services/Logger';
 
 // @ts-ignore
@@ -195,13 +195,13 @@ export class FriendList extends Component<IProps, IState> {
     },
   ];
 
-    if (this.action === 'share_node') {
+    if (this.action === 'share_node' && row.status === 'accepted') {
       return (
         <ListItem
           onPress={async () => { await this.shareNode(row); } }
           containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
           title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
-          subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
+          subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status}</Text>}
         />
       );
   } else {
@@ -213,7 +213,13 @@ export class FriendList extends Component<IProps, IState> {
       backgroundColor='#ffffff'
     >
       <ListItem
-        onPress={() => this.sendPrivateMessage(row)}
+        onPress={() => item.status === 'accepted' ?
+        this.sendPrivateMessage(row) :
+        Snackbar.show({
+          title: 'You can start chatting once the user accepts your friend request.',
+          duration: Snackbar.LENGTH_SHORT,
+        })
+      }
         containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
         rightElement={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>

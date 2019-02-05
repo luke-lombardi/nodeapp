@@ -135,10 +135,18 @@ export class Chat extends Component<IProps, IState> {
     this.monitorMessages = this.monitorMessages.bind(this);
     this.postMessage = this.postMessage.bind(this);
     this.getTime = this.getTime.bind(this);
+    this.reportUser = this.reportUser.bind(this);
     }
 
     async closeConfirmModal() {
       await this.setState({confirmModalVisible: false});
+    }
+
+    async reportUser(displayName) {
+      Snackbar.show({
+        title: `Reported ${displayName}`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
     }
 
     async submitMessage() {

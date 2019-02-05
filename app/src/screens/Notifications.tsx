@@ -342,6 +342,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     paddingVertical: 5,
+    width: '80%',
   },
   flatlist: {
     backgroundColor: 'white',

@@ -128,6 +128,12 @@ export default class ConfirmModal extends Component<IProps, IState> {
                     icon={{name: 'x', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                     iconRight
                     />
+                <Text
+                  onPress={() => this.props.functions.reportUser(displayName)}
+                  style={{paddingTop: 10, alignSelf: 'center', color: 'red'}}
+                >
+                  Report User
+                </Text>
               </View>
           </Modal>
         );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Linking, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Text, AsyncStorage, Linking, Alert } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -183,8 +183,16 @@ export class SideBar extends Component<IProps, IState> {
 
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
-        onPress={() => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')}
-        style={styles.legal}>Legal</Text>
+        onPress={() => Alert.alert(
+          'How can we help?',
+          '',
+          [
+            {text: 'Contact Support', onPress: () => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')},
+            {text: 'View User Agreement', onPress: () => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')},
+          ],
+          { cancelable: true},
+        )}
+        style={styles.legal}>Help</Text>
 
         </View>
       );

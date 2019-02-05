@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { NavigationActions } from 'react-navigation';
+import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
@@ -328,7 +329,7 @@ export class Chat extends Component<IProps, IState> {
         //
         title={!this.stackMessages(index, item) ?
           <View style={styles.titleView}>
-          <Text style={this.state.userUuid === item.user ?
+          <Text numberOfLines={1} ellipsizeMode={'tail'} style={this.state.userUuid === item.user ?
             [styles.thisDisplayName, {marginTop: index === 0 ? 10 : 10}] :
             [styles.thatDisplayName, {marginTop: index === 0 ? 10 : 10}]}>{item.display_name + '  - ' + this.getTime(item)}
 
@@ -556,7 +557,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   nodeListItem: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
@@ -597,8 +598,8 @@ const styles = StyleSheet.create({
   },
   chatMessageContainer: {
     position: 'absolute',
-    bottom: 10,
-    paddingHorizontal: 10,
+    bottom: '10@vs',
+    paddingHorizontal: '10@s',
     width: '100%',
     justifyContent: 'flex-start',
     flexDirection: 'row',

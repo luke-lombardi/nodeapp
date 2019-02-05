@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, Text, Linking, AsyncStorage, FlatList } from 'react-native';
+import { View, StyleSheet, Text, Linking, AsyncStorage, FlatList, ActivityIndicator, Dimensions } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import NavigationService from '../services/NavigationService';
 import { ButtonGroup, ListItem } from 'react-native-elements';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+
+const { height } = Dimensions.get('window');
 
 interface IProps {
     navigation?: any;
@@ -128,7 +130,7 @@ export class ActiveChats extends Component<IProps, IState> {
       const { selectedIndex } = this.state;
       return (
         <View style={{flex: 1}}>
-        <View style={{paddingTop: 5, height: 100, backgroundColor: 'black', flexDirection: 'row'}}>
+        <View style={{paddingTop: 5, height: 80, backgroundColor: 'black', flexDirection: 'row'}}>
           <ButtonGroup
             innerBorderStyle={{width: 0.0, color: 'black'}}
             containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 15, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
@@ -150,6 +152,11 @@ export class ActiveChats extends Component<IProps, IState> {
            ListHeaderComponent={<View style={{ height: 0, marginTop: 0 }}></View>}
            showsVerticalScrollIndicator={true}
            keyExtractor={item => (this.state.selectedIndex === 0 ? item.node_id : item.relation_id) }
+           ListEmptyComponent={
+            <View style={styles.nullContainer}>
+            <Text style={styles.null}>{this.state.selectedIndex === 0 ? 'No tracked nodes yet' : 'No friends yet'}</Text>
+            </View>
+           }
           />
           </View>
        </View>
@@ -186,25 +193,25 @@ export class ActiveChats extends Component<IProps, IState> {
       height: '100%',
       width: '100%',
     },
-    nodeListItem: {
-      width: '100%',
-      marginTop: 10,
-      marginBottom: 5,
-      borderBottomWidth: 1,
-      borderBottomColor: 'rgba(51, 51, 51, 0.2)',
-      minHeight: 100,
-      maxHeight: 120,
-    },
     nullContainer: {
-      flex: 1,
-      bottom: '35%',
+      marginTop: height / 3,
       justifyContent: 'center',
       alignItems: 'center',
     },
     null: {
       fontSize: 22,
       color: 'gray',
+      top: '100%',
       alignSelf: 'center',
+    },
+    nodeListItem: {
+      width: '100%',
+      marginTop: 10,
+      marginBottom: 5,
+      borderBottomWidth: .5,
+      borderBottomColor: 'rgba(51, 51, 51, 0.1)',
+      minHeight: 100,
+      maxHeight: 120,
     },
     nullSubtitle: {
       fontSize: 14,

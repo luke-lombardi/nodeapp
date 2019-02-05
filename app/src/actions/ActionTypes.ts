@@ -1,5 +1,3 @@
-import { IUserLoggedIn } from './AuthActions';
-
 import { IPublicPersonListUpdated } from './NodeActions';
 import { IPublicPlaceListUpdated } from './NodeActions';
 import { IPrivatePersonListUpdated } from './NodeActions';
@@ -12,10 +10,9 @@ import { IRelationListUpdated } from './RelationActions';
 
 import { IUserPositionChanged } from './MapActions';
 
-type ActionTypes =
+import { INotificationListUpdated } from './NotificationActions';
 
-  // User Actions
-  | IUserLoggedIn
+type ActionTypes =
 
   | IPublicPersonListUpdated
 
@@ -32,6 +29,8 @@ type ActionTypes =
   | ITrackedNodeListUpdated
 
   | IRelationListUpdated
+
+  | INotificationListUpdated
 
   ;
 

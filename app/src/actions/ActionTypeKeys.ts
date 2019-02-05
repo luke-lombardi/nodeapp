@@ -1,11 +1,5 @@
 enum ActionTypeKeys {
   //
-  // User Actions
-  //
-
-  USER_LOGGED_IN = 'USER_LOGGED_IN',
-
-  //
   // Node Actions
   //
 
@@ -14,11 +8,6 @@ enum ActionTypeKeys {
   PRIVATE_PERSON_LIST_UPDATED = 'PRIVATE_PERSON_LIST_UPDATED',
   PRIVATE_PLACE_LIST_UPDATED = 'PRIVATE_PLACE_LIST_UPDATED',
   TRACKED_NODE_LIST_UPDATED = 'TRACKED_NODE_LIST_UPDATED',
-  //
-  // Group Actions
-  //
-
-  GROUP_LIST_UPDATED = 'GROUP_LIST_UPDATED',
 
   //
   // Friend Actions
@@ -32,6 +21,12 @@ enum ActionTypeKeys {
   //
 
   USER_POSITIION_CHANGED = 'USER_POSITIION_CHANGED',
+
+  //
+  // Notification Actions
+  //
+
+  NOTIFICATION_LIST_UPDATED = 'NOTIFICATION_LIST_UPDATED',
 
 }
 

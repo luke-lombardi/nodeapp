@@ -96,7 +96,6 @@ export default class LocationService {
       // @ts-ignore
       let newNodeList = nodeListArray.map((val, index, arr) => {
         let nodeCoords = { latitude: parseFloat(val.lat), longitude: parseFloat(val.lng) };
-
         if (val.status === 'inactive') {
           Logger.info(`Inactive: ${JSON.stringify(val)}`);
           nodeCoords.latitude = 0.0;

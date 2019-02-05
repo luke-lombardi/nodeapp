@@ -39,6 +39,7 @@ import { TrackedNodeListUpdatedActionCreator } from '../actions/TrackedNodeActio
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
+import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
 // Services
 import NodeService,
@@ -179,6 +180,7 @@ interface IProps {
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
   publicPlaceList: Array<any>;
@@ -188,87 +190,12 @@ interface IProps {
   friendList: Array<any>;
   relationList: Array<any>;
   userRegion: any;
+  notificationList: any;
 }
 
 interface IState {
   onPage: boolean;
 }
-
-// Begin: Push notification handling logic
-////////////////////////////////////////////////////////////////////////////////////////////////
-// We have a few things to do here:
-//    - Subscribe to push notifications w/ pushy
-//    - Handle the case where the app is opened from a push notification
-//    - Clear the notification area of existing notifications and clear the 'badge'
-//    - Store notifications in async storage so they are persistent until checked by the user
-
-// Subscribe to push notifications
-Pushy.setNotificationListener(async (notification) => {
-  Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
-  await processInitialNotification(notification, false);
-});
-
-async function processInitialNotification(notification, initialNotification: boolean = true) {
-  // If the notification is being handled by PushNotificationIOS.getInitialNotification
-  // then we need to extract the data from the object
-  // If the app is in the foreground, the pushy listener is called
-  // the Pushy listener takes notification._data as a parameter
-  if (notification._data !== undefined) {
-    notification = notification._data;
-  }
-
-  if (notification.action !== undefined) {
-
-    if (notification.action === 'got_message') {
-      if (initialNotification) {
-        await NotificationService.handleAction(notification);
-      } else {
-        await NotificationService.notifyUser(notification);
-      }
-      return;
-    } else {
-      await NotificationService.storeNotification(notification);
-    }
-
-  } else {
-    await NotificationService.handleNotification(notification);
-  }
-
-  // Navigate to the notifications panel if app was opened from a notification
-  if (initialNotification) {
-    NavigationService.reset('Notifications', {});
-  }
-
-}
-
-async function processDeliveredNotifications(notifications) {
-  for (let i = 0; i < notifications.length; i++) {
-
-    if (notifications[i].action !== 'undefined') {
-
-      // got_message type notifications are only processed as initialNotifications
-      if (notifications[i].action === 'got_message') {
-        continue;
-      }
-
-      await NotificationService.storeNotification(notifications[i]);
-    }
-  }
-
-  // Clear the notification badges
-  PushNotificationIOS.setApplicationIconBadgeNumber(0);
-}
-
-PushNotificationIOS.getInitialNotification().then(function (notification) {
-  if (notification !== null) {
-    processInitialNotification(notification, true);
-  }
-});
-
-PushNotificationIOS.getDeliveredNotifications(processDeliveredNotifications);
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// End: Push notification handling logic
 
 export class App extends Component<IProps, IState> {
 
@@ -311,7 +238,11 @@ export class App extends Component<IProps, IState> {
       // App state change
       this.handleAppStateChange = this.handleAppStateChange.bind(this);
 
-      // Link handling
+      // Link & Notification handling
+      this.processInitialNotification =  this.processInitialNotification.bind(this);
+      this.processDeliveredNotifications =  this.processDeliveredNotifications.bind(this);
+
+      this.registerPushy = this.registerPushy.bind(this);
       this.handleLink = this.handleLink.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
 
@@ -337,6 +268,81 @@ export class App extends Component<IProps, IState> {
 
     componentDidMount() {
       //
+    }
+
+    // Begin: Push notification handling logic
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // We have a few things to do here:
+    //    - Subscribe to push notifications w/ pushy
+    //    - Handle the case where the app is opened from a push notification
+    //    - Clear the notification area of existing notifications and clear the 'badge'
+    //    - Store notifications in async storage so they are persistent until checked by the user
+
+    async processDeliveredNotifications(notifications) {
+      for (let i = 0; i < notifications.length; i++) {
+
+        if (notifications[i].action !== 'undefined') {
+
+          // got_message type notifications are only processed as initialNotifications
+          if (notifications[i].action === 'got_message') {
+            continue;
+          }
+
+          await NotificationService.storeNotification(notifications[i]);
+
+          let newNotificationList = this.props.notificationList;
+          newNotificationList.push(notifications);
+
+          await this.props.NotificationListChanged(newNotificationList);
+        }
+      }
+
+      // Clear the notification badges
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // End: Push notification handling logic
+
+    async processInitialNotification(notification, initialNotification: boolean = true) {
+      PushNotificationIOS.getApplicationIconBadgeNumber( (badgeNumber: number) => {
+        PushNotificationIOS.setApplicationIconBadgeNumber(badgeNumber - 1);
+      });
+
+      // If the notification is being handled by PushNotificationIOS.getInitialNotification
+      // then we need to extract the data from the object
+      // If the app is in the foreground, the pushy listener is called
+      // the Pushy listener takes notification._data as a parameter
+      if (notification._data !== undefined) {
+        notification = notification._data;
+      }
+
+      if (notification.action !== undefined) {
+
+        if (notification.action === 'got_message') {
+          if (initialNotification) {
+            await NotificationService.handleAction(notification);
+          } else {
+            await NotificationService.notifyUser(notification);
+          }
+          return;
+        } else {
+          await NotificationService.storeNotification(notification);
+
+          let newNotificationList = this.props.notificationList;
+          newNotificationList.push(notification);
+
+          await this.props.NotificationListChanged(newNotificationList);
+        }
+
+      } else {
+        await NotificationService.handleNotification(notification);
+      }
+
+      // Navigate to the notifications panel if app was opened from a notification
+      if (initialNotification) {
+        NavigationService.reset('Notifications', {});
+      }
     }
 
     // TODO: figure out a better way to do this (move to permissions page)
@@ -373,6 +379,12 @@ export class App extends Component<IProps, IState> {
     registerPushy() {
       // Handle push notifications
       Pushy.listen();
+
+      // Subscribe to push notifications
+      Pushy.setNotificationListener(async (notification) => {
+        Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
+        await this.processInitialNotification(notification, false);
+      });
     }
 
     // Handle a link clicked from a text message
@@ -400,6 +412,18 @@ export class App extends Component<IProps, IState> {
       // Listen for incoming URL
       // Linking.addEventListener('url', this.handleLink);
       AppState.addEventListener('change', this.handleAppStateChange);
+
+      // Set up push notification handling for iOS
+      PushNotificationIOS.getInitialNotification().then(function (notification) {
+        if (notification !== null) {
+          this.processInitialNotification(notification, true);
+        }
+
+        // Clear the notification badges
+        PushNotificationIOS.setApplicationIconBadgeNumber(0);
+      });
+
+      PushNotificationIOS.getDeliveredNotifications(this.processDeliveredNotifications);
     }
 
     componentWillUnmount() {
@@ -664,6 +688,7 @@ function mapStateToProps(state: IStoreState): IProps {
     friendList: state.friendList,
     relationList: state.relationList,
     userRegion: state.userRegion,
+    notificationList: state.notificationList,
   };
 }
 
@@ -677,6 +702,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
     FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
     RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),
+    NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

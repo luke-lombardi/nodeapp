@@ -69,8 +69,7 @@ export class Chat extends Component<IProps, IState> {
       if (params.nodeId.includes('relation')) {
         username = '  ' + params.username;
       } else {
-        console.log('these params', params);
-        username = '';
+        username = 'Chat';
       }
     } catch (error) {
       username = 'Chat';
@@ -80,7 +79,7 @@ export class Chat extends Component<IProps, IState> {
     // @ts-ignore
       return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingTop: -10, height: 70},
-      headerTitleStyle: { color: 'white', fontSize: 16, fontWeight: 'bold', paddingLeft: -20 },
+      headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
         title: username ,
         headerLeft:
           <Icon

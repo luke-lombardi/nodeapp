@@ -8,8 +8,7 @@ import { View, FlatList, StyleSheet, Text, Alert, Animated, ScrollView, TextInpu
 import { ListItem, Icon } from 'react-native-elements';
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
-// @ts-ignore
-import NavigationService from '../services/NavigationService';
+
 import ConfirmModal from '../components/ConfirmModal';
 
 // Redux imports
@@ -20,14 +19,15 @@ import { connect, Dispatch } from 'react-redux';
 import ApiService from '../services/ApiService';
 import AuthService from '../services/AuthService';
 import NodeService from '../services/NodeService';
-
-// @ts-ignore
-import moment from 'moment';
-
+import NavigationService from '../services/NavigationService';
 import SleepUtil from '../services/SleepUtil';
+import Logger from '../services/Logger';
+
+import moment from 'moment';
+import uuid from 'react-native-uuid';
+
 import DeferredPromise from '../services/DeferredPromise';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import Logger from '../services/Logger';
 
 interface IProps {
     navigation: any;
@@ -386,6 +386,7 @@ export class Chat extends Component<IProps, IState> {
         node_id:  this.state.nodeId,
         message: this.state.messageBody,
         user_uuid: userUuid,
+        message_uuid: uuid.v4(),
       };
 
       let response = await ApiService.PostMessageAsync(requestBody);

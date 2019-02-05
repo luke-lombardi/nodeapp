@@ -99,6 +99,8 @@ def generate(event):
       node_id = node['topic']
       key_name = insert_node(rds, node_id, node)
       print(key_name)
+    
+    return len(generated_nodes)
 
 
 def run():
@@ -106,7 +108,7 @@ def run():
     }
 
     response = generate(test_event)
-    print(response)
+    print("Inserted {} new nodes.".format(response))
 
     
     

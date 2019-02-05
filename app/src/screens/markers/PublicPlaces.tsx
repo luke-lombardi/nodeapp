@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Marker }   from 'react-native-maps';
-// @ts-ignore
-import { Image, StyleSheet, Text, View }   from 'react-native';
+import { StyleSheet, Text, View }   from 'react-native';
+
 // import AuthService from '../../services/AuthService';
 // import ApiService from '../../services/ApiService';
+import isEqual from 'lodash.isequal';
 
 interface IProps {
     publicPlaceList: any;
@@ -14,6 +15,7 @@ interface IProps {
 interface IState {
     messages: any;
     nodeId: any;
+    tracksViewChanges: boolean;
 }
 
 export default class PublicPlaces extends Component<IProps, IState> {
@@ -26,14 +28,28 @@ export default class PublicPlaces extends Component<IProps, IState> {
         this.state = {
             messages: '',
             nodeId: '',
+            tracksViewChanges: true,
         };
 
-        // this.authService = new AuthService({});
-        // this.apiService = new ApiService({});
-        // this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     }
 
-    // componentDidMount() {
+    componentWillReceiveProps(nextProps: any) {
+      if (!isEqual(this.props, nextProps)) {
+        this.setState({ tracksViewChanges: true });
+      }
+    }
+
+    componentDidUpdate() {
+      if (this.state.tracksViewChanges) {
+        this.setState({ tracksViewChanges: false });
+      }
+    }
+
+    // @ts-ignore
+    // shouldComponentUpdate(nextProps, nextState) {
+    //   return nextProps.coordinate.latitude !== this.state.coordinate.latitude && nextProps.coordinate.longitude !== this.state.coordinate.longitude;
     // }
 
     render() {
@@ -48,6 +64,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
                     anchor={{ x: .5, y: .6 }}
                     onPress={(event) => {this.props.functions.onNodeSelected(event, 'publicPlace'); }}
                     key={marker.node_id}
+                    tracksViewChanges={this.state.tracksViewChanges}
                 >
                 <View style={marker.data.total_messages === undefined ? styles.nullMarker : styles.markerText}>
                   <Text style={styles.markerTitle}>{marker.data.total_messages}</Text>

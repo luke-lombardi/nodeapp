@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import { Icon } from 'react-native-elements';
-// @ts-ignore
 import { NavigationActions, createStackNavigator, createDrawerNavigator, createAppContainer, DrawerActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 
-// @ts-ignore
-import { View, StatusBar, AsyncStorage, Linking, PushNotificationIOS, AppState } from 'react-native';
+import { View, StatusBar, PushNotificationIOS, AppState } from 'react-native';
 
 // Location services, and user notifications
 import Pushy from 'pushy-react-native';

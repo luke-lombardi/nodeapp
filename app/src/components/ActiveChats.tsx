@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// @ts-ignore
-import { View, StyleSheet, Text, Linking, AsyncStorage, FlatList, ActivityIndicator, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, FlatList, Dimensions } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';

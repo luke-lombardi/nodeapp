@@ -2,7 +2,6 @@ import Logger from './Logger';
 // import SleepUtil from './SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 
-// @ts-ignore
 import { AsyncStorage } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 
@@ -11,7 +10,6 @@ import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
 
-// @ts-ignore
 interface IProps {
 }
 
@@ -27,7 +25,6 @@ export default class NotificationService {
         if (notifications !== null) {
           notifications = JSON.parse(notifications);
         } else {
-          // @ts-ignore
           notifications = [];
         }
 
@@ -75,7 +72,6 @@ export default class NotificationService {
       if (action === 'confirm_friend') {
         let relationId = notification.relation_id;
 
-        // @ts-ignore
         let fromUserId = notification.from_user;
         let friendId = notification.friend_id;
         let locationTracking = notification.location_tracking;
@@ -92,7 +88,6 @@ export default class NotificationService {
         let newRelation = await ApiService.AcceptFriendAsync(relationData);
 
         if (newRelation !== undefined) {
-          // @ts-ignore
           let newFriendId = newRelation.their_id;
           Logger.info(`NotificationService.handleAction - response from AcceptFriendAsync: ${JSON.stringify(newRelation)}`);
 

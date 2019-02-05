@@ -439,6 +439,9 @@ export class MainMap extends Component<IProps, IState> {
                 // rotateEnabled={false}
                 customMapStyle={mapStyle}
               >
+              {/* swipe buffer to let user open sidebar menus */}
+              <View style={{ position: 'absolute', top: 0, bottom: 0, right: -20, left: width - 20, backgroundColor: 'transparent' }}></View>
+              
               {/* Map markers  */}
               <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } nodeId={this.state.selectedNode} />
               <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />

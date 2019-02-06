@@ -220,7 +220,7 @@ export class FriendList extends Component<IProps, IState> {
       backgroundColor='#ffffff'
     >
       <ListItem
-        onPress={() => item.status === 'accepted' ?
+        onPress={() => row.status === 'accepted' ?
         this.sendPrivateMessage(row) :
         Snackbar.show({
           title: `${row.topic} has not accepted your friend request.`,

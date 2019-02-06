@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Marker }   from 'react-native-maps';
 import { StyleSheet, Text, View }   from 'react-native';
 
-// import AuthService from '../../services/AuthService';
-// import ApiService from '../../services/ApiService';
-import isEqual from 'lodash.isequal';
+import * as _ from 'lodash';
 
 interface IProps {
     publicPlaceList: any;
@@ -19,10 +17,6 @@ interface IState {
 }
 
 export default class PublicPlaces extends Component<IProps, IState> {
-
-    // @ts-ignore
-    // private apiService: ApiService;
-
     constructor(props: IProps) {
         super(props);
         this.state = {
@@ -31,12 +25,12 @@ export default class PublicPlaces extends Component<IProps, IState> {
             tracksViewChanges: true,
         };
 
-        this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentDidUpdate = this.componentDidUpdate.bind(this);
         this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     }
 
     componentWillReceiveProps(nextProps: any) {
-      if (!isEqual(this.props, nextProps)) {
+      if (!_.isEqual(this.props, nextProps)) {
         this.setState({ tracksViewChanges: true });
       }
     }

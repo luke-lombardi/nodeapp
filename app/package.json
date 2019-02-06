@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@types/lodash.isequal": "^4.5.3",
+    "@types/lodash": "^4.14.120",
     "assets": "^3.0.0",
     "auto-bind": "^1.2.0",
     "aws-sdk": "^2.177.0",

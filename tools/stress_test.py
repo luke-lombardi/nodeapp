@@ -93,7 +93,7 @@ def generate(event):
     if not rds:
         return
     
-    generated_nodes = generate_random_nodes(n=1000)
+    generated_nodes = generate_random_nodes(n=100)
 
     for node in generated_nodes:
       node_id = node['topic']

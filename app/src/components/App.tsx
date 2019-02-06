@@ -290,10 +290,8 @@ export class App extends Component<IProps, IState> {
 
           await NotificationService.storeNotification(notifications[i]);
 
-          let newNotificationList = this.props.notificationList;
-          newNotificationList.push(notifications);
-
-          await this.props.NotificationListChanged(newNotificationList);
+          let storedNotifications = NotificationService.loadNotifications();
+          await this.props.NotificationListChanged(storedNotifications);
         }
       }
 
@@ -329,10 +327,8 @@ export class App extends Component<IProps, IState> {
         } else {
           await NotificationService.storeNotification(notification);
 
-          let newNotificationList = this.props.notificationList;
-          newNotificationList.push(notification);
-
-          await this.props.NotificationListChanged(newNotificationList);
+          let notificationList = await NotificationService.loadNotifications();
+          await this.props.NotificationListChanged(notificationList);
         }
 
       } else {

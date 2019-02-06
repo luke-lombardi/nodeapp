@@ -119,7 +119,6 @@ export default class NotificationService {
           });
 
           await this.removeNotification(notification);
-
         } else {
           // Show success message
           Snackbar.show({
@@ -158,7 +157,6 @@ export default class NotificationService {
           });
 
           await this.removeNotification(notification);
-
       } else if (action === 'got_message') {
         Logger.info(`MainMap.handleAction - Received a DM from ${notification.from_username}`);
         let relationId = notification.relation_id;
@@ -170,6 +168,28 @@ export default class NotificationService {
 
     public static async handleNotification(pushData: any) {
       Logger.info(`MainMap.pushData: handling the following push data: ${pushData}`);
+    }
+
+    public static async loadNotifications(): Promise<any> {
+      // Pull notifications from async storage
+      let notifications: any = await AsyncStorage.getItem('notifications');
+      if (notifications !== null) {
+        notifications = JSON.parse(notifications);
+      } else {
+        // @ts-ignore
+        notifications = [];
+      }
+
+      // Parse out notifications that are actual requests
+      let parsedNotifications = [];
+
+      for (let i = 0; i < notifications.length; i++) {
+        if (notifications[i].action !== undefined) {
+          parsedNotifications.push(notifications[i]);
+        }
+      }
+
+      return parsedNotifications;
     }
 
     public static async removeNotification(notification) {

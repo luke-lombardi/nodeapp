@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { NavigationActions } from 'react-navigation';
 import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
@@ -9,18 +8,15 @@ import { ListItem, Icon, Button } from 'react-native-elements';
 // @ts-ignore
 import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
-// @ts-ignore
-import NavigationService from '../services/NavigationService';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
 // Services
-// @ts-ignore
-import ApiService from '../services/ApiService';
-// @ts-ignore
-import AuthService from '../services/AuthService';
+import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
 import moment from 'moment';
@@ -31,21 +27,19 @@ import NotificationService from '../services/NotificationService';
 interface IProps {
     navigation: any;
     functions: any;
+    NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    notificationList: any;
 }
 
 interface IState {
     data: any;
     isLoading: boolean;
     textInputHeight: number;
-    userInfo: string;
 }
 
 export class Notifications extends Component<IProps, IState> {
   // @ts-ignore
   private readonly configGlobal = ConfigGlobalLoader.config;
-
-  // @ts-ignore
-  private userUuid: string;
   private action: any;
 
   // TODO: figure out a smarter way to do this
@@ -76,30 +70,26 @@ export class Notifications extends Component<IProps, IState> {
         data: [],
         isLoading: true,
         textInputHeight: 0,
-        userInfo: '',
     };
 
     this._renderItem = this._renderItem.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
-
     this.loadNotifications = this.loadNotifications.bind(this);
+
     this.getTime = this.getTime.bind(this);
     }
 
     getTime(item) {
       let easternTime = moment(item.timestamp).utcOffset(14);
-
       let parsedTimestamp = moment(easternTime).calendar();
-
       return parsedTimestamp;
     }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        // onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           minHeight: 100,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
@@ -178,13 +168,11 @@ export class Notifications extends Component<IProps, IState> {
       } else if (this.action === 'private_message') {
         // console.log('starting private chat...');
       }
-
-      // Load existing notifications from AsyncStorage
-      this.loadNotifications();
     }
 
     componentDidMount() {
-      // @ts-ignore
+      // Load existing notifications from AsyncStorage
+      this.loadNotifications();
     }
 
     componentWillUnmount() {
@@ -192,7 +180,6 @@ export class Notifications extends Component<IProps, IState> {
     }
 
     async loadNotifications() {
-
       // Pull notifications from async storage
       let notifications: any = await AsyncStorage.getItem('notifications');
       if (notifications !== null) {
@@ -211,6 +198,9 @@ export class Notifications extends Component<IProps, IState> {
         }
       }
 
+      await this.props.NotificationListChanged(parsedNotifications);
+
+      console.log('attempting to update redux store');
       // Update the state w/ parsed notifications
       await this.setState({
         isLoading: false,
@@ -249,12 +239,14 @@ export class Notifications extends Component<IProps, IState> {
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
+    notificationList: state.notificationList,
   };
 }
 
 // @ts-ignore
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
+    NotificationListChanged: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

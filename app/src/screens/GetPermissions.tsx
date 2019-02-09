@@ -5,8 +5,6 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import { Text, Icon, CheckBox, Button } from 'react-native-elements';
-// @ts-ignore
-import Snackbar from 'react-native-snackbar';
 import OpenSettings from 'react-native-open-settings';
 
 // Services
@@ -159,7 +157,10 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async checkPermissions() {
-    await this.props.functions.renderApp();
+    let hasPermissions = await AuthService.hasPermissions();
+    if (hasPermissions) {
+      await this.props.functions.setPageToRender();
+    }
   }
 
   render() {

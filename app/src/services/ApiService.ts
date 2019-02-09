@@ -44,7 +44,7 @@ export default class ApiService {
         nodesToGet.node_ids = publicNodes.node_ids;
       }
 
-      Logger.info(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
+      Logger.trace(`Fetching these nodes: ${JSON.stringify(nodesToGet)}`);
       response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getNodes', {
           method: 'POST',
           headers: {'Content-Type': 'text/plain'},
@@ -58,7 +58,7 @@ export default class ApiService {
 
     // Checks which local relations are still present in the cache
     public static async getRelations(requestBody) {
-        Logger.info(`Fetching these relations: ${JSON.stringify(requestBody)}`);
+        Logger.trace(`Fetching these relations: ${JSON.stringify(requestBody)}`);
 
         let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getRelations', {
             method: 'POST',

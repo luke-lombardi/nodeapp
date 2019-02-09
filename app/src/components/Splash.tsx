@@ -30,9 +30,9 @@ export class Splash extends Component<IProps, IState> {
       },
 
       this.getPermissions = this.getPermissions.bind(this);
-      this.renderApp = this.renderApp.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
       this.componentDidMount = this.componentWillMount.bind(this);
+      this.setPageToRender  = this.setPageToRender.bind(this);
     }
 
     componentWillMount() {
@@ -43,10 +43,6 @@ export class Splash extends Component<IProps, IState> {
       //
     }
 
-    async renderApp() {
-      await this.setPageToRender();
-    }
-
     async setPageToRender() {
       if (this.state.firstRun || !( await AuthService.hasPermissions() ) ) {
         await this.setState({
@@ -54,7 +50,7 @@ export class Splash extends Component<IProps, IState> {
             <View style={{flex: 1}}>
               <GetPermissions
                 firstRun={this.state.firstRun}
-                functions={{renderApp: this.renderApp }}
+                functions={{setPageToRender: this.setPageToRender}}
               />
             </View>,
           });

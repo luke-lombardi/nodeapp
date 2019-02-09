@@ -123,6 +123,10 @@ export class CreateNode extends Component<IProps, IState> {
               onValueChange={ () => {this.setState({private: !this.state.private});
             }}
             />
+          { /* Horizontal line break */ }
+          <View style={{borderTopWidth: 1, borderTopColor: 'rgba(220,220,220,1)', width: '100%', paddingVertical: 10, top: 25}}>
+
+          </View>
           <View style={styles.sliderContainer}>
             <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
@@ -332,7 +336,7 @@ const styles = ScaledSheet.create({
   sliderContainer: {
     marginLeft: '20@s',
     alignItems: 'flex-start',
-    top: '5@vs',
+    top: '10@vs',
   },
   sliderText: {
     alignSelf: 'center',

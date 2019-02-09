@@ -469,7 +469,7 @@ export class App extends Component<IProps, IState> {
     async setupLocationTracking() {
       // If we already set up location tracking, definitely do not do it again
       if (this.monitoringLocation) {
-        Logger.info('App.setupLocationTracking - we already set up location tracking, returning');
+        Logger.trace('App.setupLocationTracking - we already set up location tracking, returning');
         return;
       }
 
@@ -602,7 +602,7 @@ export class App extends Component<IProps, IState> {
       let currentUUID = undefined;
       try {
         currentUUID = await AuthService.getUUID();
-        Logger.info(`App.getPostParams - User has a UUID of: ${currentUUID}`);
+        Logger.trace(`App.getPostParams - User has a UUID of: ${currentUUID}`);
       } catch (err) {
         Logger.debug(`App.getPostParams - error getting UUID: ${JSON.stringify(err)}`);
       }
@@ -611,7 +611,7 @@ export class App extends Component<IProps, IState> {
       let deviceToken = undefined;
       try {
         deviceToken = await this.setupPushNotifications();
-        Logger.info(`App.getPostParams - User has a pushy token of: ${deviceToken}`);
+        Logger.trace(`App.getPostParams - User has a pushy token of: ${deviceToken}`);
       } catch (err) {
         // Do nothing w/ this, usually only happens in the simulator
       }

@@ -209,7 +209,7 @@ export default class NodeService {
       let index = trackedNodes.indexOf(nodeId);
 
       if (index >= 0) {
-          Logger.info(`NodeService.nodeTracked: tracking node ${nodeId}`);
+          Logger.trace(`NodeService.nodeTracked: tracking node ${nodeId}`);
           return true;
       } else {
           return false;

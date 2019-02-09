@@ -72,6 +72,7 @@ export default class Node extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     this.slideIn = this.slideIn.bind(this);
   }
 
@@ -88,18 +89,23 @@ export default class Node extends Component<IProps, IState> {
 
     // await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
 
-    let response  = await ApiService.LikeNodeAsync(requestBody);
+    let response = await ApiService.LikeNodeAsync(requestBody);
 
-    let totalVoteCount: number = this.calculateVotes(response);
+    let totalVoteCount: number = await this.calculateVotes(response);
     await this.setState({totalVoteCount: totalVoteCount});
     // await this.updateLikeIcon(currentUUID, response);
   }
 
-  calculateVotes(response: any) {
+  async calculateVotes(response: any) {
+    let currentUUID = await AuthService.getUUID();
     let totalVoteCount = 0;
     for (let user in response.votes) {
       if (response.votes.hasOwnProperty(user)) {
-        // console.log(response.votes[user]);
+
+        if (user === currentUUID) {
+          await this.setState({vote: response.votes[user]});
+        }
+
         totalVoteCount += response.votes[user];
       }
     }
@@ -117,7 +123,7 @@ export default class Node extends Component<IProps, IState> {
     this.slideIn();
   }
 
-  slideIn() {
+  async slideIn() {
     Animated.spring(this.state.x, {
       toValue: 0,
     }).start();
@@ -125,6 +131,13 @@ export default class Node extends Component<IProps, IState> {
 
   componentWillUnmount() {
     clearInterval(this.interval);
+  }
+
+  componentWillReceiveProps(newProps: any) {
+    if (newProps.nodeId !== this.props.nodeId) {
+      this.componentWillMount();
+      this.componentDidMount();
+    }
   }
 
   // TODO: figure out a better way to do this
@@ -172,7 +185,6 @@ export default class Node extends Component<IProps, IState> {
     }
 
     await this.setState({loadingLikeIcon: false, currentLikeIcon: 'heart'});
-
   }
 
   async goToChat() {

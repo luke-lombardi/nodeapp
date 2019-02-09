@@ -204,7 +204,6 @@ export class Notifications extends Component<IProps, IState> {
 
       await this.props.NotificationListUpdated(parsedNotifications);
 
-      console.log('attempting to update redux store');
       // Update the state w/ parsed notifications
       await this.setState({
         isLoading: false,

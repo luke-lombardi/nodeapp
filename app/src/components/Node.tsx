@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 // @ts-ignore
 import { View, StyleSheet, AsyncStorage, Dimensions, Animated } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
+import { ScaledSheet } from 'react-native-size-matters';
+
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
+import NodeService from '../services/NodeService';
 import AuthService from '../services/AuthService';
-import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import Moment from 'moment';
@@ -31,9 +33,7 @@ interface IProps {
 }
 
 interface IState {
-  loadingLikeIcon: boolean;
   currentLikeIcon: string;
-  likeIconOpacity: number;
   time: any;
   elaspedTime: number;
   totalVoteCount: number;
@@ -48,9 +48,7 @@ export default class Node extends Component<IProps, IState> {
     super(props);
 
     this.state = {
-      loadingLikeIcon: true,
-      currentLikeIcon: 'heart',
-      likeIconOpacity: 0.4,
+      currentLikeIcon: 'bookmark-border',
       time: '',
       elaspedTime: 0,
       totalVoteCount: 0,
@@ -65,7 +63,8 @@ export default class Node extends Component<IProps, IState> {
     this.updateVote = this.updateVote.bind(this);
     this.updateVoteStatus = this.updateVoteStatus.bind(this);
     this.calculateVotes = this.calculateVotes.bind(this);
-    // this.updateVoteIcon  = this.updateLikeIcon.bind(this);
+    this.updateLikeIcon  = this.updateLikeIcon.bind(this);
+    this.loadLikeIcon = this.loadLikeIcon.bind(this);
 
     this.countdown = this.countdown.bind(this);
 
@@ -87,13 +86,10 @@ export default class Node extends Component<IProps, IState> {
         'vote': vote,
     };
 
-    // await this.setState({loadingLikeIcon: true, currentLikeIcon: 'loader'});
-
     let response = await ApiService.LikeNodeAsync(requestBody);
 
     let totalVoteCount: number = await this.calculateVotes(response);
     await this.setState({totalVoteCount: totalVoteCount});
-    // await this.updateLikeIcon(currentUUID, response);
   }
 
   async calculateVotes(response: any) {
@@ -121,6 +117,7 @@ export default class Node extends Component<IProps, IState> {
   componentDidMount() {
     this.updateVoteStatus();
     this.slideIn();
+    this.loadLikeIcon();
   }
 
   async slideIn() {
@@ -161,30 +158,33 @@ export default class Node extends Component<IProps, IState> {
       'vote': undefined,
     };
 
-    await this.setState({loadingLikeIcon: true, currentLikeIcon: 'heart'});
-
     let response  = await ApiService.LikeNodeAsync(requestBody);
-    // await this.updateLikeIcon(currentUUID, response);
     let totalVoteCount: number = await this.calculateVotes(response);
     await this.setState({totalVoteCount: totalVoteCount});
   }
 
-  async updateLikeIcon(uuid: string, response: any) {
-    if (response !== undefined) {
-      try {
-        // @ts-ignore
-        if (response.likes[uuid] === true) {
-          await this.setState({likeIconOpacity: 0.8});
-        } else {
-          await this.setState({likeIconOpacity: 0.4});
-        }
-      } catch (error) {
-        await this.setState({likeIconOpacity: 0.4});
-        // User does not exist in dictionary
-      }
+  async updateLikeIcon() {
+    let exists = await NodeService.storeNode(this.props.nodeId);
+
+    if (exists) {
+      await NodeService.deleteNode(this.props.nodeId);
     }
 
-    await this.setState({loadingLikeIcon: false, currentLikeIcon: 'heart'});
+    try {
+      await this.loadLikeIcon();
+    } catch (error) {
+      // Do nothing, we unmounted
+    }
+  }
+
+  async loadLikeIcon() {
+    let exists = await NodeService.nodeTracked(this.props.nodeId);
+
+    if (exists) {
+      await this.setState({currentLikeIcon: 'bookmark'});
+    } else {
+      await this.setState({currentLikeIcon: 'bookmark-border'});
+    }
   }
 
   async goToChat() {
@@ -251,22 +251,23 @@ export default class Node extends Component<IProps, IState> {
           </View>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
+           { this.props.nodeId.includes('public') &&
             <Button
               icon={{
                 name: this.state.currentLikeIcon,
-                type: 'feather',
+                type: 'material',
                 size: 34,
                 underlayColor: 'transparent',
-                color: `rgba(255,255,255,${this.state.likeIconOpacity})`,
+                color: `rgba(255,255,255, 0.8)`,
               }}
               style={styles.mapButton}
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
-              // onPress={}
-              disabled={this.state.loadingLikeIcon}
+              onPress={async () => { this.updateLikeIcon(); } }
               disabledStyle={{backgroundColor: 'rgba(44,55,71,.9)'}}
             />
+            }
              <Button
               icon={{
                 name: 'message-circle',

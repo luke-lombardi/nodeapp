@@ -43,7 +43,7 @@ export class FriendList extends Component<IProps, IState> {
     // @ts-ignore
     const { state: { params = {} } } = navigation;
     return {
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
+      headerStyle: {backgroundColor: 'black', height: 70},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'Friends',
         headerLeft:

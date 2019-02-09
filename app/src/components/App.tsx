@@ -74,7 +74,7 @@ setCustomText(customTextProps);
 const InternalStack = createStackNavigator({
   Finder: { screen: Finder,
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'rgba(44,55,71,1.0)', paddingLeft: 10},
+      headerStyle: { backgroundColor: 'rgba(44,55,71,1.0)' },
       headerTitleStyle: {color: 'white'},
       title: 'Node Finder',
       headerLeft: <Icon name='arrow-left' type='feather' size={30} underlayColor={'rgba(44,55,71, 0.7)'} color={'#ffffff'} onPress={ () =>
@@ -94,7 +94,7 @@ const InternalStack = createStackNavigator({
   },
   GetPermissions: { screen: GetPermissions,
     navigationOptions: () => ({
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10},
+      headerStyle: {backgroundColor: 'black' },
       headerTitleStyle: {color: 'white'},
       title: 'Permissions',
       headerLeft: <View></View>,
@@ -109,7 +109,7 @@ const InternalStack = createStackNavigator({
   CreateNode: { screen: CreateNode,
     // @ts-ignore
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
+      headerStyle: {backgroundColor: 'black', height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'Drop Node',
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}

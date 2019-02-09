@@ -17,6 +17,7 @@ import { NotificationListUpdatedActionCreator } from '../actions/NotificationAct
 
 // Services
 import NavigationService from '../services/NavigationService';
+import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import moment from 'moment';
@@ -47,7 +48,7 @@ export class Notifications extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
+      headerStyle: {backgroundColor: 'black', height: 70},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'notifications',
         headerLeft:
@@ -144,6 +145,22 @@ export class Notifications extends Component<IProps, IState> {
             }
             title='reject'
             onPress={ async () => {
+
+              if (item.action === 'confirm_friend') {
+                // If the user rejects the relation, we have to remove it from the cache
+                // so that the requester does not have a rejected request in their friend list
+
+                let requestBody = {
+                  'relation_id': item.relation_id,
+                };
+
+                //  TODO: add some error handling around this API call
+                //  We should have a place to cache failed, but necessary, requests
+
+                // Delete the relation from the cache
+                await ApiService.DeleteFriendAsync(requestBody);
+              }
+
               await NotificationService.removeNotification(item);
               await this.loadNotifications();
               } }

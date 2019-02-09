@@ -1,10 +1,10 @@
 {
-    "jsVersion": "v1.0.50 DEBUG",
+    "jsVersion": "v1.0.57 DEBUG",
     "buildEnvironment": "STAGING",
     "apiStage": "dev",
     "apiServicesUrlBase": "https://api.smartshare.io/",
     "nodeCheckIntervalMs": 5000,
     "relationCheckIntervalMs": 5000,
-    "messageCheckIntervalMs": 3000,
+    "messageCheckIntervalMs": 1500,
     "minimumNodeDistance": -1
 }

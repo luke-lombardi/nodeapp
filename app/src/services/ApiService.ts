@@ -258,7 +258,7 @@ export default class ApiService {
 
     // Posts a new message to a node
     public static async GetMessagesAsync(requestBody: any) {
-      Logger.info(`ApiService.GetMessagesAsync - Getting messages for node: ${JSON.stringify(requestBody)}`);
+      Logger.trace(`ApiService.GetMessagesAsync - Getting messages for node: ${JSON.stringify(requestBody)}`);
 
       let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getMessages', {
             method: 'POST',

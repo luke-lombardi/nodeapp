@@ -192,7 +192,7 @@ export default class NodeService {
 
           return false;
       } else {
-          Logger.info(`NodeService.storeNode: you already are tracking this node.`);
+          Logger.trace(`NodeService.storeNode: you already are tracking this node.`);
           return true;
       }
     }
@@ -235,7 +235,7 @@ export default class NodeService {
             await AsyncStorage.setItem('trackedNodes', JSON.stringify(trackedNodes));
             Logger.info(`NodeService.deleteNode: removed node: ${trackedNodes}`);
         } else {
-            Logger.info(`NodeService.deleteNode: you are not tracking this node.`);
+            Logger.trace(`NodeService.deleteNode: you are not tracking this node.`);
         }
   }
 

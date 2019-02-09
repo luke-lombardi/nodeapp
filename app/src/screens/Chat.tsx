@@ -46,7 +46,7 @@ interface IState {
     username: string;
 }
 
-const MINIMUM_MSG_LENGTH = 2;
+const MINIMUM_MSG_LENGTH = 1;
 
 export class Chat extends Component<IProps, IState> {
   private monitoring: boolean = false;
@@ -78,7 +78,7 @@ export class Chat extends Component<IProps, IState> {
 
     // @ts-ignore
       return {
-      headerStyle: {backgroundColor: 'black', paddingLeft: 10, paddingTop: -10, height: 70},
+      headerStyle: {backgroundColor: 'black', paddingTop: -10, height: 70},
       headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
         title: username ,
         headerLeft:
@@ -162,7 +162,7 @@ export class Chat extends Component<IProps, IState> {
       // If the message body is empty, don't post the message
       if (this.state.messageBody === '' || this.state.messageBody.length < MINIMUM_MSG_LENGTH) {
         Snackbar.show({
-          title: 'enter a message to send (has to be longer than 2 characters).',
+          title: 'enter a message to send (has at least 1 character).',
           duration: Snackbar.LENGTH_SHORT,
         });
 
@@ -426,7 +426,6 @@ export class Chat extends Component<IProps, IState> {
     }
 
     async monitorMessages() {
-
       if (this.monitoring) return;
 
       this.monitoring = true;

@@ -79,33 +79,33 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'location':
       Alert.alert(
         'Background Location Request',
-        'Dropping nodes works best with background location enabled',
+        'dropping nodes works best with background location enabled',
         [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
-          {text: 'OK', onPress: firstRun ? async () => { await this.requestPermissions('location'); } : OpenSettings.openSettings()},
+          {text: 'ok', onPress: firstRun ? async () => { await this.requestPermissions('location'); } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
     break;
       case 'notification':
       Alert.alert(
-        'Notification Request',
-        'Enable notifications to receive updates when other users message you',
+        'notification request',
+        'enable notifications to receive updates when other users message you',
         [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: firstRun ? async () => { await this.requestPermissions('notification'); } : OpenSettings.openSettings()},
+          {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'ok', onPress: firstRun ? async () => { await this.requestPermissions('notification'); } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
     break;
       case 'motion':
       Alert.alert(
-        'Motion Request',
-        'Motion tracking helps us keep our node train running on schedule',
+        'motion request',
+        'motion tracking helps us keep our node train running on schedule',
         [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: firstRun ? async () => { await this.requestPermissions('motion'); } : OpenSettings.openSettings()},
+          {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'ok', onPress: firstRun ? async () => { await this.requestPermissions('motion'); } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -175,13 +175,13 @@ export class GetPermissions extends Component<IProps, IState> {
           size={40}
           containerStyle={styles.largeIcon}
         />
-        <Text style={styles.centeredTextLarge}>Please enable required services.</Text>
-        <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>Your location is required to use the app and connect with people nearby.</Text>
+        <Text style={styles.centeredTextLarge}>please enable required services.</Text>
+        <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>your location is required to use the app and connect with people nearby.</Text>
         <CheckBox
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>Enable Background Location</Text>
+              <Text>enable background location</Text>
               </View>
             }
             iconRight
@@ -198,7 +198,7 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>Enable Push Notifications</Text>
+              <Text>enable push notifications</Text>
               </View>
             }
             iconRight
@@ -215,7 +215,7 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>Enable Motion</Text>
+              <Text>enable motion</Text>
               </View>
             }
             iconRight

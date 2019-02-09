@@ -53,6 +53,18 @@ export class NodeList extends Component<IProps, IState> {
     this.onRefresh = this.onRefresh.bind(this);
     this.countdown = this.countdown.bind(this);
     this.reportNode = this.reportNode.bind(this);
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+  }
+
+  componentWillReceiveProps(newProps: any) {
+    if ( (newProps.publicPlaceList.length !== this.props.publicPlaceList.length)
+    || (newProps.privatePlaceList.length !== this.props.privatePlaceList.length) ) {
+      if (this.state.selectedIndex === 0) {
+        this.setState({ data: this.props.publicPlaceList });
+      } else {
+        this.setState({ data: this.props.privatePlaceList });
+      }
+    }
   }
 
   updateIndex (selectedIndex) {
@@ -133,7 +145,7 @@ export class NodeList extends Component<IProps, IState> {
       }
       subtitle={
         <View style={{paddingVertical: 5}}>
-          <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
+          <Text style={{fontSize: 14, color: 'gray'}}>expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
           {
             item.data.likes &&
             <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
@@ -157,7 +169,7 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   render() {
-    const buttons = ['Public', 'Private'];
+    const buttons = ['public', 'private'];
     const { selectedIndex } = this.state;
     return (
       <View style={{flex: 1}}>
@@ -196,11 +208,11 @@ export class NodeList extends Component<IProps, IState> {
          onRefresh={this.onRefresh}
          ListEmptyComponent={
           <View style={styles.nullContainer}>
-          <Text style={styles.null}>No nodes have been created yet.</Text>
+          <Text style={styles.null}>no nodes have been created yet.</Text>
           <Button
             containerStyle={styles.createNodeButton}
             buttonStyle={{borderRadius: 10}}
-            title={'Create Node'}
+            title={'create node'}
             onPress = {() => NavigationService.reset('CreateNode', {})}
           />
           </View>

@@ -96,7 +96,7 @@ const InternalStack = createStackNavigator({
     navigationOptions: () => ({
       headerStyle: {backgroundColor: 'black', paddingLeft: 10},
       headerTitleStyle: {color: 'white'},
-      title: 'Permissions',
+      title: 'permissions',
       headerLeft: <View></View>,
       }),
   },
@@ -111,7 +111,7 @@ const InternalStack = createStackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-      title: 'Drop Node',
+      title: 'drop node',
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
       color={'#ffffff'} onPress={ () =>
         NavigationService.reset('Map', {}) }

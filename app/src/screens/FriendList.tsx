@@ -45,7 +45,7 @@ export class FriendList extends Component<IProps, IState> {
     return {
       headerStyle: {backgroundColor: 'black', paddingLeft: 10, height: 70},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-        title: 'Friends',
+        title: 'friends',
         headerLeft:
           <Icon
             name='x'
@@ -164,7 +164,7 @@ export class FriendList extends Component<IProps, IState> {
 
     if (response !== undefined) {
       Logger.info(`FriendList.shareNode: shared node with user, response ${JSON.stringify(response)}`);
-      NavigationService.reset('Map', {showMessage: true, messageText: `Shared node with ${row.topic}`});
+      NavigationService.reset('Map', {showMessage: true, messageText: `shared node with ${row.topic}`});
     }
   }
 
@@ -239,7 +239,7 @@ export class FriendList extends Component<IProps, IState> {
             onPress={async () => { await this._onTouchNode(row); }}
             underlayColor={'transparent'}
           />
-          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>View on map</Text>
+          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>view on map</Text>
           </View>
           <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
           <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 20}}>
@@ -247,7 +247,7 @@ export class FriendList extends Component<IProps, IState> {
               onTouchStart={async () => { await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
-            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>Share Location</Text>
+            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>share location</Text>
           </View>
         </View>
 
@@ -270,9 +270,9 @@ export class FriendList extends Component<IProps, IState> {
             extraData={this.state}
             keyExtractor={item => item.relation_id}
             ListEmptyComponent={
-              <View style={{flexDirection: 'column', alignSelf: 'center', alignContent: 'center', width: '100%', height: '100%'}}>
-                <Text style={styles.null}>No friends yet.</Text>
-                <Text style={{fontSize: 14, top: '45%', alignSelf: 'center', color: 'gray'}}>You can track other users here.</Text>
+              <View style={styles.nullContainer}>
+                <Text style={styles.null}>no friends yet.</Text>
+                <Text style={{fontSize: 14, top: 10, alignSelf: 'center', color: 'gray'}}>you can track other users here.</Text>
               </View>
              }
           />
@@ -354,11 +354,11 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(51, 51, 51, 0.1)',
   },
   flatlist: {
+    flex: 1,
   },
   null: {
     fontSize: 20,
     color: 'gray',
-    top: '40%',
     alignSelf: 'center',
   },
   nullContainer: {

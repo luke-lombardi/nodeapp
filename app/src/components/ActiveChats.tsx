@@ -40,23 +40,32 @@ export class ActiveChats extends Component<IProps, IState> {
           isLoading: true,
           numberOfNotifications: undefined,
           selectedIndex: 0,
-          data: this.props.relationList,
+          data: this.props.trackedNodeList,
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.updateIndex = this.updateIndex.bind(this);
+        this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
     }
 
-    updateIndex (selectedIndex) {
-      this.setState({isLoading: true});
+    componentWillReceiveProps() {
+        if (this.state.selectedIndex === 0) {
+          this.setState({ data: this.props.trackedNodeList });
+        } else {
+          this.setState({ data: this.props.relationList });
+        }
+    }
+
+    async updateIndex (selectedIndex) {
+      await this.setState({isLoading: true});
       if (selectedIndex === 0) {
-        this.setState({
+        await this.setState({
           selectedIndex,
           data: this.props.trackedNodeList,
           isLoading: false,
         });
       } else if (selectedIndex === 1) {
-        this.setState({
+        await this.setState({
           selectedIndex,
           data: this.props.relationList,
           isLoading: false,
@@ -115,13 +124,13 @@ export class ActiveChats extends Component<IProps, IState> {
         subtitle={
           <View style={{paddingVertical: 5}}>
           { this.state.selectedIndex === 0 ?
-            <Text style={{fontSize: 14, color: 'gray'}}>Expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
+            <Text style={{fontSize: 14, color: 'gray'}}>expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
             :
             undefined
           }
             { this.state.selectedIndex === 0  &&
               item.data.likes &&
-              <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
+              <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
             } */}
           </View>
         }
@@ -129,7 +138,7 @@ export class ActiveChats extends Component<IProps, IState> {
     )
 
     render() {
-      const buttons = ['Nodes', 'Friends'];
+      const buttons = ['nodes', 'friends'];
       const { selectedIndex } = this.state;
       return (
         <View style={{flex: 1}}>
@@ -157,7 +166,7 @@ export class ActiveChats extends Component<IProps, IState> {
            keyExtractor={item => (this.state.selectedIndex === 0 ? item.node_id : item.relation_id) }
            ListEmptyComponent={
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>{this.state.selectedIndex === 0 ? 'No tracked nodes yet' : 'No friends yet'}</Text>
+            <Text style={styles.null}>{this.state.selectedIndex === 0 ? 'no tracked nodes yet' : 'no friends yet'}</Text>
             </View>
            }
           />

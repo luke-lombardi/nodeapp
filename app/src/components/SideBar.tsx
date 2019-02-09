@@ -55,7 +55,7 @@ export class SideBar extends Component<IProps, IState> {
                   }}
                   containerStyle={styles.navItem}
                   key='map'
-                  title='Map'
+                  title='map'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'map', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
@@ -72,7 +72,7 @@ export class SideBar extends Component<IProps, IState> {
                   containerStyle={styles.navItem}
                   badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   key='nodes'
-                  title='Nodes'
+                  title='nodes'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'map-pin', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.privatePlaceList.length && this.props.publicPlaceList.length === 0 ?
@@ -90,7 +90,7 @@ export class SideBar extends Component<IProps, IState> {
                   containerStyle={styles.navItem}
                   badge={{ value: this.props.relationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   key='friendlist'
-                  title='People'
+                  title='people'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'users', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {
@@ -143,7 +143,7 @@ export class SideBar extends Component<IProps, IState> {
                   containerStyle={styles.navItem}
                   badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   // key='chat'
-                  title='Notifications'
+                  title='notifications'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'bell', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.notificationList.length === 0 ?
@@ -156,15 +156,15 @@ export class SideBar extends Component<IProps, IState> {
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Alert.alert(
-          'How can we help?',
+          'how can we help?',
           '',
           [
-            {text: 'Contact Support', onPress: () => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')},
-            {text: 'View User Agreement', onPress: () => Linking.openURL('https://docs.google.com/document/d/1ZhI10eOghYWE5PBjMH_afhwBfhWe-zJ04U9TQflslHI/edit')},
+            {text: 'contact support', onPress: () => Linking.openURL('https://smartshare.io')},
+            {text: 'view user agreement', onPress: () => Linking.openURL('https://smartshare.io/terms')},
           ],
           { cancelable: true},
         )}
-        style={styles.legal}>Help</Text>
+        style={styles.legal}>help</Text>
 
         </View>
       );

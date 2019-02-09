@@ -145,7 +145,7 @@ export class Chat extends Component<IProps, IState> {
 
     async reportUser(displayName) {
       Snackbar.show({
-        title: `Reported ${displayName}`,
+        title: `reported ${displayName}`,
         duration: Snackbar.LENGTH_SHORT,
       });
     }
@@ -162,7 +162,7 @@ export class Chat extends Component<IProps, IState> {
       // If the message body is empty, don't post the message
       if (this.state.messageBody === '' || this.state.messageBody.length < MINIMUM_MSG_LENGTH) {
         Snackbar.show({
-          title: 'Enter a message to send (has at least 1 character).',
+          title: 'enter a message to send (has at least 1 character).',
           duration: Snackbar.LENGTH_SHORT,
         });
 
@@ -240,7 +240,7 @@ export class Chat extends Component<IProps, IState> {
 
       if (alreadyAdded) {
         Snackbar.show({
-          title: 'You already requested a chat with this user',
+          title: 'you already requested a chat with this user',
           duration: Snackbar.LENGTH_SHORT,
         });
 
@@ -255,7 +255,7 @@ export class Chat extends Component<IProps, IState> {
 
         if (!stored) {
           Snackbar.show({
-            title: 'Could not save new relation',
+            title: 'could not save new relation',
             duration: Snackbar.LENGTH_SHORT,
           });
 
@@ -266,7 +266,7 @@ export class Chat extends Component<IProps, IState> {
         await NodeService.storeNode(response.their_id);
 
         Snackbar.show({
-          title: 'Sent direct message request',
+          title: 'sent direct message request',
           duration: Snackbar.LENGTH_SHORT,
         });
 
@@ -418,7 +418,7 @@ export class Chat extends Component<IProps, IState> {
       } else {
         this.setState({isLoading: false});
         Snackbar.show({
-          title: 'Error sending message, try again',
+          title: 'error sending message, try again',
           duration: Snackbar.LENGTH_SHORT,
         });
       }
@@ -507,8 +507,8 @@ export class Chat extends Component<IProps, IState> {
           {
             this.state.data.length < 1 &&
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>No messages yet.</Text>
-            <Text style={styles.nullSubtitle}>You can find messages here.</Text>
+            <Text style={styles.null}>no messages yet.</Text>
+            <Text style={styles.nullSubtitle}>you can find messages here.</Text>
             </View>
           }
           </View>
@@ -523,6 +523,7 @@ export class Chat extends Component<IProps, IState> {
             ref= {(el) => { this._textInput = el; }}
             onContentSizeChange={(e) => this.setState({textInputHeight: e.nativeEvent.contentSize.height})}
             underlineColorAndroid={'transparent'}
+            autoCapitalize='none'
             multiline
             autoCorrect
             autoFocus
@@ -530,7 +531,7 @@ export class Chat extends Component<IProps, IState> {
             allowFontScaling
             onSubmitEditing={this.submitMessage}
             blurOnSubmit={true}
-            placeholder={'Type your message...'}
+            placeholder={'type your message...'}
             returnKeyType='done'
             style={[
               styles.chatInput, {

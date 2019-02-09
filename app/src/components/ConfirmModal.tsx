@@ -75,7 +75,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
                       center
                       title={
                         <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-                        <Text>Share my location with</Text>
+                        <Text>share my location with</Text>
                         <Text style={{fontWeight: 'bold', paddingVertical: 10}}>{ displayName }</Text>
                         </View>
                       }
@@ -108,7 +108,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
                     loading={false}
                     disabled={false}
                     // loadingStyle={}
-                    title='Confirm'
+                    title='confirm'
                     icon={{name: 'check-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                     iconRight
                     />
@@ -124,7 +124,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
                     loading={false}
                     disabled={false}
                     // loadingStyle={}
-                    title='Cancel'
+                    title='cancel'
                     icon={{name: 'x', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                     iconRight
                     />
@@ -132,7 +132,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
                   onPress={() => this.props.functions.reportUser(displayName)}
                   style={{paddingTop: 10, alignSelf: 'center', color: 'red'}}
                 >
-                  Report User
+                  report user
                 </Text>
               </View>
           </Modal>
@@ -141,9 +141,9 @@ export default class ConfirmModal extends Component<IProps, IState> {
 
     private async setDisplayText() {
         if (this.props.action === 'add_friend') {
-            await this.setState({displayTitle: `Request to chat with ${this.props.data.display_name}`});
+            await this.setState({displayTitle: `request to chat with ${this.props.data.display_name}`});
         } else if (this.props.action === 'confirm_friend') {
-          await this.setState({displayTitle: `${this.props.data.from_username} wants to chat. Accept?`});
+          await this.setState({displayTitle: `${this.props.data.from_username} wants to chat. accept?`});
       }
 
     }

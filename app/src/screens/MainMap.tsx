@@ -440,8 +440,8 @@ export class MainMap extends Component<IProps, IState> {
                 customMapStyle={mapStyle}
               >
               {/* swipe buffer to let user open sidebar menus */}
-              <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: width - 20, backgroundColor: 'transparent' }}></View>
-              <View style={{ position: 'absolute', top: 0, bottom: 0, right: width - 20, left: 0, backgroundColor: 'transparent' }}></View>
+              <View style={{ zIndex: 10, position: 'absolute', top: 0, bottom: 0, right: 0, left: width - 20, backgroundColor: 'transparent' }}></View>
+              <View style={{ zIndex: 10, position: 'absolute', top: 0, bottom: 0, right: width - 20, left: 0, backgroundColor: 'transparent' }}></View>
 
               {/* Map markers  */}
               <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } nodeId={this.state.selectedNode} />
@@ -616,7 +616,7 @@ export class MainMap extends Component<IProps, IState> {
     this.nodeService.CheckNow();
 
     Snackbar.show({
-      title: 'Updating node list.',
+      title: 'updating node list.',
       duration: Snackbar.LENGTH_SHORT,
     });
   }

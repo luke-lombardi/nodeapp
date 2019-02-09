@@ -105,18 +105,19 @@ export class CreateNode extends Component<IProps, IState> {
                 onChangeText={(topic) => this.setState({topic: topic})}
                 value={this.state.topic}
                 blurOnSubmit
+                autoCapitalize='none'
                 multiline
                 ref={ component => { this._textInput = component; } }
                 style={styles.input}
                 maxLength={90}
                 returnKeyType='done'
                 underlineColorAndroid='transparent'
-                placeholder='Add a topic...'
+                placeholder='add a topic...'
             />
             <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
             </TouchableOpacity>
             <View style={styles.switchView}>
-              <Text style={styles.switchText}>{this.state.private ? 'Private (toggle for public)' : 'Public (toggle for private)'}</Text>
+              <Text style={styles.switchText}>{this.state.private ? 'private (toggle for public)' : 'public (toggle for private)'}</Text>
             <Switch
               style={styles.switch}
               value={this.state.private}
@@ -129,7 +130,7 @@ export class CreateNode extends Component<IProps, IState> {
           </View>
           <View style={styles.sliderContainer}>
             <Text style={styles.sliderTextContainer}>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>Share for </Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>share for </Text>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} {this.state.ttl < 1.1 ? 'hour' : 'hours'}</Text>
             </Text>
             <Slider
@@ -202,7 +203,7 @@ export class CreateNode extends Component<IProps, IState> {
     // If the node topic is empty, don't post the node
     if (this.state.topic.length < 5) {
       Snackbar.show({
-        title: 'Topic must be at least 5 characters.',
+        title: 'topic must be at least 5 characters.',
         duration: Snackbar.LENGTH_SHORT,
       });
 
@@ -351,6 +352,7 @@ const styles = ScaledSheet.create({
   switchIcon: {
   },
   slider: {
+    top: '-5@vs',
     alignSelf: 'center',
     width: '90%@vs',
   },

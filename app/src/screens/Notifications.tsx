@@ -50,7 +50,7 @@ export class Notifications extends Component<IProps, IState> {
     return {
       headerStyle: {backgroundColor: 'black', height: 70},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-        title: 'Notifications',
+        title: 'notifications',
         headerLeft:
             <Icon
             name='x'
@@ -123,7 +123,7 @@ export class Notifications extends Component<IProps, IState> {
                 color='white'
                 />
             }
-            title='Accept'
+            title='accept'
             onPress={
               async () =>  {
                 await NotificationService.handleAction(item);
@@ -143,7 +143,7 @@ export class Notifications extends Component<IProps, IState> {
                 color='white'
                 />
             }
-            title='Reject'
+            title='reject'
             onPress={ async () => {
 
               if (item.action === 'confirm_friend') {
@@ -239,8 +239,8 @@ export class Notifications extends Component<IProps, IState> {
            keyExtractor={item => item.friend_id}
            ListEmptyComponent={
             <View style={styles.nullContainer}>
-            <Text style={styles.null}>No Notifications.</Text>
-            <Text style={styles.nullSubtitle}>You can find things that require your attention here.</Text>
+            <Text style={styles.null}>no notifications.</Text>
+            <Text style={styles.nullSubtitle}>you can find things that require your attention here.</Text>
             </View>
            }
           />
@@ -286,9 +286,10 @@ const styles = ScaledSheet.create({
     alignSelf: 'center',
   },
   nullSubtitle: {
-    fontSize: '14@s',
+    fontSize: '12@s',
     color: 'gray',
     top: '50@vs',
+    paddingHorizontal: '10@vs',
     paddingVertical: '10@vs',
   },
   titleText: {

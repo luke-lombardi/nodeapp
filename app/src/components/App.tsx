@@ -3,7 +3,7 @@ import { Icon } from 'react-native-elements';
 import { NavigationActions, createStackNavigator, createDrawerNavigator, createAppContainer, DrawerActions } from 'react-navigation';
 import NavigationService from '../services/NavigationService';
 
-import { View, StatusBar, PushNotificationIOS, AppState } from 'react-native';
+import { View, StatusBar, PushNotificationIOS, AppState, AsyncStorage } from 'react-native';
 
 // Location services, and user notifications
 import Pushy from 'pushy-react-native';
@@ -180,7 +180,7 @@ interface IProps {
   FriendListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-  NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
   publicPlaceList: Array<any>;
@@ -239,12 +239,13 @@ export class App extends Component<IProps, IState> {
       this.handleAppStateChange = this.handleAppStateChange.bind(this);
 
       // Link & Notification handling
-      this.processInitialNotification =  this.processInitialNotification.bind(this);
+      this.processNotification =  this.processNotification.bind(this);
       this.processDeliveredNotifications =  this.processDeliveredNotifications.bind(this);
 
       this.registerPushy = this.registerPushy.bind(this);
       this.handleLink = this.handleLink.bind(this);
       this.checkPermissions = this.checkPermissions.bind(this);
+      this.loadNotifications = this.loadNotifications.bind(this);
 
       // The node service monitors all tracked and public nodes, this is an async loop that runs forever, so do not await it
 
@@ -267,7 +268,13 @@ export class App extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-      //
+      // Set up push notification handling for iOS
+      this.processNotification(true);
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+
+      PushNotificationIOS.getDeliveredNotifications(this.processDeliveredNotifications);
+      // Load all stored notifications in redux store
+      this.loadNotifications();
     }
 
     // Begin: Push notification handling logic
@@ -291,7 +298,7 @@ export class App extends Component<IProps, IState> {
           await NotificationService.storeNotification(notifications[i]);
 
           let storedNotifications = NotificationService.loadNotifications();
-          await this.props.NotificationListChanged(storedNotifications);
+          await this.props.NotificationListUpdated(storedNotifications);
         }
       }
 
@@ -302,10 +309,18 @@ export class App extends Component<IProps, IState> {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // End: Push notification handling logic
 
-    async processInitialNotification(notification, initialNotification: boolean = true) {
+    async processNotification(initialNotification: boolean = true, notification: any = undefined) {
+      if (notification === undefined || notification === null) {
+        notification = await PushNotificationIOS.getInitialNotification();
+      }
+
       PushNotificationIOS.getApplicationIconBadgeNumber( (badgeNumber: number) => {
         PushNotificationIOS.setApplicationIconBadgeNumber(badgeNumber - 1);
       });
+
+      if (notification === undefined || notification === null) {
+        return;
+      }
 
       // If the notification is being handled by PushNotificationIOS.getInitialNotification
       // then we need to extract the data from the object
@@ -328,7 +343,7 @@ export class App extends Component<IProps, IState> {
           await NotificationService.storeNotification(notification);
 
           let notificationList = await NotificationService.loadNotifications();
-          await this.props.NotificationListChanged(notificationList);
+          await this.props.NotificationListUpdated(notificationList);
         }
 
       } else {
@@ -379,7 +394,7 @@ export class App extends Component<IProps, IState> {
       // Subscribe to push notifications
       Pushy.setNotificationListener(async (notification) => {
         Logger.info(`Received push notification: ${JSON.stringify(notification)}`);
-        await this.processInitialNotification(notification, false);
+        await this.processNotification(false, notification);
       });
     }
 
@@ -408,18 +423,6 @@ export class App extends Component<IProps, IState> {
       // Listen for incoming URL
       // Linking.addEventListener('url', this.handleLink);
       AppState.addEventListener('change', this.handleAppStateChange);
-
-      // Set up push notification handling for iOS
-      PushNotificationIOS.getInitialNotification().then(function (notification) {
-        if (notification !== null) {
-          this.processInitialNotification(notification, true);
-        }
-
-        // Clear the notification badges
-        PushNotificationIOS.setApplicationIconBadgeNumber(0);
-      });
-
-      PushNotificationIOS.getDeliveredNotifications(this.processDeliveredNotifications);
     }
 
     componentWillUnmount() {
@@ -438,6 +441,29 @@ export class App extends Component<IProps, IState> {
 
     async handleAppStateChange() {
       this.checkPermissions();
+      this.loadNotifications();
+    }
+
+    async loadNotifications() {
+      // Pull notifications from async storage
+      let notifications: any = await AsyncStorage.getItem('notifications');
+      if (notifications !== null) {
+        notifications = JSON.parse(notifications);
+      } else {
+        // @ts-ignore
+        notifications = [];
+      }
+
+      // Parse out notifications that are actual requests
+      let parsedNotifications = [];
+
+      for (let i = 0; i < notifications.length; i++) {
+        if (notifications[i].action !== undefined) {
+          parsedNotifications.push(notifications[i]);
+        }
+      }
+
+      await this.props.NotificationListUpdated(parsedNotifications);
     }
 
     async setupLocationTracking() {

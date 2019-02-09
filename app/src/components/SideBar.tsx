@@ -20,7 +20,7 @@ interface IProps {
     publicPlaceList: Array<any>;
     notificationList: Array<any>;
 
-    NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
@@ -186,7 +186,7 @@ export function mapStateToProps(state: IStoreState): IProps {
 // @ts-ignore
 export function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    NotificationListChanged: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
+    NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

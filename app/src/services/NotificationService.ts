@@ -162,7 +162,7 @@ export default class NotificationService {
         let relationId = notification.relation_id;
 
         // Go to the DM chat
-        NavigationService.reset('Chat', {nodeId: relationId});
+        NavigationService.reset('Chat', { nodeId: relationId, username: notification.from_username });
       }
     }
 

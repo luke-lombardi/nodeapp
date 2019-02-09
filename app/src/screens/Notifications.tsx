@@ -27,7 +27,7 @@ import NotificationService from '../services/NotificationService';
 interface IProps {
     navigation: any;
     functions: any;
-    NotificationListChanged: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+    NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
     notificationList: any;
 }
 
@@ -172,7 +172,11 @@ export class Notifications extends Component<IProps, IState> {
 
     componentDidMount() {
       // Load existing notifications from AsyncStorage
-      this.loadNotifications();
+      try {
+        this.loadNotifications();
+      } catch (error) {
+        // Do nothing, we unmounted
+      }
     }
 
     componentWillUnmount() {
@@ -198,7 +202,7 @@ export class Notifications extends Component<IProps, IState> {
         }
       }
 
-      await this.props.NotificationListChanged(parsedNotifications);
+      await this.props.NotificationListUpdated(parsedNotifications);
 
       console.log('attempting to update redux store');
       // Update the state w/ parsed notifications
@@ -246,7 +250,7 @@ function mapStateToProps(state: IStoreState): IProps {
 // @ts-ignore
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    NotificationListChanged: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
+    NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

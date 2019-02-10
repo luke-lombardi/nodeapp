@@ -75,10 +75,7 @@ export class SideBar extends Component<IProps, IState> {
                   title='nodes'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'map-pin', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.privatePlaceList.length && this.props.publicPlaceList.length === 0 ?
-                    NavigationService.reset('CreateNode', {}) :
-                    NavigationService.reset('Nodes', {});
-                  }}
+                  onPress={ () => {  NavigationService.reset('Nodes', {}); } }
                 />
 
                 <ListItem

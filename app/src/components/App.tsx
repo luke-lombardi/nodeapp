@@ -382,7 +382,7 @@ export class App extends Component<IProps, IState> {
       } else {
         // We have no location permission, the app is useless
         // Take them to the location disabled screen
-        NavigationService.reset('GetPermissions', {});
+        NavigationService.reset('GetPermissions', { hasNavigation:  true} );
       }
 
     }

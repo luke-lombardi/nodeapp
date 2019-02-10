@@ -10,10 +10,12 @@ import OpenSettings from 'react-native-open-settings';
 // Services
 import Logger from '../services/Logger';
 import AuthService from '../services/AuthService';
+import NavigationService from '../services/NavigationService';
 
 interface IProps {
   firstRun: boolean;
   functions: any;
+  navigation: any;
 }
 
 interface IState {
@@ -63,11 +65,16 @@ export class GetPermissions extends Component<IProps, IState> {
 
   async setInitialPermissionState() {
     let currentPermissions = await AuthService.permissionsGranted();
-    await this.setState({
-      notificationPermissions: currentPermissions.notification,
-      motionPermissions: currentPermissions.motion,
-      locationPermissions: currentPermissions.location,
-    });
+    try {
+      await this.setState({
+        notificationPermissions: currentPermissions.notification,
+        motionPermissions: currentPermissions.motion,
+        locationPermissions: currentPermissions.location,
+      });
+    } catch (error) {
+      // Do nothing we unmounted
+    }
+
   }
 
   async showModal(type: string) {
@@ -129,15 +136,22 @@ export class GetPermissions extends Component<IProps, IState> {
           OpenSettings.openSettings();
         }
 
-        await this.setState({ locationPermissions: response});
+        try {
+          await this.setState({ locationPermissions: response});
+        } catch (error) {
+          //
+        }
         break;
       case 'motion':
         hasPermissions = await Permissions.check('motion');
         if (hasPermissions !== 'authorized') {
           response = await Permissions.request('motion');
         }
-
-        await this.setState({ motionPermissions: response});
+        try {
+          await this.setState({ motionPermissions: response});
+        } catch (error) {
+          //
+        }
         break;
       case 'notification':
         hasPermissions = await Permissions.check('notification');
@@ -146,8 +160,11 @@ export class GetPermissions extends Component<IProps, IState> {
         if (hasPermissions !== 'authorized') {
           response = await Permissions.request('notification');
         }
-
-        await this.setState({ notificationPermissions: response});
+        try {
+          await this.setState({ notificationPermissions: response});
+        } catch (error) {
+          //
+        }
         break;
       default:
         //
@@ -157,9 +174,17 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async checkPermissions() {
-    let hasPermissions = await AuthService.hasPermissions();
-    if (hasPermissions) {
-      await this.props.functions.setPageToRender();
+    if (this.props.navigation !== undefined) {
+
+      let hasNavigation = this.props.navigation.getParam('hasNavigation', false);
+      let hasPermissions = await AuthService.hasPermissions();
+
+      if (hasNavigation && hasPermissions) {
+        NavigationService.reset('Map', {});
+      }
+
+    } else  {
+      await this.props.functions.getPermissions();
     }
   }
 

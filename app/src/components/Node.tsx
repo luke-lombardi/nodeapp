@@ -39,6 +39,8 @@ interface IState {
   totalVoteCount: number;
   vote: number;
   x: any;
+  nodeId: string;
+  nodeIndex: number;
 }
 
 export default class Node extends Component<IProps, IState> {
@@ -54,6 +56,8 @@ export default class Node extends Component<IProps, IState> {
       totalVoteCount: 0,
       vote: 0,
       x: new Animated.Value(this.props.direction),
+      nodeId: this.props.nodeId,
+      nodeIndex: this.props.index,
     };
 
     this.goToFinder = this.goToFinder.bind(this);
@@ -117,7 +121,7 @@ export default class Node extends Component<IProps, IState> {
   componentDidMount() {
     this.updateVoteStatus();
     this.slideIn();
-    this.loadLikeIcon();
+    this.loadLikeIcon(this.state.nodeId, this.state.nodeIndex);
   }
 
   async slideIn() {
@@ -134,6 +138,7 @@ export default class Node extends Component<IProps, IState> {
     if (newProps.nodeId !== this.props.nodeId) {
       this.componentWillMount();
       this.componentDidMount();
+      this.loadLikeIcon(newProps.nodeId, newProps.index);
     }
   }
 
@@ -153,7 +158,7 @@ export default class Node extends Component<IProps, IState> {
     let currentUUID = await AuthService.getUUID();
 
     let requestBody = {
-      'node_id': this.props.nodeId,
+      'node_id': this.state.nodeId,
       'user_uuid': currentUUID,
       'vote': undefined,
     };
@@ -164,21 +169,25 @@ export default class Node extends Component<IProps, IState> {
   }
 
   async updateLikeIcon() {
-    let exists = await NodeService.storeNode(this.props.nodeId);
+    let exists = await NodeService.nodeTracked(this.state.nodeId);
 
     if (exists) {
-      await NodeService.deleteNode(this.props.nodeId);
+      await NodeService.deleteNode(this.state.nodeId);
+    } else {
+      await NodeService.storeNode(this.state.nodeId);
     }
 
     try {
-      await this.loadLikeIcon();
+      await this.loadLikeIcon(this.state.nodeId, this.state.nodeIndex);
     } catch (error) {
       // Do nothing, we unmounted
     }
   }
 
-  async loadLikeIcon() {
-    let exists = await NodeService.nodeTracked(this.props.nodeId);
+  async loadLikeIcon(nodeId: string, nodeIndex: number) {
+    await this.setState({nodeId: nodeId, nodeIndex: nodeIndex});
+
+    let exists = await NodeService.nodeTracked(this.state.nodeId);
 
     if (exists) {
       await this.setState({currentLikeIcon: 'bookmark'});
@@ -190,9 +199,9 @@ export default class Node extends Component<IProps, IState> {
   async goToChat() {
     NavigationService.reset('Chat', {
       action: 'join_chat',
-      nodeId: this.props.nodeId,
+      nodeId: this.state.nodeId,
       nodeType: this.props.nodeType,
-      nodeIndex: this.props.index,
+      nodeIndex: this.state.nodeIndex,
      });
   }
 

@@ -17,6 +17,7 @@ interface IProps {
 interface IState {
   firstRun: boolean;
   pageToRender: any;
+  hasPermissions: boolean;
 }
 
 export class Splash extends Component<IProps, IState> {
@@ -27,55 +28,66 @@ export class Splash extends Component<IProps, IState> {
       this.state = {
         firstRun: false,
         pageToRender: undefined,
+        hasPermissions: undefined,
       },
 
       this.getPermissions = this.getPermissions.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
       this.componentDidMount = this.componentWillMount.bind(this);
-      this.setPageToRender  = this.setPageToRender.bind(this);
+      // this.setPageToRender  = this.setPageToRender.bind(this);
     }
 
     componentWillMount() {
+      //
       this.getPermissions();
     }
 
     componentDidMount() {
-      //
-    }
-
-    async setPageToRender() {
-      if (this.state.firstRun || !( await AuthService.hasPermissions() ) ) {
-        await this.setState({
-          pageToRender:
-            <View style={{flex: 1}}>
-              <GetPermissions
-                firstRun={this.state.firstRun}
-                functions={{setPageToRender: this.setPageToRender}}
-              />
-            </View>,
-          });
-      } else {
-        await this.setState({pageToRender: <App />});
-      }
+      console.log('are we doing this correctly');
     }
 
     async getPermissions() {
       const firstRun = await AuthService.permissionsSet();
-      if (firstRun) {
-        await this.setState({firstRun: true});
+      try  {
+        if (firstRun) {
+          await this.setState({firstRun: true});
+        }
+
+        await this.setState({ hasPermissions: await AuthService.hasPermissions() } );
+      } catch (error) {
+        // We unmounted, do nothing
       }
 
-      await this.setPageToRender();
       return;
     }
 
     render() {
-      return (
-        <View style={{flex: 1}}>
-           { this.state.pageToRender }
-        </View>
-      );
+      if (this.state.hasPermissions === false) {
+         {
+          return (
+            <View style={{flex: 1}}>
+              <GetPermissions
+                  firstRun={this.state.firstRun}
+                  functions={{getPermissions: this.getPermissions}}
+                  navigation={undefined}
+                />
+            </View>
+          );
+        }
+      } else if (this.state.hasPermissions === true) {
+          return (
+            <View style={{flex: 1}}>
+               <App />
+            </View>
+          );
+      } else  {
+          return (
+            <View style={{flex: 1}}>
+            </View>
+          );
+      }
     }
+
   }
 
 export default Splash;

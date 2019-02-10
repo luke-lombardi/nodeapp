@@ -1,5 +1,5 @@
 {
-    "jsVersion": "v1.0.67",
+    "jsVersion": "v1.0.59",
     "buildEnvironment": "RELEASE",
     "apiStage": "dev",
     "apiServicesUrlBase": "https://api.smartshare.io/",

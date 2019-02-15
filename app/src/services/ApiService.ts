@@ -102,7 +102,7 @@ export default class ApiService {
 
       if (response.status !== HttpStatus.OK) {
         Logger.info('ApiService.CreateNodeAsync - Unable to get user info');
-
+        Logger.info('ApiService.CreateNodeAsync - Minor change');
         return undefined;
       }
 
@@ -175,7 +175,6 @@ export default class ApiService {
       return result;
     }
 
-    // Deletes an existing friend
     public static async ToggleLocationSharingAsync(requestBody: any) {
 
       let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/toggleLocationSharing', {

@@ -30,6 +30,7 @@ interface IProps {
   // We need access to the node lists to prevent overlapping nodes
   privatePlaceList: Array<any>;
   publicPlaceList: Array<any>;
+  wallet: any;
 }
 
 interface IState {
@@ -196,6 +197,7 @@ export class CreateNode extends Component<IProps, IState> {
       'private': this.state.private,
       'type': 'place',
       'ttl': this.state.ttl,
+      'wallet': this.props.wallet.address,
     };
 
     await this.setState({isLoading: true});
@@ -254,6 +256,7 @@ export class CreateNode extends Component<IProps, IState> {
     userRegion: state.userRegion,
     publicPlaceList: state.publicPlaceList,
     privatePlaceList: state.privatePlaceList,
+    wallet: state.wallet,
   };
 }
 

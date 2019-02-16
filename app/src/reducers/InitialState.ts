@@ -12,6 +12,7 @@ const InitialState: IStoreState = {
   userRegion: {},
   notificationList: [],
   transactionList: [],
+  wallet: {},
 };
 
 export default InitialState;

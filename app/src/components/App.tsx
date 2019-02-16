@@ -43,7 +43,8 @@ import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
-import { TransactionListUpdatedActionCreator, ITransactionListUpdated } from '../actions/TransactionActions';
+import { TransactionListUpdatedActionCreator } from '../actions/TransactionActions';
+import { WalletUpdatedActionCreator } from '../actions/WalletActions';
 
 // Services
 import NodeService,
@@ -55,6 +56,8 @@ import NodeService,
     ITrackedNodeListUpdated,
     IFriendListUpdated,
     IRelationListUpdated,
+    IWalletUpdated,
+    ITransactionListUpdated,
   }
   from '../services/NodeService';
 
@@ -209,6 +212,7 @@ interface IProps {
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   TransactionListUpdated: (transactionList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  WalletUpdated: (wallet: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
   publicPlaceList: Array<any>;
@@ -220,6 +224,7 @@ interface IProps {
   userRegion: any;
   notificationList: any;
   transactionList: any;
+  wallet: any;
 }
 
 interface IState {
@@ -258,6 +263,7 @@ export class App extends Component<IProps, IState> {
       this.gotNewRelationList =  this.gotNewRelationList.bind(this);
 
       this.gotNewTransactionList =  this.gotNewTransactionList.bind(this);
+      this.gotNewWallet = this.gotNewWallet.bind(this);
 
       this.getUserRegion = this.getUserRegion.bind(this);
 
@@ -291,6 +297,7 @@ export class App extends Component<IProps, IState> {
           relationListUpdated: this.gotNewRelationList,
           currentUserRegion: this.getUserRegion,
           transactionListUpdated: this.gotNewTransactionList,
+          walletUpdated:  this.gotNewWallet,
       });
 
       this.state = {
@@ -648,6 +655,9 @@ export class App extends Component<IProps, IState> {
         // Do nothing w/ this, usually only happens in the simulator
       }
 
+      // Get wallet address
+      let wallet = this.props.wallet.address;
+
       let params = {
         'node_id': currentUUID,
         'node_data': {
@@ -656,6 +666,7 @@ export class App extends Component<IProps, IState> {
           'public': false,
           'type': 'person',
           'device_token': deviceToken,
+          'wallet': wallet,
         },
       };
 
@@ -732,6 +743,10 @@ export class App extends Component<IProps, IState> {
     private async gotNewTransactionList(props: ITransactionListUpdated) {
       await this.props.TransactionListUpdated(props.transactionList);
     }
+
+    private async gotNewWallet(props: IWalletUpdated) {
+      await this.props.WalletUpdated(props.wallet);
+    }
 }
 
 // @ts-ignore
@@ -748,6 +763,7 @@ function mapStateToProps(state: IStoreState): IProps {
     userRegion: state.userRegion,
     notificationList: state.notificationList,
     transactionList: state.transactionList,
+    wallet: state.wallet,
   };
 }
 
@@ -763,6 +779,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),
     NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
     TransactionListUpdated: bindActionCreators(TransactionListUpdatedActionCreator, dispatch),
+    WalletUpdated: bindActionCreators(WalletUpdatedActionCreator, dispatch),
   };
 }
 

@@ -49,25 +49,14 @@ def new_user(rds, key_name):
     
     return True
 
-def get_new_wallet():
-    w3 = Web3(HTTPProvider(PROVIDER))
-    new_account = w3.eth.account.create() # linter complains for some reason, weird namespace issue
-    wallet_address = new_account._address
-    private_key = w3.toHex(new_account._privateKey)
-    return (wallet_address, private_key)
-
-
 def set_username(node_data):
     username = get_random_name()
-    wallet_address, private_key = get_new_wallet()
 
     if username:
-        logger.info("Generated a new username and wallet: {}, {}".format(username, wallet_address))
+        logger.info("Generated a new username: {}".format(username))
         node_data['topic'] = username
-        node_data['wallet'] = wallet_address
     else:
         node_data['topic'] = 'Anonymous'
-        node_data['wallet'] = None
     
     return node_data
       
@@ -121,6 +110,8 @@ def update_node(rds, node_id, node_data):
                 node_data = set_username(node_data)
             else:
                 node_data['topic'] = current_username
+
+        node_data['wallet'] = node_data.get('wallet', None)
 
         # Update the node data in the cache
         rds.set(name=key_name, value=json.dumps(node_data))

@@ -110,6 +110,29 @@ export default class AuthService {
       return false;
     }
 
+    //  ETH DENVER
+
+    // Stores a new wallet's private key -- called from camera
+    public static async storeWallet(privateKey: string) {
+      let walletPrivateKey: any = await AsyncStorage.getItem('walletPrivateKey');
+      Logger.trace(`AuthService.storeWallet() - current private key: ${walletPrivateKey}`);
+
+      await AsyncStorage.setItem('walletPrivateKey', privateKey);
+      Logger.trace(`AuthService.storeWallet() - new private key: ${privateKey}`);
+      return true;
+    }
+
+    // Gets a new wallet's private key
+    public static async getWallet() {
+      let walletPrivateKey: any = await AsyncStorage.getItem('walletPrivateKey');
+      Logger.trace(`AuthService.storeWallet() - current private key: ${walletPrivateKey}`);
+
+      if (walletPrivateKey === null) {
+        return undefined;
+      }
+      return walletPrivateKey;
+    }
+
     constructor(props: IProps) {
       this.props = props;
       Logger.trace(`AuthService.constructor -  Initialized auth service`);

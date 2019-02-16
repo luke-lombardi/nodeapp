@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, StyleSheet, Alert, ActivityIndicator} from 'react-native';
+import { TouchableOpacity, View, StyleSheet, ActivityIndicator} from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import ViewFinder from 'react-native-view-finder';
 import Icon from 'react-native-vector-icons/Entypo';
 
-// import Logger from '../services/Logger';
-// import ApiService from '../services/ApiService';
+import Logger from '../services/Logger';
+
+// @ts-ignore
+import AuthService from '../services/AuthService';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+import NavigationService from '../services/NavigationService';
 
 // import { List, ListItem } from 'react-native-elements';
 interface IProps {
@@ -49,26 +52,29 @@ export class Camera extends Component<IProps, IState> {
     }
 
   onBarCodeRead(e) {
+    // Prevents onBarCodeRead from setting the state a whole bunch of times
       if (this.state.scanSuccess) {
         return;
       }
-      this.setState({scanSuccess: true});
 
+      this.setState({scanSuccess: true});
       this.forwardData(e);
   }
 
   async forwardData(e) {
-    console.log('Camera captured QR with data:' + JSON.stringify(e));
-    // let uuid = e.data;
+    Logger.trace(`Camera.forwardData - Camera captured QR with data: ${JSON.stringify(e)}` );
+    let privateKey = e.data;
 
-    if (e) {
-      Alert.alert(e.title, e.message, [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
-        { cancelable: false });
-      return;
+    let result = await AuthService.storeWallet(privateKey);
+    let message = '';
+
+    if (result === true) {
+      message = 'Stored new wallet, getting balance.';
+    } else {
+      message = 'Error saving wallet!';
     }
 
+    NavigationService.reset('Map', { showMessage: true, messageText: message, updateNodes: true});
   }
 
   componentWillMount() {

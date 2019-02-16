@@ -3,6 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 
+
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { Icon } from 'react-native-elements';

@@ -183,9 +183,10 @@ export default class LocationService {
         currentNode.data.total_messages = nodeListArray[key].total_messages;
         currentNode.data.likes = nodeListArray[key].likes;
 
-        if (currentNode.data.type === 'person' || currentNode.data.type === 'friend') {
-          currentNode.data.wallet = nodeListArray[key].wallet;
-        }
+        // ETH DENVER
+        currentNode.data.wallet = nodeListArray[key].wallet;
+        console.log('HEY DID IT WORK?');
+        console.log(currentNode.data);
 
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);

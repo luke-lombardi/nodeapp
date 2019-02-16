@@ -11,6 +11,7 @@ import { IRelationListUpdated } from './RelationActions';
 import { IUserPositionChanged } from './MapActions';
 
 import { INotificationListUpdated } from './NotificationActions';
+import { ITransactionListUpdated } from './TransactionActions';
 
 type ActionTypes =
 
@@ -31,6 +32,8 @@ type ActionTypes =
   | IRelationListUpdated
 
   | INotificationListUpdated
+
+  | ITransactionListUpdated
 
   ;
 

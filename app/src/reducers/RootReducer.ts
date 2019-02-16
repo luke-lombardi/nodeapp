@@ -15,6 +15,7 @@ import { relationListChangedReducer as relationList } from './RelationReducers';
 import { userPositionChangedReducer as userRegion } from './MapReducers';
 
 import { notificationListChangedReducer as notificationList } from './NotificationReducers';
+import { transactionListChangedReducer as transactionList } from './TransactionReducers';
 
 const RootReducer = combineReducers<IStoreState>({
   // NOTE: The reducer names in this list MUST match the state member names
@@ -28,6 +29,7 @@ const RootReducer = combineReducers<IStoreState>({
   relationList,
   userRegion,
   notificationList,
+  transactionList,
 });
 
 export default RootReducer;

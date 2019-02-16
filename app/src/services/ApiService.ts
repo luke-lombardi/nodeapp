@@ -297,4 +297,46 @@ export default class ApiService {
       return response;
     }
 
+    // ETH DENVER
+
+    // Gets the tracked transactions
+    public static async GetTransactionsAsync(requestBody: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getTransactions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.GetTransactionsAsync - Unable to get user transactions');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
+    // Sends a transaction to another user / node
+    public static async SendTransactionAsync(requestBody: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/sendTransaction', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.GetTransactionsAsync - Unable to send transaction');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
   }

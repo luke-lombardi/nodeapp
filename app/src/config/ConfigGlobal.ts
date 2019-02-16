@@ -9,6 +9,8 @@ export interface ConfigGlobal {
     readonly relationCheckIntervalMs: number;
 
     readonly messageCheckIntervalMs: number;
+    readonly transactionCheckIntervalMs: number;
+
     readonly minimumNodeDistance: number;
 
     readonly jsVersion: string;

@@ -12,8 +12,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 // Redux imports
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
 // Services
 import NavigationService from '../services/NavigationService';
@@ -28,8 +26,7 @@ import NotificationService from '../services/NotificationService';
 interface IProps {
     navigation: any;
     functions: any;
-    NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-    notificationList: any;
+    transactionList: any;
 }
 
 interface IState {
@@ -77,7 +74,8 @@ export class Transactions extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.loadNotifications = this.loadNotifications.bind(this);
+
+    this.loadTransactions = this.loadTransactions.bind(this);
 
     this.getTime = this.getTime.bind(this);
     }
@@ -127,7 +125,6 @@ export class Transactions extends Component<IProps, IState> {
             onPress={
               async () =>  {
                 await NotificationService.handleAction(item);
-                await this.loadNotifications();
               }
             }
             />
@@ -162,7 +159,6 @@ export class Transactions extends Component<IProps, IState> {
               }
 
               await NotificationService.removeNotification(item);
-              await this.loadNotifications();
               } }
             />
           </View>
@@ -185,46 +181,36 @@ export class Transactions extends Component<IProps, IState> {
       } else if (this.action === 'private_message') {
         // console.log('starting private chat...');
       }
+
     }
 
     componentDidMount() {
-      // Load existing notifications from AsyncStorage
-      try {
-        this.loadNotifications();
-      } catch (error) {
-        // Do nothing, we unmounted
-      }
+      this.loadTransactions();
     }
 
     componentWillUnmount() {
-      // @ts-ignore
+      //
     }
 
-    async loadNotifications() {
-      // Pull notifications from async storage
-      let notifications: any = await AsyncStorage.getItem('notifications');
-      if (notifications !== null) {
-        notifications = JSON.parse(notifications);
-      } else {
-        // @ts-ignore
-        notifications = [];
-      }
+    async loadTransactions() {
+      let transactionList = this.props.transactionList;
 
-      // Parse out notifications that are actual requests
-      let parsedNotifications = [];
-
-      for (let i = 0; i < notifications.length; i++) {
-        if (notifications[i].action !== undefined) {
-          parsedNotifications.push(notifications[i]);
+      let data = [];
+      if (transactionList !== []) {
+        // console.log('LOADING THESE TRANSACTIONS');
+        // console.log(transactionList.transactions);
+        let currentTransactions = transactionList.transactions;
+        for (let txHash in currentTransactions) {
+          if (currentTransactions.hasOwnProperty(txHash)) {
+            currentTransactions[txHash].tx_hash = txHash;
+            data.push(currentTransactions[txHash]);
+          }
         }
       }
 
-      await this.props.NotificationListUpdated(parsedNotifications);
-
-      // Update the state w/ parsed notifications
       await this.setState({
         isLoading: false,
-        data: parsedNotifications,
+        data: data,
       });
     }
 
@@ -259,14 +245,13 @@ export class Transactions extends Component<IProps, IState> {
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
-    notificationList: state.notificationList,
+    transactionList: state.transactionList,
   };
 }
 
 // @ts-ignore
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
   };
 }
 

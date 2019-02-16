@@ -39,6 +39,10 @@ export interface IRelationListUpdated {
   readonly relationList: Array<any>;
 }
 
+export interface ITransactionListUpdated {
+  readonly transactionList: any;
+}
+
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
@@ -51,6 +55,7 @@ interface IProps {
   readonly trackedNodeListUpdated?: (props: ITrackedNodeListUpdated) => Promise<void>;
   readonly friendListUpdated?: (props: IFriendListUpdated) => Promise<void>;
   readonly relationListUpdated?: (props: IRelationListUpdated) => Promise<void>;
+  readonly transactionListUpdated?: (props: ITransactionListUpdated) => Promise<void>;
 
 }
 
@@ -362,6 +367,7 @@ export default class NodeService {
         // Start the monitoring loops - don't await this because it runs forever
         this.MonitorNodeListAsync();
         this.MonitorRelationsAsync();
+        this.MonitorTransactionsAsync();
     }
 
     public CheckNow() {
@@ -408,6 +414,35 @@ export default class NodeService {
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
 
             Logger.trace('NodeService.MonitorRelationsAsync - Looping around to check relations again');
+        }
+    }
+
+      // Monitors the cache for updates to the transaction list
+      private async MonitorTransactionsAsync() {
+        while (true) {
+            if (this.stopping) return;
+
+            // Re-create the check-now trigger in case it was triggered last time
+            this.checkNowTrigger = new DeferredPromise();
+
+            // TODO: replace this with values pulled from async storage
+            let requestBody = {
+              'private_key': '0xb0919bab4983f14d18a0e62400102ecfc982de0bf5bf9b50d89edd38ba5a0a7f',
+              'transactions': [
+                '0x3eadc7c1353ef1939b3509649bf2c6187a92aa2a6b1aca1f8806706a873226ba',
+                '0xd0d1e50488677c8162cb1c521078deb919d49daaf2229a9e4cb26aa9ab2d4f6e',
+              ],
+           };
+
+            let transactionList = await ApiService.GetTransactionsAsync(requestBody);
+            Logger.trace(`NodeService.MonitorTransactionsAsync - transactionList: ${JSON.stringify(transactionList)}`);
+
+            await this.props.transactionListUpdated({transactionList: transactionList});
+
+            const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.transactionCheckIntervalMs);
+            await Promise.race([ sleepPromise, this.checkNowTrigger ]);
+
+            Logger.trace('NodeService.MonitorTransactionsAsync - Looping around to check transactions again');
         }
     }
 

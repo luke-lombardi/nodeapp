@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { View, StyleSheet, Switch, Text, TextInput, Dimensions, TouchableOpacity  } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
-import { scale, verticalScale, ScaledSheet } from 'react-native-size-matters';
 
 import Logger from '../services/Logger';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
-import { Button, Slider } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
@@ -18,9 +16,6 @@ import NavigationService from '../services/NavigationService';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
-import { mapStyle } from '../config/map';
-
-const WINDOW_WIDTH = Dimensions.get('window').width;
 
 interface IProps {
   navigation: any;
@@ -72,32 +67,7 @@ export class TransactionDetail extends Component<IProps, IState> {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.nodeForm}>
-            <View style={styles.switchView}>
-              <Text style={styles.switchText}>{this.state.private ? 'private (toggle for public)' : 'public (toggle for private)'}</Text>
-          { /* Horizontal line break */ }
-          <View style={{borderTopWidth: 1, borderTopColor: 'rgba(220,220,220,1)', width: '100%', paddingVertical: 10, top: 25}}>
-
-          </View>
-          </View>
-          <Button
-            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'black'}}
-            onPress={this.submitCreateNode}
-            loading={this.state.isLoading}
-            disabled={this.state.isLoading}
-            loadingStyle={styles.loading}
-            icon={
-              <Icon
-                name='arrow-right'
-                size={30}
-                underlayColor={'transparent'}
-                color='white'
-              />
-            }
-            title=''
-          />
-          </View>
+      <View>
         </View>
     );
   }
@@ -200,112 +170,3 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionDetail);
-
-const styles = ScaledSheet.create({
-  container: {
-    padding: 0,
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-  },
-  miniMapView: {
-    flex: 1,
-    padding: '20@s',
-    // marginBottom: 10,
-  },
-  map: {
-  },
-  inputView: {
-    width: '100%',
-    flex: 1,
-    // top: 20,
-    // marginBottom: 20,
-  },
-  nodeForm: {
-    flex: 6,
-    alignSelf: 'stretch',
-    backgroundColor: '#ffffff',
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-  },
-  fullWidthButton: {
-    backgroundColor: 'black',
-    height: '70@vs',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-  },
-  loading: {
-    alignSelf: 'center',
-    width: '300@s',
-    height: '50@vs',
-  },
-  characterCount: {
-    color: 'gray',
-    position: 'absolute',
-    alignSelf: 'flex-end',
-    bottom: '-2@vs',
-    padding: '10@s',
-  },
-  switchView: {
-    borderTopWidth: .5,
-    borderTopColor: 'rgba(220,220,220,1)',
-    paddingTop: '20@vs',
-    flex: 2,
-    alignItems: 'flex-start',
-  },
-  switch: {
-    marginLeft: '20@s',
-    top: '5@vs',
-    alignSelf: 'flex-start',
-  },
-  switchText: {
-    marginLeft: '20@s',
-    bottom: '5@vs',
-    fontSize: '24@vs',
-    color: 'black',
-    alignSelf: 'flex-start',
-  },
-  sliderContainer: {
-    marginLeft: '20@s',
-    alignItems: 'flex-start',
-    top: '10@vs',
-  },
-  sliderText: {
-    alignSelf: 'center',
-    fontSize: '24@vs',
-    color: 'gray',
-  },
-  hourText: {
-    fontSize: '24@vs',
-    alignSelf: 'center',
-    color: 'black',
-  },
-  switchIcon: {
-  },
-  slider: {
-    top: '-5@vs',
-    alignSelf: 'center',
-    width: '90%@vs',
-  },
-  sliderTextContainer: {
-    paddingVertical: '10@vs',
-  },
-  privateText: {
-    position: 'absolute',
-    alignContent: 'flex-start',
-    marginLeft: '65@s',
-    fontSize: '24@s',
-    color: 'gray',
-  },
-  input: {
-    fontSize: '24@s',
-    // bottom: 30,
-    padding: '10@vs',
-    paddingTop: '10@vs',
-    color: 'black',
-  },
-});

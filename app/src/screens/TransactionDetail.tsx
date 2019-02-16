@@ -71,80 +71,15 @@ export class TransactionDetail extends Component<IProps, IState> {
   }
 
   render() {
-    // in case user region is undefined
-    const defaultRegion = {
-      latitude: 40.71150601477085,
-      longitude: -73.96408881229375,
-      latitudeDelta: 0.00183,
-      longitudeDelta: 0.0018149999999999998,
-    };
     return (
       <View style={styles.container}>
         <View style={styles.nodeForm}>
-          <View style={styles.miniMapView}>
-           {
-            // Main map view
-              <MapView
-                provider='google'
-                ref={component => { this._map = component; } }
-                style={[StyleSheet.absoluteFillObject, styles.map]}
-                showsUserLocation={true}
-                followsUserLocation={true}
-                customMapStyle={mapStyle}
-                initialRegion={this.state.userRegion !== {} ? this.state.userRegion : defaultRegion}
-              >
-              </MapView>
-           }
-          </View>
-          <TouchableOpacity
-            onPress={() => { this._textInput.focus(); }}
-            style={styles.inputView}
-            activeOpacity={0.9}
-          >
-          <TextInput
-                onChangeText={(topic) => this.setState({topic: topic})}
-                value={this.state.topic}
-                blurOnSubmit
-                autoCapitalize='none'
-                multiline
-                ref={ component => { this._textInput = component; } }
-                style={styles.input}
-                maxLength={90}
-                returnKeyType='done'
-                underlineColorAndroid='transparent'
-                placeholder='add a topic...'
-            />
-            <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
-            </TouchableOpacity>
             <View style={styles.switchView}>
               <Text style={styles.switchText}>{this.state.private ? 'private (toggle for public)' : 'public (toggle for private)'}</Text>
-            <Switch
-              style={styles.switch}
-              value={this.state.private}
-              onValueChange={ () => {this.setState({private: !this.state.private});
-            }}
-            />
           { /* Horizontal line break */ }
           <View style={{borderTopWidth: 1, borderTopColor: 'rgba(220,220,220,1)', width: '100%', paddingVertical: 10, top: 25}}>
 
           </View>
-          <View style={styles.sliderContainer}>
-            <Text style={styles.sliderTextContainer}>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>share for </Text>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} {this.state.ttl < 1.1 ? 'hour' : 'hours'}</Text>
-            </Text>
-            <Slider
-              style={[styles.slider, { width: WINDOW_WIDTH * .9 }]}
-              value={this.state.ttl}
-              thumbTouchSize={{width: scale(50), height: verticalScale(50)}}
-              onValueChange={(ttl) => this.setState({ttl: ttl})}
-              minimumValue={1}
-              maximumValue={24}
-              minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
-              maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
-              thumbTintColor={'red'}
-            />
-            </View>
           </View>
           <Button
             style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'black'}}

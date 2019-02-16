@@ -122,8 +122,18 @@ const InternalStack = createStackNavigator({
       }),
   },
   Transactions: { screen: Transactions },
-  TransactionDetail: { screen: TransactionDetail },
-  Camera: { screen: Camera,
+  TransactionDetail: { screen: TransactionDetail,
+    // @ts-ignore
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'black', height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
+      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
+      title: 'transaction detail',
+      headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
+      color={'#ffffff'} onPress={ () =>
+        NavigationService.reset('Map', {}) }
+      />,
+      }),
+  },  Camera: { screen: Camera,
     // @ts-ignore
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: 'black', height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},

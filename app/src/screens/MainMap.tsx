@@ -50,6 +50,7 @@ import PrivatePeople from './markers/PrivatePeople';
 import Friends from './markers/Friends';
 
 import { mapStyle } from '../config/map';
+import PaymentModal from '../components/PaymentModal';
 
 const { width, height } = Dimensions.get('window');
 // @ts-ignore
@@ -58,6 +59,7 @@ const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = width;
 
 interface IProps {
+    functions: any;
     navigation: any;
     publicNodesVisible: boolean;
     publicPersonList: Array<any>;
@@ -65,7 +67,6 @@ interface IProps {
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
     friendList: Array<any>;
-
     userRegion: any;
 
     // Redux actions
@@ -87,6 +88,7 @@ interface IState {
   destination: any;
   selectedNodeIndex: number;
   direction: number;
+  paymentModalVisible: boolean;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -119,6 +121,8 @@ export class MainMap extends Component<IProps, IState> {
     this.gotNewPrivatePersonList = this.gotNewPrivatePersonList.bind(this);
     this.gotNewPrivatePlaceList = this.gotNewPrivatePlaceList.bind(this);
     this.gotNewFriendList = this.gotNewFriendList.bind(this);
+    this.showPaymentModal = this.showPaymentModal.bind(this);
+    this.closePaymentModal = this.closePaymentModal.bind(this);
 
     this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
@@ -155,6 +159,7 @@ export class MainMap extends Component<IProps, IState> {
       selectedNode: {},
       selectedNodeIndex: this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
       confirmModalVisible: false,
+      paymentModalVisible: false,
       destination: {
         latitude: '',
         longitude: '',
@@ -389,6 +394,20 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
+  async showPaymentModal() {
+    await this.setState({
+      paymentModalVisible: true,
+      nodeSelected: false,
+    });
+  }
+
+  async closePaymentModal() {
+    await this.setState({
+      paymentModalVisible: false,
+      nodeSelected: true,
+    });
+  }
+
   // @ts-ignore
   async onSwipeRight(state) {
     await this.setState({ direction: 1 * CARD_WIDTH} );
@@ -422,6 +441,15 @@ export class MainMap extends Component<IProps, IState> {
     return (
       // Map screen view (exported component)
       <View style={styles.mainView} >
+      {
+        this.state.paymentModalVisible &&
+        <PaymentModal
+          functions={{
+            'showPaymentModal': this.showPaymentModal,
+            'closePaymentModal': this.closePaymentModal,
+          }}
+        />
+      }
           {
             // Main map view
             <View style={styles.mapView}>
@@ -571,6 +599,10 @@ export class MainMap extends Component<IProps, IState> {
             style={styles.nodeSelectedView}
             >
               <Node
+                functions={{
+                  'showPaymentModal': this.showPaymentModal,
+                }}
+                data={this.props}
                 index={this.state.selectedNodeIndex}
                 nodeId={this.state.selectedNode.data.node_id}
                 nodeType={ this.state.selectedNode.nodeType }
@@ -581,7 +613,6 @@ export class MainMap extends Component<IProps, IState> {
                 navigation={this.props.navigation}
                 likes={this.state.selectedNode.data.likes}
                 direction={this.state.direction}
-                data={this.selectedNode}
               />
             </GestureRecognizer>
           }

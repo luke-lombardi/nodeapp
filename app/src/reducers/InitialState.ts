@@ -11,6 +11,7 @@ const InitialState: IStoreState = {
   relationList: [],
   userRegion: {},
   notificationList: [],
+  transactionList: [],
 };
 
 export default InitialState;

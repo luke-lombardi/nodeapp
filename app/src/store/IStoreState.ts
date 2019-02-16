@@ -9,4 +9,5 @@ export default interface IStoreState {
   readonly relationList: Array<any>;
   readonly userRegion: any;
   readonly notificationList: any;
+  readonly transactionList: any;
 }

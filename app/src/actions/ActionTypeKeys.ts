@@ -28,6 +28,12 @@ enum ActionTypeKeys {
 
   NOTIFICATION_LIST_UPDATED = 'NOTIFICATION_LIST_UPDATED',
 
+  //
+  // Transaction Actions
+  //
+
+  TRANSACTION_LIST_UPDATED = 'TRANSACTION_LIST_UPDATED',
+
 }
 
 export default ActionTypeKeys;

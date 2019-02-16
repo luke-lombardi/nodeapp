@@ -43,6 +43,7 @@ import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
+import { TransactionListUpdatedActionCreator, ITransactionListUpdated } from '../actions/TransactionActions';
 
 // Services
 import NodeService,
@@ -197,6 +198,7 @@ interface IProps {
   RelationListUpdated: (friendList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
   NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  TransactionListUpdated: (transactionList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 
   publicPersonList: Array<any>;
   publicPlaceList: Array<any>;
@@ -207,6 +209,7 @@ interface IProps {
   relationList: Array<any>;
   userRegion: any;
   notificationList: any;
+  transactionList: any;
 }
 
 interface IState {
@@ -244,6 +247,8 @@ export class App extends Component<IProps, IState> {
       this.gotNewFriendList = this.gotNewFriendList.bind(this);
       this.gotNewRelationList =  this.gotNewRelationList.bind(this);
 
+      this.gotNewTransactionList =  this.gotNewTransactionList.bind(this);
+
       this.getUserRegion = this.getUserRegion.bind(this);
 
       // Component methods
@@ -275,6 +280,7 @@ export class App extends Component<IProps, IState> {
           friendListUpdated: this.gotNewFriendList,
           relationListUpdated: this.gotNewRelationList,
           currentUserRegion: this.getUserRegion,
+          transactionListUpdated: this.gotNewTransactionList,
       });
 
       this.state = {
@@ -712,6 +718,10 @@ export class App extends Component<IProps, IState> {
     private async gotNewFriendList(props: IFriendListUpdated) {
       await this.props.FriendListUpdated(props.friendList);
     }
+
+    private async gotNewTransactionList(props: ITransactionListUpdated) {
+      await this.props.TransactionListUpdated(props.transactionList);
+    }
 }
 
 // @ts-ignore
@@ -727,6 +737,7 @@ function mapStateToProps(state: IStoreState): IProps {
     relationList: state.relationList,
     userRegion: state.userRegion,
     notificationList: state.notificationList,
+    transactionList: state.transactionList,
   };
 }
 
@@ -741,6 +752,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
     FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
     RelationListUpdated: bindActionCreators(RelationListUpdatedActionCreator, dispatch),
     NotificationListUpdated: bindActionCreators(NotificationListUpdatedActionCreator, dispatch),
+    TransactionListUpdated: bindActionCreators(TransactionListUpdatedActionCreator, dispatch),
   };
 }
 

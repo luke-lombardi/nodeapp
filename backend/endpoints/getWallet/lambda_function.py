@@ -67,9 +67,6 @@ def get_wallet(account_data):
     return err_msg, None
 
   sender_nonce = w3.eth.getTransactionCount(sender_acct.address)
-  if sender_nonce  == 0:
-    err_msg = "no_tx"
-    return err_msg, None
 
   print("Requesting user address: {}".format(sender_acct.address))
   print("Requesting user nonce: {}".format(sender_nonce))

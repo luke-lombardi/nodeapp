@@ -655,6 +655,9 @@ export class App extends Component<IProps, IState> {
         // Do nothing w/ this, usually only happens in the simulator
       }
 
+      // Get wallet address
+      let wallet = this.props.wallet.address;
+
       let params = {
         'node_id': currentUUID,
         'node_data': {
@@ -663,6 +666,7 @@ export class App extends Component<IProps, IState> {
           'public': false,
           'type': 'person',
           'device_token': deviceToken,
+          'wallet': wallet,
         },
       };
 

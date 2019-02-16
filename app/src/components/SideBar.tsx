@@ -175,8 +175,8 @@ export class SideBar extends Component<IProps, IState> {
                 />
 
         <View style={{padding: 15, top: 10}}>
-        <Text style={{}}>Balance (USD): {this.props.wallet !== undefined ? '$' + this.props.wallet.balance_usd : '0.00' }</Text>
-        <Text style={{}}>Address: {this.props.wallet !== undefined ? this.props.wallet.address : 'No wallet connected' }</Text>
+        <Text style={{}}>Balance (USD): {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + this.props.wallet.balance_usd : '0.00' }</Text>
+        <Text style={{}}>Address: {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
         <Button
           containerStyle={{width: '80%', paddingVertical: 10}}
           title='Import Wallet'

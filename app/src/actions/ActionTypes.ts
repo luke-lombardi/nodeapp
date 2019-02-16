@@ -12,6 +12,7 @@ import { IUserPositionChanged } from './MapActions';
 
 import { INotificationListUpdated } from './NotificationActions';
 import { ITransactionListUpdated } from './TransactionActions';
+import { IWalletUpdated } from './WalletActions';
 
 type ActionTypes =
 
@@ -34,6 +35,8 @@ type ActionTypes =
   | INotificationListUpdated
 
   | ITransactionListUpdated
+
+  | IWalletUpdated
 
   ;
 

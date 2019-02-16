@@ -448,6 +448,7 @@ export class MainMap extends Component<IProps, IState> {
             'showPaymentModal': this.showPaymentModal,
             'closePaymentModal': this.closePaymentModal,
           }}
+          wallet={this.state.selectedNode.data.wallet}
         />
       }
           {

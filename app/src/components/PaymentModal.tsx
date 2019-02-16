@@ -7,6 +7,7 @@ import Modal from 'react-native-modal';
 
 interface IProps {
     functions: any;
+    wallet: string;
 }
 
 interface IState {
@@ -57,7 +58,7 @@ export default class PaymentModal extends Component<IProps, IState> {
               isVisible={this.state.visibleModal}
               >
               <View style={styles.modalContent}>
-                <Text style={{fontWeight: 'bold', paddingVertical: 20}}>Send Payment</Text>
+                <Text style={{fontWeight: 'bold', paddingVertical: 20}}>Send Payment to {this.props.wallet} </Text>
                 {
                   !this.state.isLoading ?
                   <View style={{width: '70%', height: 40, backgroundColor: 'lightgray', borderRadius: 5}}>

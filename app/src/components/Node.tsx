@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, AsyncStorage, Dimensions, Animated, AlertIOS } from 'react-native';
+import { View, StyleSheet, AsyncStorage, Dimensions, Animated } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ScaledSheet } from 'react-native-size-matters';
 
@@ -20,6 +20,7 @@ const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = width;
 
 interface IProps {
+  functions: any;
   topic: string;
   nodeId: string;
   nodeType: string;
@@ -72,7 +73,6 @@ export default class Node extends Component<IProps, IState> {
     this.calculateVotes = this.calculateVotes.bind(this);
     this.updateLikeIcon  = this.updateLikeIcon.bind(this);
     this.loadLikeIcon = this.loadLikeIcon.bind(this);
-    this.sendPayment = this.sendPayment.bind(this);
     this.showPaymentModal = this.showPaymentModal.bind(this);
 
     this.countdown = this.countdown.bind(this);
@@ -212,26 +212,8 @@ export default class Node extends Component<IProps, IState> {
      });
   }
 
-  showPaymentModal() {
-    AlertIOS.prompt(
-      'enter an amount to send', undefined, (text) =>
-      [
-        {
-          text: 'Cancel',
-          onPress: async () => await this.sendPayment(text),
-          style: 'cancel',
-        },
-        {
-          text: 'Send',
-          onPress: async () => await this.sendPayment(text),
-        },
-      ],
-    );
-  }
-
-  async sendPayment(amount: any) {
-    console.log(`sending ${amount}`);
-    //
+  async showPaymentModal() {
+    await this.props.functions.showPaymentModal();
   }
 
   goToFinder() {

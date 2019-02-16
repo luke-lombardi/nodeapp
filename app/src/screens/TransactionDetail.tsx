@@ -1,30 +1,19 @@
 import React, { Component } from 'react';
-// @ts-ignore
-import { View, StyleSheet, Switch, Text, TextInput, Dimensions, TouchableOpacity  } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
-import Snackbar from 'react-native-snackbar';
 
-import Logger from '../services/Logger';
+
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
+import { Icon } from 'react-native-elements';
 
-import ApiService from '../services/ApiService';
-import NodeService from '../services/NodeService';
-import NavigationService from '../services/NavigationService';
-
-import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import { bindActionCreators } from 'redux';
-import { UserPositionChangedActionCreator } from '../actions/MapActions';
 
 interface IProps {
+  transactionHash: any;
+  transactionList: any;
   navigation: any;
   userRegion: any;
-  UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-
-  // We need access to the node lists to prevent overlapping nodes
-  privatePlaceList: Array<any>;
-  publicPlaceList: Array<any>;
 }
 
 interface IState {
@@ -34,12 +23,11 @@ interface IState {
   uuid: string;
   private: boolean;
   ttl: number;
+  data: any;
 }
 
 export class TransactionDetail extends Component<IProps, IState> {
-  _textInput: any;
-  _map: any;
-  private readonly configGlobal = ConfigGlobalLoader.config;
+  txHash: any;
 
   constructor(props: IProps) {
     super(props);
@@ -51,122 +39,121 @@ export class TransactionDetail extends Component<IProps, IState> {
       uuid: '',
       private: false,
       ttl: 12.0,
+      data: undefined,
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
-    this.submitCreateNode = this.submitCreateNode.bind(this);
-    this.checkForOverlaps = this.checkForOverlaps.bind(this);
+    this.getTransactionDetails = this.getTransactionDetails.bind(this);
   }
 
   componentWillMount() {
-    let userRegion = this.props.userRegion;
-    let uuid = this.props.navigation.getParam('uuid', '');
-    this.setState({userRegion: userRegion});
-    this.setState({uuid: uuid});
+    this.getTransactionDetails();
+  }
+
+  async getTransactionDetails() {
+    let transactionList = this.props.transactionList;
+    let txHash = this.props.navigation.getParam('txHash', '');
+    let transaction = transactionList.transactions[txHash];
+
+    await this.setState({
+      isLoading: false,
+      data: transaction,
+    });
   }
 
   render() {
+    let amt = Math.trunc(this.state.data.amt);
     return (
-      <View>
+      <View style={styles.container}>
+        <View style={styles.statusIcon}>
+          {
+            this.state.data.status === 1 ?
+            <Icon
+              containerStyle={{top: '35%'}}
+              size={56}
+              name='check-circle'
+              type='feather'
+              color='green' />
+            :
+            <Icon
+              containerStyle={{top: '35%'}}
+              size={56}
+              name='alert-circle'
+              type='feather'
+              color='orange' />
+          }
         </View>
+        <View style={styles.transactionDetails}>
+        <Text style={styles.amountDescription}>You Recieved</Text>
+        <Text style={styles.amount}>
+          ${amt} USD
+        </Text>
+        </View>
+        <View style={styles.transactionFields}>
+          <Text style={{alignSelf: 'flex-start', fontWeight: 'bold'}}>From</Text>
+          <Text ellipsizeMode={'tail'} numberOfLines={1} style={{maxWidth: 200}}>{this.state.data.from}</Text>
+        </View>
+        <View style={styles.transactionFields}>
+          <Text style={{alignSelf: 'flex-start', fontWeight: 'bold'}}>Date</Text>
+          <Text ellipsizeMode={'tail'} numberOfLines={1} style={{maxWidth: 200}}>{this.state.data.from}</Text>
+        </View>
+      </View>
     );
   }
-
-  // Checks if any nodes are <= minimumNodeDistance meters away
-  // If so, display a snackbar to user
-  private checkForOverlaps() {
-
-    let overlaps: boolean = false;
-    if (this.props.privatePlaceList.length > 0) {
-      if (this.props.privatePlaceList[0].data.distance_in_meters <= this.configGlobal.minimumNodeDistance) {
-        overlaps = true;
-        return overlaps;
-      }
-    }
-
-    if (this.props.publicPlaceList.length > 0) {
-      if (this.props.publicPlaceList[0].data.distance_in_meters <= this.configGlobal.minimumNodeDistance) {
-        overlaps = true;
-        return overlaps;
-      }
-    }
-    return overlaps;
-  }
-
-  private async submitCreateNode() {
-    let nodeData = {
-      'topic': this.state.topic,
-      'lat': this.state.userRegion.latitude,
-      'lng': this.state.userRegion.longitude,
-      'private': this.state.private,
-      'type': 'place',
-      'ttl': this.state.ttl,
-    };
-
-    await this.setState({isLoading: true});
-
-    // If the node topic is empty, don't post the node
-    if (this.state.topic.length < 5) {
-      Snackbar.show({
-        title: 'topic must be at least 5 characters.',
-        duration: Snackbar.LENGTH_SHORT,
-      });
-
-      await this.setState({
-        isLoading: false,
-      });
-
-      return;
-    }
-
-    let overlappingNodes: boolean = this.checkForOverlaps();
-    // If there is another node right on top of the user, don't allow overlapping nodes
-    if (overlappingNodes) {
-      Snackbar.show({
-        title: 'You are too close to another node.',
-        duration: Snackbar.LENGTH_LONG,
-      });
-
-      await this.setState({
-        isLoading: false,
-      });
-
-      NavigationService.reset('Map', {updateNodes: true});
-      return;
-    }
-
-    let newUuid = await ApiService.CreateNodeAsync(nodeData);
-
-    if (newUuid !== undefined) {
-      await NodeService.storeNode(newUuid);
-      Logger.info('CreateNode.submitCreateNode - successfully created new private node.');
-    } else if (newUuid !== undefined && nodeData.private === false) {
-      Logger.info('CreateNode.submitCreateNode - successfully created new public node.');
-    } else {
-      Logger.info('CreateNode.submitCreateNode - invalid response from create node.');
-    }
-
-    await this.setState({isLoading: false});
-    NavigationService.reset('Map', {updateNodes: true});
-  }
-
 }
 
- // @ts-ignore
- function mapStateToProps(state: IStoreState): IProps {
+// @ts-ignore
+function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
-    userRegion: state.userRegion,
-    publicPlaceList: state.publicPlaceList,
-    privatePlaceList: state.privatePlaceList,
+    transactionList: state.transactionList,
   };
 }
 
 // @ts-ignore
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
   };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionDetail);
+
+const styles = StyleSheet.create({
+  container: {
+  flex: 1,
+  },
+  statusIcon: {
+    top: 20,
+    alignSelf: 'center',
+    height: '20%',
+    width: '70%',
+    borderRadius: 20,
+  },
+  transactionDetails: {
+    top: 20,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '90%',
+  },
+  transactionFields: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    top: 50,
+    width: '100%',
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    height: 40,
+    borderTopWidth: 1,
+    borderTopColor: 'lightgray',
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgray',
+  },
+  amountDescription: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  amount: {
+    fontSize: 20,
+  },
+});

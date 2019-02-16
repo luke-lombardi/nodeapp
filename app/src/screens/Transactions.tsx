@@ -15,13 +15,11 @@ import { connect, Dispatch } from 'react-redux';
 
 // Services
 import NavigationService from '../services/NavigationService';
-import ApiService from '../services/ApiService';
 
 // @ts-ignore
 import moment from 'moment';
 
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
-import NotificationService from '../services/NotificationService';
 
 interface IProps {
     navigation: any;
@@ -86,9 +84,14 @@ export class Transactions extends Component<IProps, IState> {
       return parsedTimestamp;
     }
 
+    async navigateToDetailPage(item) {
+      await NavigationService.reset('TransactionDetail', { txHash: item.tx_hash } );
+    }
+
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
+        onPress={ async () => await this.navigateToDetailPage(item) }
         containerStyle={{
           minHeight: 100,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
@@ -96,71 +99,43 @@ export class Transactions extends Component<IProps, IState> {
         title={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.from_username}</Text>
+          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.amt}</Text>
           <Text
             numberOfLines={1}
-            adjustsFontSizeToFit
+            ellipsizeMode={'tail'}
             style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
-            {item.action === 'add_node' ? 'Add Node' : 'Add Friend'}
+            From: {item.from}
+          </Text>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
+            style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
+            To: {item.to}
           </Text>
           </View>
           {/* <Text style={styles.titleText}>{item.message}</Text> */}
           </View>
         }
-        rightSubtitle={
+        rightIcon={
+          item.status === 1 ?
+          <Icon
+            name='check-circle'
+            type='feather'
+            color='green' />
+          :
+          <Icon
+            name='alert-circle'
+            type='feather'
+            color='orange' />
+        }
+        subtitle={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Button
-            style={{width: 90}}
-            titleStyle={{fontSize: 14}}
-            containerStyle={{paddingHorizontal: 5}}
-            icon={
-                <Icon
-                name='check'
-                type='feather'
-                size={15}
-                color='white'
-                />
-            }
-            title='accept'
-            onPress={
-              async () =>  {
-                await NotificationService.handleAction(item);
-              }
-            }
-            />
-          <Button
-            style={{width: 90}}
-            titleStyle={{fontSize: 14}}
-            containerStyle={{paddingHorizontal: 5}}
-            icon={
-                <Icon
-                name='x'
-                type='feather'
-                size={15}
-                color='white'
-                />
-            }
-            title='reject'
-            onPress={ async () => {
-
-              if (item.action === 'confirm_friend') {
-                // If the user rejects the relation, we have to remove it from the cache
-                // so that the requester does not have a rejected request in their friend list
-
-                let requestBody = {
-                  'relation_id': item.relation_id,
-                };
-
-                //  TODO: add some error handling around this API call
-                //  We should have a place to cache failed, but necessary, requests
-
-                // Delete the relation from the cache
-                await ApiService.DeleteFriendAsync(requestBody);
-              }
-
-              await NotificationService.removeNotification(item);
-              } }
-            />
+          <Text
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
+            style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
+            Tx Hash: {item.tx_hash}
+          </Text>
           </View>
         }
       />
@@ -197,8 +172,8 @@ export class Transactions extends Component<IProps, IState> {
 
       let data = [];
       if (transactionList !== []) {
-        // console.log('LOADING THESE TRANSACTIONS');
-        // console.log(transactionList.transactions);
+        console.log('LOADING THESE TRANSACTIONS');
+        console.log(transactionList.transactions);
         let currentTransactions = transactionList.transactions;
         for (let txHash in currentTransactions) {
           if (currentTransactions.hasOwnProperty(txHash)) {
@@ -222,11 +197,11 @@ export class Transactions extends Component<IProps, IState> {
           <FlatList
            data={this.state.data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.friend_id}
+           keyExtractor={item => item.tx_hash}
            ListEmptyComponent={
             <View style={styles.nullContainer}>
             <Text style={styles.null}>no transactions.</Text>
-            <Text style={styles.nullSubtitle}>you can find things that require your attention here.</Text>
+            <Text style={styles.nullSubtitle}>you can find transactions here.</Text>
             </View>
            }
           />
@@ -336,7 +311,7 @@ const styles = ScaledSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     paddingVertical: 5,
-    width: '80%',
+    width: '50%',
   },
   flatlist: {
     backgroundColor: 'white',

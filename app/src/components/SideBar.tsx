@@ -168,8 +168,8 @@ export class SideBar extends Component<IProps, IState> {
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.notificationList.length === 0 ?
-                    this.props.navigation.navigate('TransactionDetail') :
-                    NavigationService.reset('TransactionDetail', {});
+                    this.props.navigation.navigate('Transactions') :
+                    NavigationService.reset('Transactions', {});
 
                   }}
                 />

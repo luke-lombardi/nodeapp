@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, StyleSheet, AsyncStorage, Dimensions, Animated } from 'react-native';
+import { View, StyleSheet, AsyncStorage, Dimensions, Animated, AlertIOS } from 'react-native';
 import { Card, Text, Button, Icon } from 'react-native-elements';
 import { ScaledSheet } from 'react-native-size-matters';
 
@@ -42,6 +42,7 @@ interface IState {
   x: any;
   nodeId: string;
   nodeIndex: number;
+  amountText: number;
 }
 
 export default class Node extends Component<IProps, IState> {
@@ -59,6 +60,7 @@ export default class Node extends Component<IProps, IState> {
       x: new Animated.Value(this.props.direction),
       nodeId: this.props.nodeId,
       nodeIndex: this.props.index,
+      amountText: 0,
     };
 
     this.goToFinder = this.goToFinder.bind(this);
@@ -70,6 +72,8 @@ export default class Node extends Component<IProps, IState> {
     this.calculateVotes = this.calculateVotes.bind(this);
     this.updateLikeIcon  = this.updateLikeIcon.bind(this);
     this.loadLikeIcon = this.loadLikeIcon.bind(this);
+    this.sendPayment = this.sendPayment.bind(this);
+    this.showPaymentModal = this.showPaymentModal.bind(this);
 
     this.countdown = this.countdown.bind(this);
 
@@ -208,6 +212,28 @@ export default class Node extends Component<IProps, IState> {
      });
   }
 
+  showPaymentModal() {
+    AlertIOS.prompt(
+      'enter an amount to send', undefined, (text) =>
+      [
+        {
+          text: 'Cancel',
+          onPress: async () => await this.sendPayment(text),
+          style: 'cancel',
+        },
+        {
+          text: 'Send',
+          onPress: async () => await this.sendPayment(text),
+        },
+      ],
+    );
+  }
+
+  async sendPayment(amount: any) {
+    console.log(`sending ${amount}`);
+    //
+  }
+
   goToFinder() {
     this.props.navigation.navigate({key: 'Finder', routeName: 'Finder', params: {action: 'scan_node', nodeId: this.props.nodeId, nodeType: this.props.nodeType }});
   }
@@ -263,6 +289,19 @@ export default class Node extends Component<IProps, IState> {
           </View>
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
+          <Button
+              icon={{
+                name: 'credit-card',
+                type: 'feather',
+                size: 34,
+                color: 'rgba(255,255,255,.8)',
+              }}
+              style={styles.mapButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={ async () => { await this.showPaymentModal(); } }
+            />
            { this.props.nodeId.includes('public') &&
             <Button
               icon={{
@@ -400,16 +439,17 @@ const styles = ScaledSheet.create({
     width: '70%',
     height: '100%',
     top: 1,
-    marginLeft: 15,
+    // marginLeft: 15,
   },
   mapButton: {
     width: '70%',
     height: '100%',
+    left: 10,
   },
   directionsButton: {
     width: '70%',
     height: '100%',
-    marginLeft: 30,
+    // marginLeft: 30,
   },
   transparentButton: {
     backgroundColor: 'rgba(44,55,71,0.0)',

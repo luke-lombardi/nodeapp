@@ -6,7 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
-import { ListItem } from 'react-native-elements';
+import { ListItem, Button } from 'react-native-elements';
 
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import NavigationService from '../services/NavigationService';
@@ -37,14 +37,21 @@ export class SideBar extends Component<IProps, IState> {
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
+        this.navigateToCamera = this.navigateToCamera.bind(this);
     }
 
     componentWillMount() {
     //
     }
 
+    navigateToCamera() {
+      this.props.navigation.navigate('Camera', {} );
+    }
+
     render() {
-         return (
+      const balance = '29';
+      const address = '0x38482929389342';
+        return (
         <View style={styles.view}>
 
                 <ListItem
@@ -149,6 +156,33 @@ export class SideBar extends Component<IProps, IState> {
 
                   }}
                 />
+                <ListItem
+                  scaleProps={{
+                    friction: 90,
+                    tension: 100,
+                    activeScale: 0.95,
+                  }}
+                  containerStyle={styles.navItem}
+                  // badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  title='transactions'
+                  titleStyle={{fontSize: 22}}
+                  leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
+                  onPress={ () => { this.props.notificationList.length === 0 ?
+                    this.props.navigation.navigate('Transactions') :
+                    NavigationService.reset('Transactions', {});
+
+                  }}
+                />
+
+        <View style={{padding: 15, top: 10}}>
+        <Text style={{}}>Balance: {balance}</Text>
+        <Text style={{}}>Address: {address}</Text>
+        <Button
+          containerStyle={{width: '80%', paddingVertical: 10}}
+          title='Import Wallet'
+          onPress={() => this.navigateToCamera()}
+        />
+        </View>
 
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text

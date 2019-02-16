@@ -339,4 +339,24 @@ export default class ApiService {
       return response;
     }
 
+    // Gets wallet details
+    public static async GetWalletAsync(requestBody: any) {
+      let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/getWallet', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+      if (response.status !== HttpStatus.OK) {
+        Logger.info('ApiService.GetWalletAsync - Unable to get wallet');
+
+        return undefined;
+      }
+
+      response = await response.json();
+      return response;
+    }
+
   }

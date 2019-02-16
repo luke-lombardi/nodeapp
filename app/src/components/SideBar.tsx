@@ -19,6 +19,8 @@ interface IProps {
     privatePlaceList: Array<any>;
     publicPlaceList: Array<any>;
     notificationList: Array<any>;
+    transactionList: any;
+    wallet: any;
 
     NotificationListUpdated: (notificationList: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
@@ -49,8 +51,6 @@ export class SideBar extends Component<IProps, IState> {
     }
 
     render() {
-      const balance = '29';
-      const address = '0x38482929389342';
         return (
         <View style={styles.view}>
 
@@ -175,8 +175,8 @@ export class SideBar extends Component<IProps, IState> {
                 />
 
         <View style={{padding: 15, top: 10}}>
-        <Text style={{}}>Balance: {balance}</Text>
-        <Text style={{}}>Address: {address}</Text>
+        <Text style={{}}>Balance (USD): {this.props.wallet !== undefined ? '$' + this.props.wallet.balance_usd : '0.00' }</Text>
+        <Text style={{}}>Address: {this.props.wallet !== undefined ? this.props.wallet.address : 'No wallet connected' }</Text>
         <Button
           containerStyle={{width: '80%', paddingVertical: 10}}
           title='Import Wallet'
@@ -211,6 +211,8 @@ export function mapStateToProps(state: IStoreState): IProps {
     privatePlaceList: state.privatePlaceList,
     publicPlaceList: state.publicPlaceList,
     notificationList: state.notificationList,
+    transactionList: state.transactionList,
+    wallet: state.wallet,
   };
 }
 

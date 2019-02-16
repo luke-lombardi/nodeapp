@@ -43,6 +43,10 @@ export interface ITransactionListUpdated {
   readonly transactionList: any;
 }
 
+export interface IWalletUpdated {
+  readonly wallet: any;
+}
+
 // @ts-ignore
 interface IProps {
   readonly currentUserRegion?: () => any;
@@ -56,6 +60,7 @@ interface IProps {
   readonly friendListUpdated?: (props: IFriendListUpdated) => Promise<void>;
   readonly relationListUpdated?: (props: IRelationListUpdated) => Promise<void>;
   readonly transactionListUpdated?: (props: ITransactionListUpdated) => Promise<void>;
+  readonly walletUpdated?: (props: IWalletUpdated) => Promise<void>;
 
 }
 
@@ -437,7 +442,11 @@ export default class NodeService {
             let transactionList = await ApiService.GetTransactionsAsync(requestBody);
             Logger.trace(`NodeService.MonitorTransactionsAsync - transactionList: ${JSON.stringify(transactionList)}`);
 
+            let wallet = await ApiService.GetWalletAsync(requestBody);
+            Logger.trace(`NodeService.MonitorTransactionsAsync - wallet: ${JSON.stringify(wallet)}`);
+
             await this.props.transactionListUpdated({transactionList: transactionList});
+            await this.props.walletUpdated({wallet: wallet});
 
             const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.transactionCheckIntervalMs);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);

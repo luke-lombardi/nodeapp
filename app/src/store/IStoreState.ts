@@ -10,4 +10,5 @@ export default interface IStoreState {
   readonly userRegion: any;
   readonly notificationList: any;
   readonly transactionList: any;
+  readonly wallet: any;
 }

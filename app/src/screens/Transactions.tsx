@@ -3,7 +3,7 @@ import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
-import { ListItem, Icon, Button } from 'react-native-elements';
+import { ListItem, Icon } from 'react-native-elements';
 
 // @ts-ignore
 import Snackbar from 'react-native-snackbar';

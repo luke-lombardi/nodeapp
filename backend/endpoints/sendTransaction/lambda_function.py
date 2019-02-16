@@ -58,7 +58,7 @@ def send_funds(transaction_data):
   if not w3.isConnected():
     logger.info("Could not connect through provider: {}".format(PROVIDER))
     err_msg = "no_connection"
-    return None
+    return err_msg, None
 
   logger.info("Connected. Creating wallet from private key.")
   
@@ -67,7 +67,7 @@ def send_funds(transaction_data):
   if not usd_amt:
     logger.info("Invalid amount specified: {}".format(usd_amt))
     err_msg = "invalid_amt"
-    return None
+    return err_msg, None
   
   # Get current exchange rate
   exchange_rate = get_current_exchange_rate()
@@ -82,7 +82,7 @@ def send_funds(transaction_data):
   if not Web3.isAddress(rcpt_address):
     logger.info("Invalid recipient address specified, exiting.")
     err_msg = "invalid_rcpt_addr"
-    return None
+    return err_msg, None
   
   private_key = transaction_data.get('private_key', '')
 

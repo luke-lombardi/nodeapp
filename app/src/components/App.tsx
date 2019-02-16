@@ -19,9 +19,12 @@ import MainMap from '../screens/MainMap';
 import NodeList from '../screens/NodeList';
 import FriendList from '../screens/FriendList';
 import SideBar from '../components/SideBar';
+import Camera from '../screens/Camera';
 import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
 import Notifications from '../screens/Notifications';
+import Transactions from '../screens/Transactions';
+import TransactionDetail from '../screens/TransactionDetail';
 import GetPermissions from '../screens/GetPermissions';
 import ActiveChats from './ActiveChats';
 
@@ -112,6 +115,19 @@ const InternalStack = createStackNavigator({
       headerStyle: {backgroundColor: 'black', height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'drop node',
+      headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
+      color={'#ffffff'} onPress={ () =>
+        NavigationService.reset('Map', {}) }
+      />,
+      }),
+  },
+  Transactions: { screen: Transactions },
+  TransactionDetail: { screen: TransactionDetail },
+  Camera: { screen: Camera,
+    // @ts-ignore
+    navigationOptions: ({navigation}) => ({
+      headerStyle: {backgroundColor: 'black', height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
+      headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'black'}
       color={'#ffffff'} onPress={ () =>
         NavigationService.reset('Map', {}) }

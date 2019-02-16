@@ -31,6 +31,7 @@ interface NodeData {
   status: string;
   total_messages: number;
   likes: any;
+  wallet: string;
 }
 
 interface Node {
@@ -181,6 +182,10 @@ export default class LocationService {
         currentNode.data.status = nodeListArray[key].status;
         currentNode.data.total_messages = nodeListArray[key].total_messages;
         currentNode.data.likes = nodeListArray[key].likes;
+
+        if (currentNode.data.type === 'person' || currentNode.data.type === 'friend') {
+          currentNode.data.wallet = nodeListArray[key].wallet;
+        }
 
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);

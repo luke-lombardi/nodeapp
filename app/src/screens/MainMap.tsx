@@ -560,6 +560,7 @@ export class MainMap extends Component<IProps, IState> {
                 origin={this.props.userRegion}
                 destination={this.state.selectedNode.data}
                 navigation={this.props.navigation}
+                data={this.state.selectedNode}
               />
             </View>
             :
@@ -580,6 +581,7 @@ export class MainMap extends Component<IProps, IState> {
                 navigation={this.props.navigation}
                 likes={this.state.selectedNode.data.likes}
                 direction={this.state.direction}
+                data={this.selectedNode}
               />
             </GestureRecognizer>
           }

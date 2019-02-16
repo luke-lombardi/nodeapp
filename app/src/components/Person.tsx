@@ -20,6 +20,7 @@ interface IProps {
   navigation: any;
   origin: any;
   destination: any;
+  data: any;
 }
 
 interface IState {

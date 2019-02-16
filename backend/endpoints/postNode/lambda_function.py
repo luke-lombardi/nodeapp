@@ -13,6 +13,10 @@ import logging
 import os
 import boto3
 
+import web3
+from web3 import Web3, HTTPProvider
+from web3.middleware import geth_poa_middleware
+from web3.middleware import pythonic_middleware
 from modules import cache
 
 logger = logging.getLogger()
@@ -28,6 +32,7 @@ else:
 
 
 DEFAULT_NODE_TTL = 3600
+PROVIDER = 'https://rinkeby.infura.io/v3/316e949b3e404eb0bc8ad669e4472789'
 
 
 lambda_client = boto3.client('lambda', 
@@ -44,15 +49,25 @@ def new_user(rds, key_name):
     
     return True
 
+def get_new_wallet():
+    w3 = Web3(HTTPProvider(PROVIDER))
+    new_account = w3.eth.account.create() # linter complains for some reason, weird namespace issue
+    wallet_address = new_account._address
+    private_key = w3.toHex(new_account._privateKey)
+    return (wallet_address, private_key)
+
 
 def set_username(node_data):
     username = get_random_name()
+    wallet_address, private_key = get_new_wallet()
 
     if username:
-        logger.info("Generated a new username: {}".format(username))
+        logger.info("Generated a new username and wallet: {}, {}".format(username, wallet_address))
         node_data['topic'] = username
+        node_data['wallet'] = wallet_address
     else:
         node_data['topic'] = 'Anonymous'
+        node_data['wallet'] = None
     
     return node_data
       
@@ -174,7 +189,8 @@ def run():
     test_context = {
 
     }
-
+    
+    print(get_new_wallet())
     response = lambda_handler(test_event, test_context)
     print(response)
 

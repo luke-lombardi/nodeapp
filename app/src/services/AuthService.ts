@@ -78,6 +78,7 @@ export default class AuthService {
     public static async hasPermissions() {
       let locationPermissions = await Permissions.check('location', { type: 'always'} );
       let notificationPermissions = await Permissions.check('notification');
+      // @ts-ignore
       let motionPermissions = await Permissions.check('motion');
 
       if (locationPermissions !== 'authorized') {
@@ -88,9 +89,9 @@ export default class AuthService {
         return false;
       }
 
-      if (motionPermissions !== 'authorized') {
-        return false;
-      }
+      // if (motionPermissions !== 'authorized') {
+      //   return false;
+      // }
 
       Logger.info(`AuthService.hasPermissions() - permissions are set`);
 

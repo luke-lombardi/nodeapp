@@ -109,15 +109,16 @@ export default class PaymentModal extends Component<IProps, IState> {
               isVisible={this.state.visibleModal}
               >
               <View style={styles.modalContent}>
-                <Text style={{fontWeight: 'bold', paddingVertical: 20}}>Send Payment to {this.props.wallet} </Text>
+                <Text style={{fontWeight: 'bold', fontSize: 18}}>send payment to</Text>
+                <Text style={{alignSelf: 'center', paddingVertical: 20}}>{this.props.wallet}</Text>
                 {
                   !this.state.isLoading ?
-                  <View style={{width: '70%', height: 40, backgroundColor: 'lightgray', borderRadius: 5}}>
+                  <View style={{width: '70%', height: 40, backgroundColor: 'rgba(192,192,192, 0.5)', borderRadius: 5}}>
                   <TextInput
                     multiline={false}
                     keyboardType={'numeric'}
                     style={{padding: 10, fontSize: 12}}
-                    placeholder={'Enter an payment amount...'}
+                    placeholder={'enter a payment amount...'}
                     onChangeText={text => this.setPaymentAmount(text)}
                     value={ this.state.paymentAmount.toString() }
                   />
@@ -133,7 +134,14 @@ export default class PaymentModal extends Component<IProps, IState> {
                         'color': 'black',
                         'fontWeight': 'bold',
                     }}
-                    onPress={ async () => { await this.sendPayment() ; }}
+                    onPress={ async () => {
+                      this.state.paymentAmount === 0 ?
+                        Snackbar.show({
+                          title: `enter an amount greater than zero`,
+                          duration: Snackbar.LENGTH_SHORT,
+                        })
+                      :
+                      await this.sendPayment() ; }}
                     loading={false}
                     disabled={false}
                     // loadingStyle={}

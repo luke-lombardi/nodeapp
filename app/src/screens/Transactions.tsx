@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage, TouchableHighlight } from 'react-native';
-import { ListItem, Icon } from 'react-native-elements';
+import { View, FlatList, StyleSheet, Text, Alert, Animated, Clipboard, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage, TouchableHighlight } from 'react-native';
+import { ListItem, Icon, Button } from 'react-native-elements';
 
 // @ts-ignore
 import Snackbar from 'react-native-snackbar';
@@ -26,6 +26,7 @@ interface IProps {
     navigation: any;
     functions: any;
     transactionList: any;
+    wallet: any;
 }
 
 interface IState {
@@ -78,8 +79,14 @@ export class Transactions extends Component<IProps, IState> {
     this.loadTransactions = this.loadTransactions.bind(this);
     this.showDetailModal = this.showDetailModal.bind(this);
     this.closeDetailModal = this.closeDetailModal.bind(this);
+    this.navigateToCamera = this.navigateToCamera.bind(this);
+    this.copyAddress = this.copyAddress.bind(this);
 
     this.getTime = this.getTime.bind(this);
+    }
+
+    navigateToCamera() {
+      this.props.navigation.navigate('Camera', {} );
     }
 
     getTime(item) {
@@ -162,6 +169,14 @@ export class Transactions extends Component<IProps, IState> {
       //
     }
 
+    async copyAddress() {
+      Clipboard.setString(this.props.wallet.address);
+      Snackbar.show({
+        title: `Copied address to clipboard.`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
+    }
+
     async loadTransactions() {
       let transactionList = this.props.transactionList;
 
@@ -187,7 +202,23 @@ export class Transactions extends Component<IProps, IState> {
     render() {
       return (
         <View style={{flex: 1}}>
-        <View style={{flex: 1}}>
+        <View style={{height: 150, borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
+        <Text style={{alignSelf: 'center', fontSize: 16, color: 'gray', paddingTop: 10}}>Balance</Text>
+        <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 22, paddingVertical: 5}}>
+        {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + Math.trunc(this.props.wallet.balance_usd) : '0.00' }
+        </Text>
+        <Text
+        onPress={async () => await this.copyAddress() }
+        style={{alignSelf: 'center', color: 'gray'}}>{this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
+        {/* <Text style={{alignSelf: 'center', fontSize: 12, color: 'gray'}}>Address</Text> */}
+        <Button
+          containerStyle={{position: 'absolute', bottom: 0, width: '100%'}}
+          buttonStyle={{backgroundColor: 'black'}}
+          titleStyle={{fontSize: 16}}
+          title='Import Wallet'
+          onPress={() => this.navigateToCamera()}
+        />
+        </View>
         {
         this.state.detailModalVisible &&
         <TransactionDetail functions={{
@@ -214,7 +245,6 @@ export class Transactions extends Component<IProps, IState> {
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
           />
-          </View>
         </View>
       );
     }
@@ -225,6 +255,7 @@ function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     transactionList: state.transactionList,
+    wallet: state.wallet,
   };
 }
 

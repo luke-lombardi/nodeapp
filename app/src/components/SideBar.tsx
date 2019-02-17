@@ -6,7 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NotificationListUpdatedActionCreator } from '../actions/NotificationActions';
 
-import { ListItem, Button } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import NavigationService from '../services/NavigationService';
@@ -137,17 +137,6 @@ export class SideBar extends Component<IProps, IState> {
 
                   }}
                 />
-
-        <View style={{padding: 15, top: 10}}>
-        <Text style={{}}>Balance (USD): {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + this.props.wallet.balance_usd : '0.00' }</Text>
-        <Text style={{}}>Address: {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
-        </View>
-
-        <Button
-          containerStyle={styles.importButton}
-          title='Import Wallet'
-          onPress={() => this.navigateToCamera()}
-        />
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Alert.alert(
@@ -200,7 +189,6 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
   },
   importButton: {
-    fontSize: 16,
     position: 'absolute',
     alignSelf: 'flex-start',
     bottom: 50,

@@ -263,7 +263,6 @@ function mapStateToProps(state: IStoreState): IProps {
   return {
     wallet: state.wallet,
     transactionList: state.transactionList,
-    wallet: state.wallet,
   };
 }
 

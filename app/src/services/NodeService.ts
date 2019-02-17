@@ -429,11 +429,10 @@ export default class NodeService {
 
             // Re-create the check-now trigger in case it was triggered last time
             this.checkNowTrigger = new DeferredPromise();
-            // @ts-ignore
-            // let currentPrivateKey = await AuthService.getWallet();
+            let currentPrivateKey = await AuthService.getWallet();
 
             let requestBody = {
-              'private_key': '0xb0919bab4983f14d18a0e62400102ecfc982de0bf5bf9b50d89edd38ba5a0a7f', // currentPrivateKey,
+              'private_key': currentPrivateKey,
               'transactions': await AuthService.getTransactions(),
            };
 

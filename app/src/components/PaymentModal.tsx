@@ -145,7 +145,8 @@ export default class PaymentModal extends Component<IProps, IState> {
                       :
                       await this.sendPayment() ; }}
                     loading={false}
-                    disabled={false}
+                    disabled={this.state.isLoading}
+                    disabledStyle={{backgroundColor: 'lightgray', borderColor: 'black', borderWidth: .5}}
                     // loadingStyle={}
                     title='confirm'
                     icon={{name: 'check-circle', type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}

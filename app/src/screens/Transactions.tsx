@@ -209,7 +209,7 @@ export class Transactions extends Component<IProps, IState> {
       return (
         <View style={{flex: 1}}>
         <View style={{height: 135, borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
-        <Text style={{alignSelf: 'center', fontSize: 16, color: 'gray', paddingTop: 10}}>Balance</Text>
+        <Text style={{alignSelf: 'center', fontSize: 16, color: 'gray', paddingTop: 10}}>balance</Text>
         <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 22, paddingVertical: 5}}>
         {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + Math.trunc(this.props.wallet.balance_usd) : '0.00' }
         </Text>
@@ -238,6 +238,7 @@ export class Transactions extends Component<IProps, IState> {
       }
         <View style={styles.flatlist}>
           <FlatList
+           inverted
            data={this.state.data}
            renderItem={this._renderItem}
            keyExtractor={item => item.tx_hash}

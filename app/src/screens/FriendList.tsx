@@ -89,21 +89,20 @@ export class FriendList extends Component<IProps, IState> {
     // Do nothing
   }
 
-  async showPaymentModal(row) {
-    let currentUUID = await AuthService.getUUID();
-    let toUser = undefined;
+  async showPaymentModal(node) {
+    let friendNode = undefined;
+    // let nodeIndex = undefined;
 
-    for (let member in row.member_data) {
-      if (row.member_data.hasOwnProperty(member)) {
-        if (member !== currentUUID) {
-          toUser = member;
-          break;
-        }
+    for (let i = 0; i < this.props.friendList.length; i++) {
+      if (this.props.friendList[i].node_id === node.their_friend_id) {
+        friendNode = this.props.friendList[i];
+        // nodeIndex = i;
+        break;
       }
     }
-    console.log('CAN WE GET TO USER');
-    console.log(toUser);
-    console.log(this.props.friendList);
+
+    console.log('FRIEND NODE');
+    console.log(friendNode);
 
     // if (this.props.wallet.address !== undefined) {
     //   await this.setState({

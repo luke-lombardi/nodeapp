@@ -112,6 +112,7 @@ def update_node(rds, node_id, node_data):
                 node_data['topic'] = current_username
 
         node_data['wallet'] = node_data.get('wallet', None)
+        node_data['creator'] = node_data.get('creator', None)
 
         # Update the node data in the cache
         rds.set(name=key_name, value=json.dumps(node_data))

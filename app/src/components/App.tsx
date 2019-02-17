@@ -68,6 +68,7 @@ import NotificationService from '../services/NotificationService';
 import { setCustomText } from 'react-native-global-props';
 import SleepUtil from '../services/SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import ApiService from '../services/ApiService';
 
 const customTextProps = {
   style: {
@@ -575,16 +576,24 @@ export class App extends Component<IProps, IState> {
       this.monitoringLocation = true;
 
       while (true) {
-        // Promise API
-        // should call this function to track your location
-        let params = await this.getPostParams();
+        try {
+          // Promise API
+          // should call this function to track your location
+          let params = await this.getPostParams();
 
-        BackgroundGeolocation.setConfig({
-          params: params,
-        });
+          BackgroundGeolocation.setConfig({
+            params: params,
+          });
 
-        BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
-        await SleepUtil.SleepAsync(5000);
+          BackgroundGeolocation.getCurrentPosition((location) => {
+            this.onLocation(location);
+          });
+
+        } catch (error) {
+          // Do nothing but sleep
+        } finally {
+          await SleepUtil.SleepAsync(5000);
+        }
 
         try {
           await this.setState({onPage: true});
@@ -615,8 +624,6 @@ export class App extends Component<IProps, IState> {
     }
 
     async onLocation(location) {
-      // console.log('- [event] location: ', location);
-
       let userRegion = {
             latitude:       location.coords.latitude,
             longitude:      location.coords.longitude,
@@ -661,8 +668,19 @@ export class App extends Component<IProps, IState> {
         // Do nothing w/ this, usually only happens in the simulator
       }
 
-      // Get wallet address
+      let walletPrivateKey = await AuthService.getWallet();
 
+      let requestBody = {
+        'private_key': walletPrivateKey,
+      };
+
+      let wallet = undefined;
+      let response: any = await ApiService.GetWalletAsync(requestBody);
+      if (response !== undefined) {
+        wallet = response.address;
+      }
+
+      // Get wallet address
       let params = {
         'node_id': currentUUID,
         'node_data': {
@@ -671,7 +689,7 @@ export class App extends Component<IProps, IState> {
           'public': false,
           'type': 'person',
           'device_token': deviceToken,
-          'wallet': this.props.wallet.address,
+          'wallet': wallet,
           'creator': currentUUID,
         },
       };

@@ -62,6 +62,7 @@ def get_nodes(rds, node_ids_to_get):
                 continue
 
             node_data = rds.get(real_node_id)
+            logger.info("Node data for node_id {}: {}".format(node_id, json.loads(node_data)))
 
             if not node_data:
                 logger.info('Found no node data for node %s' % (node_id) )

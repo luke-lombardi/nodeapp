@@ -359,4 +359,24 @@ export default class ApiService {
       return response;
     }
 
+  // Shares a new tx with recipient user
+  public static async ShareTxAsync(requestData: any) {
+    let response = await fetch(configGlobal.apiServicesUrlBase + configGlobal.apiStage + '/sendPush', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+
+    if (response.status !== HttpStatus.OK) {
+      Logger.info('ApiService.ShareTxAsync - Unable to share tx');
+
+      return undefined;
+    }
+
+    response = await response.json();
+    return response;
   }
+
+}

@@ -32,6 +32,7 @@ interface NodeData {
   total_messages: number;
   likes: any;
   wallet: string;
+  creator: string;
 }
 
 interface Node {
@@ -185,8 +186,7 @@ export default class LocationService {
 
         // ETH DENVER
         currentNode.data.wallet = nodeListArray[key].wallet;
-        console.log('HEY DID IT WORK?');
-        console.log(currentNode.data);
+        currentNode.data.creator = nodeListArray[key].creator;
 
         if (currentNode.data.type === 'person' && !currentNode.data.private) {
           orderedPublicPersonList.push(currentNode);

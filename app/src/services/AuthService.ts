@@ -133,6 +133,45 @@ export default class AuthService {
       return walletPrivateKey;
     }
 
+    // Gets a list of currently tracked transactions
+    public static async getTransactions() {
+      let trackedTransactions = await AsyncStorage.getItem('trackedTransactions');
+      if (trackedTransactions !== null) {
+        trackedTransactions = JSON.parse(trackedTransactions);
+      } else {
+        // @ts-ignore
+        trackedTransactions = [];
+      }
+
+      return trackedTransactions;
+    }
+
+    // Store a new tx hash in async for polling /getTransactions
+    public static async storeTransaction(txHash: string) {
+      let trackedTransactions = await AsyncStorage.getItem('trackedTransactions');
+      if (trackedTransactions !== null) {
+        trackedTransactions = JSON.parse(trackedTransactions);
+      } else {
+        // @ts-ignore
+        trackedTransactions = [];
+      }
+
+      let index = trackedTransactions.indexOf(txHash);
+
+      if (index < 0) {
+          // @ts-ignore
+          trackedTransactions.push(txHash);
+          Logger.info(`AuthService.storeTransaction: now tracking ${trackedTransactions}`);
+
+          await AsyncStorage.setItem('trackedTransactions', JSON.stringify(trackedTransactions));
+
+          return true;
+      } else {
+          Logger.trace(`AuthService.storeTransaction: you already are tracking this tx.`);
+          return false;
+      }
+    }
+
     constructor(props: IProps) {
       this.props = props;
       Logger.trace(`AuthService.constructor -  Initialized auth service`);

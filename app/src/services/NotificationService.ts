@@ -9,6 +9,7 @@ import Snackbar from 'react-native-snackbar';
 import NavigationService from '../services/NavigationService';
 import ApiService from '../services/ApiService';
 import NodeService from '../services/NodeService';
+import AuthService from './AuthService';
 
 interface IProps {
 }
@@ -163,6 +164,11 @@ export default class NotificationService {
 
         // Go to the DM chat
         NavigationService.reset('Chat', { nodeId: relationId, username: notification.from_username });
+
+      } else if (action === 'add_tx') {
+        await AuthService.storeTransaction(notification.tx_hash);
+        await this.removeNotification(notification);
+        return;
       }
     }
 
@@ -204,7 +210,7 @@ export default class NotificationService {
       let notificationIndex = -1;
 
       if (notification.action !== undefined) {
-        if (notification.action === 'confirm_friend' || notification.action === 'add_node') {
+        if (notification.action === 'confirm_friend' || notification.action === 'add_node' || notification.action === 'add_tx') {
           for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].friend_id === notification.friend_id) {
               notificationIndex = i;

@@ -26,6 +26,7 @@ interface IProps {
     navigation: any;
     functions: any;
     transactionList: any;
+    wallet: any;
 }
 
 interface IState {
@@ -122,7 +123,15 @@ export class Transactions extends Component<IProps, IState> {
         }
         title={
           <View>
+
+          { this.props.wallet.address === this.props.transactionList.transactions[item.tx_hash].from  &&
+          <Text style={{fontWeight: 'bold'}}>Sent Ethereum</Text>
+          }
+
+          { this.props.wallet.address !== this.props.transactionList.transactions[item.tx_hash].from  &&
           <Text style={{fontWeight: 'bold'}}>Received Ethereum</Text>
+          }
+
           </View>
         }
         rightTitle={
@@ -167,8 +176,6 @@ export class Transactions extends Component<IProps, IState> {
 
       let data = [];
       if (transactionList !== []) {
-        console.log('LOADING THESE TRANSACTIONS');
-        console.log(transactionList.transactions);
         let currentTransactions = transactionList.transactions;
         for (let txHash in currentTransactions) {
           if (currentTransactions.hasOwnProperty(txHash)) {
@@ -195,6 +202,7 @@ export class Transactions extends Component<IProps, IState> {
         }}
         txHash={this.state.txHash}
         transactionList={this.props.transactionList}
+        wallet={this.props.wallet}
         />
       }
         <View style={styles.flatlist}>
@@ -224,6 +232,7 @@ export class Transactions extends Component<IProps, IState> {
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
+    wallet: state.wallet,
     transactionList: state.transactionList,
   };
 }

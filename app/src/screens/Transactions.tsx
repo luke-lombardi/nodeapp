@@ -116,16 +116,16 @@ export class Transactions extends Component<IProps, IState> {
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
         leftIcon={
-          item.status === 1 ?
+          this.props.wallet.address === this.props.transactionList.transactions[item.tx_hash].from ?
           <Icon
             name='arrow-up-right'
             type='feather'
-            color='green' />
+            color='orange' />
           :
           <Icon
-            name='arrow-down-right'
+            name='arrow-down-left'
             type='feather'
-            color='orange' />
+            color='green' />
         }
         title={
           <View>
@@ -149,7 +149,7 @@ export class Transactions extends Component<IProps, IState> {
         }
         rightSubtitle={
           <View style={{alignSelf: 'flex-end'}}>
-          <Text style={{fontSize: 10}}>USD</Text>
+          <Text style={{fontSize: 10, right: 1}}>USD</Text>
           </View>
         }
         subtitle={
@@ -208,18 +208,19 @@ export class Transactions extends Component<IProps, IState> {
     render() {
       return (
         <View style={{flex: 1}}>
-        <View style={{height: 150, borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
+        <View style={{height: 135, borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
         <Text style={{alignSelf: 'center', fontSize: 16, color: 'gray', paddingTop: 10}}>Balance</Text>
         <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 22, paddingVertical: 5}}>
         {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + Math.trunc(this.props.wallet.balance_usd) : '0.00' }
         </Text>
         <Text
         onPress={async () => await this.copyAddress() }
-        style={{alignSelf: 'center', color: 'gray'}}>{this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
+        style={{alignSelf: 'center', color: 'gray', paddingBottom: 10}}>
+        {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
         {/* <Text style={{alignSelf: 'center', fontSize: 12, color: 'gray'}}>Address</Text> */}
         <Button
           containerStyle={{position: 'absolute', bottom: 0, width: '100%'}}
-          buttonStyle={{backgroundColor: 'black'}}
+          buttonStyle={{backgroundColor: 'black', borderRadius: 0}}
           titleStyle={{fontSize: 16}}
           title='Import Wallet'
           onPress={() => this.navigateToCamera()}
@@ -350,9 +351,8 @@ const styles = ScaledSheet.create({
     color: 'green',
     alignSelf: 'flex-start',
     alignItems: 'flex-start',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    paddingVertical: 5,
     width: '50%',
   },
   receiptText: {

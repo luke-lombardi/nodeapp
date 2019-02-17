@@ -107,6 +107,7 @@ export default class PaymentModal extends Component<IProps, IState> {
         return (
             <Modal
               isVisible={this.state.visibleModal}
+              onBackdropPress={this.props.functions.closePaymentModal}
               >
               <View style={styles.modalContent}>
                 <Text style={{fontWeight: 'bold', fontSize: 18}}>send payment to</Text>
@@ -115,12 +116,13 @@ export default class PaymentModal extends Component<IProps, IState> {
                   !this.state.isLoading ?
                   <View style={{width: '70%', height: 40, backgroundColor: 'rgba(192,192,192, 0.5)', borderRadius: 5}}>
                   <TextInput
+                    returnKeyType='done'
                     multiline={false}
-                    keyboardType={'numeric'}
-                    style={{padding: 10, fontSize: 12}}
-                    placeholder={'enter a payment amount...'}
+                    keyboardType={'number-pad'}
+                    style={{padding: 10, fontSize: 14}}
+                    placeholder={'enter a payment in USD...'}
                     onChangeText={text => this.setPaymentAmount(text)}
-                    value={ this.state.paymentAmount.toString() }
+                    value={this.state.paymentAmount.toString() }
                   />
                   </View>
                   :

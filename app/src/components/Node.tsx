@@ -273,7 +273,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'credit-card',
                 type: 'feather',
-                size: 34,
+                size: 36,
                 color: 'rgba(255,255,255,.8)',
               }}
               style={styles.mapButton}
@@ -287,7 +287,7 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: this.state.currentLikeIcon,
                 type: 'material',
-                size: 34,
+                size: 38,
                 underlayColor: 'transparent',
                 color: `rgba(255,255,255, 0.8)`,
               }}
@@ -303,10 +303,10 @@ export default class Node extends Component<IProps, IState> {
               icon={{
                 name: 'message-circle',
                 type: 'feather',
-                size: 34,
+                size: 36,
                 color: 'rgba(255,255,255,.8)',
               }}
-              style={styles.middleButton}
+              style={styles.mapButton}
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''
@@ -319,7 +319,7 @@ export default class Node extends Component<IProps, IState> {
                 size: 34,
                 color: 'rgba(255,255,255,.8)',
               }}
-              style={styles.directionsButton}
+              style={styles.mapButton}
               containerStyle={styles.buttonContainer}
               buttonStyle={styles.transparentButton}
               title=''

@@ -113,31 +113,31 @@ export default class Person extends Component<IProps, IState> {
                 {this.props.destination.distance_in_miles} miles away
               </Text>
               <Button
-              icon={{
-                name: 'credit-card',
-                type: 'feather',
-                size: 34,
-                color: 'rgba(255,255,255,.8)',
-              }}
-              style={{alignSelf: 'flex-end', alignContent: 'flex-end'}}
-              containerStyle={{position: 'absolute', bottom: '20%', alignContent: 'flex-end', alignSelf: 'flex-end', alignItems: 'flex-end'}}
-              buttonStyle={styles.transparentButton}
-              title=''
-              onPress={ async () => { await this.showPaymentModal(); } }
-            />
-              <Button
-                  icon={{
-                    name: 'message-circle',
-                    type: 'feather',
-                    size: 40,
-                    color: 'rgba(255,255,255,.8)',
-                  }}
-                  style={{alignSelf: 'flex-end', alignContent: 'flex-end'}}
-                  containerStyle={{position: 'absolute', bottom: '20%', alignContent: 'flex-end', alignSelf: 'flex-end', alignItems: 'flex-end'}}
-                  buttonStyle={styles.transparentButton}
-                  title=''
-                  onPress={ async () => { await this.goToChat(); } }
+                icon={{
+                  name: 'message-circle',
+                  type: 'feather',
+                  size: 40,
+                  color: 'rgba(255,255,255,.8)',
+                }}
+                style={{alignSelf: 'flex-end', alignContent: 'flex-end'}}
+                containerStyle={{position: 'absolute', bottom: '20%', alignContent: 'flex-end', alignSelf: 'flex-end', alignItems: 'flex-end'}}
+                buttonStyle={styles.transparentButton}
+                title=''
+                onPress={ async () => { await this.goToChat(); } }
                 />
+              <Button
+                icon={{
+                  name: 'credit-card',
+                  type: 'feather',
+                  size: 40,
+                  color: 'rgba(255,255,255,.8)',
+                }}
+                style={{alignSelf: 'flex-end', alignContent: 'flex-end'}}
+                containerStyle={{position: 'absolute', right: 70, bottom: '20%', alignContent: 'flex-end', alignSelf: 'flex-end', alignItems: 'flex-end'}}
+                buttonStyle={styles.transparentButton}
+                title=''
+                onPress={ async () => { await this.showPaymentModal(); } }
+              />
               </View>
             </Card>
           </View>

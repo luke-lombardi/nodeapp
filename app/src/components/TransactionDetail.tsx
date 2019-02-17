@@ -7,6 +7,7 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import Modal from 'react-native-modal';
+import moment from 'moment';
 
 interface IProps {
   transactionList: any;
@@ -18,6 +19,7 @@ interface IProps {
 interface IState {
   visibleModal: boolean;
   data: any;
+  date: any;
 }
 
 export class TransactionDetail extends Component<IProps, IState> {
@@ -29,10 +31,12 @@ export class TransactionDetail extends Component<IProps, IState> {
     this.state = {
       visibleModal: true,
       data: undefined,
+      date: '',
     };
 
     this.componentWillMount = this.componentWillMount.bind(this);
     this.getTransactionDetails = this.getTransactionDetails.bind(this);
+    this.getTime = this.getTime.bind(this);
   }
 
   componentWillMount() {
@@ -44,13 +48,27 @@ export class TransactionDetail extends Component<IProps, IState> {
     let txHash = this.props.txHash;
     let transaction = transactionList.transactions[txHash];
 
+    let txDate = this.getTime(transaction.timestamp * 1000);
+
     await this.setState({
       data: transaction,
+      date: txDate,
     });
+
+  }
+
+  getTime(timestamp) {
+    let easternTime = moment(timestamp).utcOffset(14);
+
+    // make sure it does not return a date that is ahead of the current date
+    timestamp = moment(easternTime).max(moment(easternTime));
+
+    let parsedTimestamp = moment(timestamp).calendar();
+
+    return parsedTimestamp;
   }
 
   render() {
-    console.log('got data', this.props.transactionList.transactions);
     return (
       <Modal
         isVisible={this.state.visibleModal}
@@ -91,9 +109,13 @@ export class TransactionDetail extends Component<IProps, IState> {
           <Text style={{alignSelf: 'flex-start', fontWeight: 'bold'}}>From</Text>
           <Text ellipsizeMode={'tail'} numberOfLines={1} style={{maxWidth: 200}}>{this.state.data.from}</Text>
         </View>
+        <View style={styles.transactionFieldTop}>
+          <Text style={{alignSelf: 'flex-start', fontWeight: 'bold'}}>To</Text>
+          <Text ellipsizeMode={'tail'} numberOfLines={1} style={{maxWidth: 200}}>{this.state.data.to}</Text>
+        </View>
         <View style={styles.transactionFieldBottom}>
           <Text style={{alignSelf: 'flex-start', fontWeight: 'bold'}}>Date</Text>
-          <Text ellipsizeMode={'tail'} numberOfLines={1} style={{maxWidth: 200}}>{this.state.data.timestamp}</Text>
+          <Text ellipsizeMode={'tail'} numberOfLines={1} style={{maxWidth: 200}}>{ this.state.date } </Text>
         </View>
       </View>
       </Modal>

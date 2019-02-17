@@ -53,6 +53,8 @@ def get_current_exchange_rate():
 def get_transactions(transactions_data):
   err_msg = ""
   w3 = Web3(HTTPProvider(PROVIDER))
+  w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+
   if not w3.isConnected():
     logger.info("Could not connect through provider: {}".format(PROVIDER))
     err_msg = "no_connection"
@@ -89,17 +91,22 @@ def get_transactions(transactions_data):
 
       eth_amt = Web3.fromWei(current_tx['value'] - current_tx_receipt['gasUsed'], 'ether')
       usd_amt = float(exchange_rate['price_usd']) * float(eth_amt)
+      
+      block_number = current_tx['blockNumber']
+      block_time =  w3.eth.getBlock(block_number).timestamp
 
       gas_price = w3.eth.gasPrice
       transactions[tx_hash] = {
         'from': current_tx['from'],
         'to': current_tx['to'],
         'amt': usd_amt,
-        'status': current_tx_receipt.status
+        'status': current_tx_receipt.status,
+        'timestamp': block_time,
       }
       
       logger.info("Current tx status: {}".format(current_tx_receipt.status))
-    except:
+    except Exception as e:
+      logger.info("Exception: {}".format(e))
       continue
 
   logger.info(transactions)

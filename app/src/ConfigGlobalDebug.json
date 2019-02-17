@@ -6,6 +6,6 @@
     "nodeCheckIntervalMs": 5000,
     "relationCheckIntervalMs": 5000,
     "messageCheckIntervalMs": 1500,
-    "transactionCheckIntervalMs": 1000,
+    "transactionCheckIntervalMs": 5000,
     "minimumNodeDistance": -1
 }

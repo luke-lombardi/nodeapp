@@ -89,9 +89,9 @@ export default class AuthService {
         return false;
       }
 
-      // if (motionPermissions !== 'authorized') {
-      //   return false;
-      // }
+      if (motionPermissions !== 'authorized') {
+        return false;
+      }
 
       Logger.info(`AuthService.hasPermissions() - permissions are set`);
 

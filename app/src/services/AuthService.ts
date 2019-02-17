@@ -98,16 +98,33 @@ export default class AuthService {
       return true;
     }
 
-    public static async permissionsSet() {
-      let set: any = await AsyncStorage.getItem('permissionsSet');
+    public static async permissionsRequested() {
+      let requested: any = await AsyncStorage.getItem('permissionsRequested');
+      Logger.info(`AuthService.permissionsRequested() - value: ${requested}`);
 
-      Logger.info(`AuthService.permissionsSet() - value: ${set}`);
-
-      if (set === null) {
-        return true;
+      if (requested !== null) {
+        requested = JSON.parse(requested);
+      } else  {
+        requested = {};
       }
 
-      return false;
+      return requested;
+    }
+
+    public static async setPermissionsRequested(type: string) {
+      let requested: any = await AsyncStorage.getItem('permissionsRequested');
+      Logger.info(`AuthService.setPermissionsRequested() - value: ${requested}`);
+
+      if (requested !== null) {
+        requested = JSON.parse(requested);
+      } else  {
+        requested = {};
+      }
+      requested[type] = true;
+
+      await AsyncStorage.setItem('permissionsRequested', JSON.stringify(requested));
+
+      return requested;
     }
 
     //  ETH DENVER

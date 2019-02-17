@@ -117,6 +117,7 @@ export class FriendList extends Component<IProps, IState> {
   async closePaymentModal() {
     await this.setState({
       paymentModalVisible: false,
+      selectedNode: undefined,
     });
   }
 

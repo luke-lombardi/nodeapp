@@ -13,7 +13,7 @@ import AuthService from '../services/AuthService';
 import NavigationService from '../services/NavigationService';
 
 interface IProps {
-  firstRun: boolean;
+  permissionsRequested: any;
   functions: any;
   navigation: any;
 }
@@ -78,9 +78,8 @@ export class GetPermissions extends Component<IProps, IState> {
   }
 
   async showModal(type: string) {
-    // we check firstRun in the splash screen to avoid a race condition with AuthService.permissionsSet()
-    // so if no props are passed, check firstRun from async storage directly
-    let firstRun = this.props.firstRun ? this.props.firstRun : await AuthService.permissionsSet();
+    // so if no props are passed, check permissionsRequested from async storage directly
+    let permissionsRequested = await AuthService.permissionsRequested();
 
     switch (type) {
       case 'location':
@@ -90,7 +89,10 @@ export class GetPermissions extends Component<IProps, IState> {
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
-          {text: 'ok', onPress: firstRun ? async () => { await this.requestPermissions('location'); } : OpenSettings.openSettings()},
+          { text: 'ok', onPress: permissionsRequested.location !== true ? async () => {
+          await this.requestPermissions('location');
+          await AuthService.setPermissionsRequested('location'); }
+          : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -101,7 +103,10 @@ export class GetPermissions extends Component<IProps, IState> {
         'enable notifications to receive updates when other users message you',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'ok', onPress: firstRun ? async () => { await this.requestPermissions('notification'); } : OpenSettings.openSettings()},
+          {text: 'ok', onPress: permissionsRequested.notification !== true ? async () => {
+            await this.requestPermissions('notification');
+            await AuthService.setPermissionsRequested('notification');
+          } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -112,7 +117,10 @@ export class GetPermissions extends Component<IProps, IState> {
         'motion tracking helps us keep our node train running on schedule',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'ok', onPress: firstRun ? async () => { await this.requestPermissions('motion'); } : OpenSettings.openSettings()},
+          {text: 'ok', onPress: permissionsRequested.motion !== true ? async () => {
+            await this.requestPermissions('motion');
+            await AuthService.setPermissionsRequested('motion');
+          } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );

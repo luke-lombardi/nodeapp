@@ -15,7 +15,7 @@ interface IProps {
 }
 
 interface IState {
-  firstRun: boolean;
+  permissionsRequested: any;
   pageToRender: any;
   hasPermissions: boolean;
 }
@@ -26,7 +26,7 @@ export class Splash extends Component<IProps, IState> {
       super(props);
 
       this.state = {
-        firstRun: false,
+        permissionsRequested: {},
         pageToRender: undefined,
         hasPermissions: undefined,
       },
@@ -47,12 +47,9 @@ export class Splash extends Component<IProps, IState> {
     }
 
     async getPermissions() {
-      const firstRun = await AuthService.permissionsSet();
+      let permissionsRequested = await AuthService.permissionsRequested();
       try  {
-        if (firstRun) {
-          await this.setState({firstRun: true});
-        }
-
+        await this.setState({ permissionsRequested: permissionsRequested });
         await this.setState({ hasPermissions: await AuthService.hasPermissions() } );
       } catch (error) {
         // We unmounted, do nothing
@@ -67,7 +64,7 @@ export class Splash extends Component<IProps, IState> {
           return (
             <View style={{flex: 1}}>
               <GetPermissions
-                  firstRun={this.state.firstRun}
+                  permissionsRequested={this.state.permissionsRequested}
                   functions={{getPermissions: this.getPermissions}}
                   navigation={undefined}
                 />

@@ -244,7 +244,6 @@ export class Transactions extends Component<IProps, IState> {
       }
         <View style={styles.flatlist}>
           <FlatList
-           inverted
            data={this.state.data}
            renderItem={this._renderItem}
            keyExtractor={item => item.tx_hash}

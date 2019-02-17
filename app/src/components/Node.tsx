@@ -127,8 +127,6 @@ export default class Node extends Component<IProps, IState> {
     this.updateVoteStatus();
     this.slideIn();
     this.loadLikeIcon(this.state.nodeId, this.state.nodeIndex);
-    console.log('HEY GOT SOME SHIT');
-    console.log(this.props.data);
   }
 
   async slideIn() {

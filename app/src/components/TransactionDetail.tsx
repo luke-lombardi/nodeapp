@@ -12,6 +12,7 @@ interface IProps {
   transactionList: any;
   functions: any;
   txHash: any;
+  wallet: any;
 }
 
 interface IState {
@@ -73,7 +74,15 @@ export class TransactionDetail extends Component<IProps, IState> {
           }
         </View>
         <View style={styles.transactionDetails}>
-        <Text style={styles.amountDescription}>You Recieved</Text>
+
+        { this.props.wallet.address === this.state.data.from  &&
+        <Text style={styles.amountDescription}>You Sent</Text>
+        }
+
+        { this.props.wallet.address !== this.state.data.from  &&
+                <Text style={styles.amountDescription}>You Received</Text>
+        }
+
         <Text style={styles.amount}>
           ${Math.trunc(this.state.data.amt)} USD
         </Text>
@@ -97,6 +106,7 @@ function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
   return {
     transactionList: state.transactionList,
+    wallet: state.wallet,
   };
 }
 

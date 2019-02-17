@@ -61,7 +61,12 @@ def get_transactions(transactions_data):
     return err_msg, None
 
   private_key = transactions_data.get('private_key', "")
-  sender_acct = Account.privateKeyToAccount(private_key)
+
+  try:
+    sender_acct = Account.privateKeyToAccount(private_key)
+  except:
+    err_msg = "invalid_private_key"
+    return err_msg, None
 
   if not Web3.isAddress(sender_acct.address):
     logger.info("Invalid private key specified, exiting.")

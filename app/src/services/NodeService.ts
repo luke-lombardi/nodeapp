@@ -427,28 +427,33 @@ export default class NodeService {
         while (true) {
             if (this.stopping) return;
 
-            // Re-create the check-now trigger in case it was triggered last time
-            this.checkNowTrigger = new DeferredPromise();
-            let currentPrivateKey = await AuthService.getWallet();
+            try {
+              // Re-create the check-now trigger in case it was triggered last time
+              this.checkNowTrigger = new DeferredPromise();
+              // @ts-ignore
+              let currentPrivateKey = await AuthService.getWallet();
 
-            let requestBody = {
-              'private_key': currentPrivateKey,
-              'transactions': await AuthService.getTransactions(),
-           };
+              let requestBody = {
+                'private_key': currentPrivateKey,
+                'transactions': await AuthService.getTransactions(),
+              };
 
-            let transactionList = await ApiService.GetTransactionsAsync(requestBody);
-            Logger.trace(`NodeService.MonitorTransactionsAsync - transactionList: ${JSON.stringify(transactionList)}`);
+              let transactionList = await ApiService.GetTransactionsAsync(requestBody);
+              Logger.trace(`NodeService.MonitorTransactionsAsync - transactionList: ${JSON.stringify(transactionList)}`);
 
-            let wallet = await ApiService.GetWalletAsync(requestBody);
-            Logger.trace(`NodeService.MonitorTransactionsAsync - wallet: ${JSON.stringify(wallet)}`);
+              let wallet = await ApiService.GetWalletAsync(requestBody);
+              Logger.trace(`NodeService.MonitorTransactionsAsync - wallet: ${JSON.stringify(wallet)}`);
 
-            await this.props.transactionListUpdated({transactionList: transactionList});
-            await this.props.walletUpdated({wallet: wallet});
+              await this.props.transactionListUpdated({transactionList: transactionList});
+              await this.props.walletUpdated({wallet: wallet});
 
+              Logger.trace('NodeService.MonitorTransactionsAsync - Looping around to check transactions again');
+          } catch (error) {
+            Logger.info(`NodeService.MonitorTransactionsAsync - caught exception: ${JSON.stringify(error)}`);
+          } finally {
             const sleepPromise = SleepUtil.SleepAsync(this.configGlobal.transactionCheckIntervalMs);
             await Promise.race([ sleepPromise, this.checkNowTrigger ]);
-
-            Logger.trace('NodeService.MonitorTransactionsAsync - Looping around to check transactions again');
+          }
         }
     }
 

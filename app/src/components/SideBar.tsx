@@ -52,7 +52,7 @@ export class SideBar extends Component<IProps, IState> {
     }
 
     numberOfTransactions() {
-      if (this.props.transactionList.transactions !== undefined) {
+      if (this.props.transactionList.transactions !== undefined && this.props.transactionList.transactions !== null) {
         return Object.keys(this.props.transactionList.transactions).length;
       }
       return 0;

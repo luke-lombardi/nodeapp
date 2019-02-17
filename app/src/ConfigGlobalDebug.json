@@ -1,5 +1,5 @@
 {
-    "jsVersion": "v1.0.XXX DEBUG",
+    "jsVersion": "v1.0.XY DEBUG",
     "buildEnvironment": "STAGING",
     "apiStage": "dev",
     "apiServicesUrlBase": "https://api.smartshare.io/",

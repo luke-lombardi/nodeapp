@@ -34,7 +34,6 @@ export class Splash extends Component<IProps, IState> {
       this.getPermissions = this.getPermissions.bind(this);
       this.componentWillMount = this.componentWillMount.bind(this);
       this.componentDidMount = this.componentWillMount.bind(this);
-      // this.setPageToRender  = this.setPageToRender.bind(this);
     }
 
     componentWillMount() {
@@ -64,7 +63,6 @@ export class Splash extends Component<IProps, IState> {
           return (
             <View style={{flex: 1}}>
               <GetPermissions
-                  permissionsRequested={this.state.permissionsRequested}
                   functions={{getPermissions: this.getPermissions}}
                   navigation={undefined}
                 />

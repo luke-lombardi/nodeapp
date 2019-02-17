@@ -56,15 +56,20 @@ def get_wallet(account_data):
   if not w3.isConnected():
     print("Could not connect through provider: {}".format(PROVIDER))
     err_msg = "no_connection"
-    return err_msg, None
+    return err_msg, {}
 
   private_key = account_data.get('private_key', "")
-  sender_acct = Account.privateKeyToAccount(private_key)
+
+  try:
+    sender_acct = Account.privateKeyToAccount(private_key)
+  except:
+    err_msg = "invalid_private_key"
+    return err_msg, {}
 
   if not Web3.isAddress(sender_acct.address):
     print("Invalid private key specified, exiting.")
     err_msg = "invalid_private_key"
-    return err_msg, None
+    return err_msg, {}
 
   sender_nonce = w3.eth.getTransactionCount(sender_acct.address)
 
@@ -110,10 +115,10 @@ def lambda_handler(event, context):
 
     response = {
       "timestamp": int(time.time() * 1000),
-      "address": account_details['address'],
-      "balance_usd": account_details['balance_usd'],
-      "balance_eth": account_details['balance_eth'],
-      "nonce": account_details['nonce'],
+      "address": account_details.get('address', None),
+      "balance_usd": account_details.get('balance_usd', None),
+      "balance_eth": account_details.get('balance_eth', None),
+      "nonce": account_details.get('nonce', None),
       "error": err_msg,
     }
 

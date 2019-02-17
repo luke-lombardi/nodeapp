@@ -13,7 +13,6 @@ import AuthService from '../services/AuthService';
 import NavigationService from '../services/NavigationService';
 
 interface IProps {
-  permissionsRequested: any;
   functions: any;
   navigation: any;
 }

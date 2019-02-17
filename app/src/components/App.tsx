@@ -70,6 +70,13 @@ import SleepUtil from '../services/SleepUtil';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import ApiService from '../services/ApiService';
 
+// ErrorUtils.setGlobalHandler(wrapGlobalHandler);  // feed errors directly to our wrapGlobalHandler function
+
+// // @ts-ignore
+// function wrapGlobalHandler(error, isFatal) {
+//   Logger.info(`WRAP - Caught unhandled exception: ${error}`);
+// }
+
 const customTextProps = {
   style: {
     fontFamily: 'Avenir',

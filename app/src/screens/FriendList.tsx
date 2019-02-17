@@ -5,6 +5,7 @@ import { ListItem, Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Snackbar from 'react-native-snackbar';
 import Logger from '../services/Logger';
+import PaymentModal from '../components/PaymentModal';
 
 // @ts-ignore
 import NodeService from '../services/NodeService';
@@ -35,6 +36,7 @@ interface IProps {
 interface IState {
   isLoading: boolean;
   paymentModalVisible: boolean;
+  selectedNode: any;
 }
 
 export class FriendList extends Component<IProps, IState> {
@@ -67,6 +69,7 @@ export class FriendList extends Component<IProps, IState> {
     this.state = {
       isLoading: false,
       paymentModalVisible: false,
+      selectedNode: undefined,
     },
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -91,12 +94,10 @@ export class FriendList extends Component<IProps, IState> {
 
   async showPaymentModal(node) {
     let friendNode = undefined;
-    // let nodeIndex = undefined;
 
     for (let i = 0; i < this.props.friendList.length; i++) {
       if (this.props.friendList[i].node_id === node.their_friend_id) {
         friendNode = this.props.friendList[i];
-        // nodeIndex = i;
         break;
       }
     }
@@ -104,15 +105,16 @@ export class FriendList extends Component<IProps, IState> {
     console.log('FRIEND NODE');
     console.log(friendNode);
 
-    // if (this.props.wallet.address !== undefined) {
-    //   await this.setState({
-    //     paymentModalVisible: true,
-    //   });
-    // } else if (this.props.wallet.address === undefined) {
-    //   Alert.alert(`You need a wallet hooked up to send funds.`);
-    // } else if (this.state.selectedNode.data.wallet === undefined) {
-    //   Alert.alert(`This node has no wallet attached to it.`);
-    // }
+    if (friendNode.data.wallet !== undefined) {
+      await this.setState({
+        paymentModalVisible: true,
+        selectedNode: friendNode,
+      });
+    } else if (this.props.wallet.address === undefined) {
+      Alert.alert(`You need a wallet hooked up to send funds.`);
+    } else if (friendNode.data.wallet === undefined) {
+      Alert.alert(`This friend has no wallet.`);
+    }
   }
 
   async closePaymentModal() {
@@ -314,6 +316,17 @@ export class FriendList extends Component<IProps, IState> {
   render() {
     return (
       <View style={{backgroundColor: 'white', height: '100%', flex: 1}}>
+        {
+          this.state.paymentModalVisible &&
+          <PaymentModal
+            functions={{
+              'showPaymentModal': this.showPaymentModal,
+              'closePaymentModal': this.closePaymentModal,
+            }}
+            wallet={this.state.selectedNode.data.wallet}
+            toUser={this.state.selectedNode.data.creator}
+          />
+        }
         <View style={styles.flatlist}>
           <FlatList
             data={this.props.relationList}

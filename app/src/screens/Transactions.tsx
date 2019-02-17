@@ -143,7 +143,7 @@ export class Transactions extends Component<IProps, IState> {
         rightTitle={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>${Math.trunc(item.amt)}</Text>
+          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>${parseFloat(item.amt).toFixed(2)}</Text>
           </View>
           </View>
         }
@@ -211,7 +211,7 @@ export class Transactions extends Component<IProps, IState> {
         <View style={{height: 135, borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
         <Text style={{alignSelf: 'center', fontSize: 16, color: 'gray', paddingTop: 10}}>Balance</Text>
         <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 22, paddingVertical: 5}}>
-        {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + Math.trunc(this.props.wallet.balance_usd) : '0.00' }
+        {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + parseFloat(this.props.wallet.balance_usd).toFixed(2) : '0.00' }
         </Text>
         <Text
         onPress={async () => await this.copyAddress() }

@@ -119,8 +119,8 @@ export default class Person extends Component<IProps, IState> {
                 size: 34,
                 color: 'rgba(255,255,255,.8)',
               }}
-              style={styles.mapButton}
-              containerStyle={styles.buttonContainer}
+              style={{alignSelf: 'flex-end', alignContent: 'flex-end'}}
+              containerStyle={{position: 'absolute', bottom: '20%', alignContent: 'flex-end', alignSelf: 'flex-end', alignItems: 'flex-end'}}
               buttonStyle={styles.transparentButton}
               title=''
               onPress={ async () => { await this.showPaymentModal(); } }

@@ -271,36 +271,36 @@ export class FriendList extends Component<IProps, IState> {
         containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
         rightElement={
           <View style={{flexDirection: 'row', justifyContent: 'space-between', right: -5}}>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingRight: 5, marginTop: -2}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingRight: 10}}>
           <Icon
             name='credit-card'
             type='feather'
             color='black'
-            size={31}
+            size={38}
             onPress={ async () => { await this.showPaymentModal(row); } }
             underlayColor={'transparent'}
           />
           <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>send payment</Text>
           </View>
           <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingHorizontal: 5, marginTop: -2}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingHorizontal: 10}}>
           <Icon
             name='eye'
             type='feather'
             color='black'
-            size={31}
+            size={38}
             onPress={async () => { await this._onTouchNode(row); }}
             underlayColor={'transparent'}
           />
           <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>view on map</Text>
           </View>
           <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 5}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 10, top: 2}}>
             <Switch
               onTouchStart={async () => { await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
-            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 9}}>share location</Text>
+            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 15}}>share location</Text>
           </View>
         </View>
 

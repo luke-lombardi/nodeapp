@@ -24,7 +24,7 @@ import CreateNode from '../screens/CreateNode';
 import Chat from '../screens/Chat';
 import Notifications from '../screens/Notifications';
 import Transactions from '../screens/Transactions';
-import TransactionDetail from '../screens/TransactionDetail';
+import TransactionDetail from './TransactionDetail';
 import GetPermissions from '../screens/GetPermissions';
 import ActiveChats from './ActiveChats';
 

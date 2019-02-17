@@ -102,42 +102,6 @@ export class SideBar extends Component<IProps, IState> {
                   }}
                 />
 
-                {/* <ListItem
-                  scaleProps={{
-                    friction: 90,
-                    tension: 100,
-                    activeScale: 0.95,
-                  }}
-                  containerStyle={styles.navItem}
-                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
-                  // key='chat'
-                  title='Chat'
-                  titleStyle={{fontSize: 22}}
-                  leftIcon={{name: 'message-circle', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.friendList.length === 0 ?
-                    this.props.navigation.navigate('Chat', {action: 'general_chat'}) :
-                    this.resetNavigation('Chat');
-                  }}
-                /> */}
-
-                {/* <ListItem
-                  scaleProps={{
-                    friction: 90,
-                    tension: 100,
-                    activeScale: 0.95,
-                  }}
-                  containerStyle={styles.navItem}
-                  badge={{ value: this.props.friendList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
-                  // key='chat'
-                  title='Messages'
-                  titleStyle={{fontSize: 22}}
-                  leftIcon={{name: 'lock', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
-                  onPress={ () => { this.props.friendList.length === 0 ?
-                    this.props.navigation.navigate('Chat', {action: 'user_chat'}) :
-                    this.resetNavigation('Chat');
-                  }}
-                /> */}
-
                 <ListItem
                   scaleProps={{
                     friction: 90,
@@ -163,7 +127,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  // badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   title='transactions'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
@@ -177,13 +141,13 @@ export class SideBar extends Component<IProps, IState> {
         <View style={{padding: 15, top: 10}}>
         <Text style={{}}>Balance (USD): {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + this.props.wallet.balance_usd : '0.00' }</Text>
         <Text style={{}}>Address: {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
+        </View>
+
         <Button
-          containerStyle={{width: '80%', paddingVertical: 10}}
+          containerStyle={styles.importButton}
           title='Import Wallet'
           onPress={() => this.navigateToCamera()}
         />
-        </View>
-
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Alert.alert(
@@ -234,6 +198,13 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     borderBottomColor: 'rgba(51, 51, 51, 0.2)',
+  },
+  importButton: {
+    fontSize: 16,
+    position: 'absolute',
+    alignSelf: 'flex-start',
+    bottom: 50,
+    width: '100%',
   },
   version: {
     fontSize: 16,

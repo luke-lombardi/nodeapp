@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Alert, Animated, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage, TouchableHighlight } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
 
 // @ts-ignore
@@ -20,6 +20,7 @@ import NavigationService from '../services/NavigationService';
 import moment from 'moment';
 
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import { TransactionDetail } from '../components/TransactionDetail';
 
 interface IProps {
     navigation: any;
@@ -30,13 +31,13 @@ interface IProps {
 interface IState {
     data: any;
     isLoading: boolean;
-    textInputHeight: number;
+    detailModalVisible: boolean;
+    txHash: any;
 }
 
 export class Transactions extends Component<IProps, IState> {
   // @ts-ignore
   private readonly configGlobal = ConfigGlobalLoader.config;
-  private action: any;
 
   // TODO: figure out a smarter way to do this
   // @ts-ignore
@@ -65,7 +66,8 @@ export class Transactions extends Component<IProps, IState> {
     this.state = {
         data: [],
         isLoading: true,
-        textInputHeight: 0,
+        txHash: undefined,
+        detailModalVisible: false,
     };
 
     this._renderItem = this._renderItem.bind(this);
@@ -74,6 +76,8 @@ export class Transactions extends Component<IProps, IState> {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
     this.loadTransactions = this.loadTransactions.bind(this);
+    this.showDetailModal = this.showDetailModal.bind(this);
+    this.closeDetailModal = this.closeDetailModal.bind(this);
 
     this.getTime = this.getTime.bind(this);
     }
@@ -84,57 +88,62 @@ export class Transactions extends Component<IProps, IState> {
       return parsedTimestamp;
     }
 
-    async navigateToDetailPage(item) {
-      await NavigationService.reset('TransactionDetail', { txHash: item.tx_hash } );
+    async showDetailModal(item) {
+      let txHash = item.tx_hash;
+      await this.setState({
+        detailModalVisible: true,
+        txHash: txHash,
+      });
+    }
+
+    async closeDetailModal() {
+      await this.setState({detailModalVisible: false});
     }
 
     // @ts-ignore
     _renderItem = ({item, index}) => (
       <ListItem
-        onPress={ async () => await this.navigateToDetailPage(item) }
+        onPress={ async () => await this.showDetailModal(item) }
         containerStyle={{
           minHeight: 100,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
-        title={
-          <View style={styles.titleView}>
-          <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>{item.amt}</Text>
-          <Text
-            numberOfLines={1}
-            ellipsizeMode={'tail'}
-            style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
-            From: {item.from}
-          </Text>
-          <Text
-            numberOfLines={1}
-            ellipsizeMode={'tail'}
-            style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
-            To: {item.to}
-          </Text>
-          </View>
-          {/* <Text style={styles.titleText}>{item.message}</Text> */}
-          </View>
-        }
-        rightIcon={
+        leftIcon={
           item.status === 1 ?
           <Icon
-            name='check-circle'
+            name='arrow-up-right'
             type='feather'
             color='green' />
           :
           <Icon
-            name='alert-circle'
+            name='arrow-down-right'
             type='feather'
             color='orange' />
         }
+        title={
+          <View>
+          <Text style={{fontWeight: 'bold'}}>Received Ethereum</Text>
+          </View>
+        }
+        rightTitle={
+          <View style={styles.titleView}>
+          <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
+          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>${Math.trunc(item.amt)}</Text>
+          </View>
+          </View>
+        }
+        rightSubtitle={
+          <View style={{alignSelf: 'flex-end'}}>
+          <Text style={{fontSize: 10}}>USD</Text>
+          </View>
+        }
         subtitle={
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'column'}}>
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
-            style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
-            Tx Hash: {item.tx_hash}
+            style={{fontSize: 14, color: 'gray', width: '100%', alignSelf: 'flex-start'}}>
+            {item.tx_hash}
           </Text>
           </View>
         }
@@ -142,21 +151,7 @@ export class Transactions extends Component<IProps, IState> {
     )
 
     componentWillMount () {
-      // Grab navigation params
-      // this.action = this.props.navigation.getParam('action', '');
-
-      // navigate to my chat if no action is passed in and grab chats by user uuid when component mounts
-
-      if (this.action === '' || undefined) {
-        // console.log('my chats');
-      } else if (this.action === 'general_chat') {
-        // console.log('general chat');
-      } else if (this.action === 'new_message') {
-        // console.log('posting a message');
-      } else if (this.action === 'private_message') {
-        // console.log('starting private chat...');
-      }
-
+      //
     }
 
     componentDidMount() {
@@ -191,8 +186,17 @@ export class Transactions extends Component<IProps, IState> {
 
     render() {
       return (
-      <View style={{flex: 1}}>
         <View style={{flex: 1}}>
+        <View style={{flex: 1}}>
+        {
+        this.state.detailModalVisible &&
+        <TransactionDetail functions={{
+          'closeDetailModal': this.closeDetailModal,
+        }}
+        txHash={this.state.txHash}
+        transactionList={this.props.transactionList}
+        />
+      }
         <View style={styles.flatlist}>
           <FlatList
            data={this.state.data}
@@ -210,8 +214,8 @@ export class Transactions extends Component<IProps, IState> {
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}
           />
+          </View>
         </View>
-      </View>
       );
     }
   }
@@ -305,9 +309,18 @@ const styles = ScaledSheet.create({
     paddingTop: 5,
   },
   ratingText: {
-    color: 'black',
+    color: 'green',
     alignSelf: 'flex-start',
     alignItems: 'flex-start',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 5,
+    width: '50%',
+  },
+  receiptText: {
+    color: 'black',
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
     fontSize: 16,
     fontWeight: 'bold',
     paddingVertical: 5,

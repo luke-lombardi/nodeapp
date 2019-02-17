@@ -102,7 +102,7 @@ export class TransactionDetail extends Component<IProps, IState> {
         }
 
         <Text style={styles.amount}>
-          {parseFloat(this.state.data.amt).toFixed(2)} USD
+          ${parseFloat(this.state.data.amt).toFixed(2)} USD
         </Text>
         </View>
         <View style={styles.transactionFieldTop}>

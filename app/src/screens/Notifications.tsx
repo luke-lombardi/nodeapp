@@ -103,7 +103,9 @@ export class Notifications extends Component<IProps, IState> {
             numberOfLines={1}
             adjustsFontSizeToFit
             style={{fontSize: 12, color: 'gray', alignSelf: 'flex-start'}}>
-            {item.action === 'add_node' ? 'Add Node' : 'Add Friend'}
+            { item.action === 'add_node' ? 'Add Node' : ''}
+            { item.action === 'add_friend' ? 'Add Friend' : ''}
+            { item.action === 'add_tx' ? `Transaction received` : ''}
           </Text>
           </View>
           {/* <Text style={styles.titleText}>{item.message}</Text> */}
@@ -123,7 +125,7 @@ export class Notifications extends Component<IProps, IState> {
                 color='white'
                 />
             }
-            title='accept'
+            title={item.action === 'add_tx' ? 'ok' : 'accept'}
             onPress={
               async () =>  {
                 await NotificationService.handleAction(item);
@@ -131,6 +133,7 @@ export class Notifications extends Component<IProps, IState> {
               }
             }
             />
+          { item.action !== 'add_tx' ?
           <Button
             style={{width: 90}}
             titleStyle={{fontSize: 14}}
@@ -165,6 +168,10 @@ export class Notifications extends Component<IProps, IState> {
               await this.loadNotifications();
               } }
             />
+            :
+            undefined
+            }
+
           </View>
         }
       />
@@ -236,7 +243,7 @@ export class Notifications extends Component<IProps, IState> {
           <FlatList
            data={this.state.data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.friend_id}
+           keyExtractor={item => item.friend_id !== undefined ? item.friend_id : item.tx_hash}
            ListEmptyComponent={
             <View style={styles.nullContainer}>
             <Text style={styles.null}>no notifications.</Text>

@@ -19,6 +19,7 @@ import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { bindActionCreators } from 'redux';
 import { UserPositionChangedActionCreator } from '../actions/MapActions';
 import { mapStyle } from '../config/map';
+import AuthService from '../services/AuthService';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
@@ -190,6 +191,7 @@ export class CreateNode extends Component<IProps, IState> {
   }
 
   private async submitCreateNode() {
+    let currentUUID = await AuthService.getUUID();
     let nodeData = {
       'topic': this.state.topic,
       'lat': this.state.userRegion.latitude,
@@ -198,6 +200,7 @@ export class CreateNode extends Component<IProps, IState> {
       'type': 'place',
       'ttl': this.state.ttl,
       'wallet': this.props.wallet.address,
+      'creator': currentUUID,
     };
 
     await this.setState({isLoading: true});

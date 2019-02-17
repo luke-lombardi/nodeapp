@@ -431,13 +431,9 @@ export default class NodeService {
             this.checkNowTrigger = new DeferredPromise();
             let currentPrivateKey = await AuthService.getWallet();
 
-            // TODO: replace this with values pulled from async storage
             let requestBody = {
               'private_key': currentPrivateKey,
-              'transactions': [
-                '0x3eadc7c1353ef1939b3509649bf2c6187a92aa2a6b1aca1f8806706a873226ba',
-                '0xd0d1e50488677c8162cb1c521078deb919d49daaf2229a9e4cb26aa9ab2d4f6e',
-              ],
+              'transactions': await AuthService.getTransactions(),
            };
 
             let transactionList = await ApiService.GetTransactionsAsync(requestBody);

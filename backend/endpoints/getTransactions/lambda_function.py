@@ -80,24 +80,27 @@ def get_transactions(transactions_data):
   exchange_rate = get_current_exchange_rate()
 
   for tx_hash in transactions_to_get:
-    logger.info("Attempting to get tx: {}".format(tx_hash))
+    try:
+      logger.info("Attempting to get tx: {}".format(tx_hash))
 
-    # Get the tx object as well as the status
-    current_tx = w3.eth.getTransaction(tx_hash)
-    current_tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+      # Get the tx object as well as the status
+      current_tx = w3.eth.getTransaction(tx_hash)
+      current_tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
 
-    eth_amt = Web3.fromWei(current_tx['value'] - current_tx_receipt['gasUsed'], 'ether')
-    usd_amt = float(exchange_rate['price_usd']) * float(eth_amt)
+      eth_amt = Web3.fromWei(current_tx['value'] - current_tx_receipt['gasUsed'], 'ether')
+      usd_amt = float(exchange_rate['price_usd']) * float(eth_amt)
 
-    gas_price = w3.eth.gasPrice
-    transactions[tx_hash] = {
-      'from': current_tx['from'],
-      'to': current_tx['to'],
-      'amt': usd_amt,
-      'status': current_tx_receipt.status
-    }
-    
-    logger.info("Current tx status: {}".format(current_tx_receipt.status))
+      gas_price = w3.eth.gasPrice
+      transactions[tx_hash] = {
+        'from': current_tx['from'],
+        'to': current_tx['to'],
+        'amt': usd_amt,
+        'status': current_tx_receipt.status
+      }
+      
+      logger.info("Current tx status: {}".format(current_tx_receipt.status))
+    except:
+      continue
 
   logger.info(transactions)
 

@@ -396,7 +396,8 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async showPaymentModal() {
-    if (this.props.wallet.address !== undefined && this.state.selectedNode.data.wallet !== undefined) {
+    if (this.props.wallet.address !== undefined && this.state.selectedNode.data.wallet !== undefined
+      && (this.state.selectedNode.data.wallet !== this.props.wallet.address)) {
       await this.setState({
         paymentModalVisible: true,
         nodeSelected: false,
@@ -405,6 +406,8 @@ export class MainMap extends Component<IProps, IState> {
       Alert.alert(`You need a wallet hooked up to send funds.`);
     } else if (this.state.selectedNode.data.wallet === undefined) {
       Alert.alert(`This node has no wallet attached to it.`);
+    } else if (this.state.selectedNode.data.wallet === this.props.wallet.address) {
+      Alert.alert(`You can't send funds to yourself.`);
     }
   }
 

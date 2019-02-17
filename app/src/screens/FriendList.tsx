@@ -134,6 +134,9 @@ export class FriendList extends Component<IProps, IState> {
       }
     }
 
+    console.log('FRIEND NODE');
+    console.log(friendNode);
+
     if (friendNode === undefined) {
       Alert.alert(`${node.topic} is not sharing location data`);
       return;

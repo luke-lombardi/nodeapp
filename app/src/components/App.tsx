@@ -577,6 +577,12 @@ export class App extends Component<IProps, IState> {
       while (true) {
         // Promise API
         // should call this function to track your location
+        let params = await this.getPostParams();
+
+        BackgroundGeolocation.setConfig({
+          params: params,
+        });
+
         BackgroundGeolocation.getCurrentPosition({samples: 1, persist: false});
         await SleepUtil.SleepAsync(5000);
 
@@ -656,7 +662,6 @@ export class App extends Component<IProps, IState> {
       }
 
       // Get wallet address
-      let wallet = this.props.wallet.address;
 
       let params = {
         'node_id': currentUUID,
@@ -666,7 +671,7 @@ export class App extends Component<IProps, IState> {
           'public': false,
           'type': 'person',
           'device_token': deviceToken,
-          'wallet': wallet,
+          'wallet': this.props.wallet.address,
           'creator': currentUUID,
         },
       };

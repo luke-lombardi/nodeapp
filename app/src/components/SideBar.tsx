@@ -40,6 +40,7 @@ export class SideBar extends Component<IProps, IState> {
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.navigateToCamera = this.navigateToCamera.bind(this);
+        this.numberOfTransactions = this.numberOfTransactions.bind(this);
     }
 
     componentWillMount() {
@@ -48,6 +49,13 @@ export class SideBar extends Component<IProps, IState> {
 
     navigateToCamera() {
       this.props.navigation.navigate('Camera', {} );
+    }
+
+    numberOfTransactions() {
+      if (this.props.transactionList.transactions !== undefined) {
+        return Object.keys(this.props.transactionList.transactions).length;
+      }
+      return 0;
     }
 
     render() {
@@ -127,14 +135,13 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.numberOfTransactions() , textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
                   title='transactions'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => { this.props.notificationList.length === 0 ?
                     this.props.navigation.navigate('Transactions') :
                     NavigationService.reset('Transactions', {});
-
                   }}
                 />
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>

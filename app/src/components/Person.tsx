@@ -21,6 +21,7 @@ interface IProps {
   origin: any;
   destination: any;
   data: any;
+  functions: any;
 }
 
 interface IState {
@@ -35,6 +36,7 @@ export default class Person extends Component<IProps, IState> {
     this.goToChat = this.goToChat.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.showPaymentModal = this.showPaymentModal.bind(this);
   }
 
   componentWillMount() {
@@ -43,6 +45,10 @@ export default class Person extends Component<IProps, IState> {
 
   componentWillUnmount() {
     //
+  }
+
+  async showPaymentModal() {
+    await this.props.functions.showPaymentModal();
   }
 
   async goToChat() {
@@ -106,6 +112,19 @@ export default class Person extends Component<IProps, IState> {
               <Text numberOfLines={1} style={styles.nodeSubtitle}>
                 {this.props.destination.distance_in_miles} miles away
               </Text>
+              <Button
+              icon={{
+                name: 'credit-card',
+                type: 'feather',
+                size: 34,
+                color: 'rgba(255,255,255,.8)',
+              }}
+              style={styles.mapButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.transparentButton}
+              title=''
+              onPress={ async () => { await this.showPaymentModal(); } }
+            />
               <Button
                   icon={{
                     name: 'message-circle',

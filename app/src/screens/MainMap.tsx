@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, Animated } from 'react-native';
+import { View, Dimensions, Animated, Alert } from 'react-native';
 // @ts-ignore
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
@@ -68,6 +68,7 @@ interface IProps {
     privatePlaceList: Array<any>;
     friendList: Array<any>;
     userRegion: any;
+    wallet: any;
 
     // Redux actions
     PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
@@ -395,10 +396,16 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async showPaymentModal() {
-    await this.setState({
-      paymentModalVisible: true,
-      nodeSelected: false,
-    });
+    if (this.props.wallet.address !== undefined && this.state.selectedNode.data.wallet !== undefined) {
+      await this.setState({
+        paymentModalVisible: true,
+        nodeSelected: false,
+      });
+    } else if (this.props.wallet.address === undefined) {
+      Alert.alert(`You need a wallet hooked up to send funds.`);
+    } else if (this.state.selectedNode.data.wallet === undefined) {
+      Alert.alert(`This node has no wallet attached to it.`);
+    }
   }
 
   async closePaymentModal() {
@@ -583,6 +590,9 @@ export class MainMap extends Component<IProps, IState> {
             this.state.selectedNode.nodeType === 'friend' ?
             <View style={styles.personSelectedView}>
               <Person
+                functions={{
+                  'showPaymentModal': this.showPaymentModal,
+                }}
                 nodeId={this.state.selectedNode.data.node_id}
                 nodeType={ this.state.selectedNode.nodeType }
                 topic={this.state.selectedNode.data.topic}
@@ -695,6 +705,7 @@ function mapStateToProps(state: IStoreState): IProps {
     privatePlaceList: state.privatePlaceList,
     friendList: state.friendList,
     userRegion: state.userRegion,
+    wallet: state.wallet,
   };
 }
 

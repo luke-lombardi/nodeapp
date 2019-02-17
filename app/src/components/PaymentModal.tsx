@@ -13,6 +13,7 @@ interface IProps {
     functions: any;
     wallet: string;
     toUser: string;
+    balanceUSD: number;
 }
 
 interface IState {
@@ -137,13 +138,25 @@ export default class PaymentModal extends Component<IProps, IState> {
                         'fontWeight': 'bold',
                     }}
                     onPress={ async () => {
-                      this.state.paymentAmount === 0 ?
+                      if ( this.state.paymentAmount === 0) {
                         Snackbar.show({
                           title: `enter an amount greater than zero`,
                           duration: Snackbar.LENGTH_SHORT,
-                        })
-                      :
-                      await this.sendPayment() ; }}
+                        });
+
+                        return;
+                      }
+
+                      if ( this.state.paymentAmount > this.props.balanceUSD) {
+                        Snackbar.show({
+                          title: `you don't have enough funds`,
+                          duration: Snackbar.LENGTH_SHORT,
+                        });
+
+                        return;
+                      }
+                      await this.sendPayment();
+                    }}
                     loading={false}
                     disabled={this.state.isLoading}
                     disabledStyle={{backgroundColor: 'lightgray', borderColor: 'black', borderWidth: .5}}

@@ -75,6 +75,7 @@ export class Transactions extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
 
     this.loadTransactions = this.loadTransactions.bind(this);
     this.showDetailModal = this.showDetailModal.bind(this);
@@ -175,6 +176,11 @@ export class Transactions extends Component<IProps, IState> {
 
     componentWillUnmount() {
       //
+    }
+
+    // @ts-ignore
+    componentWillReceiveProps(newProps: any) {
+      this.componentDidMount();
     }
 
     async copyAddress() {

@@ -460,6 +460,7 @@ export class MainMap extends Component<IProps, IState> {
           }}
           wallet={this.state.selectedNode.data.wallet}
           toUser={this.state.selectedNode.data.creator}
+          balanceUSD={this.props.wallet.balance_usd}
         />
       }
           {

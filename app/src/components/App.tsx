@@ -667,6 +667,7 @@ export class App extends Component<IProps, IState> {
           'type': 'person',
           'device_token': deviceToken,
           'wallet': wallet,
+          'creator': currentUUID,
         },
       };
 

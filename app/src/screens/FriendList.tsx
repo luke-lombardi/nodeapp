@@ -24,6 +24,7 @@ const { height } = Dimensions.get('window');
 
 interface IProps {
     navigation: any;
+    wallet: any;
     privatePersonList: Array<any>;
     privatePlaceList: Array<any>;
     friendList: Array<any>;
@@ -33,6 +34,7 @@ interface IProps {
 
 interface IState {
   isLoading: boolean;
+  paymentModalVisible: boolean;
 }
 
 export class FriendList extends Component<IProps, IState> {
@@ -64,6 +66,7 @@ export class FriendList extends Component<IProps, IState> {
 
     this.state = {
       isLoading: false,
+      paymentModalVisible: false,
     },
 
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -73,7 +76,8 @@ export class FriendList extends Component<IProps, IState> {
     this.shareNode = this.shareNode.bind(this);
     this.removeFriend = this.removeFriend.bind(this);
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
-
+    this.showPaymentModal = this.showPaymentModal.bind(this);
+    this.closePaymentModal = this.closePaymentModal.bind(this);
   }
 
   componentWillMount() {
@@ -83,6 +87,39 @@ export class FriendList extends Component<IProps, IState> {
 
   componentDidMount() {
     // Do nothing
+  }
+
+  async showPaymentModal(row) {
+    let currentUUID = await AuthService.getUUID();
+    let toUser = undefined;
+
+    for (let member in row.member_data) {
+      if (row.member_data.hasOwnProperty(member)) {
+        if (member !== currentUUID) {
+          toUser = member;
+          break;
+        }
+      }
+    }
+    console.log('CAN WE GET TO USER');
+    console.log(toUser);
+    console.log(this.props.friendList);
+
+    // if (this.props.wallet.address !== undefined) {
+    //   await this.setState({
+    //     paymentModalVisible: true,
+    //   });
+    // } else if (this.props.wallet.address === undefined) {
+    //   Alert.alert(`You need a wallet hooked up to send funds.`);
+    // } else if (this.state.selectedNode.data.wallet === undefined) {
+    //   Alert.alert(`This node has no wallet attached to it.`);
+    // }
+  }
+
+  async closePaymentModal() {
+    await this.setState({
+      paymentModalVisible: false,
+    });
   }
 
   async _onTouchNode(node: any) {
@@ -229,8 +266,20 @@ export class FriendList extends Component<IProps, IState> {
       }
         containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
         rightElement={
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingRight: 20, marginTop: -2}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', right: -5}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingRight: 5, marginTop: -2}}>
+          <Icon
+            name='credit-card'
+            type='feather'
+            color='black'
+            size={31}
+            onPress={ async () => { await this.showPaymentModal(row); } }
+            underlayColor={'transparent'}
+          />
+          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>send payment</Text>
+          </View>
+          <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingHorizontal: 5, marginTop: -2}}>
           <Icon
             name='eye'
             type='feather'
@@ -242,12 +291,12 @@ export class FriendList extends Component<IProps, IState> {
           <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>view on map</Text>
           </View>
           <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 20}}>
+          <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 5}}>
             <Switch
               onTouchStart={async () => { await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
-            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>share location</Text>
+            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 9}}>share location</Text>
           </View>
         </View>
 
@@ -333,6 +382,7 @@ function mapStateToProps(state: IStoreState): IProps {
     privatePlaceList: state.privatePlaceList,
     friendList: state.friendList,
     relationList: state.relationList,
+    wallet: state.wallet,
   };
 }
 

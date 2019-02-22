@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, Animated, Alert } from 'react-native';
+import { View, Dimensions, Animated, Alert, AsyncStorage } from 'react-native';
 // @ts-ignore
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
@@ -51,6 +51,7 @@ import Friends from './markers/Friends';
 
 import { mapStyle } from '../config/map';
 import PaymentModal from '../components/PaymentModal';
+import Tour from '../components/Tour';
 
 const { width, height } = Dimensions.get('window');
 // @ts-ignore
@@ -86,10 +87,12 @@ interface IState {
   nodeSelected: boolean;
   selectedNode: any;
   confirmModalVisible: boolean;
+  tourModalVisible: boolean;
   destination: any;
   selectedNodeIndex: number;
   direction: number;
   paymentModalVisible: boolean;
+  tourViewed: boolean;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -124,7 +127,9 @@ export class MainMap extends Component<IProps, IState> {
     this.gotNewFriendList = this.gotNewFriendList.bind(this);
     this.showPaymentModal = this.showPaymentModal.bind(this);
     this.closePaymentModal = this.closePaymentModal.bind(this);
-
+    this.showTourModal = this.showTourModal.bind(this);
+    this.closeTourModal = this.closeTourModal.bind(this);
+    this.checkTour = this.checkTour.bind(this);
     this.navigateToPage = this.navigateToPage.bind(this);
     this.getNodeListToSearch = this.getNodeListToSearch.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
@@ -160,7 +165,9 @@ export class MainMap extends Component<IProps, IState> {
       selectedNode: {},
       selectedNodeIndex: this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
       confirmModalVisible: false,
+      tourModalVisible: false,
       paymentModalVisible: false,
+      tourViewed: true,
       destination: {
         latitude: '',
         longitude: '',
@@ -293,6 +300,7 @@ export class MainMap extends Component<IProps, IState> {
 }
 
   componentWillMount() {
+    this.checkTour();
     // set the index for the horizontal node list
     this.index = 0;
     this.animation = new Animated.Value(0);
@@ -395,6 +403,25 @@ export class MainMap extends Component<IProps, IState> {
     return nodeListToSearch;
   }
 
+  async checkTour() {
+    let tourViewed = await AsyncStorage.getItem('tourViewed');
+    if (tourViewed !== 'true') {
+      this.setState({tourViewed: false});
+    }
+  }
+
+  async showTourModal() {
+    await this.setState({tourModalVisible: true});
+  }
+
+  async closeTourModal() {
+    await AsyncStorage.setItem('tourViewed', 'true');
+    await this.setState({
+      tourModalVisible: false,
+      tourViewed: true,
+    });
+  }
+
   async showPaymentModal() {
     if (this.props.wallet.address !== undefined && this.state.selectedNode.data.wallet !== undefined
       && (this.state.selectedNode.data.wallet !== this.props.wallet.address)) {
@@ -463,6 +490,15 @@ export class MainMap extends Component<IProps, IState> {
           balanceUSD={this.props.wallet.balance_usd}
         />
       }
+      {
+        this.state.tourModalVisible &&
+        <Tour
+          functions={{
+            'showTourModal': this.showTourModal,
+            'closeTourModal': this.closeTourModal,
+          }}
+        />
+      }
           {
             // Main map view
             <View style={styles.mapView}>
@@ -510,6 +546,19 @@ export class MainMap extends Component<IProps, IState> {
             title=''
             />
         </View>
+        {
+          !this.state.tourViewed &&
+          <View style={{padding: 10}}>
+            <Button
+              style={styles.nodeButton}
+              containerStyle={styles.helpButtonContainer}
+              buttonStyle={styles.helpTransparentButton}
+              title='guided tour'
+              onPress={async () => { await this.showTourModal(); }
+              }
+            />
+          </View>
+        }
           <View style={{padding: 10}}>
             <Button
               icon={{
@@ -802,6 +851,18 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     padding: 0,
+  },
+  helpButtonContainer: {
+    backgroundColor: 'rgba(44,55,71,.5)',
+    paddingHorizontal: 10,
+    height: 50,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
+  helpTransparentButton: {
+    backgroundColor: 'rgba(44,55,71,0.0)',
+    paddingTop: 5,
   },
   buttonContainer: {
     backgroundColor: 'rgba(44,55,71,.5)',

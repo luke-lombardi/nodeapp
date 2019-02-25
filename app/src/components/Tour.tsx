@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { View, StyleSheet, Text, TextInput, ActivityIndicator } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
@@ -41,25 +41,26 @@ export default class Tour extends Component<IProps, IState> {
               <Swiper
                 style={{alignSelf: 'center'}}
                 showsButtons={false}
-                paginationStyle={{position: 'absolute', bottom: 40}}
+                paginationStyle={{position: 'absolute', bottom: '15%'}}
                 loop={false}
               >
-              <View style={styles.slide1}>
-                <Text style={styles.text}>drop nodes</Text>
-                <Text style={styles.subtitle}>tell people about things happening nearby</Text>
-              </View>
-              <View style={styles.slide2}>
-                <Text style={styles.text}>send DMs</Text>
-                <Text style={styles.subtitle}>message users anonymously</Text>
-              </View>
-              <View style={styles.slide3}>
-                <Text style={styles.text}>track users</Text>
-                <Text style={styles.subtitle}>track other users when you want.</Text>
-              </View>
-              <View style={styles.slide3}>
+              <View style={styles.slide}>
+                <Icon
+                  name='lock'
+                  type='feather'
+                  size={72}
+                  color={'white'}
+                  containerStyle={{paddingVertical: 40}}
+                />
+                <Text style={styles.text}>get a live feed of what people are saying around you</Text>
+                <Text style={styles.text}>upvote and downvote nodes</Text>
+                <Text style={styles.text}>send private messages and track users</Text>
+                <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
                 <Button
-                  title='close'
-                  containerStyle={{width: 100}}
+                  title='continue'
+                  titleStyle={{color: 'black', fontWeight: 'bold', fontSize: 24}}
+                  buttonStyle={{backgroundColor: 'lightblue', padding: 10, borderWidth: .5, borderColor: 'gray', borderRadius: 0}}
+                  containerStyle={{position: 'absolute', width: '100%', bottom: 15, opacity: .9}}
                   onPress={this.props.functions.closeTourModal}
                 />
               </View>
@@ -73,39 +74,31 @@ export default class Tour extends Component<IProps, IState> {
 const styles = StyleSheet.create({
   wrapper: {
   },
-  slide1: {
+  slide: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#9DD6EB',
-    height: '50%',
+    backgroundColor: 'purple',
   },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#97CAE5',
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#92BBD9',
-  },
+
   text: {
-    color: '#fff',
-    position: 'absolute',
-    top: 50,
-    fontSize: 30,
-    fontWeight: 'bold',
+    width: '90%',
+    paddingVertical: 20,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    color: 'white',
+    fontSize: 24,
   },
   subtitle: {
-    color: '#fff',
-    position: 'absolute',
-    bottom: 100,
-    fontSize: 18,
-    paddingHorizontal: 20,
-    fontWeight: 'bold',
+    width: '90%',
+    paddingTop: 20,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    color: 'white',
+    fontSize: 24,
   },
   bottomModal: {
     justifyContent: 'flex-end',

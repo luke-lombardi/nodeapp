@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { ListItem, ButtonGroup, Icon } from 'react-native-elements';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager } from 'react-native';
+import { ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
 // import LinearGradient from 'react-native-linear-gradient';
@@ -129,31 +129,54 @@ export class NodeList extends Component<IProps, IState> {
       //
     }
 
-  _renderItem = ({item, index}) => (
-    <ListItem
-      onLongPress={() => this.reportNode(item)}
-      onPress={() => this._onTouchNode(item, index)}
-      containerStyle={styles.nodeListItem}
-      titleStyle={{fontWeight: 'bold', fontSize: 14}}
-      title={item.data.topic}
-      rightTitleStyle={{fontWeight: '600', fontSize: 14}}
-      rightTitle={
-      <View style={{paddingVertical: 5}}>
-        <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
-        <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
+        // @ts-ignore
+    _renderItem = ({item, index}) => (
+      <TouchableOpacity
+        onLongPress={() => this.reportNode(item)}
+        onPress={() => this._onTouchNode(item, index)}
+        activeOpacity={0.7}
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          borderColor: 'rgba(218, 219, 221, 1)',
+          borderWidth: 0.5,
+          marginVertical: index === 0 ? 10 : 5,
+          marginHorizontal: 5,
+          borderRadius: 10,
+        }}>
+          <View style={{padding: 15}}>
+            <View style={{width: '100%'}}>
+              <Text style={{color: 'rgba(27, 28, 29, 1)', justifyContent: 'flex-start', alignItems: 'center', fontWeight: 'bold', fontSize: 16}}>{item.data.topic}</Text>
+            </View>
+            <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center', justifyContent: 'space-between', paddingTop: 10}}>
+              <Text style={{alignSelf: 'flex-start', fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>{item.data.distance_in_miles.toString().slice(0, 9) + ' miles away'}</Text>
+              <Text style={{alignSelf: 'center', fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
+              {item.data.total_messages !== undefined ? item.data.total_messages + ' replies' : 0 + ' replies'}
+              </Text>
+              <Text style={{alignSelf: 'flex-end', fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
+              expires {Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
+              </Text>
+            </View>
         </View>
-      }
-      subtitle={
-        <View style={{paddingVertical: 5}}>
-          <Text style={{fontSize: 14, color: 'gray'}}>expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
-          {
-            item.data.likes &&
-            <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>Saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
-          } */}
-        </View>
-      }
-    />
-  )
+        {/* <View style={{paddingHorizontal: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end', paddingVertical: 10}}>
+            <Icon
+              name='keyboard-arrow-up'
+              // color={this.state.vote === 1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
+              size={34}
+              // onPress={async () => { await this.updateVote(1); }}
+              underlayColor={'transparent'}
+            />
+            <Text style={{marginVertical: -10, fontSize: 20, color: 'blue', alignSelf: 'center', alignItems: 'center'}}>382</Text>
+            <Icon
+              name='keyboard-arrow-down'
+              // color={this.state.vote === -1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
+              size={34}
+              // onPress={async () => { await this.updateVote(-1); }}
+              underlayColor={'transparent'}
+            />
+          </View> */}
+      </TouchableOpacity>
+    )
 
   async onRefresh() {
     await this.setState({isRefreshing: true});
@@ -246,8 +269,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
-    marginBottom: -10,
-    backgroundColor: 'white',
+    marginBottom: 10,
+    backgroundColor: 'rgba(192,192,192, 0.1)',
     height: '100%',
     width: '100%',
   },

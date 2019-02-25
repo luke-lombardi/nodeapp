@@ -547,7 +547,7 @@ export class MainMap extends Component<IProps, IState> {
             />
         </View>
         {
-          !this.state.tourViewed &&
+          this.state.tourViewed &&
           <View style={{padding: 10}}>
             <Button
               style={styles.nodeButton}

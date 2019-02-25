@@ -133,11 +133,13 @@ export class CreateNode extends Component<IProps, IState> {
           <View style={styles.sliderContainer}>
             <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>share for </Text>
-              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(1)} {this.state.ttl < 1.1 ? 'hour' : 'hours'}</Text>
+              <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.hourText}>{this.state.ttl.toFixed(0)} {this.state.ttl < 1.1 ? 'hour' : 'hours'}</Text>
             </Text>
             <Slider
               style={[styles.slider, { width: WINDOW_WIDTH * .9 }]}
               value={this.state.ttl}
+              // step value for slider
+              step={1}
               thumbTouchSize={{width: scale(50), height: verticalScale(50)}}
               onValueChange={(ttl) => this.setState({ttl: ttl})}
               minimumValue={1}

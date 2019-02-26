@@ -139,21 +139,20 @@ export class ActiveChats extends Component<IProps, IState> {
 
     render() {
       const buttons = ['nodes', 'friends'];
-      const { selectedIndex } = this.state;
       return (
         <View style={{flex: 1}}>
-        <View style={{paddingTop: 5, height: 80, backgroundColor: 'black', flexDirection: 'row'}}>
-          <ButtonGroup
-            innerBorderStyle={{width: 0.0, color: 'black'}}
-            containerStyle={{top: 5, flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 15, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
-            buttonStyle={{height: 20, backgroundColor: 'black'}}
-            // containerStyle={styles.buttonContainer}
-            onPress={this.updateIndex}
-            selectedIndex={selectedIndex}
-            selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black'}}
-            buttons={buttons}
-            textStyle={{fontWeight: 'bold', fontSize: 18}}
-          />
+        <View style={{paddingHorizontal: 10, paddingVertical: 10, height: 90, backgroundColor: '#006494', flexDirection: 'row'}}>
+        <ButtonGroup
+          innerBorderStyle={{width: 0, color: 'white'}}
+          containerStyle={{alignSelf: 'center', alignItems: 'center', alignContent: 'center', justifyContent: 'space-between', top: 10, borderWidth: 1, width: '90%'}}
+          buttonStyle={{height: 20, backgroundColor: '#006494'}}
+          onPress={this.updateIndex}
+          selectedIndex={this.state.selectedIndex}
+          selectedButtonStyle={{borderBottomColor: '#262626', backgroundColor: 'white'}}
+          selectedTextStyle={{color: 'gray'}}
+          buttons={buttons}
+          textStyle={{fontSize: 18, color: 'white'}}
+        />
         </View>
         <View style={styles.flatlist}>
           <FlatList
@@ -231,7 +230,7 @@ export class ActiveChats extends Component<IProps, IState> {
       paddingVertical: 10,
     },
     button: {
-      backgroundColor: 'black',
+      backgroundColor: '#006494',
     },
     createNodeButton: {
       top: 30,
@@ -242,7 +241,7 @@ export class ActiveChats extends Component<IProps, IState> {
       height: 50,
       // bottom: 45,
       paddingHorizontal: 100,
-      borderBottomColor: 'black',
+      borderBottomColor: '#006494',
       alignSelf: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.9);',
       width: '110%',

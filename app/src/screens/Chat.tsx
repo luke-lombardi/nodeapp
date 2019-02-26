@@ -78,7 +78,7 @@ export class Chat extends Component<IProps, IState> {
 
     // @ts-ignore
       return {
-      headerStyle: {backgroundColor: 'black', paddingTop: -10, height: 70},
+      headerStyle: {backgroundColor: '#006494', paddingTop: -10, height: 70},
       headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
         title: username ,
         headerLeft:
@@ -87,7 +87,7 @@ export class Chat extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'black'}
+            underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => {
               NavigationService.reset('Map', {
@@ -654,7 +654,7 @@ const styles = ScaledSheet.create({
     left: -1,
   },
   thisDisplayName: {
-    color: 'rgba(140, 20, 252, 1)',
+    color: '#F03A47',
     marginVertical: 5,
     left: -1,
     fontWeight: 'bold',
@@ -667,7 +667,7 @@ const styles = ScaledSheet.create({
   },
   thisUser: {
     borderLeftWidth: 3,
-    borderLeftColor: 'rgba(140, 20, 252, 1)',
+    borderLeftColor: '#F03A47',
     paddingHorizontal: 5,
   },
   thatUser: {

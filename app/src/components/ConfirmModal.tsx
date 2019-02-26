@@ -80,11 +80,11 @@ export default class ConfirmModal extends Component<IProps, IState> {
                         </View>
                       }
                       iconRight
-                      textStyle={this.state.shareLocationActive ? {color: 'red'} : {color: 'gray'}}
+                      textStyle={this.state.shareLocationActive ? {color: '#F03A47'} : {color: 'gray'}}
                       containerStyle={{borderRadius: 10}}
                       checkedIcon='check'
                       uncheckedIcon='circle-o'
-                      checkedColor='red'
+                      checkedColor='#DC493A'
                       uncheckedColor='gray'
                       onIconPress={this.toggleLocationSharing}
                       onPress={this.toggleLocationSharing}
@@ -130,7 +130,7 @@ export default class ConfirmModal extends Component<IProps, IState> {
                     />
                 <Text
                   onPress={() => this.props.functions.reportUser(displayName)}
-                  style={{paddingTop: 10, alignSelf: 'center', color: 'red'}}
+                  style={{paddingTop: 10, alignSelf: 'center', color: '#F03A47'}}
                 >
                   report user
                 </Text>

@@ -119,17 +119,6 @@ export class CreateNode extends Component<IProps, IState> {
             <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
             </TouchableOpacity>
             <View style={styles.switchView}>
-              {/* <Text style={styles.switchText}>{this.state.private ? 'private (toggle for public)' : 'public (toggle for private)'}</Text>
-            <Switch
-              style={styles.switch}
-              value={this.state.private}
-              onValueChange={ () => {this.setState({private: !this.state.private});
-            }}
-            /> */}
-          { /* Horizontal line break */ }
-          {/* <View style={{borderTopWidth: 1, borderTopColor: 'rgba(220,220,220,1)', width: '100%', paddingVertical: 10, top: 25}}>
-
-          </View> */}
           <View style={styles.sliderContainer}>
             <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>share for </Text>
@@ -146,12 +135,12 @@ export class CreateNode extends Component<IProps, IState> {
               maximumValue={24}
               minimumTrackTintColor={'rgba(51, 51, 51, 0.9)'}
               maximumTrackTintColor={'rgba(51, 51, 51, 0.3)'}
-              thumbTintColor={'red'}
+              thumbTintColor={'#F03A47'}
             />
             </View>
           </View>
           <Button
-            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '100%', backgroundColor: 'black'}}
+            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '90%', backgroundColor: '#006494', bottom: -5, borderBottomColor: '#006494'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
@@ -161,7 +150,7 @@ export class CreateNode extends Component<IProps, IState> {
                 name='arrow-right'
                 size={30}
                 underlayColor={'transparent'}
-                color='white'
+                color='#F6F4F3'
               />
             }
             title=''
@@ -278,7 +267,7 @@ const styles = ScaledSheet.create({
   container: {
     padding: 0,
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F6F4F3',
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
@@ -298,12 +287,12 @@ const styles = ScaledSheet.create({
   nodeForm: {
     flex: 6,
     alignSelf: 'stretch',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F6F4F3',
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
   fullWidthButton: {
-    backgroundColor: 'black',
+    backgroundColor: '#006494',
     height: '70@vs',
     justifyContent: 'center',
     alignItems: 'center',
@@ -343,7 +332,9 @@ const styles = ScaledSheet.create({
     alignSelf: 'flex-start',
   },
   sliderContainer: {
-    marginLeft: '20@s',
+    alignContent: 'center',
+    // marginLeft: '20@s',
+    alignSelf: 'center',
     alignItems: 'center',
     top: '5@vs',
   },
@@ -361,7 +352,6 @@ const styles = ScaledSheet.create({
   },
   slider: {
     top: '-5@vs',
-    alignSelf: 'center',
     width: '90%@vs',
   },
   sliderTextContainer: {

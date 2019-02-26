@@ -85,8 +85,8 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white', fontSize: 16 }, 
-                  containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
+                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white', fontSize: 16 },
+                  containerStyle: { padding: 20, backgroundColor: '#4392F1' } }}
                   key='nodes'
                   title='nodes'
                   titleStyle={{fontSize: 22}}
@@ -101,7 +101,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.relationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
+                  badge={{ value: this.props.relationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#4392F1' } }}
                   key='friendlist'
                   title='people'
                   titleStyle={{fontSize: 22}}
@@ -118,7 +118,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
+                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#4392F1' } }}
                   // key='chat'
                   title='notifications'
                   titleStyle={{fontSize: 22}}
@@ -136,7 +136,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.numberOfTransactions() , textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
+                  badge={{ value: this.numberOfTransactions() , textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#4392F1' } }}
                   title='transactions'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
@@ -145,11 +145,12 @@ export class SideBar extends Component<IProps, IState> {
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Alert.alert(
+          'support',
           'how can we help?',
-          '',
           [
             {text: 'contact support', onPress: () => Linking.openURL('https://smartshare.io')},
             {text: 'view user agreement', onPress: () => Linking.openURL('https://smartshare.io/terms')},
+            {text: 'cancel'},
           ],
           { cancelable: true},
         )}

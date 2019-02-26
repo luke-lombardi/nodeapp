@@ -47,7 +47,7 @@ export class FriendList extends Component<IProps, IState> {
     // @ts-ignore
     const { state: { params = {} } } = navigation;
     return {
-      headerStyle: {backgroundColor: 'black', height: 70},
+      headerStyle: {backgroundColor: '#006494', height: 70},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'friends',
         headerLeft:
@@ -204,7 +204,7 @@ export class FriendList extends Component<IProps, IState> {
     }
   }
 
-  _renderItem(item) {
+  _renderItem(item, index) {
     let row = item.item;
 
     let swipeBtns = [{
@@ -215,7 +215,7 @@ export class FriendList extends Component<IProps, IState> {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'red',
+            backgroundColor: '#F03A47',
             borderLeftWidth: 1,
             borderLeftColor: 'rgba(44,55,71,0.3)',
           }}
@@ -242,9 +242,17 @@ export class FriendList extends Component<IProps, IState> {
             title: `${row.topic} has not accepted your friend request.`,
             duration: Snackbar.LENGTH_SHORT,
           })}
-          containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
+          containerStyle={[styles.friendListItem, { marginVertical: index === 0 ? 10 : 5 }]}
           title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
           subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status}</Text>}
+          rightIcon={
+            <Icon
+              name={'arrow-up-right'}
+              type={'feather'}
+              color={'#00b200'}
+              size={36}
+            />
+          }
         />
       );
   } else {
@@ -263,22 +271,10 @@ export class FriendList extends Component<IProps, IState> {
           duration: Snackbar.LENGTH_SHORT,
         })
       }
-        containerStyle={[styles.friendListItem, {backgroundColor: 'white'}]}
+        containerStyle={[styles.friendListItem, { marginVertical: index === 0 ? 10 : 5 }]}
         rightElement={
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', right: -5}}>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingRight: 10}}>
-          <Icon
-            name='credit-card'
-            type='feather'
-            color='black'
-            size={38}
-            onPress={ async () => { await this.showPaymentModal(row); } }
-            underlayColor={'transparent'}
-          />
-          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>send payment</Text>
-          </View>
-          <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingHorizontal: 10}}>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{width: '50%', flexDirection: 'column', alignItems: 'center'}}>
           <Icon
             name='eye'
             type='feather'
@@ -287,21 +283,32 @@ export class FriendList extends Component<IProps, IState> {
             onPress={async () => { await this._onTouchNode(row); }}
             underlayColor={'transparent'}
           />
-          <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 10}}>view on map</Text>
+          <Text style={{fontSize: 12, color: 'gray', textAlign: 'center', top: 7}}>view on map</Text>
           </View>
-          <View style={{flexDirection: 'column', borderRightWidth: 1, height: 60, borderRightColor: 'lightgray'}}> </View>
-          <View style={{flexDirection: 'column', alignItems: 'center', paddingLeft: 10, top: 2}}>
+          <View style={{left: 10, width: '50%', flexDirection: 'column', alignItems: 'center'}}>
             <Switch
+              style={{top: 4}}
               onTouchStart={async () => { await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
-            <Text style={{fontSize: 12, color: 'gray', alignSelf: 'center', top: 15}}>share location</Text>
+            <Text style={{fontSize: 12, color: 'gray', textAlign: 'center', top: 14}}>share location</Text>
           </View>
         </View>
 
         }
-        title={<Text numberOfLines={1} ellipsizeMode={'tail'} style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
-        subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status }</Text>}
+        title={<Text numberOfLines={1} ellipsizeMode={'tail'} style={{top: 10, fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
+        subtitle={
+        <View style={{right: 5, paddingTop: 20, flexDirection: 'row'}}>
+        <Icon
+          name={row.status === 'accepted' ? 'check-circle' : 'more-horizontal'}
+          type={'feather'}
+          size={18}
+          color={row.status === 'accepted' ? 'green' : '#F03A47'}
+          containerStyle={{width: '20%'}}
+        />
+        <Text style={{width: '80%', color: 'gray', left: 5}}>{row.status }</Text>
+        </View>
+      }
       />
     </Swipeout>
     );
@@ -326,6 +333,7 @@ export class FriendList extends Component<IProps, IState> {
         <View style={styles.flatlist}>
           <FlatList
             data={this.props.relationList}
+            // @ts-ignore
             renderItem={this._renderItem}
             extraData={this.state}
             keyExtractor={item => item.relation_id}
@@ -410,12 +418,19 @@ const styles = StyleSheet.create({
   friendListItem: {
     minHeight: 100,
     maxHeight: 120,
-    width: '100%',
     borderBottomWidth: .5,
     borderBottomColor: 'rgba(51, 51, 51, 0.1)',
+    flex: 1,
+    backgroundColor: 'white',
+    borderColor: 'rgba(218, 219, 221, 1)',
+    borderWidth: 0.5,
+    borderRadius: 10,
+    padding: 15,
+    marginHorizontal: 5,
   },
   flatlist: {
     flex: 1,
+    backgroundColor: 'rgba(192,192,192, 0.1)',
   },
   null: {
     fontSize: 20,

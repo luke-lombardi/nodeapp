@@ -547,13 +547,13 @@ export class MainMap extends Component<IProps, IState> {
             />
         </View>
         {
-          this.state.tourViewed &&
+          !this.state.tourViewed &&
           <View style={{padding: 10}}>
             <Button
               style={styles.nodeButton}
               containerStyle={styles.helpButtonContainer}
               buttonStyle={styles.helpTransparentButton}
-              title='guided tour'
+              title='about'
               onPress={async () => { await this.showTourModal(); }
               }
             />
@@ -803,7 +803,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginTop: 0,
     position: 'absolute',
-    bottom: 10,
+    bottom: 20,
     left: 0,
     height: 300,
     width: '100%',

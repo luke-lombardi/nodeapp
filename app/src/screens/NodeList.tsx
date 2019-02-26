@@ -60,7 +60,8 @@ export class NodeList extends Component<IProps, IState> {
       if (this.state.selectedIndex === 0) {
         this.setState({ data: this.props.publicPlaceList });
       } else {
-        this.setState({ data: this.props.privatePlaceList });
+        // this.setState({ data: this.props.privatePlaceList });
+        return;
       }
     }
   }
@@ -77,15 +78,19 @@ export class NodeList extends Component<IProps, IState> {
   updateIndex (selectedIndex) {
     this.setState({isLoading: true});
     if (selectedIndex === 0) {
+      let closestNodes = this.props.publicPlaceList.sort((a, b) =>
+      a.data.distance_in_miles < b.data.distance_in_miles ? -1 : 1);
       this.setState({
-        selectedIndex,
-        data: this.props.publicPlaceList,
+        selectedIndex: selectedIndex,
+        data: closestNodes,
         isLoading: false,
       });
     } else if (selectedIndex === 1) {
+      let trendingNodes = this.props.publicPlaceList.sort((a, b) =>
+      (a.data.total_messages !== undefined ? a.data.total_messages : 0) > (b.data.total_messages !== undefined ? b.data.total_messages : 0) ? -1 : 1 );
       this.setState({
-        selectedIndex,
-        data: this.props.privatePlaceList,
+        selectedIndex: selectedIndex,
+        data: trendingNodes,
         isLoading: false,
       });
     }
@@ -148,7 +153,7 @@ export class NodeList extends Component<IProps, IState> {
           borderColor: 'rgba(218, 219, 221, 1)',
           borderWidth: 0.5,
           marginVertical: index === 0 ? 10 : 5,
-          marginHorizontal: 5,
+          marginHorizontal: 10,
           borderRadius: 10,
           padding: 15,
         }}>
@@ -161,11 +166,11 @@ export class NodeList extends Component<IProps, IState> {
           </View>
           </View>
             <View style={{flex: 1, flexDirection: 'row', marginTop: 10, paddingBottom: 5, alignItems: 'center', justifyContent: 'space-between'}}>
-              <Text style={{fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>{item.data.distance_in_miles.toString().slice(0, 9) + ' miles away'}</Text>
-              <Text onPress={ async () => await this.goToChat(item.data)} style={{fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
+              <Text style={{fontSize: 14, color: 'rgba(102, 106, 112, 1)'}}>{item.data.distance_in_miles.toFixed(0) + ' miles away'}</Text>
+              <Text onPress={ async () => await this.goToChat(item.data)} style={{fontSize: 14, color: 'rgba(102, 106, 112, 1)'}}>
               {item.data.total_messages !== undefined ? item.data.total_messages + ' replies' : 0 + ' replies'}
               </Text>
-              <Text style={{fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
+              <Text style={{fontSize: 14, color: 'rgba(102, 106, 112, 1)'}}>
               expires {Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
               </Text>
             </View>
@@ -187,10 +192,9 @@ export class NodeList extends Component<IProps, IState> {
 
   render() {
     const buttons = ['nearest', 'trending'];
-    const { selectedIndex } = this.state;
     return (
       <View style={{flex: 1}}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#008B8B'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#006494'}}>
       <Icon
           name={'map-pin'}
           type={'feather'}
@@ -203,11 +207,10 @@ export class NodeList extends Component<IProps, IState> {
         <ButtonGroup
           innerBorderStyle={{width: 0, color: 'white'}}
           containerStyle={{top: 30, borderWidth: 1, width: '60%'}}
-          buttonStyle={{height: 20, backgroundColor: '#008B8B'}}
-          // containerStyle={styles.buttonContainer}
+          buttonStyle={{height: 20, backgroundColor: '#006494'}}
           onPress={this.updateIndex}
-          selectedIndex={selectedIndex}
-          selectedButtonStyle={{borderBottomColor: 'black', backgroundColor: 'white'}}
+          selectedIndex={this.state.selectedIndex}
+          selectedButtonStyle={{borderBottomColor: '#262626', backgroundColor: 'white'}}
           selectedTextStyle={{color: 'gray'}}
           buttons={buttons}
           textStyle={{fontSize: 18, color: 'white'}}
@@ -304,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   button: {
-    backgroundColor: 'black',
+    backgroundColor: '#262626',
   },
   createNodeButton: {
     top: 30,
@@ -315,7 +318,7 @@ const styles = StyleSheet.create({
     height: 50,
     // bottom: 45,
     paddingHorizontal: 100,
-    borderBottomColor: 'black',
+    borderBottomColor: '#262626',
     alignSelf: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.9);',
     width: '110%',

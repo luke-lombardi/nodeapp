@@ -49,7 +49,7 @@ export default class Tour extends Component<IProps, IState> {
                   name='lock'
                   type='feather'
                   size={72}
-                  color={'white'}
+                  color={'#F6F4F3'}
                   containerStyle={{paddingVertical: 40}}
                 />
                 <Text style={styles.text}>get a live feed of what people are saying around you</Text>
@@ -58,8 +58,8 @@ export default class Tour extends Component<IProps, IState> {
                 <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
                 <Button
                   title='continue'
-                  titleStyle={{color: 'black', fontWeight: 'bold', fontSize: 24}}
-                  buttonStyle={{backgroundColor: 'lightblue', padding: 10, borderWidth: .5, borderColor: 'gray', borderRadius: 0}}
+                  titleStyle={{color: '#F6F4F3', fontWeight: 'bold', fontSize: 24}}
+                  buttonStyle={{backgroundColor: '#F03A47', padding: 10, borderWidth: .5, borderColor: 'gray', borderRadius: 0}}
                   containerStyle={{position: 'absolute', width: '100%', bottom: 15, opacity: .9}}
                   onPress={this.props.functions.closeTourModal}
                 />
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#008B8B',
+    backgroundColor: '#006494',
   },
 
   text: {
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center',
-    color: 'white',
+    color: '#F6F4F3',
     fontSize: 24,
   },
   subtitle: {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center',
-    color: 'white',
+    color: '#F6F4F3',
     fontSize: 24,
   },
   bottomModal: {
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   scrollableModalContent1: {
     width: '100%',
     height: 90,
-    backgroundColor: 'white',
+    backgroundColor: '#F6F4F3',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 2.0,
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#F6F4F3',
     padding: 22,
     justifyContent: 'center',
     alignItems: 'center',

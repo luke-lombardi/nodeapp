@@ -6,6 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import NavigationService from '../services/NavigationService';
 import { ButtonGroup, ListItem } from 'react-native-elements';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+import Moment from 'moment';
 
 const { height } = Dimensions.get('window');
 
@@ -114,7 +115,7 @@ export class ActiveChats extends Component<IProps, IState> {
         rightTitle={
         this.state.selectedIndex  ===  0 ?
           <View style={{paddingVertical: 5}}>
-            <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
+            <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toFixed(0)}</Text>
             <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
           </View>
           : <View>
@@ -124,7 +125,8 @@ export class ActiveChats extends Component<IProps, IState> {
         subtitle={
           <View style={{paddingVertical: 5}}>
           { this.state.selectedIndex === 0 ?
-            <Text style={{fontSize: 14, color: 'gray'}}>expires in {(item.data.ttl / 3600).toFixed(1)} hours</Text>
+            <Text style={{fontSize: 14, color: 'gray'}}>expires {Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
+            </Text>
             :
             undefined
           }

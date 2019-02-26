@@ -250,7 +250,7 @@ export default class Node extends Component<IProps, IState> {
             {this.props.topic}
           </Text>
         </View>
-          <View style={{right: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+          {/* <View style={{right: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
             <Icon
               name='keyboard-arrow-up'
               color={this.state.vote === 1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
@@ -266,7 +266,7 @@ export default class Node extends Component<IProps, IState> {
               onPress={async () => { await this.updateVote(-1); }}
               underlayColor={'transparent'}
             />
-          </View>
+          </View> */}
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
           <Button

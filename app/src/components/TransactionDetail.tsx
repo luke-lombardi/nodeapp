@@ -61,7 +61,7 @@ export class TransactionDetail extends Component<IProps, IState> {
     let easternTime = moment(timestamp).utcOffset(14);
 
     // make sure it does not return a date that is ahead of the current date
-    timestamp = moment(easternTime).max(moment(easternTime));
+    timestamp = moment(easternTime).min(moment(easternTime));
 
     let parsedTimestamp = moment(timestamp).calendar();
 

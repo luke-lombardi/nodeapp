@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Switch, Text, TextInput, Dimensions, TouchableOpacity  } from 'react-native';
+import { View, StyleSheet, Text, TextInput, Dimensions, TouchableOpacity  } from 'react-native';
 // @ts-ignore
 import MapView, { Marker}   from 'react-native-maps';
 import Snackbar from 'react-native-snackbar';
@@ -119,17 +119,17 @@ export class CreateNode extends Component<IProps, IState> {
             <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
             </TouchableOpacity>
             <View style={styles.switchView}>
-              <Text style={styles.switchText}>{this.state.private ? 'private (toggle for public)' : 'public (toggle for private)'}</Text>
+              {/* <Text style={styles.switchText}>{this.state.private ? 'private (toggle for public)' : 'public (toggle for private)'}</Text>
             <Switch
               style={styles.switch}
               value={this.state.private}
               onValueChange={ () => {this.setState({private: !this.state.private});
             }}
-            />
+            /> */}
           { /* Horizontal line break */ }
-          <View style={{borderTopWidth: 1, borderTopColor: 'rgba(220,220,220,1)', width: '100%', paddingVertical: 10, top: 25}}>
+          {/* <View style={{borderTopWidth: 1, borderTopColor: 'rgba(220,220,220,1)', width: '100%', paddingVertical: 10, top: 25}}>
 
-          </View>
+          </View> */}
           <View style={styles.sliderContainer}>
             <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>share for </Text>
@@ -327,7 +327,7 @@ const styles = ScaledSheet.create({
     borderTopWidth: .5,
     borderTopColor: 'rgba(220,220,220,1)',
     paddingTop: '20@vs',
-    flex: 2,
+    flex: 1,
     alignItems: 'flex-start',
   },
   switch: {
@@ -344,8 +344,8 @@ const styles = ScaledSheet.create({
   },
   sliderContainer: {
     marginLeft: '20@s',
-    alignItems: 'flex-start',
-    top: '10@vs',
+    alignItems: 'center',
+    top: '5@vs',
   },
   sliderText: {
     alignSelf: 'center',
@@ -365,7 +365,7 @@ const styles = ScaledSheet.create({
     width: '90%@vs',
   },
   sliderTextContainer: {
-    paddingVertical: '10@vs',
+    paddingVertical: '5@vs',
   },
   privateText: {
     position: 'absolute',

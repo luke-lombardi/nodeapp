@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'purple',
+    backgroundColor: '#008B8B',
   },
 
   text: {

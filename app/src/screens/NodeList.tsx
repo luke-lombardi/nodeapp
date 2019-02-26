@@ -4,17 +4,14 @@ import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager 
 import { ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
-// import LinearGradient from 'react-native-linear-gradient';
-
+import Vote from '../components/Vote';
 import NavigationService from '../services/NavigationService';
-
 // import Logger from '../services/Logger';
 // @ts-ignore
 import IStoreState from '../store/IStoreState';
 // @ts-ignore
 import { connect, Dispatch } from 'react-redux';
 // import { bindActionCreators } from 'redux';
-
 // const WINDOW_WIDTH = Dimensions.get('window').width;
 
 interface IProps {
@@ -54,6 +51,7 @@ export class NodeList extends Component<IProps, IState> {
     this.countdown = this.countdown.bind(this);
     this.reportNode = this.reportNode.bind(this);
     this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+    this.goToChat = this.goToChat.bind(this);
   }
 
   componentWillReceiveProps(newProps: any) {
@@ -65,6 +63,15 @@ export class NodeList extends Component<IProps, IState> {
         this.setState({ data: this.props.privatePlaceList });
       }
     }
+  }
+
+  async goToChat(item) {
+    NavigationService.reset('Chat', {
+      action: 'join_chat',
+      nodeId: item.node_id,
+      // nodeType: this.props.nodeType,
+      // nodeIndex: this.state.nodeIndex,
+     });
   }
 
   updateIndex (selectedIndex) {
@@ -132,7 +139,7 @@ export class NodeList extends Component<IProps, IState> {
         // @ts-ignore
     _renderItem = ({item, index}) => (
       <TouchableOpacity
-        onLongPress={() => this.reportNode(item)}
+        onLongPress={async () => await this.reportNode(item)}
         onPress={() => this._onTouchNode(item, index)}
         activeOpacity={0.7}
         style={{
@@ -143,38 +150,25 @@ export class NodeList extends Component<IProps, IState> {
           marginVertical: index === 0 ? 10 : 5,
           marginHorizontal: 5,
           borderRadius: 10,
+          padding: 15,
         }}>
-          <View style={{padding: 15}}>
-            <View style={{width: '100%'}}>
-              <Text style={{color: 'rgba(27, 28, 29, 1)', justifyContent: 'flex-start', alignItems: 'center', fontWeight: 'bold', fontSize: 16}}>{item.data.topic}</Text>
-            </View>
-            <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center', justifyContent: 'space-between', paddingTop: 10}}>
-              <Text style={{alignSelf: 'flex-start', fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>{item.data.distance_in_miles.toString().slice(0, 9) + ' miles away'}</Text>
-              <Text style={{alignSelf: 'center', fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          <View style={{width: '80%'}}>
+            <Text style={{color: 'rgba(27, 28, 29, 1)', justifyContent: 'flex-start', alignItems: 'center', fontWeight: 'bold', fontSize: 16}}>{item.data.topic}</Text>
+          </View>
+          <View style={{width: '20%'}}>
+          <Vote selectedNode={item.data} />
+          </View>
+          </View>
+            <View style={{flex: 1, flexDirection: 'row', marginTop: 10, paddingBottom: 5, alignItems: 'center', justifyContent: 'space-between'}}>
+              <Text style={{fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>{item.data.distance_in_miles.toString().slice(0, 9) + ' miles away'}</Text>
+              <Text onPress={ async () => await this.goToChat(item.data)} style={{fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
               {item.data.total_messages !== undefined ? item.data.total_messages + ' replies' : 0 + ' replies'}
               </Text>
-              <Text style={{alignSelf: 'flex-end', fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
+              <Text style={{fontSize: 12, color: 'rgba(102, 106, 112, 1)'}}>
               expires {Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
               </Text>
             </View>
-        </View>
-        {/* <View style={{paddingHorizontal: 20, position: 'absolute', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end', paddingVertical: 10}}>
-            <Icon
-              name='keyboard-arrow-up'
-              // color={this.state.vote === 1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
-              size={34}
-              // onPress={async () => { await this.updateVote(1); }}
-              underlayColor={'transparent'}
-            />
-            <Text style={{marginVertical: -10, fontSize: 20, color: 'blue', alignSelf: 'center', alignItems: 'center'}}>382</Text>
-            <Icon
-              name='keyboard-arrow-down'
-              // color={this.state.vote === -1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
-              size={34}
-              // onPress={async () => { await this.updateVote(-1); }}
-              underlayColor={'transparent'}
-            />
-          </View> */}
       </TouchableOpacity>
     )
 
@@ -192,30 +186,40 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   render() {
-    const buttons = ['public', 'private'];
+    const buttons = ['nearest', 'trending'];
     const { selectedIndex } = this.state;
     return (
       <View style={{flex: 1}}>
-      <View style={{paddingTop: 5, height: 100, backgroundColor: 'black', flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#008B8B'}}>
       <Icon
-          name={'x'}
+          name={'map-pin'}
           type={'feather'}
           size={30}
-          underlayColor={'black'}
+          underlayColor={'#008B8B'}
           color={'#ffffff'}
-          containerStyle={{alignSelf: 'flex-start', top: 40, left: 10, paddingVertical: 0}}
+          containerStyle={{top: 40, left: 10}}
           onPress={() => NavigationService.reset('Map', {})}
         />
         <ButtonGroup
-          innerBorderStyle={{width: 0.0, color: 'black'}}
-          containerStyle={{flex: 1, alignSelf: 'center', borderWidth: 0, paddingTop: 15, backgroundColor: 'rgba(0, 0, 0, 0.9);'}}
-          buttonStyle={{height: 20, backgroundColor: 'black'}}
+          innerBorderStyle={{width: 0, color: 'white'}}
+          containerStyle={{top: 30, borderWidth: 1, width: '60%'}}
+          buttonStyle={{height: 20, backgroundColor: '#008B8B'}}
           // containerStyle={styles.buttonContainer}
           onPress={this.updateIndex}
           selectedIndex={selectedIndex}
-          selectedButtonStyle={{backgroundColor: 'black', borderBottomColor: 'black'}}
+          selectedButtonStyle={{borderBottomColor: 'black', backgroundColor: 'white'}}
+          selectedTextStyle={{color: 'gray'}}
           buttons={buttons}
-          textStyle={{fontWeight: 'bold', fontSize: 18}}
+          textStyle={{fontSize: 18, color: 'white'}}
+        />
+        <Icon
+          name={'edit'}
+          type={'feather'}
+          size={30}
+          underlayColor={'#008B8B'}
+          color={'#ffffff'}
+          containerStyle={{top: 40, right: 10}}
+          onPress={() => NavigationService.reset('CreateNode', {})}
         />
       </View>
       <View style={styles.flatlist}>

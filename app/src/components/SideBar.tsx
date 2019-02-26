@@ -85,7 +85,8 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: (this.props.privatePlaceList.length + this.props.publicPlaceList.length), textStyle: { color: 'white', fontSize: 16 }, 
+                  containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
                   key='nodes'
                   title='nodes'
                   titleStyle={{fontSize: 22}}
@@ -100,7 +101,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.relationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.props.relationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
                   key='friendlist'
                   title='people'
                   titleStyle={{fontSize: 22}}
@@ -117,7 +118,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.props.notificationList.length, textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
                   // key='chat'
                   title='notifications'
                   titleStyle={{fontSize: 22}}
@@ -135,7 +136,7 @@ export class SideBar extends Component<IProps, IState> {
                     activeScale: 0.95,
                   }}
                   containerStyle={styles.navItem}
-                  badge={{ value: this.numberOfTransactions() , textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20 } }}
+                  badge={{ value: this.numberOfTransactions() , textStyle: { color: 'white', fontSize: 16 }, containerStyle: { padding: 20, backgroundColor: '#008B8B' } }}
                   title='transactions'
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}

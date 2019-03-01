@@ -164,7 +164,7 @@ export class ActiveChats extends Component<IProps, IState> {
       const buttons = ['nodes', 'friends'];
       return (
         <View style={{flex: 1}}>
-        <View style={{paddingHorizontal: 10, paddingVertical: 10, height: 90, backgroundColor: '#4392F1', flexDirection: 'row'}}>
+        <View style={{paddingHorizontal: 10, paddingVertical: 10, height: 90, backgroundColor: '#006494', flexDirection: 'row'}}>
         <ButtonGroup
           innerBorderStyle={{width: 0, color: 'white'}}
           containerStyle={{alignSelf: 'center', alignItems: 'center', alignContent: 'center', justifyContent: 'space-between', top: 10, borderWidth: 1, width: '90%'}}

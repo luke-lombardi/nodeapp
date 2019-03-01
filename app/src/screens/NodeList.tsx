@@ -4,7 +4,7 @@ import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager 
 import { ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
-import Vote from '../components/Vote';
+// import Vote from '../components/Vote';
 import NavigationService from '../services/NavigationService';
 // import Logger from '../services/Logger';
 // @ts-ignore
@@ -180,15 +180,15 @@ export class NodeList extends Component<IProps, IState> {
           // padding: 15,
         }}>
         <View style={{flex: 1}}>
-          <View style={{padding: 10, width: '90%', justifyContent: 'flex-start'}}>
+          <View style={{padding: 10, width: '100%', justifyContent: 'flex-start'}}>
             <Text style={{color: '#262626', alignSelf: 'flex-start', fontSize: 18}}>{item.data.topic}</Text>
           </View>
-          <View style={{flex: 1, flexDirection: 'row', right: -10, width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
+          {/* <View style={{flex: 1, flexDirection: 'row', right: -10, width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
           <Vote selectedNode={item.data} />
-          </View>
+          </View> */}
           </View>
             <View style={{
-              width: '85%', paddingHorizontal: 10, flex: 1, flexDirection: 'row', top: 5, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+              width: '100%', paddingHorizontal: 10, flex: 1, flexDirection: 'row', top: 5, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
               <Text style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>
               {Moment().endOf('minute').seconds(item.data.ttl).fromNow(true)}
               </Text>
@@ -217,12 +217,12 @@ export class NodeList extends Component<IProps, IState> {
     const buttons = ['nearest', 'trending'];
     return (
       <View style={{flex: 1}}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#4392F1'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#006494'}}>
       <Icon
           name={'map-pin'}
           type={'feather'}
           size={30}
-          underlayColor={'#4392F1'}
+          underlayColor={'#006494'}
           color={'#ffffff'}
           containerStyle={{top: 40, left: 10}}
           onPress={() => NavigationService.reset('Map', {})}
@@ -230,7 +230,7 @@ export class NodeList extends Component<IProps, IState> {
         <ButtonGroup
           innerBorderStyle={{width: 0, color: 'white'}}
           containerStyle={{top: 30, borderWidth: 1, width: '60%'}}
-          buttonStyle={{height: 20, backgroundColor: '#4392F1'}}
+          buttonStyle={{height: 20, backgroundColor: '#006494'}}
           onPress={this.updateIndex}
           selectedIndex={this.state.selectedIndex}
           selectedButtonStyle={{borderBottomColor: '#262626', backgroundColor: 'white'}}
@@ -242,7 +242,7 @@ export class NodeList extends Component<IProps, IState> {
           name={'edit'}
           type={'feather'}
           size={30}
-          underlayColor={'#4392F1'}
+          underlayColor={'#006494'}
           color={'#ffffff'}
           containerStyle={{top: 40, right: 10}}
           onPress={() => NavigationService.reset('CreateNode', {})}

@@ -10,7 +10,7 @@ import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import ConfirmModal from '../components/ConfirmModal';
-import Vote from '../components/Vote';
+// import Vote from '../components/Vote';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -98,7 +98,7 @@ export class Chat extends Component<IProps, IState> {
 
     // @ts-ignore
       return {
-      headerStyle: {backgroundColor: '#4392F1', paddingTop: -10, height: 50},
+      headerStyle: {backgroundColor: '#006494', paddingTop: -10, height: 50},
       headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
         title: username ,
         headerLeft:
@@ -107,7 +107,7 @@ export class Chat extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#4392F1'}
+            underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => {
               NavigationService.reset('Map', {
@@ -334,18 +334,22 @@ export class Chat extends Component<IProps, IState> {
           borderRadius: 10,
           // padding: 15,
         }}>
-        <View style={{flex: 1, paddingHorizontal: 20, paddingVertical: 10}}>
-          <View style={{width: '90%', justifyContent: 'flex-start'}}>
+        <View style={{flex: 1, paddingHorizontal: 15, paddingVertical: 10}}>
+          <View style={{width: '100%', justifyContent: 'flex-start'}}>
             <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 14, fontWeight: 'bold'}}>{item.display_name}</Text>
             <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 18}}>{item.message}</Text>
           </View>
-          <View style={{flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
+          {/* <View style={{flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
           <Vote selectedNode={item.data} />
-          </View>
+          </View> */}
           <View style={{
               width: '100%',
               flex: 1, flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
               <Text style={{fontSize: 14, color: 'lightgray'}}>{this.getTime(item)}</Text>
+              {
+                this.state.userUuid !== item.user &&
+                <Text onPress={() => this.showConfirmModal(item)} style={{fontSize: 14, color: 'lightgray'}}>send dm</Text>
+              }
             </View>
           </View>
       </TouchableOpacity>
@@ -564,7 +568,7 @@ export class Chat extends Component<IProps, IState> {
                backgroundColor: 'white',
                borderBottomColor: 'rgba(218, 219, 221, 1)',
                // marginHorizontal: 10,
-               minHeight: 150,
+               minHeight: 100,
                borderBottomWidth: 0.5,
                // padding: 15,
              }}>
@@ -572,13 +576,13 @@ export class Chat extends Component<IProps, IState> {
                <View style={{padding: 10, width: '90%', justifyContent: 'flex-start'}}>
                  <Text style={{color: 'rgba(27, 28, 29, 1)', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
                </View>
-               <View style={{height: '100%', flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
+               {/* <View style={{height: '100%', flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
                <Vote selectedNode={selectedNode} />
+               </View> */}
                </View>
-               </View>
-                 <View style={{paddingTop: 30,
+                 <View style={{
                    width: '100%', paddingHorizontal: 20,
-                   flex: 1, flexDirection: 'row', bottom: -15, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+                   flex: 1, flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
                    <Text style={{fontSize: 14, color: 'gray'}}>{selectedNode.distance_in_miles.toFixed(0) + ' miles'}</Text>
                    <Text style={{fontSize: 14, color: 'gray'}}>
                    {selectedNode.total_messages !== undefined ? selectedNode.total_messages + ' replies' : 0 + ' replies'}

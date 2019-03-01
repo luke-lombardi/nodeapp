@@ -337,7 +337,7 @@ export class Chat extends Component<IProps, IState> {
         <View style={{flex: 1, paddingHorizontal: 20, paddingVertical: 10}}>
           <View style={{width: '90%', justifyContent: 'flex-start'}}>
             <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 14, fontWeight: 'bold'}}>{item.display_name}</Text>
-            <Text style={{color: '#262626', alignSelf: 'flex-start', paddingVertical: 5, fontSize: 18}}>{item.message}</Text>
+            <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 18}}>{item.message}</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
           <Vote selectedNode={item.data} />
@@ -539,29 +539,46 @@ export class Chat extends Component<IProps, IState> {
         data={this.state.userInfo}
         />
       }
-            {this.action === 'node_chat' ?
-            <View
+        <View style={styles.flatlist}>
+          <FlatList
+           keyboardDismissMode={'on-drag'}
+           keyboardShouldPersistTaps='always'
+           data={this.state.data}
+           inverted
+           renderItem={this.action === 'private_message' ? this._renderDirectMessage : this._renderItem}
+           keyExtractor={item => item.timestamp}
+           ListEmptyComponent={
+            <View style={{flex: 1, backgroundColor: 'white', width: '100%', flexDirection: 'column', paddingVertical: '10%', justifyContent: 'center', alignSelf: 'center'}}>
+            <Text style={styles.null}>no messages yet.</Text>
+            <Text style={styles.nullSubtitle}>you can find messages here.</Text>
+            </View>
+           }
+           ListHeaderComponent={<View style={{ height: 0 }}></View>}
+           ListFooterComponent={
+             this.action === 'node_chat' ?
+             <TouchableOpacity
+             activeOpacity={1}
              style={{
-               flex: 1,
-               top: 0,
                marginTop: 10,
+               flex: 1,
                backgroundColor: 'white',
                borderBottomColor: 'rgba(218, 219, 221, 1)',
                // marginHorizontal: 10,
+               minHeight: 150,
                borderBottomWidth: 0.5,
                // padding: 15,
              }}>
-             <View style={{flex: 1, flexDirection: 'column', marginTop: 10, paddingHorizontal: 10}}>
-               <View style={{padding: 10, width: '80%', justifyContent: 'flex-start'}}>
+             <View style={{marginTop: 10, flex: 1, paddingHorizontal: 10}}>
+               <View style={{padding: 10, width: '90%', justifyContent: 'flex-start'}}>
                  <Text style={{color: 'rgba(27, 28, 29, 1)', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
                </View>
-               <View style={{width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
+               <View style={{height: '100%', flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
                <Vote selectedNode={selectedNode} />
                </View>
                </View>
-                 <View style={{
+                 <View style={{paddingTop: 30,
                    width: '100%', paddingHorizontal: 20,
-                   flex: 1, flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+                   flex: 1, flexDirection: 'row', bottom: -15, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
                    <Text style={{fontSize: 14, color: 'gray'}}>{selectedNode.distance_in_miles.toFixed(0) + ' miles'}</Text>
                    <Text style={{fontSize: 14, color: 'gray'}}>
                    {selectedNode.total_messages !== undefined ? selectedNode.total_messages + ' replies' : 0 + ' replies'}
@@ -570,27 +587,11 @@ export class Chat extends Component<IProps, IState> {
                    expires {moment().endOf('minute').seconds(selectedNode.ttl).fromNow()}
                    </Text>
                  </View>
-           </View>
+           </TouchableOpacity>
            :
-           undefined
-          }
-        <View style={styles.flatlist}>
-          <FlatList
-           style={{height: '70%', flexDirection: 'column'}}
-           keyboardDismissMode={'on-drag'}
-           keyboardShouldPersistTaps='always'
-           data={this.state.data}
-           inverted
-           renderItem={this.action === 'private_message' ? this._renderDirectMessage : this._renderItem}
-           keyExtractor={item => item.timestamp}
+           <View></View>
+            }
           />
-          {
-            this.state.data.length < 1 &&
-            <View style={styles.nullContainer}>
-            <Text style={styles.null}>no messages yet.</Text>
-            <Text style={styles.nullSubtitle}>you can find messages here.</Text>
-            </View>
-          }
           </View>
           <View
             style={[
@@ -657,15 +658,13 @@ const styles = ScaledSheet.create({
   null: {
     fontSize: 22,
     color: 'gray',
-    // top: '40%',
     alignSelf: 'center',
   },
   nullSubtitle: {
     fontSize: 14,
     color: 'gray',
-    // top: '40%',
-    height: '50%',
     paddingVertical: 10,
+    alignSelf: 'center',
   },
   titleText: {
     color: 'black',
@@ -776,13 +775,14 @@ const styles = ScaledSheet.create({
     fontSize: 16,
   },
   flatlist: {
-    flex: 1,
     backgroundColor: '#F6F4F3',
     marginBottom: 40,
     top: -10,
   },
   nullContainer: {
-    marginVertical: '30%',
+    flex: 1,
+    flexDirection: 'column',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },

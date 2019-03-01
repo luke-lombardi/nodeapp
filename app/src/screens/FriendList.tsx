@@ -47,7 +47,7 @@ export class FriendList extends Component<IProps, IState> {
     // @ts-ignore
     const { state: { params = {} } } = navigation;
     return {
-      headerStyle: {backgroundColor: '#006494', height: 70},
+      headerStyle: {backgroundColor: '#4392F1', height: 50},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'friends',
         headerLeft:
@@ -56,7 +56,7 @@ export class FriendList extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'black'}
+            underlayColor={'#4392F1'}
             color={'#ffffff'}
             onPress={ () => { NavigationService.reset('Map', {}); }}
           />,
@@ -298,7 +298,7 @@ export class FriendList extends Component<IProps, IState> {
         }
         title={<Text numberOfLines={1} ellipsizeMode={'tail'} style={{top: 10, fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
         subtitle={
-        <View style={{right: 5, paddingTop: 20, flexDirection: 'row'}}>
+        <View style={{paddingTop: 20, flexDirection: 'row', alignSelf: 'flex-end', right: 5}}>
         <Icon
           name={row.status === 'accepted' ? 'check-circle' : 'more-horizontal'}
           type={'feather'}
@@ -306,7 +306,7 @@ export class FriendList extends Component<IProps, IState> {
           color={row.status === 'accepted' ? 'green' : '#F03A47'}
           containerStyle={{width: '20%'}}
         />
-        <Text style={{width: '80%', color: 'gray', left: 5}}>{row.status }</Text>
+        <Text style={{width: '80%', color: 'gray', left: 1}}>{row.status}</Text>
         </View>
       }
       />

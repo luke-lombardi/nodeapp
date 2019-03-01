@@ -32,6 +32,25 @@ interface IState {
   time: any;
 }
 
+Moment.locale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s:  'seconds',
+    ss: '%ss',
+    m:  'a minute',
+    mm: '%dm',
+    h:  'an hour',
+    hh: '%dh',
+    d:  'a day',
+    dd: '%dd',
+    M:  'a month',
+    MM: '%dM',
+    y:  'a year',
+    yy: '%dY',
+  },
+});
+
 export class NodeList extends Component<IProps, IState> {
 
   constructor(props: IProps) {
@@ -68,8 +87,9 @@ export class NodeList extends Component<IProps, IState> {
 
   async goToChat(item) {
     NavigationService.reset('Chat', {
-      action: 'join_chat',
+      action: 'node_chat',
       nodeId: item.node_id,
+      selectedNode: item,
       // nodeType: this.props.nodeType,
       // nodeIndex: this.state.nodeIndex,
      });
@@ -151,28 +171,31 @@ export class NodeList extends Component<IProps, IState> {
           flex: 1,
           backgroundColor: 'white',
           borderColor: 'rgba(218, 219, 221, 1)',
-          borderWidth: 0.5,
-          marginVertical: index === 0 ? 10 : 5,
-          marginHorizontal: 10,
-          borderRadius: 10,
-          padding: 15,
+          borderWidth: .5,
+          marginTop: index === 0 ? 10 : 5,
+          marginHorizontal: 5,
+          paddingHorizontal: 5,
+          borderRadius: 5,
+          minHeight: 90,
+          // padding: 15,
         }}>
-        <View style={{flex: 1, flexDirection: 'row'}}>
-          <View style={{width: '80%'}}>
-            <Text style={{color: 'rgba(27, 28, 29, 1)', justifyContent: 'flex-start', alignItems: 'center', fontWeight: 'bold', fontSize: 16}}>{item.data.topic}</Text>
+        <View style={{flex: 1}}>
+          <View style={{padding: 10, width: '90%', justifyContent: 'flex-start'}}>
+            <Text style={{color: '#262626', alignSelf: 'flex-start', fontSize: 18}}>{item.data.topic}</Text>
           </View>
-          <View style={{width: '20%'}}>
+          <View style={{flex: 1, flexDirection: 'row', right: -10, width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
           <Vote selectedNode={item.data} />
           </View>
           </View>
-            <View style={{flex: 1, flexDirection: 'row', marginTop: 10, paddingBottom: 5, alignItems: 'center', justifyContent: 'space-between'}}>
-              <Text style={{fontSize: 14, color: 'rgba(102, 106, 112, 1)'}}>{item.data.distance_in_miles.toFixed(0) + ' miles away'}</Text>
-              <Text onPress={ async () => await this.goToChat(item.data)} style={{fontSize: 14, color: 'rgba(102, 106, 112, 1)'}}>
+            <View style={{
+              width: '85%', paddingHorizontal: 10, flex: 1, flexDirection: 'row', top: 5, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+              <Text style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>
+              {Moment().endOf('minute').seconds(item.data.ttl).fromNow(true)}
+              </Text>
+              <Text onPress={ async () => await this.goToChat(item.data)} style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>
               {item.data.total_messages !== undefined ? item.data.total_messages + ' replies' : 0 + ' replies'}
               </Text>
-              <Text style={{fontSize: 14, color: 'rgba(102, 106, 112, 1)'}}>
-              expires {Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
-              </Text>
+              <Text style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>{item.data.distance_in_miles.toFixed(0) + ' miles'}</Text>
             </View>
       </TouchableOpacity>
     )
@@ -194,12 +217,12 @@ export class NodeList extends Component<IProps, IState> {
     const buttons = ['nearest', 'trending'];
     return (
       <View style={{flex: 1}}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#006494'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between', height: 100, backgroundColor: '#4392F1'}}>
       <Icon
           name={'map-pin'}
           type={'feather'}
           size={30}
-          underlayColor={'#008B8B'}
+          underlayColor={'#4392F1'}
           color={'#ffffff'}
           containerStyle={{top: 40, left: 10}}
           onPress={() => NavigationService.reset('Map', {})}
@@ -207,7 +230,7 @@ export class NodeList extends Component<IProps, IState> {
         <ButtonGroup
           innerBorderStyle={{width: 0, color: 'white'}}
           containerStyle={{top: 30, borderWidth: 1, width: '60%'}}
-          buttonStyle={{height: 20, backgroundColor: '#006494'}}
+          buttonStyle={{height: 20, backgroundColor: '#4392F1'}}
           onPress={this.updateIndex}
           selectedIndex={this.state.selectedIndex}
           selectedButtonStyle={{borderBottomColor: '#262626', backgroundColor: 'white'}}
@@ -219,7 +242,7 @@ export class NodeList extends Component<IProps, IState> {
           name={'edit'}
           type={'feather'}
           size={30}
-          underlayColor={'#008B8B'}
+          underlayColor={'#4392F1'}
           color={'#ffffff'}
           containerStyle={{top: 40, right: 10}}
           onPress={() => NavigationService.reset('CreateNode', {})}
@@ -276,7 +299,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
-    marginBottom: 10,
     backgroundColor: 'rgba(192,192,192, 0.1)',
     height: '100%',
     width: '100%',

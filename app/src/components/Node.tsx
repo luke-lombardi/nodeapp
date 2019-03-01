@@ -12,6 +12,25 @@ import AuthService from '../services/AuthService';
 // @ts-ignore
 import Moment from 'moment';
 
+Moment.locale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s:  'seconds',
+    ss: '%ss',
+    m:  'a minute',
+    mm: '%dm',
+    h:  'an hour',
+    hh: '%dh',
+    d:  'a day',
+    dd: '%dd',
+    M:  'a month',
+    MM: '%dM',
+    y:  'a year',
+    yy: '%dY',
+  },
+});
+
 // @ts-ignore
 const { width, height } = Dimensions.get('window');
 // @ts-ignore
@@ -269,7 +288,7 @@ export default class Node extends Component<IProps, IState> {
           </View> */}
           <View style={styles.buttonContainer}>
           <View style={styles.buttonView}>
-          <Button
+          {/* <Button
               icon={{
                 name: 'credit-card',
                 type: 'feather',
@@ -281,7 +300,7 @@ export default class Node extends Component<IProps, IState> {
               buttonStyle={styles.transparentButton}
               title=''
               onPress={ async () => { await this.showPaymentModal(); } }
-            />
+            /> */}
            { this.props.nodeId.includes('public') &&
             <Button
               icon={{
@@ -353,15 +372,12 @@ const styles = ScaledSheet.create({
     borderRadius: 20,
     borderColor: 'rgba(44,55,71,.9)',
     borderTopWidth: 0,
-    shadowColor: '#262626',
-    shadowOffset: {width: 5, height: 10},
-    shadowOpacity: 0.8,
     borderWidth: .5,
     borderTopLeftRadius: 0,
     flexDirection: 'row',
     alignItems: 'center',
     bottom: 0,
-    backgroundColor: 'rgba(44,55,71,.9)',
+    backgroundColor: 'rgba(44,55,71, 0.7)',
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -376,7 +392,8 @@ const styles = ScaledSheet.create({
   countdownContainer: {
     left: 15,
     position: 'relative',
-    backgroundColor: 'rgba(44,55,71,.9)',
+    borderColor: 'rgba(44,55,71,.9)',
+    backgroundColor: 'rgba(44,55,71, 0.7)',
     alignSelf: 'flex-start',
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,

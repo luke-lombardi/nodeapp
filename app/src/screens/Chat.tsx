@@ -10,6 +10,7 @@ import Snackbar from 'react-native-snackbar';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import ConfirmModal from '../components/ConfirmModal';
+import Vote from '../components/Vote';
 
 // Redux imports
 import IStoreState from '../store/IStoreState';
@@ -28,6 +29,25 @@ import uuid from 'react-native-uuid';
 
 import DeferredPromise from '../services/DeferredPromise';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
+
+moment.locale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s:  'seconds',
+    ss: '%ss',
+    m:  'a minute',
+    mm: '%dm',
+    h:  'an hour',
+    hh: '%dh',
+    d:  'a day',
+    dd: '%dd',
+    M:  'a month',
+    MM: '%dM',
+    y:  'a year',
+    yy: '%dY',
+  },
+});
 
 interface IProps {
     navigation: any;
@@ -78,7 +98,7 @@ export class Chat extends Component<IProps, IState> {
 
     // @ts-ignore
       return {
-      headerStyle: {backgroundColor: '#006494', paddingTop: -10, height: 70},
+      headerStyle: {backgroundColor: '#4392F1', paddingTop: -10, height: 50},
       headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
         title: username ,
         headerLeft:
@@ -87,7 +107,7 @@ export class Chat extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#006494'}
+            underlayColor={'#4392F1'}
             color={'#ffffff'}
             onPress={ () => {
               NavigationService.reset('Map', {
@@ -114,6 +134,7 @@ export class Chat extends Component<IProps, IState> {
     };
 
     this._renderItem = this._renderItem.bind(this);
+    this._renderDirectMessage = this._renderDirectMessage.bind(this);
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
@@ -186,13 +207,8 @@ export class Chat extends Component<IProps, IState> {
     }
 
     getTime(item) {
-      let easternTime = moment(item.timestamp).utcOffset(14);
-
-      // make sure it does not return a date that is ahead of the current date
-      let timestamp = moment(easternTime).max(moment(easternTime));
-
-      let parsedTimestamp = moment(timestamp).calendar();
-
+      let easternTime = moment.parseZone(item.timestamp).local().format();
+      let parsedTimestamp = moment(easternTime).endOf('second').fromNow();
       return parsedTimestamp;
     }
 
@@ -205,12 +221,6 @@ export class Chat extends Component<IProps, IState> {
       }
     }
     async showConfirmModal(item) {
-
-      // console.log('THIS.STATE.USERINFO');
-      // console.log(this.state.userUuid);
-
-      // console.log('ITEM.USER');
-      // console.log(item.user);
 
       // @ts-ignore
       let currentUUID = await AuthService.getUUID();
@@ -286,7 +296,8 @@ export class Chat extends Component<IProps, IState> {
     stackMessages(index, item) {
       let previousItem = this.state.data[index + 1];
       if (previousItem !== undefined) {
-        if (item.user === previousItem.user) {
+        // stack messages if the user is the same AND the messages were posted within one minute of each other
+        if (item.user === previousItem.user && moment(item.timestamp).diff(moment(previousItem.timestamp), 'minutes') < 1) {
           return true;
         } else if (previousItem === undefined) {
           return false;
@@ -306,8 +317,42 @@ export class Chat extends Component<IProps, IState> {
     return true;
   }
 
+      // @ts-ignore
+      _renderItem = ({item, index}) => (
+        <TouchableOpacity
+        onLongPress={() => this.showConfirmModal(item)}
+        activeOpacity={0.7}
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          borderColor: 'rgba(218, 219, 221, 1)',
+          borderWidth: .5,
+          marginTop: index === index.length - 1 ? 10 : 5,
+          marginBottom: index === 0 ? 5 : 0,
+          minHeight: 90,
+          marginHorizontal: 5,
+          borderRadius: 10,
+          // padding: 15,
+        }}>
+        <View style={{flex: 1, paddingHorizontal: 20, paddingVertical: 10}}>
+          <View style={{width: '90%', justifyContent: 'flex-start'}}>
+            <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 14, fontWeight: 'bold'}}>{item.display_name}</Text>
+            <Text style={{color: '#262626', alignSelf: 'flex-start', paddingVertical: 5, fontSize: 18}}>{item.message}</Text>
+          </View>
+          <View style={{flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
+          <Vote selectedNode={item.data} />
+          </View>
+          <View style={{
+              width: '100%',
+              flex: 1, flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+              <Text style={{fontSize: 14, color: 'lightgray'}}>{this.getTime(item)}</Text>
+            </View>
+          </View>
+      </TouchableOpacity>
+    )
+
     // @ts-ignore
-    _renderItem = ({item, index}) => (
+    _renderDirectMessage = ({item, index}) => (
       <ListItem
         onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
@@ -474,8 +519,8 @@ export class Chat extends Component<IProps, IState> {
     }
 
     render() {
+      let selectedNode = this.props.navigation.getParam('selectedNode');
       return (
-
       <KeyboardAvoidingView
         style={{flex: 1, backgroundColor: 'white'}}
         behavior='padding'
@@ -494,15 +539,50 @@ export class Chat extends Component<IProps, IState> {
         data={this.state.userInfo}
         />
       }
+            {this.action === 'node_chat' ?
+            <View
+             style={{
+               flex: 1,
+               top: 0,
+               marginTop: 10,
+               backgroundColor: 'white',
+               borderBottomColor: 'rgba(218, 219, 221, 1)',
+               // marginHorizontal: 10,
+               borderBottomWidth: 0.5,
+               // padding: 15,
+             }}>
+             <View style={{flex: 1, flexDirection: 'column', marginTop: 10, paddingHorizontal: 10}}>
+               <View style={{padding: 10, width: '80%', justifyContent: 'flex-start'}}>
+                 <Text style={{color: 'rgba(27, 28, 29, 1)', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
+               </View>
+               <View style={{width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
+               <Vote selectedNode={selectedNode} />
+               </View>
+               </View>
+                 <View style={{
+                   width: '100%', paddingHorizontal: 20,
+                   flex: 1, flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+                   <Text style={{fontSize: 14, color: 'gray'}}>{selectedNode.distance_in_miles.toFixed(0) + ' miles'}</Text>
+                   <Text style={{fontSize: 14, color: 'gray'}}>
+                   {selectedNode.total_messages !== undefined ? selectedNode.total_messages + ' replies' : 0 + ' replies'}
+                   </Text>
+                   <Text style={{fontSize: 14, color: 'gray'}}>
+                   expires {moment().endOf('minute').seconds(selectedNode.ttl).fromNow()}
+                   </Text>
+                 </View>
+           </View>
+           :
+           undefined
+          }
         <View style={styles.flatlist}>
           <FlatList
+           style={{height: '70%', flexDirection: 'column'}}
            keyboardDismissMode={'on-drag'}
            keyboardShouldPersistTaps='always'
            data={this.state.data}
            inverted
-           renderItem={this._renderItem}
+           renderItem={this.action === 'private_message' ? this._renderDirectMessage : this._renderItem}
            keyExtractor={item => item.timestamp}
-           ListHeaderComponent={<View style={{ height: 0, marginTop: 40 }}></View>}
           />
           {
             this.state.data.length < 1 &&
@@ -515,6 +595,7 @@ export class Chat extends Component<IProps, IState> {
           <View
             style={[
               styles.chatMessageContainer, {
+                bottom: 0,
                 height: Math.min(120, Math.max(50, this.state.textInputHeight)),
               },
             ]}
@@ -576,26 +657,28 @@ const styles = ScaledSheet.create({
   null: {
     fontSize: 22,
     color: 'gray',
-    top: '40%',
+    // top: '40%',
     alignSelf: 'center',
   },
   nullSubtitle: {
     fontSize: 14,
     color: 'gray',
-    top: '40%',
+    // top: '40%',
+    height: '50%',
     paddingVertical: 10,
   },
   titleText: {
     color: 'black',
     fontSize: 18,
-    left: 2,
+    top: -3,
     paddingVertical: 2,
+    left: 2,
   },
   myTitleText: {
     color: 'black',
     fontSize: 18,
+    top: -3,
     left: 2,
-    paddingVertical: 2,
   },
   iconContainer: {
     backgroundColor: 'white',
@@ -666,11 +749,15 @@ const styles = ScaledSheet.create({
     fontWeight: 'bold',
   },
   thisUser: {
+    flex: 1,
+    height: '100%',
     borderLeftWidth: 3,
     borderLeftColor: '#F03A47',
     paddingHorizontal: 5,
   },
   thatUser: {
+    flex: 1,
+    height: '100%',
     borderLeftWidth: 3,
     borderLeftColor: 'rgba(52, 152, 219, 1)',
     paddingHorizontal: 5,
@@ -689,7 +776,8 @@ const styles = ScaledSheet.create({
     fontSize: 16,
   },
   flatlist: {
-    backgroundColor: 'white',
+    flex: 1,
+    backgroundColor: '#F6F4F3',
     marginBottom: 40,
     top: -10,
   },

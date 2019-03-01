@@ -4,11 +4,30 @@ import { View, StyleSheet, Text, FlatList, Dimensions } from 'react-native';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import NavigationService from '../services/NavigationService';
-import { ButtonGroup, ListItem } from 'react-native-elements';
+import { ButtonGroup, ListItem, Icon } from 'react-native-elements';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import Moment from 'moment';
 
 const { height } = Dimensions.get('window');
+
+Moment.locale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s:  'seconds',
+    ss: '%ss',
+    m:  'a minute',
+    mm: '%dm',
+    h:  'an hour',
+    hh: '%dh',
+    d:  'a day',
+    dd: '%dd',
+    M:  'a month',
+    MM: '%dM',
+    y:  'a year',
+    yy: '%dY',
+  },
+});
 
 interface IProps {
     navigation?: any;
@@ -105,7 +124,7 @@ export class ActiveChats extends Component<IProps, IState> {
       <ListItem
         onPress={() => this._onTouchNode(item, index)}
         containerStyle={styles.nodeListItem}
-        titleStyle={{fontWeight: 'bold', fontSize: 14}}
+        titleStyle={{fontWeight: 'bold', fontSize: 18}}
         title={
           <Text style={{fontWeight: 'bold'}} numberOfLines={1} ellipsizeMode='tail'>
           {this.state.selectedIndex === 0 ? item.data.topic : item.topic}
@@ -113,27 +132,29 @@ export class ActiveChats extends Component<IProps, IState> {
         }
         rightTitleStyle={{fontWeight: '600', fontSize: 14}}
         rightTitle={
-        this.state.selectedIndex  ===  0 ?
-          <View style={{paddingVertical: 5}}>
-            <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toFixed(0)}</Text>
-            <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
-          </View>
-          : <View>
-            {}
-          </View>
-        }
+            this.state.selectedIndex  ===  1 ?
+            <View style={{flexDirection: 'column', right: 10, width: 50, height: 50, alignSelf: 'flex-end'}}>
+            <Icon
+              name={'eye'}
+              type={'feather'}
+              color={item.sharing_location ? 'orange' : 'gray'}
+              size={28}
+              containerStyle={{top: 10}}
+            />
+            </View>
+            :
+            <View style={{paddingVertical: 5}}>
+              <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
+              <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
+            </View>
+          }
         subtitle={
-          <View style={{paddingVertical: 5}}>
+          <View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
           { this.state.selectedIndex === 0 ?
-            <Text style={{fontSize: 14, color: 'gray'}}>expires {Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
-            </Text>
+            <Text style={{fontSize: 14, color: 'gray'}}>{'expires ' + Moment().endOf('minute').seconds(item.data.ttl).fromNow()}</Text>
             :
             undefined
           }
-            { this.state.selectedIndex === 0  &&
-              item.data.likes &&
-              <Text style={{paddingVertical: 5, fontSize: 14, color: 'gray'}}>saved by {Object.keys(item.data.likes).length} {Object.keys(item.data.likes).length < 2 ? 'person' : 'people'}</Text>
-            } */}
           </View>
         }
       />
@@ -143,14 +164,14 @@ export class ActiveChats extends Component<IProps, IState> {
       const buttons = ['nodes', 'friends'];
       return (
         <View style={{flex: 1}}>
-        <View style={{paddingHorizontal: 10, paddingVertical: 10, height: 90, backgroundColor: '#006494', flexDirection: 'row'}}>
+        <View style={{paddingHorizontal: 10, paddingVertical: 10, height: 90, backgroundColor: '#4392F1', flexDirection: 'row'}}>
         <ButtonGroup
           innerBorderStyle={{width: 0, color: 'white'}}
           containerStyle={{alignSelf: 'center', alignItems: 'center', alignContent: 'center', justifyContent: 'space-between', top: 10, borderWidth: 1, width: '90%'}}
-          buttonStyle={{height: 20, backgroundColor: '#006494'}}
+          buttonStyle={{height: 20, backgroundColor: '#4392F1'}}
           onPress={this.updateIndex}
           selectedIndex={this.state.selectedIndex}
-          selectedButtonStyle={{borderBottomColor: '#262626', backgroundColor: 'white'}}
+          selectedButtonStyle={{borderBottomColor: '#4392F1', backgroundColor: 'white'}}
           selectedTextStyle={{color: 'gray'}}
           buttons={buttons}
           textStyle={{fontSize: 18, color: 'white'}}
@@ -232,7 +253,7 @@ export class ActiveChats extends Component<IProps, IState> {
       paddingVertical: 10,
     },
     button: {
-      backgroundColor: '#006494',
+      backgroundColor: '#4392F1',
     },
     createNodeButton: {
       top: 30,
@@ -243,7 +264,7 @@ export class ActiveChats extends Component<IProps, IState> {
       height: 50,
       // bottom: 45,
       paddingHorizontal: 100,
-      borderBottomColor: '#006494',
+      borderBottomColor: '#4392F1',
       alignSelf: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.9);',
       width: '110%',

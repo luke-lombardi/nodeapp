@@ -140,7 +140,7 @@ export class CreateNode extends Component<IProps, IState> {
             </View>
           </View>
           <Button
-            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '90%', backgroundColor: '#006494', bottom: -5, borderBottomColor: '#006494'}}
+            style={styles.fullWidthButton} buttonStyle={{width: '100%', height: '90%', backgroundColor: '#4392F1', bottom: -5, borderBottomColor: '#4392F1'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
             disabled={this.state.isLoading}
@@ -267,7 +267,7 @@ const styles = ScaledSheet.create({
   container: {
     padding: 0,
     flex: 1,
-    backgroundColor: '#F6F4F3',
+    backgroundColor: '#4392F1',
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
@@ -292,7 +292,7 @@ const styles = ScaledSheet.create({
     borderBottomWidth: 1,
   },
   fullWidthButton: {
-    backgroundColor: '#006494',
+    backgroundColor: '#4392F1',
     height: '70@vs',
     justifyContent: 'center',
     alignItems: 'center',

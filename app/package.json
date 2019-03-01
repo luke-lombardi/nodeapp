@@ -81,6 +81,7 @@
     "react-native-stars-rating": "^0.1.7",
     "react-native-swipe-gestures": "^1.0.3",
     "react-native-swipeout": "^2.3.6",
+    "react-native-swiper": "^1.5.14",
     "react-native-switch": "^1.5.0",
     "react-native-tab-view": "^1.0.2",
     "react-native-touchable-scale": "^2.0.0",

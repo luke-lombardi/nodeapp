@@ -129,7 +129,7 @@ export class SideBar extends Component<IProps, IState> {
 
                   }}
                 />
-                <ListItem
+                {/* <ListItem
                   scaleProps={{
                     friction: 90,
                     tension: 100,
@@ -141,7 +141,7 @@ export class SideBar extends Component<IProps, IState> {
                   titleStyle={{fontSize: 22}}
                   leftIcon={{name: 'layers', size: 22, type: 'feather', color: 'rgba(51, 51, 51, 0.8)'}}
                   onPress={ () => {  NavigationService.reset('Transactions', {}); }}
-                />
+                /> */}
         <Text style={styles.version}>{this.configGlobal.jsVersion}</Text>
         <Text
         onPress={() => Alert.alert(

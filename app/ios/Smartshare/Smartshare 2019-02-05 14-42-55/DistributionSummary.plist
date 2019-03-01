@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Smartshare.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>F6744456D7DF2132C97C5D4966F9E7BDB4E36E67</string>
+				<key>dateExpires</key>
+				<string>1/26/20</string>
+				<key>type</key>
+				<string>iOS Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>F6744456D7DF2132C97C5D4966F9E7BDB4E36E67</string>
+						<key>dateExpires</key>
+						<string>1/26/20</string>
+						<key>type</key>
+						<string>iOS Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>ViroKit_static_lib.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>TN6X9LR957</string>
+						<key>name</key>
+						<string>SMARTSHARE LLC</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>TN6X9LR957.io.smartshare.app</string>
+				<key>aps-environment</key>
+				<string>production</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>TN6X9LR957</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>Smartshare.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>9009c17a-5117-448f-8400-b4d89e503cdb</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: io.smartshare.app</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>TN6X9LR957</string>
+				<key>name</key>
+				<string>SMARTSHARE LLC</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

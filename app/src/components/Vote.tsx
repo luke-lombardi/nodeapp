@@ -91,19 +91,19 @@ export default class Vote extends Component<IProps, IState> {
 
   render() {
     return (
-      <View style={{flex: 1, alignItems: 'center', flexDirection: 'column', alignContent: 'flex-end', alignSelf: 'flex-end', justifyContent: 'flex-end'}}>
+      <View style={{flex: 1}}>
         <Icon
           name='keyboard-arrow-up'
           color={this.state.vote === 1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
-          size={34}
+          size={36}
           onPress={async () => { await this.updateVote(1); }}
           underlayColor={'transparent'}
         />
-        <Text style={{margin: -5, fontSize: 18, color: 'gray', alignSelf: 'center', alignItems: 'center'}}>{this.state.totalVoteCount}</Text>
+        <Text style={{margin: -5, fontWeight: '500', fontSize: 20, color: 'gray', alignSelf: 'center', alignItems: 'center'}}>{this.state.totalVoteCount}</Text>
         <Icon
           name='keyboard-arrow-down'
           color={this.state.vote === -1 ? 'rgba(0,172,237, 0.5)' : 'rgba(0,172,237, 1)'}
-          size={34}
+          size={36}
           onPress={async () => { await this.updateVote(-1); }}
           underlayColor={'transparent'}
         />

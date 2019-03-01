@@ -125,7 +125,7 @@ const InternalStack = createStackNavigator({
   CreateNode: { screen: CreateNode,
     // @ts-ignore
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: '#006494', height: 70, borderBottomWidth: 5, borderBottomColor: '#006494'},
+      headerStyle: {backgroundColor: '#4392F1', height: 50, borderBottomWidth: 5, borderBottomColor: '#4392F1'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'drop node',
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
@@ -138,7 +138,7 @@ const InternalStack = createStackNavigator({
   TransactionDetail: { screen: TransactionDetail,
     // @ts-ignore
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: '#006494', height: 70, borderBottomWidth: 5, borderBottomColor: 'black'},
+      headerStyle: {backgroundColor: '#006494', height: 50, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'transaction detail',
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
@@ -149,7 +149,7 @@ const InternalStack = createStackNavigator({
   },  Camera: { screen: Camera,
     // @ts-ignore
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: '#006494', height: 70, borderBottomWidth: 5, borderBottomColor: '#006494'},
+      headerStyle: {backgroundColor: '#006494', height: 50, borderBottomWidth: 5, borderBottomColor: '#006494'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
       color={'#ffffff'} onPress={ () =>

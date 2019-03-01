@@ -48,7 +48,7 @@ export class Notifications extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: '#006494', height: 70},
+      headerStyle: {backgroundColor: '#4392F1', height: 50},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'notifications',
         headerLeft:
@@ -57,7 +57,7 @@ export class Notifications extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#006494'}
+            underlayColor={'#4392F1'}
             color={'#ffffff'}
             onPress={ () => { NavigationService.reset('Map', {}); }}
             />,

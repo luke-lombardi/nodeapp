@@ -19,6 +19,25 @@ import NavigationService from '../services/NavigationService';
 // @ts-ignore
 import moment from 'moment';
 
+moment.locale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s:  'seconds',
+    ss: '%ss',
+    m:  'a minute',
+    mm: '%dm',
+    h:  'an hour',
+    hh: '%dh',
+    d:  'a day',
+    dd: '%dd',
+    M:  'a month',
+    MM: '%dM',
+    y:  'a year',
+    yy: '%dY',
+  },
+});
+
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import { TransactionDetail } from '../components/TransactionDetail';
 
@@ -45,7 +64,7 @@ export class Transactions extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: '#006494', height: 70},
+      headerStyle: {backgroundColor: '#4392F1', height: 50},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'transactions',
         headerLeft:
@@ -54,7 +73,7 @@ export class Transactions extends Component<IProps, IState> {
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#006494'}
+            underlayColor={'#4392F1'}
             color={'#ffffff'}
             onPress={ () => { NavigationService.reset('Map', {}); }}
             />,
@@ -226,7 +245,7 @@ export class Transactions extends Component<IProps, IState> {
         {/* <Text style={{alignSelf: 'center', fontSize: 12, color: 'gray'}}>Address</Text> */}
         <Button
           containerStyle={{position: 'absolute', bottom: 0, width: '100%'}}
-          buttonStyle={{backgroundColor: '#006494', borderRadius: 0}}
+          buttonStyle={{backgroundColor: '#4392F1', borderRadius: 0}}
           titleStyle={{fontSize: 16}}
           title='Import Wallet'
           onPress={() => this.navigateToCamera()}

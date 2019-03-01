@@ -64,16 +64,16 @@ export class Transactions extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: '#4392F1', height: 50},
+      headerStyle: {backgroundColor: '#006494', height: 50},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'transactions',
         headerLeft:
             <Icon
-            name='x'
+            name='chevron-left'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#4392F1'}
+            underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => { NavigationService.reset('Map', {}); }}
             />,
@@ -245,7 +245,7 @@ export class Transactions extends Component<IProps, IState> {
         {/* <Text style={{alignSelf: 'center', fontSize: 12, color: 'gray'}}>Address</Text> */}
         <Button
           containerStyle={{position: 'absolute', bottom: 0, width: '100%'}}
-          buttonStyle={{backgroundColor: '#4392F1', borderRadius: 0}}
+          buttonStyle={{backgroundColor: '#006494', borderRadius: 0}}
           titleStyle={{fontSize: 16}}
           title='Import Wallet'
           onPress={() => this.navigateToCamera()}

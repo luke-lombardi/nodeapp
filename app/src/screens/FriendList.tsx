@@ -20,6 +20,7 @@ import ApiService from '../services/ApiService';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 // @ts-ignore
 import NavigationService from '../services/NavigationService';
+import { AnimatedRegion } from 'react-native-maps';
 
 const { height } = Dimensions.get('window');
 
@@ -47,16 +48,16 @@ export class FriendList extends Component<IProps, IState> {
     // @ts-ignore
     const { state: { params = {} } } = navigation;
     return {
-      headerStyle: {backgroundColor: '#4392F1', height: 50},
+      headerStyle: {backgroundColor: '#006494', height: 50},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-        title: 'friends',
+        title: params.action === 'share_node' ? 'share node' : 'friends',
         headerLeft:
           <Icon
-            name='x'
+            name='chevron-left'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#4392F1'}
+            underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => { NavigationService.reset('Map', {}); }}
           />,
@@ -147,13 +148,13 @@ export class FriendList extends Component<IProps, IState> {
       longitudeDelta: parseFloat(node.data.longDelta),
     };
 
-    const nodeType = 'friend';
-    NavigationService.reset('Map', {region: region, nodeType: nodeType, nodeIndex: nodeIndex } );
+    let nodeType = 'friend';
 
+    NavigationService.reset('Map', { region: region, nodeType: nodeType, nodeIndex: nodeIndex } );
   }
 
   async sendPrivateMessage(row) {
-    NavigationService.reset('Chat', { nodeId: row.relation_id, username: row.topic } );
+    NavigationService.reset('Chat', { nodeId: row.relation_id, username: row.topic} );
   }
 
   async toggleLocationSharing(row) {
@@ -264,8 +265,8 @@ export class FriendList extends Component<IProps, IState> {
       backgroundColor='#ffffff'
     >
       <ListItem
-        onPress={() => row.status === 'accepted' ?
-        this.sendPrivateMessage(row) :
+        onPress={async () => row.status === 'accepted' ?
+        await this.sendPrivateMessage(row) :
         Snackbar.show({
           title: `${row.topic} has not accepted your friend request.`,
           duration: Snackbar.LENGTH_SHORT,
@@ -280,7 +281,7 @@ export class FriendList extends Component<IProps, IState> {
             type='feather'
             color='black'
             size={38}
-            onPress={async () => { await this._onTouchNode(row); }}
+            onPress={() => { this._onTouchNode(row); }}
             underlayColor={'transparent'}
           />
           <Text style={{fontSize: 12, color: 'gray', textAlign: 'center', top: 7}}>view on map</Text>
@@ -304,7 +305,7 @@ export class FriendList extends Component<IProps, IState> {
           type={'feather'}
           size={18}
           color={row.status === 'accepted' ? 'green' : '#F03A47'}
-          containerStyle={{width: '20%'}}
+          containerStyle={row.status === 'accepted' ? {width: '20%'} : {width: '20%', left: -1}}
         />
         <Text style={{width: '80%', color: 'gray', left: 1}}>{row.status}</Text>
         </View>
@@ -418,19 +419,19 @@ const styles = StyleSheet.create({
   friendListItem: {
     minHeight: 100,
     maxHeight: 120,
-    borderBottomWidth: .5,
+    // borderBottomWidth: .5,
     borderBottomColor: 'rgba(51, 51, 51, 0.1)',
     flex: 1,
     backgroundColor: 'white',
     borderColor: 'rgba(218, 219, 221, 1)',
-    borderWidth: 0.5,
-    borderRadius: 10,
+    // borderWidth: 0.5,
+    borderRadius: 5,
     padding: 15,
     marginHorizontal: 5,
   },
   flatlist: {
     flex: 1,
-    backgroundColor: 'rgba(192,192,192, 0.1)',
+    backgroundColor: '#F6F4F3',
   },
   null: {
     fontSize: 20,

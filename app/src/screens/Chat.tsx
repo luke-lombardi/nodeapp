@@ -83,6 +83,8 @@ export class Chat extends Component<IProps, IState> {
   // TODO: figure out a smarter way to do this
   static navigationOptions = ({ navigation }) => {
     let username: string = undefined;
+    let region: any = undefined;
+    let index: number = undefined;
     const {params = {}} = navigation.state;
 
     try {
@@ -96,24 +98,67 @@ export class Chat extends Component<IProps, IState> {
       // Do nothing if there is no node id defined for now
     }
 
+    try {
+      if (params.selectedNode !== undefined) {
+        region = {
+          latitude: parseFloat(params.selectedNode.latitude),
+          longitude: parseFloat(params.selectedNode.longitude),
+          latitudeDelta: parseFloat(params.selectedNode.latDelta),
+          longitudeDelta: parseFloat(params.selectedNode.longDelta),
+        };
+      } else {
+        region = undefined;
+      }
+    } catch (error) {
+        region = undefined;
+      // Do nothing if there is no node id defined for now
+    }
+
+    try {
+      if (params.index !== undefined) {
+        index = params.index;
+      } else {
+      index = undefined;
+      }
+    } catch (error) {
+      index = undefined;
+    }
+
     // @ts-ignore
       return {
-      headerStyle: {backgroundColor: '#006494', paddingTop: -10, height: 50},
-      headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingLeft: -20 },
+      headerStyle: {backgroundColor: '#006494', height: 50},
+      headerTitleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold' },
         title: username ,
         headerLeft:
           <Icon
-            name='x'
+            name='chevron-left'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
             underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => {
-              NavigationService.reset('Map', {
-              nodeType: params.nodeType,
-              nodeIndex: params.nodeIndex,
-            }); }}
+              params.action === 'node_chat' ?
+              NavigationService.reset('Nodes', {})
+            :
+              NavigationService.reset('FriendList', {});
+            }}
+          />,
+          headerRight:
+          <Icon
+            name='map-pin'
+            type='feather'
+            containerStyle={{padding: 5}}
+            size={30}
+            underlayColor={'#006494'}
+            color={'#ffffff'}
+            onPress={ () => {
+                NavigationService.reset('Map', {
+                  region: region,
+                  nodeType: 'publicPlace',
+                  nodeIndex: index,
+                });
+            }}
           />,
       };
   }
@@ -326,17 +371,17 @@ export class Chat extends Component<IProps, IState> {
           flex: 1,
           backgroundColor: 'white',
           borderColor: 'rgba(218, 219, 221, 1)',
-          borderWidth: .5,
-          marginTop: index === index.length - 1 ? 10 : 5,
-          marginBottom: index === 0 ? 5 : 0,
+          // borderWidth: .5,
+          marginTop: index === 0 ? 5 : 5,
+          // marginBottom: index === 0 ? 5 : 0,
           minHeight: 90,
           marginHorizontal: 5,
-          borderRadius: 10,
+          borderRadius: 5,
           // padding: 15,
         }}>
         <View style={{flex: 1, paddingHorizontal: 15, paddingVertical: 10}}>
           <View style={{width: '100%', justifyContent: 'flex-start'}}>
-            <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 14, fontWeight: 'bold'}}>{item.display_name}</Text>
+            <Text style={this.state.userUuid !== item.user ? styles.displayName : styles.myDisplayName}>{item.display_name}</Text>
             <Text style={{color: '#262626', alignSelf: 'flex-start', paddingBottom: 5, fontSize: 18}}>{item.message}</Text>
           </View>
           {/* <View style={{flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
@@ -358,7 +403,7 @@ export class Chat extends Component<IProps, IState> {
     // @ts-ignore
     _renderDirectMessage = ({item, index}) => (
       <ListItem
-        onLongPress={() => this.showConfirmModal(item)}
+        // onLongPress={() => this.showConfirmModal(item)}
         containerStyle={{
           marginBottom: -15,
         }}
@@ -389,7 +434,6 @@ export class Chat extends Component<IProps, IState> {
           <Text numberOfLines={1} ellipsizeMode={'tail'} style={this.state.userUuid === item.user ?
             [styles.thisDisplayName, {marginTop: index === 0 ? 10 : 10}] :
             [styles.thatDisplayName, {marginTop: index === 0 ? 10 : 10}]}>{item.display_name + '  - ' + this.getTime(item)}
-
           </Text>
           <View style={this.state.userUuid === item.user ? styles.thisUser : styles.thatUser}>
           <Text style={styles.myTitleText}>{item.message}</Text>
@@ -406,6 +450,8 @@ export class Chat extends Component<IProps, IState> {
     )
 
     componentWillMount () {
+      console.log('selected node', this.props.navigation.getParam('selectedNode', ''));
+
       // Grab navigation params
       this.action = this.props.navigation.getParam('action', '');
       this.nodeId = this.props.navigation.getParam('nodeId', '');
@@ -426,9 +472,12 @@ export class Chat extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+      console.log('got props', this.props);
       // Updates the message data for the node
       this.monitorMessages();
       this.getUserInfo();
+      // this.props.navigation.setParams({node: node});
+
     }
 
     componentWillUnmount() {
@@ -526,7 +575,9 @@ export class Chat extends Component<IProps, IState> {
       let selectedNode = this.props.navigation.getParam('selectedNode');
       return (
       <KeyboardAvoidingView
-        style={{flex: 1, backgroundColor: 'white'}}
+      style={this.action === 'node_chat' ?
+        { flex: 1, backgroundColor: '#F6F4F3' } :
+        { flex: 1, backgroundColor: 'white' }}
         behavior='padding'
         contentContainerStyle={{flex: 1}}
         keyboardVerticalOffset={90}
@@ -543,22 +594,21 @@ export class Chat extends Component<IProps, IState> {
         data={this.state.userInfo}
         />
       }
-        <View style={styles.flatlist}>
+        <View style={this.action === 'node_chat' ? styles.flatlist : styles.chatList}>
           <FlatList
            keyboardDismissMode={'on-drag'}
            keyboardShouldPersistTaps='always'
            data={this.state.data}
-           inverted
-           renderItem={this.action === 'private_message' ? this._renderDirectMessage : this._renderItem}
+           inverted={this.action === 'node_chat' ? false : true}
+           renderItem={this.action === 'node_chat' ? this._renderItem : this._renderDirectMessage}
            keyExtractor={item => item.timestamp}
            ListEmptyComponent={
-            <View style={{flex: 1, backgroundColor: 'white', width: '100%', flexDirection: 'column', paddingVertical: '10%', justifyContent: 'center', alignSelf: 'center'}}>
+            <View style={this.action === 'node_chat' ? styles.nullContainer : styles.nullChatContainer}>
             <Text style={styles.null}>no messages yet.</Text>
             <Text style={styles.nullSubtitle}>you can find messages here.</Text>
             </View>
            }
-           ListHeaderComponent={<View style={{ height: 0 }}></View>}
-           ListFooterComponent={
+           ListHeaderComponent={
              this.action === 'node_chat' ?
              <TouchableOpacity
              activeOpacity={1}
@@ -593,17 +643,25 @@ export class Chat extends Component<IProps, IState> {
                  </View>
            </TouchableOpacity>
            :
-           <View></View>
+           <View style={{height: 20}}></View>
             }
           />
           </View>
           <View
-            style={[
+            style={this.action === 'node_chat' ? [
               styles.chatMessageContainer, {
                 bottom: 0,
                 height: Math.min(120, Math.max(50, this.state.textInputHeight)),
               },
-            ]}
+            ]
+          :
+            [
+              styles.directMessageContainer, {
+                bottom: 0,
+                height: Math.min(120, Math.max(50, this.state.textInputHeight)),
+              },
+            ]
+          }
           >
           <TextInput
             ref= {(el) => { this._textInput = el; }}
@@ -619,11 +677,18 @@ export class Chat extends Component<IProps, IState> {
             blurOnSubmit={true}
             placeholder={'type your message...'}
             returnKeyType='done'
-            style={[
+            style={this.action === 'node_chat' ? [
               styles.chatInput, {
+                height: Math.min(120, Math.max(70, this.state.textInputHeight)),
+              },
+            ]
+          :
+            [
+              styles.directMessageInput, {
                 height: Math.min(120, Math.max(50, this.state.textInputHeight)),
               },
-            ]}
+            ]
+          }
             onChangeText={text => this.setMessageText(text)}
             value={this.state.messageBody}
           />
@@ -670,17 +735,32 @@ const styles = ScaledSheet.create({
     paddingVertical: 10,
     alignSelf: 'center',
   },
+  displayName: {
+    color: '#262626',
+    alignSelf: 'flex-start',
+    paddingBottom: 5,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  myDisplayName: {
+    color: '#006494',
+    alignSelf: 'flex-start',
+    paddingBottom: 5,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   titleText: {
     color: 'black',
     fontSize: 18,
-    top: -3,
+    // top: -3,
     paddingVertical: 2,
     left: 2,
   },
   myTitleText: {
     color: 'black',
     fontSize: 18,
-    top: -3,
+    paddingVertical: 2,
+    // top: -3,
     left: 2,
   },
   iconContainer: {
@@ -694,12 +774,23 @@ const styles = ScaledSheet.create({
   },
   chatMessageContainer: {
     position: 'absolute',
-    bottom: '10@vs',
-    paddingHorizontal: '10@s',
+    // paddingVertical: 5,
+    bottom: '5@vs',
+    // paddingHorizontal: '10@s',
     width: '100%',
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    backgroundColor: 'rgba(220,220,220,0.1)',
+    backgroundColor: 'white',
+  },
+  directMessageContainer: {
+    position: 'absolute',
+    paddingVertical: 5,
+    bottom: '5@vs',
+    // paddingHorizontal: '10@s',
+    width: '100%',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    backgroundColor: 'white',
   },
   chatInput: {
     fontSize: 18,
@@ -710,9 +801,23 @@ const styles = ScaledSheet.create({
     textAlign: 'left',
     flexWrap: 'wrap',
     width: '100%',
-    borderWidth: .5,
-    borderColor: 'rgba(220,220,220,0.8)',
-    borderRadius: 5,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(220,220,220,0.8)',
+    // borderRadius: 5,
+    backgroundColor: 'white',
+  },
+  directMessageInput: {
+    fontSize: 18,
+    fontFamily: 'Avenir',
+    overflow: 'hidden',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    textAlign: 'left',
+    flexWrap: 'wrap',
+    width: '100%',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(220,220,220,0.8)',
+    // borderRadius: 5,
     backgroundColor: 'white',
   },
   submitChatButton: {
@@ -752,15 +857,11 @@ const styles = ScaledSheet.create({
     fontWeight: 'bold',
   },
   thisUser: {
-    flex: 1,
-    height: '100%',
     borderLeftWidth: 3,
     borderLeftColor: '#F03A47',
     paddingHorizontal: 5,
   },
   thatUser: {
-    flex: 1,
-    height: '100%',
     borderLeftWidth: 3,
     borderLeftColor: 'rgba(52, 152, 219, 1)',
     paddingHorizontal: 5,
@@ -779,15 +880,33 @@ const styles = ScaledSheet.create({
     fontSize: 16,
   },
   flatlist: {
+    flex: 1,
     backgroundColor: '#F6F4F3',
     marginBottom: 40,
     top: -10,
   },
+  chatList: {
+    flex: 1,
+    backgroundColor: 'white',
+    top: -10,
+    marginBottom: 40,
+  },
   nullContainer: {
     flex: 1,
-    flexDirection: 'column',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F6F4F3',
+     width: '100%',
+     flexDirection: 'column',
+     paddingVertical: '25%',
+     justifyContent: 'center',
+     alignSelf: 'center',
+  },
+  nullChatContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+     width: '100%',
+     flexDirection: 'column',
+     paddingVertical: '25%',
+     justifyContent: 'center',
+     alignSelf: 'center',
   },
 });

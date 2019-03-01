@@ -48,16 +48,16 @@ export class Notifications extends Component<IProps, IState> {
   static navigationOptions = ({ navigation }) => {
     // const { params = {} } = navigation.state;
     return {
-      headerStyle: {backgroundColor: '#4392F1', height: 50},
+      headerStyle: {backgroundColor: '#006494', height: 50},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
         title: 'notifications',
         headerLeft:
             <Icon
-            name='x'
+            name='chevron-left'
             type='feather'
             containerStyle={{padding: 5}}
             size={30}
-            underlayColor={'#4392F1'}
+            underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => { NavigationService.reset('Map', {}); }}
             />,
@@ -116,7 +116,7 @@ export class Notifications extends Component<IProps, IState> {
           <Button
             style={{width: 90}}
             titleStyle={{fontSize: 14}}
-            buttonStyle={{backgroundColor: '#4392F1'}}
+            buttonStyle={{backgroundColor: '#006494'}}
             containerStyle={{paddingHorizontal: 5}}
             icon={
                 <Icon
@@ -138,11 +138,11 @@ export class Notifications extends Component<IProps, IState> {
           <Button
             style={{width: 90}}
             titleStyle={{fontSize: 14}}
-            buttonStyle={{backgroundColor: '#4392F1'}}
+            buttonStyle={{backgroundColor: '#006494'}}
             containerStyle={{paddingHorizontal: 5}}
             icon={
                 <Icon
-                name='x'
+                name='chevron-left'
                 type='feather'
                 size={15}
                 color='white'
@@ -238,6 +238,7 @@ export class Notifications extends Component<IProps, IState> {
     }
 
     render() {
+      console.log('this.state.data', this.state.data);
       return (
       <View style={{flex: 1}}>
         <View style={{flex: 1}}>

@@ -80,7 +80,7 @@ import ApiService from '../services/ApiService';
 const customTextProps = {
   style: {
     fontFamily: 'Avenir',
-    fontColor: '#262626',
+    // fontColor: '#262626',
   },
 };
 
@@ -110,7 +110,7 @@ const InternalStack = createStackNavigator({
   },
   GetPermissions: { screen: GetPermissions,
     navigationOptions: () => ({
-      headerStyle: {backgroundColor: 'black' },
+      headerStyle: {backgroundColor: '#006494' },
       headerTitleStyle: {color: 'white'},
       title: 'permissions',
       headerLeft: <View></View>,
@@ -125,12 +125,12 @@ const InternalStack = createStackNavigator({
   CreateNode: { screen: CreateNode,
     // @ts-ignore
     navigationOptions: ({navigation}) => ({
-      headerStyle: {backgroundColor: '#4392F1', height: 50, borderBottomWidth: 5, borderBottomColor: '#4392F1'},
+      headerStyle: {backgroundColor: '#006494', height: 50, borderBottomWidth: 5, borderBottomColor: '#006494'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'drop node',
-      headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
+      headerLeft: <Icon name='chevron-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
       color={'#ffffff'} onPress={ () =>
-        NavigationService.reset('Map', {}) }
+        NavigationService.reset('Nodes', {}) }
       />,
       }),
   },

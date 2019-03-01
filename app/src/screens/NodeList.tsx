@@ -85,11 +85,12 @@ export class NodeList extends Component<IProps, IState> {
     }
   }
 
-  async goToChat(item) {
+  async goToChat(item, index) {
     NavigationService.reset('Chat', {
       action: 'node_chat',
       nodeId: item.node_id,
       selectedNode: item,
+      index: index,
       // nodeType: this.props.nodeType,
       // nodeIndex: this.state.nodeIndex,
      });
@@ -171,7 +172,7 @@ export class NodeList extends Component<IProps, IState> {
           flex: 1,
           backgroundColor: 'white',
           borderColor: 'rgba(218, 219, 221, 1)',
-          borderWidth: .5,
+          // borderWidth: .5,
           marginTop: index === 0 ? 10 : 5,
           marginHorizontal: 5,
           paddingHorizontal: 5,
@@ -189,13 +190,13 @@ export class NodeList extends Component<IProps, IState> {
           </View>
             <View style={{
               width: '100%', paddingHorizontal: 10, flex: 1, flexDirection: 'row', top: 5, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
-              <Text style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>
-              {Moment().endOf('minute').seconds(item.data.ttl).fromNow(true)}
-              </Text>
-              <Text onPress={ async () => await this.goToChat(item.data)} style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>
+              <Text style={{fontSize: 14, color: 'gray'}}>{item.data.distance_in_miles.toFixed(0) + ' miles'}</Text>
+              <Text onPress={ async () => await this.goToChat(item.data, index)} style={{fontSize: 14, color: 'gray'}}>
               {item.data.total_messages !== undefined ? item.data.total_messages + ' replies' : 0 + ' replies'}
               </Text>
-              <Text style={{fontSize: 14, fontWeight: 'bold', color: 'gray'}}>{item.data.distance_in_miles.toFixed(0) + ' miles'}</Text>
+              <Text style={{fontSize: 14, color: 'gray'}}>
+              {'expires ' + Moment().endOf('minute').seconds(item.data.ttl).fromNow()}
+              </Text>
             </View>
       </TouchableOpacity>
     )
@@ -299,7 +300,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(NodeList);
 const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
-    backgroundColor: 'rgba(192,192,192, 0.1)',
+    backgroundColor: '#F6F4F3',
     height: '100%',
     width: '100%',
   },

@@ -113,7 +113,7 @@ export class ActiveChats extends Component<IProps, IState> {
           nodeType = 'publicPerson';
         }
 
-        NavigationService.reset('Chat', { nodeId: node.node_id} );
+        NavigationService.reset('Chat', { action: 'node_chat', selectedNode: node.data, nodeId: node.node_id} );
       } else {
         NavigationService.reset('Chat', { nodeId: node.relation_id, username: node.topic } );
       }
@@ -168,10 +168,10 @@ export class ActiveChats extends Component<IProps, IState> {
         <ButtonGroup
           innerBorderStyle={{width: 0, color: 'white'}}
           containerStyle={{alignSelf: 'center', alignItems: 'center', alignContent: 'center', justifyContent: 'space-between', top: 10, borderWidth: 1, width: '90%'}}
-          buttonStyle={{height: 20, backgroundColor: '#4392F1'}}
+          buttonStyle={{height: 20, backgroundColor: '#006494'}}
           onPress={this.updateIndex}
           selectedIndex={this.state.selectedIndex}
-          selectedButtonStyle={{borderBottomColor: '#4392F1', backgroundColor: 'white'}}
+          selectedButtonStyle={{borderBottomColor: '#006494', backgroundColor: 'white'}}
           selectedTextStyle={{color: 'gray'}}
           buttons={buttons}
           textStyle={{fontSize: 18, color: 'white'}}
@@ -253,7 +253,7 @@ export class ActiveChats extends Component<IProps, IState> {
       paddingVertical: 10,
     },
     button: {
-      backgroundColor: '#4392F1',
+      backgroundColor: '#006494',
     },
     createNodeButton: {
       top: 30,
@@ -264,7 +264,7 @@ export class ActiveChats extends Component<IProps, IState> {
       height: 50,
       // bottom: 45,
       paddingHorizontal: 100,
-      borderBottomColor: '#4392F1',
+      borderBottomColor: '#006494',
       alignSelf: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.9);',
       width: '110%',

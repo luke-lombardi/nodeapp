@@ -222,7 +222,8 @@ export default class Node extends Component<IProps, IState> {
 
   async goToChat() {
     NavigationService.reset('Chat', {
-      action: 'join_chat',
+      action: 'node_chat',
+      selectedNode: this.props.destination,
       nodeId: this.state.nodeId,
       nodeType: this.props.nodeType,
       nodeIndex: this.state.nodeIndex,
@@ -423,7 +424,7 @@ const styles = ScaledSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
-    height: 50,
+    // height: 50,
     width: '100%',
   },
   buttonView: {

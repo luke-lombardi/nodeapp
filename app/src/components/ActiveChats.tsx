@@ -4,7 +4,7 @@ import { View, StyleSheet, Text, FlatList, Dimensions } from 'react-native';
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 import NavigationService from '../services/NavigationService';
-import { ButtonGroup, ListItem, Icon } from 'react-native-elements';
+import { ButtonGroup, ListItem } from 'react-native-elements';
 import { ConfigGlobalLoader } from '../config/ConfigGlobal';
 import Moment from 'moment';
 
@@ -126,26 +126,26 @@ export class ActiveChats extends Component<IProps, IState> {
         containerStyle={styles.nodeListItem}
         titleStyle={{fontWeight: 'bold', fontSize: 18}}
         title={
-          <Text style={{fontWeight: 'bold'}} numberOfLines={1} ellipsizeMode='tail'>
+          <Text style={{fontWeight: 'bold', fontSize: 18}} numberOfLines={1} ellipsizeMode='tail'>
           {this.state.selectedIndex === 0 ? item.data.topic : item.topic}
           </Text>
         }
-        rightTitleStyle={{fontWeight: '600', fontSize: 14}}
+        rightTitleStyle={{fontWeight: '600', fontSize: 18}}
         rightTitle={
             this.state.selectedIndex  ===  1 ?
             <View style={{flexDirection: 'column', right: 10, width: 50, height: 50, alignSelf: 'flex-end'}}>
-            <Icon
+            {/* <Icon
               name={'eye'}
               type={'feather'}
-              color={item.sharing_location ? 'orange' : 'gray'}
+              color={item.status === 'accepted' ? 'green' : 'gray'}
               size={28}
               containerStyle={{top: 10}}
-            />
+            /> */}
             </View>
             :
-            <View style={{paddingVertical: 5}}>
-              <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toString()}</Text>
-              <Text style={{paddingVertical: 5, color: 'gray'}}>miles away</Text>
+            <View style={{}}>
+              <Text style={{fontWeight: 'bold', alignSelf: 'flex-end', alignItems: 'flex-end'}}>{item.data.distance_in_miles.toFixed()}</Text>
+              <Text style={{fontSize: 14, color: 'gray'}}>miles away</Text>
             </View>
           }
         subtitle={

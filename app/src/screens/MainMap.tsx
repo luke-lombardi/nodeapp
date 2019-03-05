@@ -604,19 +604,6 @@ export class MainMap extends Component<IProps, IState> {
           />
           <Button
             icon={{
-               name: 'add',
-              size: 35,
-              color: '#ffffff',
-            }}
-            style={styles.nodeButton}
-            containerStyle={styles.bottomButtonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={() => { this.navigateToPage('CreateNode');
-            }}
-          />
-          <Button
-            icon={{
               name: 'message-circle',
               type: 'feather',
               size: 30,
@@ -627,6 +614,19 @@ export class MainMap extends Component<IProps, IState> {
             buttonStyle={styles.transparentButton}
             title=''
             onPress={() => {  this.props.navigation.toggleRightDrawer(); } }
+          />
+          <Button
+            icon={{
+               name: 'add',
+              size: 35,
+              color: '#ffffff',
+            }}
+            style={styles.nodeButton}
+            containerStyle={styles.bottomButtonContainer}
+            buttonStyle={styles.transparentButton}
+            title=''
+            onPress={() => { this.navigateToPage('CreateNode');
+            }}
           />
         </View>
         }
@@ -799,7 +799,6 @@ const styles = StyleSheet.create({
     width: 20,
   },
   nodeSelectedView: {
-    padding: 0,
     flexDirection: 'column',
     marginTop: 0,
     position: 'absolute',

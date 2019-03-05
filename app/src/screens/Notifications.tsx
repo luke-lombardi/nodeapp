@@ -142,7 +142,7 @@ export class Notifications extends Component<IProps, IState> {
             containerStyle={{paddingHorizontal: 5}}
             icon={
                 <Icon
-                name='chevron-left'
+                name='x'
                 type='feather'
                 size={15}
                 color='white'

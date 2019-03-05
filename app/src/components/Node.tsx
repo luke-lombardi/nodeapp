@@ -378,7 +378,7 @@ const styles = ScaledSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     bottom: 0,
-    backgroundColor: 'rgba(44,55,71, 0.7)',
+    backgroundColor: 'rgba(44,55,71, 0.9)',
   },
   nodeTopic: {
     fontWeight: 'bold',
@@ -394,7 +394,7 @@ const styles = ScaledSheet.create({
     left: 15,
     position: 'relative',
     borderColor: 'rgba(44,55,71,.9)',
-    backgroundColor: 'rgba(44,55,71, 0.7)',
+    backgroundColor: 'rgba(44,55,71, 0.9)',
     alignSelf: 'flex-start',
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,

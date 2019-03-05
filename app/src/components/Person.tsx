@@ -144,7 +144,7 @@ export default class Person extends Component<IProps, IState> {
                 title=''
                 onPress={ async () => { await this.goToChat(); } }
                 />
-              <Button
+              {/* <Button
                 icon={{
                   name: 'credit-card',
                   type: 'feather',
@@ -156,7 +156,7 @@ export default class Person extends Component<IProps, IState> {
                 buttonStyle={styles.transparentButton}
                 title=''
                 onPress={ async () => { await this.showPaymentModal(); } }
-              />
+              /> */}
               </View>
             </Card>
           </View>

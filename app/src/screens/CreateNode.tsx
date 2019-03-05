@@ -111,14 +111,14 @@ export class CreateNode extends Component<IProps, IState> {
                 multiline
                 ref={ component => { this._textInput = component; } }
                 style={styles.input}
-                maxLength={90}
+                maxLength={200}
                 returnKeyType='done'
                 underlineColorAndroid='transparent'
-                placeholder='add a topic...'
+                placeholder='what&apos;s here?'
             />
-            <Text style={styles.characterCount}>{this.state.topic.length}/90</Text>
             </TouchableOpacity>
             <View style={styles.switchView}>
+            <Text style={styles.characterCount}>{this.state.topic.length}/200</Text>
           <View style={styles.sliderContainer}>
             <Text style={styles.sliderTextContainer}>
               <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.sliderText}>share for </Text>
@@ -140,7 +140,7 @@ export class CreateNode extends Component<IProps, IState> {
             </View>
           </View>
           <Button
-            style={styles.fullWidthButton}
+            containerStyle={{position: 'absolute', bottom: 0, width: '100%', height: 60, borderRadius: 0}}
             buttonStyle={{width: '100%', height: '100%', backgroundColor: '#006494', bottom: -5, borderBottomColor: '#006494'}}
             onPress={this.submitCreateNode}
             loading={this.state.isLoading}
@@ -266,7 +266,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreateNode);
 
 const styles = ScaledSheet.create({
   container: {
-    padding: 0,
     flex: 1,
     backgroundColor: '#006494',
     borderBottomColor: 'black',
@@ -274,19 +273,19 @@ const styles = ScaledSheet.create({
   },
   miniMapView: {
     flex: 1,
-    padding: '20@s',
+    // padding: '10@s',
     // marginBottom: 10,
   },
   map: {
+    height: '100%',
   },
   inputView: {
     width: '100%',
     flex: 1,
-    // top: 20,
-    // marginBottom: 20,
+    paddingVertical: 5,
   },
   nodeForm: {
-    flex: 6,
+    flex: 1,
     alignSelf: 'stretch',
     backgroundColor: '#F6F4F3',
     borderBottomColor: 'black',
@@ -294,7 +293,7 @@ const styles = ScaledSheet.create({
   },
   fullWidthButton: {
     backgroundColor: '#006494',
-    height: '65@vs',
+    // height: '65@vs',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -310,13 +309,11 @@ const styles = ScaledSheet.create({
     color: 'gray',
     position: 'absolute',
     alignSelf: 'flex-end',
-    bottom: '-2@vs',
-    padding: '10@s',
+    // bottom: '-5@vs',
+    paddingHorizontal: '15@s',
   },
   switchView: {
-    borderTopWidth: .5,
-    borderTopColor: 'rgba(220,220,220,1)',
-    paddingTop: '20@vs',
+    // paddingTop: '20@vs',
     flex: 1,
     alignItems: 'flex-start',
   },
@@ -327,17 +324,19 @@ const styles = ScaledSheet.create({
   },
   switchText: {
     marginLeft: '20@s',
-    bottom: '5@vs',
     fontSize: '24@vs',
     color: 'black',
     alignSelf: 'flex-start',
   },
   sliderContainer: {
+    borderTopWidth: .5,
+    borderTopColor: 'rgba(220,220,220,1)',
     alignContent: 'center',
-    // marginLeft: '20@s',
     alignSelf: 'center',
+    width: '100%',
     alignItems: 'center',
-    top: '5@vs',
+    position: 'absolute',
+    top: '35@vs',
   },
   sliderText: {
     alignSelf: 'center',
@@ -352,11 +351,11 @@ const styles = ScaledSheet.create({
   switchIcon: {
   },
   slider: {
-    top: '-5@vs',
     width: '90%@vs',
   },
   sliderTextContainer: {
-    paddingVertical: '5@vs',
+    top: 10,
+    paddingVertical: '10@vs',
   },
   privateText: {
     position: 'absolute',
@@ -366,10 +365,9 @@ const styles = ScaledSheet.create({
     color: 'gray',
   },
   input: {
+    flex: 1,
     fontSize: '24@s',
-    // bottom: 30,
     padding: '10@vs',
-    paddingTop: '10@vs',
     color: 'black',
   },
 });

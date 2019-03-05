@@ -141,7 +141,7 @@ const InternalStack = createStackNavigator({
       headerStyle: {backgroundColor: '#006494', height: 50, borderBottomWidth: 5, borderBottomColor: 'black'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
       title: 'transaction detail',
-      headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
+      headerLeft: <Icon name='chevron-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
       color={'#ffffff'} onPress={ () =>
         NavigationService.reset('Map', {}) }
       />,
@@ -151,7 +151,7 @@ const InternalStack = createStackNavigator({
     navigationOptions: ({navigation}) => ({
       headerStyle: {backgroundColor: '#006494', height: 50, borderBottomWidth: 5, borderBottomColor: '#006494'},
       headerTitleStyle: { color: 'white', fontSize: 22, fontWeight: 'bold'},
-      headerLeft: <Icon name='x' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
+      headerLeft: <Icon name='chevron-left' containerStyle={{padding: 5}} type='feather' size={30} underlayColor={'#006494'}
       color={'#ffffff'} onPress={ () =>
         NavigationService.reset('Map', {}) }
       />,

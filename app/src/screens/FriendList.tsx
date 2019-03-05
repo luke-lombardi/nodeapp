@@ -20,7 +20,7 @@ import ApiService from '../services/ApiService';
 import { RelationListUpdatedActionCreator } from '../actions/RelationActions';
 // @ts-ignore
 import NavigationService from '../services/NavigationService';
-import { AnimatedRegion } from 'react-native-maps';
+// import { AnimatedRegion } from 'react-native-maps';
 
 const { height } = Dimensions.get('window');
 
@@ -243,14 +243,14 @@ export class FriendList extends Component<IProps, IState> {
             title: `${row.topic} has not accepted your friend request.`,
             duration: Snackbar.LENGTH_SHORT,
           })}
-          containerStyle={[styles.friendListItem, { marginVertical: index === 0 ? 10 : 5 }]}
+          containerStyle={[styles.friendListItem, { marginVertical: index === 0 ? 5 : 5 }]}
           title={<Text style={{fontWeight: 'bold', fontSize: 16}}>{row.topic}</Text>}
           subtitle={<Text style={{color: 'gray', paddingVertical: 5}}>{row.status}</Text>}
           rightIcon={
             <Icon
-              name={'arrow-up-right'}
+              name={'chevron-right'}
               type={'feather'}
-              color={'#00b200'}
+              color={row.status === 'accepted' ? '#00b200' : 'gray'}
               size={36}
             />
           }
@@ -284,7 +284,7 @@ export class FriendList extends Component<IProps, IState> {
             onPress={() => { this._onTouchNode(row); }}
             underlayColor={'transparent'}
           />
-          <Text style={{fontSize: 12, color: 'gray', textAlign: 'center', top: 7}}>view on map</Text>
+          <Text style={{fontSize: 12, color: 'lightgray', textAlign: 'center', top: 7}}>view on map</Text>
           </View>
           <View style={{left: 10, width: '50%', flexDirection: 'column', alignItems: 'center'}}>
             <Switch
@@ -292,7 +292,7 @@ export class FriendList extends Component<IProps, IState> {
               onTouchStart={async () => { await this.toggleLocationSharing(row); }}
               value={row.sharing_location}
             />
-            <Text style={{fontSize: 12, color: 'gray', textAlign: 'center', top: 14}}>share location</Text>
+            <Text style={{fontSize: 12, color: 'lightgray', textAlign: 'center', top: 14}}>share location</Text>
           </View>
         </View>
 
@@ -301,13 +301,13 @@ export class FriendList extends Component<IProps, IState> {
         subtitle={
         <View style={{paddingTop: 20, flexDirection: 'row', alignSelf: 'flex-end', right: 5}}>
         <Icon
-          name={row.status === 'accepted' ? 'check-circle' : 'more-horizontal'}
+          name={'check-circle'}
           type={'feather'}
           size={18}
-          color={row.status === 'accepted' ? 'green' : '#F03A47'}
-          containerStyle={row.status === 'accepted' ? {width: '20%'} : {width: '20%', left: -1}}
+          color={row.status === 'accepted' ? 'green' : 'lightgray'}
+          containerStyle={{width: '20%'}}
         />
-        <Text style={{width: '80%', color: 'gray', left: 1}}>{row.status}</Text>
+        <Text style={row.status === 'accepted' ? {width: '80%', color: '#262626', left: 1} : {width: '80%', color: 'lightgray', left: 1}}>{row.status}</Text>
         </View>
       }
       />

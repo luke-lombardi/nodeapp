@@ -138,9 +138,12 @@ export class Chat extends Component<IProps, IState> {
             underlayColor={'#006494'}
             color={'#ffffff'}
             onPress={ () => {
-              params.action === 'node_chat' ?
+              params.fromChat ?
               NavigationService.reset('Nodes', {})
-            :
+              :
+              params.action === 'node_chat' ?
+              NavigationService.reset('Map', {})
+              :
               NavigationService.reset('FriendList', {});
             }}
           />,
@@ -203,6 +206,7 @@ export class Chat extends Component<IProps, IState> {
     this.postMessage = this.postMessage.bind(this);
     this.getTime = this.getTime.bind(this);
     this.reportUser = this.reportUser.bind(this);
+    this.reportItem = this.reportItem.bind(this);
     }
 
     async closeConfirmModal() {
@@ -214,6 +218,10 @@ export class Chat extends Component<IProps, IState> {
         title: `reported ${displayName}`,
         duration: Snackbar.LENGTH_SHORT,
       });
+    }
+
+    reportItem() {
+      Alert.alert('Thank you for reporting. Our moderation team will investigate.');
     }
 
     async submitMessage() {
@@ -369,11 +377,10 @@ export class Chat extends Component<IProps, IState> {
         activeOpacity={0.7}
         style={{
           flex: 1,
-          backgroundColor: 'white',
+          backgroundColor: '#F6F4F3',
           borderColor: 'rgba(218, 219, 221, 1)',
           // borderWidth: .5,
-          marginTop: index === 0 ? 5 : 5,
-          // marginBottom: index === 0 ? 5 : 0,
+          marginVertical: 5,
           minHeight: 90,
           marginHorizontal: 5,
           borderRadius: 5,
@@ -576,7 +583,7 @@ export class Chat extends Component<IProps, IState> {
       return (
       <KeyboardAvoidingView
       style={this.action === 'node_chat' ?
-        { flex: 1, backgroundColor: '#F6F4F3' } :
+        { flex: 1, backgroundColor: 'white' } :
         { flex: 1, backgroundColor: 'white' }}
         behavior='padding'
         contentContainerStyle={{flex: 1}}
@@ -613,19 +620,22 @@ export class Chat extends Component<IProps, IState> {
              <TouchableOpacity
              activeOpacity={1}
              style={{
-               marginTop: 10,
                flex: 1,
                backgroundColor: 'white',
                borderBottomColor: 'rgba(218, 219, 221, 1)',
                // marginHorizontal: 10,
                minHeight: 100,
-               borderBottomWidth: 0.5,
+               // borderBottomWidth: 0.5,
+               paddingBottom: 10,
                // padding: 15,
              }}>
-             <View style={{marginTop: 10, flex: 1, paddingHorizontal: 10}}>
-               <View style={{padding: 10, width: '90%', justifyContent: 'flex-start'}}>
-                 <Text style={{color: 'rgba(27, 28, 29, 1)', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
+             <View style={{flexDirection: 'row', marginVertical: 20, flex: 1, paddingHorizontal: 10}}>
+               <View style={{padding: 10, width: '90%'}}>
+                 <Text style={{color: 'rgba(27, 28, 29, 1)', width: '90%', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
                </View>
+               <View style={{width: '10%', marginVertical: 20}}>
+               <Icon name='flag' color='gray' type='feather' onPress={() => this.reportItem()}/>
+              </View>
                {/* <View style={{height: '100%', flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
                <Vote selectedNode={selectedNode} />
                </View> */}
@@ -801,8 +811,8 @@ const styles = ScaledSheet.create({
     textAlign: 'left',
     flexWrap: 'wrap',
     width: '100%',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(220,220,220,0.8)',
+    borderTopWidth: .5,
+    borderTopColor: 'rgba(220,220,220,0.9)',
     // borderRadius: 5,
     backgroundColor: 'white',
   },
@@ -881,7 +891,7 @@ const styles = ScaledSheet.create({
   },
   flatlist: {
     flex: 1,
-    backgroundColor: '#F6F4F3',
+    backgroundColor: 'white',
     marginBottom: 40,
     top: -10,
   },
@@ -893,20 +903,20 @@ const styles = ScaledSheet.create({
   },
   nullContainer: {
     flex: 1,
-    backgroundColor: '#F6F4F3',
-     width: '100%',
-     flexDirection: 'column',
-     paddingVertical: '25%',
-     justifyContent: 'center',
-     alignSelf: 'center',
+    backgroundColor: 'white',
+    width: '100%',
+    marginTop: '25%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   nullChatContainer: {
     flex: 1,
+    marginBottom: '50%',
     backgroundColor: 'white',
-     width: '100%',
-     flexDirection: 'column',
-     paddingVertical: '25%',
-     justifyContent: 'center',
-     alignSelf: 'center',
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
 });

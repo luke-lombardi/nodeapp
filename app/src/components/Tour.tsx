@@ -39,7 +39,7 @@ export default class Tour extends Component<IProps, IState> {
               style={{width: '100%', height: '100%', position: 'absolute', alignSelf: 'center'}}
               >
               <Swiper
-                style={{alignSelf: 'center'}}
+                style={{alignSelf: 'center', flex: 1, height: '100%', flexDirection: 'row', justifyContent: 'center'}}
                 showsButtons={false}
                 paginationStyle={{position: 'absolute', bottom: '15%'}}
                 loop={false}
@@ -49,16 +49,16 @@ export default class Tour extends Component<IProps, IState> {
                   name='lock'
                   type='feather'
                   size={72}
-                  color={'#F6F4F3'}
-                  containerStyle={{paddingVertical: 40}}
+                  color={'white'}
+                  containerStyle={{paddingVertical: 50}}
                 />
                 <Text style={styles.text}>get a live feed of what people are saying around you</Text>
-                <Text style={styles.text}>upvote and downvote nodes</Text>
-                <Text style={styles.text}>send private messages and track users</Text>
+                <Text style={styles.text}>send private messages</Text>
+                <Text style={styles.text}>share your location</Text>
                 <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
                 <Button
-                  title='continue'
-                  titleStyle={{color: '#F6F4F3', fontWeight: 'bold', fontSize: 24}}
+                  title='get started'
+                  titleStyle={{color: 'white', fontWeight: 'bold', fontSize: 24}}
                   buttonStyle={{backgroundColor: '#F03A47', padding: 10, borderWidth: .5, borderColor: 'gray', borderRadius: 0}}
                   containerStyle={{position: 'absolute', width: '100%', bottom: 15, opacity: .9}}
                   onPress={this.props.functions.closeTourModal}
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center',
-    color: '#F6F4F3',
+    color: 'white',
     fontSize: 24,
   },
   subtitle: {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center',
-    color: '#F6F4F3',
+    color: 'white',
     fontSize: 24,
   },
   bottomModal: {
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   scrollableModalContent1: {
     width: '100%',
     height: 90,
-    backgroundColor: '#F6F4F3',
+    backgroundColor: '#006494',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 2.0,
   },
   modalContent: {
-    backgroundColor: '#F6F4F3',
+    backgroundColor: '#006494',
     padding: 22,
     justifyContent: 'center',
     alignItems: 'center',

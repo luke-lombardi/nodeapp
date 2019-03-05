@@ -91,6 +91,7 @@ export class NodeList extends Component<IProps, IState> {
       nodeId: item.node_id,
       selectedNode: item,
       index: index,
+      fromChat: true,
       // nodeType: this.props.nodeType,
       // nodeIndex: this.state.nodeIndex,
      });
@@ -166,14 +167,16 @@ export class NodeList extends Component<IProps, IState> {
     _renderItem = ({item, index}) => (
       <TouchableOpacity
         onLongPress={async () => await this.reportNode(item)}
-        onPress={() => this._onTouchNode(item, index)}
+        onPress={ async () => await this.goToChat(item.data, index)}
+        // onPress={() => this._onTouchNode(item, index)}
         activeOpacity={0.7}
         style={{
           flex: 1,
           backgroundColor: 'white',
           borderColor: 'rgba(218, 219, 221, 1)',
           // borderWidth: .5,
-          marginTop: index === 0 ? 10 : 5,
+          marginTop: index === 0 ? 5 : 5,
+          marginBottom: index === index.length - 1 ? 5 : 0,
           marginHorizontal: 5,
           paddingHorizontal: 5,
           borderRadius: 5,
@@ -182,14 +185,14 @@ export class NodeList extends Component<IProps, IState> {
         }}>
         <View style={{flex: 1}}>
           <View style={{padding: 10, width: '100%', justifyContent: 'flex-start'}}>
-            <Text style={{color: '#262626', alignSelf: 'flex-start', fontSize: 18}}>{item.data.topic}</Text>
+            <Text style={{color: '#262626', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{item.data.topic}</Text>
           </View>
           {/* <View style={{flex: 1, flexDirection: 'row', right: -10, width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
           <Vote selectedNode={item.data} />
           </View> */}
           </View>
             <View style={{
-              width: '100%', paddingHorizontal: 10, flex: 1, flexDirection: 'row', top: 5, alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
+              width: '100%', paddingHorizontal: 10, paddingVertical: 10, flex: 1, flexDirection: 'row', alignItems: 'flex-start', alignSelf: 'flex-start', justifyContent: 'space-between'}}>
               <Text style={{fontSize: 14, color: 'gray'}}>{item.data.distance_in_miles.toFixed(0) + ' miles'}</Text>
               <Text onPress={ async () => await this.goToChat(item.data, index)} style={{fontSize: 14, color: 'gray'}}>
               {item.data.total_messages !== undefined ? item.data.total_messages + ' replies' : 0 + ' replies'}

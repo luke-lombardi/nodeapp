@@ -3,7 +3,14 @@ import { ScaledSheet } from 'react-native-size-matters';
 
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, Clipboard, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage, TouchableHighlight } from 'react-native';
-import { ListItem, Icon, Button } from 'react-native-elements';
+import { ListItem, Icon } from 'react-native-elements';
+// import PlaidAuthenticator from 'react-native-plaid-link';
+
+// const PLAID_CLIENT_ID = '5be83d9fd4530d0014d4a287';
+// const PLAID_PUBLIC_KEY = '5a051f20478de47fc55b0e33ffa325';
+// const PLAID_SECRET = '5a051f20478de47fc55b0e33ffa325';
+
+// const PUBLIC_TOKEN = 'public-development-e19bf79a-7af2-4538-abd8-3c8ab322dfc4';
 
 // @ts-ignore
 import Snackbar from 'react-native-snackbar';
@@ -50,6 +57,7 @@ interface IProps {
 
 interface IState {
     data: any;
+    plaidToken: any;
     isLoading: boolean;
     detailModalVisible: boolean;
     txHash: any;
@@ -88,6 +96,7 @@ export class Transactions extends Component<IProps, IState> {
         isLoading: true,
         txHash: undefined,
         detailModalVisible: false,
+        plaidToken: undefined,
     };
 
     this._renderItem = this._renderItem.bind(this);
@@ -102,6 +111,7 @@ export class Transactions extends Component<IProps, IState> {
     this.navigateToCamera = this.navigateToCamera.bind(this);
     this.copyAddress = this.copyAddress.bind(this);
 
+    this.onMessage = this.onMessage.bind(this);
     this.getTime = this.getTime.bind(this);
     }
 
@@ -190,7 +200,8 @@ export class Transactions extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-      this.loadTransactions();
+      this.getTransactions();
+      //this.loadTransactions();
     }
 
     componentWillUnmount() {
@@ -230,28 +241,53 @@ export class Transactions extends Component<IProps, IState> {
       });
     }
 
+    async onMessage(data) {
+
+      console.log('oMessage....', data);
+      console.log('metadata...', data.metadata);
+      console.log('public token....', data.metadata.public_token);
+
+      console.log('this.state.plaidToken.....', this.state.plaidToken);
+
+      this.setState({plaidToken: data.metadata.public_token});
+      console.log('got token', this.state.plaidToken);
+
+      let requestBody = {
+        token: this.state.plaidToken,
+      };
+
+      let result = await fetch(`http://localhost:3000`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      console.log('asking server for auth token....', result);
+  }
+
+    async getTransactions() {
+      let result = await fetch('http://localhost:3000/transactions', {
+        method: 'GET',
+      });
+
+      this.setState({data: result});
+      console.log('got result', result);
+    }
+
     render() {
       return (
-        <View style={{flex: 1}}>
-        <View style={{height: 135, borderBottomColor: 'lightgray', borderBottomWidth: 1}}>
-        <Text style={{alignSelf: 'center', fontSize: 16, color: 'gray', paddingTop: 10}}>balance</Text>
-        <Text style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 22, paddingVertical: 5}}>
-        {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? '$' + parseFloat(this.props.wallet.balance_usd).toFixed(2) : '0.00' }
-        </Text>
-        <Text
-        onPress={async () => await this.copyAddress() }
-        style={{alignSelf: 'center', color: 'gray', paddingBottom: 10}}>
-        {this.props.wallet !== undefined && this.props.wallet !== 'undefined' ? this.props.wallet.address : 'No wallet connected' }</Text>
-        {/* <Text style={{alignSelf: 'center', fontSize: 12, color: 'gray'}}>Address</Text> */}
-        <Button
-          containerStyle={{position: 'absolute', bottom: 0, width: '100%'}}
-          buttonStyle={{backgroundColor: '#006494', borderRadius: 0}}
-          titleStyle={{fontSize: 16}}
-          title='Import Wallet'
-          onPress={() => this.navigateToCamera()}
-        />
-        </View>
-        {
+      <View style={{flex: 1}}>
+        {/* <PlaidAuthenticator
+          onMessage={(data) => this.onMessage(data)}
+          publicKey='5a051f20478de47fc55b0e33ffa325'
+          env='development'
+          product='auth,transactions'
+          clientName='Smartshare'
+          selectAccount={false}
+        /> */}
+      {
         this.state.detailModalVisible &&
         <TransactionDetail functions={{
           'closeDetailModal': this.closeDetailModal,
@@ -261,19 +297,22 @@ export class Transactions extends Component<IProps, IState> {
         wallet={this.props.wallet}
         />
       }
+      {
+        !this.state.plaidToken !== undefined &&
         <View style={styles.flatlist}>
           <FlatList
            data={this.state.data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.tx_hash}
+           keyExtractor={item => item.id}
            ListEmptyComponent={
             <View style={styles.nullContainer}>
             <Text style={styles.null}>no transactions.</Text>
             <Text style={styles.nullSubtitle}>you can find transactions here.</Text>
             </View>
-           }
+      }
           />
           </View>
+      }
           <Spinner
             visible={this.state.isLoading}
             textStyle={{color: 'rgba(44,55,71,1.0)'}}

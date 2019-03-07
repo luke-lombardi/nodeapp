@@ -35,8 +35,7 @@ app.get('/transactions', async function(req, res) {
   let result = await getTransactions();
 
   if (result) {
-    result = result;
-    res.send(result);
+    res.status(200).json(result);
   }
 });
 
@@ -67,14 +66,13 @@ async function getTransactions() {
 
   let result = await plaidClient.getTransactions(
     accessToken, '2018-01-01', '2018-02-01', {
-    count: 10,
+    count: 100,
     offset: 0,
   });
 
   if (result) {
-    console.log('got transactions....', result.transactions[0].amount);
-    // getIncome(accessToken);
-    return result.transactions[0].amount;
+    console.log('got transactions....', result);
+    return result;
   }
   return; 
 }

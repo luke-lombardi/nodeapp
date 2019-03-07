@@ -61,6 +61,7 @@ interface IState {
     isLoading: boolean;
     detailModalVisible: boolean;
     txHash: any;
+    accounts: any;
 }
 
 export class Transactions extends Component<IProps, IState> {
@@ -93,6 +94,7 @@ export class Transactions extends Component<IProps, IState> {
 
     this.state = {
         data: [],
+        accounts: [],
         isLoading: true,
         txHash: undefined,
         detailModalVisible: false,
@@ -145,35 +147,15 @@ export class Transactions extends Component<IProps, IState> {
           minHeight: 100,
           backgroundColor: index % 2 === 0 ? '#f9fbff' : 'white',
         }}
-        leftIcon={
-          this.props.wallet.address === this.props.transactionList.transactions[item.tx_hash].from ?
-          <Icon
-            name='arrow-up-right'
-            type='feather'
-            color='orange' />
-          :
-          <Icon
-            name='arrow-down-left'
-            type='feather'
-            color='green' />
-        }
         title={
           <View>
-
-          { this.props.wallet.address === this.props.transactionList.transactions[item.tx_hash].from  &&
-          <Text style={{fontWeight: 'bold'}}>Sent Ethereum</Text>
-          }
-
-          { this.props.wallet.address !== this.props.transactionList.transactions[item.tx_hash].from  &&
-          <Text style={{fontWeight: 'bold'}}>Received Ethereum</Text>
-          }
-
+          <Text style={{fontWeight: 'bold'}}>{item.name}</Text>
           </View>
         }
         rightTitle={
           <View style={styles.titleView}>
           <View style={{alignSelf: 'flex-start', alignItems: 'flex-end'}}>
-          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0}]}>${parseFloat(item.amt).toFixed(2)}</Text>
+          <Text numberOfLines={1} ellipsizeMode={'tail'} style={[styles.ratingText, {paddingTop: index === 0 ? 5 : 0, color: item.amount > 0 ? 'red' : 'green'}]}>{item.amount > 0 ? item.amount : (item.amount *= -1)}</Text>
           </View>
           </View>
         }
@@ -188,7 +170,7 @@ export class Transactions extends Component<IProps, IState> {
             numberOfLines={1}
             ellipsizeMode={'tail'}
             style={{fontSize: 14, color: 'gray', width: '100%', alignSelf: 'flex-start'}}>
-            {item.tx_hash}
+            {item.category[0]}
           </Text>
           </View>
         }
@@ -268,15 +250,31 @@ export class Transactions extends Component<IProps, IState> {
   }
 
     async getTransactions() {
-      let result = await fetch('http://localhost:3000/transactions', {
+      let result: any = await fetch('http://localhost:3000/transactions', {
         method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
-      this.setState({data: result});
-      console.log('got result', result);
+      if (result !== undefined) {
+
+        console.log('got result', result);
+
+        let data = await result.json();
+
+        this.setState({
+          data: data.transactions,
+          accounts: data.accounts,
+          isLoading: false,
+        });
+        console.log('got transactions', this.state.data);
+        console.log('got accounts', this.state.accounts);
+      }
     }
 
     render() {
+      const balance = 12;
       return (
       <View style={{flex: 1}}>
         {/* <PlaidAuthenticator
@@ -303,7 +301,14 @@ export class Transactions extends Component<IProps, IState> {
           <FlatList
            data={this.state.data}
            renderItem={this._renderItem}
-           keyExtractor={item => item.id}
+           keyExtractor={item => item.amount}
+          //  ListHeaderComponent={
+          //    <View style={{flexDirection: 'row', justifyContent: 'space-between', height: '20%', flex: 1}}>
+          //    <Text style={{padding: 20}}>{balance}</Text>
+          //    <Text style={{padding: 20}}>{balance}</Text>
+          //    <Text style={{padding: 20}}>{balance}</Text>
+          //    </View>
+          //  }
            ListEmptyComponent={
             <View style={styles.nullContainer}>
             <Text style={styles.null}>no transactions.</Text>
@@ -412,7 +417,6 @@ const styles = ScaledSheet.create({
     paddingTop: 5,
   },
   ratingText: {
-    color: 'green',
     alignSelf: 'flex-start',
     alignItems: 'flex-start',
     fontSize: 18,

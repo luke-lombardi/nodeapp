@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Marker }   from 'react-native-maps';
-import { StyleSheet, Text, View }   from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage }   from 'react-native';
 
 import * as _ from 'lodash';
 
@@ -14,6 +14,7 @@ interface IState {
     messages: any;
     nodeId: any;
     tracksViewChanges: boolean;
+    blacklist: any;
 }
 
 export default class PublicPlaces extends Component<IProps, IState> {
@@ -23,10 +24,12 @@ export default class PublicPlaces extends Component<IProps, IState> {
             messages: '',
             nodeId: '',
             tracksViewChanges: true,
+            blacklist: '',
         };
 
         this.componentDidUpdate = this.componentDidUpdate.bind(this);
         this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+        this.getBlacklist = this.getBlacklist.bind(this);
     }
 
     componentWillReceiveProps(nextProps: any) {
@@ -41,6 +44,11 @@ export default class PublicPlaces extends Component<IProps, IState> {
       }
     }
 
+    async getBlacklist() {
+      let blacklist = await AsyncStorage.getItem('blacklist');
+      await this.setState({blacklist: blacklist});
+    }
+
     // @ts-ignore
     // shouldComponentUpdate(nextProps, nextState) {
     //   return nextProps.coordinate.latitude !== this.state.coordinate.latitude && nextProps.coordinate.longitude !== this.state.coordinate.longitude;
@@ -49,7 +57,8 @@ export default class PublicPlaces extends Component<IProps, IState> {
     render() {
         return (
             this.props.publicPlaceList.map(marker => (
-              marker.node_id !== undefined ?
+              marker.node_id !== undefined &&
+              marker.node_id !== this.state.blacklist ?
               <View key={marker.node_id}>
                 <Marker
                     coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }

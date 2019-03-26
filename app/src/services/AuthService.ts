@@ -85,6 +85,7 @@ export default class AuthService {
         return false;
       }
 
+      // TODO: notification permissions need to be optional
       if (notificationPermissions !== 'authorized') {
         return false;
       }

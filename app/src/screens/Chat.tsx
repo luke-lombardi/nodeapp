@@ -220,8 +220,17 @@ export class Chat extends Component<IProps, IState> {
       });
     }
 
-    reportItem() {
-      Alert.alert('Thank you for reporting. Our moderation team will investigate.');
+    async reportItem(selectedNode) {
+      Snackbar.show({
+        title: `reporting node ${selectedNode.node_id}...`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
+
+      await AsyncStorage.setItem('blacklist', selectedNode.node_id);
+      let blacklist: any = await AsyncStorage.getItem('blacklist');
+      console.log('blacklist for user----->', blacklist);
+
+      NavigationService.reset('Nodes', {});
     }
 
     async submitMessage() {
@@ -634,7 +643,7 @@ export class Chat extends Component<IProps, IState> {
                  <Text style={{color: 'rgba(27, 28, 29, 1)', width: '90%', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
                </View>
                <View style={{width: '10%', marginVertical: 20}}>
-               <Icon name='flag' color='gray' type='feather' onPress={() => this.reportItem()}/>
+               <Icon name='flag' color='gray' type='feather' onPress={() => this.reportItem(selectedNode)}/>
               </View>
                {/* <View style={{height: '100%', flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
                <Vote selectedNode={selectedNode} />

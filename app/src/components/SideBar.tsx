@@ -148,7 +148,7 @@ export class SideBar extends Component<IProps, IState> {
           'support',
           'how can we help?',
           [
-            {text: 'contact support', onPress: () => Linking.openURL('https://smartshare.io')},
+            {text: 'contact support', onPress: () => Linking.openURL('mailto:support@smartshare.io?subject=example&body=Sudo App Support')},
             {text: 'view user agreement', onPress: () => Linking.openURL('https://smartshare.io/terms')},
             {text: 'cancel'},
           ],

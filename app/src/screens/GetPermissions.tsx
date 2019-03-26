@@ -6,6 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import { Text, Icon, CheckBox, Button } from 'react-native-elements';
 import OpenSettings from 'react-native-open-settings';
+import Swiper from 'react-native-swiper';
 
 // Services
 import Logger from '../services/Logger';
@@ -197,6 +198,33 @@ export class GetPermissions extends Component<IProps, IState> {
 
   render() {
     return(
+      <Swiper
+        // style={{alignSelf: 'center', flex: 1, height: '100%', flexDirection: 'row', justifyContent: 'center'}}
+        showsButtons={false}
+        index={0}
+        paginationStyle={{position: 'absolute', bottom: '5%'}}
+        loop={false}
+      >
+      {/* USER AGREEMENT */}
+      <View style={styles.container}>
+        <Icon
+          reverse
+          // @ts-ignore
+          name='list'
+          type='material-icons'
+          color='#517fa4'
+          size={40}
+          containerStyle={styles.rulesIcon}
+        />
+        <Text style={styles.agreementTitle}>user agreement</Text>
+        <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>help us keep our community an enjoyable and productive place to be.</Text>
+        <View style={{width: '100%', alignSelf: 'flex-start'}}>
+        <Text style={styles.rulesText}>1. do not threaten or bully other users</Text>
+        <Text style={styles.rulesText}>2. do not post another user's sensitive information</Text>
+        <Text style={styles.rulesText}>3. do not bully other users</Text>
+        <Text style={styles.rulesText}>4. don't be a jerk</Text>
+        </View>
+      </View>
       <View style={styles.container}>
         <Icon
           reverse
@@ -207,7 +235,7 @@ export class GetPermissions extends Component<IProps, IState> {
           size={40}
           containerStyle={styles.largeIcon}
         />
-        <Text style={styles.centeredTextLarge}>please enable required services.</Text>
+        <Text style={styles.centeredTextLarge}>let's get setup</Text>
         <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>your location is required to use the app and connect with people nearby.</Text>
         <CheckBox
             center
@@ -230,23 +258,6 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>enable push notifications</Text>
-              </View>
-            }
-            iconRight
-            containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
-            checkedIcon='check'
-            uncheckedIcon='circle-o'
-            checkedColor='green'
-            uncheckedColor='gray'
-            onIconPress={async () => { await this.showModal('notification'); }}
-            onPress={async () => { await this.showModal('notification'); }}
-            checked={this.state.notificationPermissions === 'authorized'}
-            />
-        <CheckBox
-            center
-            title={
-              <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
               <Text>enable motion</Text>
               </View>
             }
@@ -260,17 +271,34 @@ export class GetPermissions extends Component<IProps, IState> {
             onIconPress={async () => { await this.showModal('motion'); }}
             checked={this.state.motionPermissions === 'authorized'}
             />
+        <CheckBox
+            center
+            title={
+              <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
+              <Text>enable push notifications</Text>
+              </View>
+            }
+            iconRight
+            containerStyle={{width: '80%', alignSelf: 'center', borderRadius: 10}}
+            checkedIcon='check'
+            uncheckedIcon='circle-o'
+            checkedColor='green'
+            uncheckedColor='gray'
+            onIconPress={async () => { await this.showModal('notification'); }}
+            onPress={async () => { await this.showModal('notification'); }}
+            checked={this.state.notificationPermissions === 'authorized'}
+            />
         <Button
           title='Continue'
           containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}
           onPress={ async () => { await this.checkPermissions(); } }
           disabled={
             this.state.locationPermissions !== 'authorized' ||
-            this.state.motionPermissions !== 'authorized' ||
-            this.state.notificationPermissions !== 'authorized'
+            this.state.motionPermissions !== 'authorized'
           }
         />
       </View>
+      </Swiper>
       );
     }
   }
@@ -285,6 +313,7 @@ export class GetPermissions extends Component<IProps, IState> {
     },
     centeredTextLarge: {
       alignSelf: 'center',
+      fontWeight: 'bold',
       fontSize: 20,
     },
     centeredTextSmall: {
@@ -295,6 +324,21 @@ export class GetPermissions extends Component<IProps, IState> {
     largeIcon: {
       alignSelf: 'center',
       marginBottom: 30,
+    },
+    rulesIcon: {
+      alignSelf: 'center',
+      marginBottom: 30,
+    },
+    rulesText: {
+      width: '100%',
+      paddingVertical: 10,
+      paddingHorizontal: 40,
+      fontSize: 20,
+    },
+    agreementTitle: {
+      alignSelf: 'center',
+      fontWeight: 'bold',
+      fontSize: 20,
     },
   });
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager, AsyncStorage } from 'react-native';
 import { ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
@@ -30,6 +30,7 @@ interface IState {
   isLoading: boolean;
   elaspedTime: number;
   time: any;
+  blacklist: any;
 }
 
 Moment.locale('en', {
@@ -63,14 +64,21 @@ export class NodeList extends Component<IProps, IState> {
       isLoading: false,
       elaspedTime: 0,
       time: '',
+      blacklist: '',
     };
 
     this.updateIndex = this.updateIndex.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
     this.countdown = this.countdown.bind(this);
     this.reportNode = this.reportNode.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+    this.getBlacklist = this.getBlacklist.bind(this);
     this.goToChat = this.goToChat.bind(this);
+  }
+
+  componentDidMount() {
+    this.getBlacklist();
   }
 
   componentWillReceiveProps(newProps: any) {
@@ -85,6 +93,11 @@ export class NodeList extends Component<IProps, IState> {
     }
   }
 
+  async getBlacklist() {
+    let blacklist = await AsyncStorage.getItem('blacklist');
+    await this.setState({blacklist: blacklist});
+  }
+
   async goToChat(item, index) {
     NavigationService.reset('Chat', {
       action: 'node_chat',
@@ -95,6 +108,11 @@ export class NodeList extends Component<IProps, IState> {
       // nodeType: this.props.nodeType,
       // nodeIndex: this.state.nodeIndex,
      });
+  }
+
+  async reportNode(item) {
+    console.log('reporting nodes', item);
+    await AsyncStorage.setItem('blacklist', item.node_id);
   }
 
   updateIndex (selectedIndex) {
@@ -158,11 +176,6 @@ export class NodeList extends Component<IProps, IState> {
       });
     }
 
-    async reportNode(item) {
-      console.log('reporting node...', item);
-      //
-    }
-
         // @ts-ignore
     _renderItem = ({item, index}) => (
       <TouchableOpacity
@@ -218,6 +231,7 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   render() {
+    console.log(this.state.data);
     const buttons = ['nearest', 'trending'];
     return (
       <View style={{flex: 1}}>
@@ -254,7 +268,8 @@ export class NodeList extends Component<IProps, IState> {
       </View>
       <View style={styles.flatlist}>
         <FlatList
-         data={this.state.data}
+         // filter blacklist nodes from nodeList
+         data={this.state.data.filter(node => node.data.node_id !== this.state.blacklist)}
          renderItem={this._renderItem}
          extraData={this.state}
          onEndReachedThreshold={0}

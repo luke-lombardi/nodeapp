@@ -13,6 +13,7 @@ import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 // const WINDOW_WIDTH = Dimensions.get('window').width;
+import Snackbar from 'react-native-snackbar';
 
 interface IProps {
     functions: any;
@@ -64,7 +65,7 @@ export class NodeList extends Component<IProps, IState> {
       isLoading: false,
       elaspedTime: 0,
       time: '',
-      blacklist: '',
+      blacklist: [],
     };
 
     this.updateIndex = this.updateIndex.bind(this);
@@ -94,8 +95,16 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   async getBlacklist() {
-    let blacklist = await AsyncStorage.getItem('blacklist');
+    let blacklist: any = await AsyncStorage.getItem('blacklist');
+
+    if (blacklist !== null) {
+      blacklist = JSON.parse(blacklist);
+    } else  {
+      blacklist = [];
+    }
+
     await this.setState({blacklist: blacklist});
+    console.log('this.state.blacklist', this.state.blacklist);
   }
 
   async goToChat(item, index) {
@@ -110,9 +119,25 @@ export class NodeList extends Component<IProps, IState> {
      });
   }
 
-  async reportNode(item) {
-    console.log('reporting nodes', item);
-    await AsyncStorage.setItem('blacklist', item.node_id);
+  async reportNode(item: any) {
+    Snackbar.show({
+      title: `reporting node ${item.node_id}...`,
+      duration: Snackbar.LENGTH_SHORT,
+    });
+
+    let blacklist: any = await AsyncStorage.getItem('blacklist');
+
+    if (blacklist !== null) {
+      blacklist = JSON.parse(blacklist);
+    } else  {
+      blacklist = [];
+    }
+
+    blacklist.push(item.node_id);
+    console.log('newBlacklist', blacklist);
+    await AsyncStorage.setItem('blacklist', JSON.stringify(blacklist));
+    // refresh nodelist after content is blocked
+    this.onRefresh();
   }
 
   updateIndex (selectedIndex) {
@@ -197,6 +222,12 @@ export class NodeList extends Component<IProps, IState> {
           // padding: 15,
         }}>
         <View style={{flex: 1}}>
+        {/* <Icon name='flag'
+          color='gray'
+          type='feather'
+          onPress={async () => await this.reportNode(item)}
+          containerStyle={{flex: 1, position: 'absolute', top: 5, alignSelf: 'flex-end'}}
+        /> */}
           <View style={{padding: 10, width: '100%', justifyContent: 'flex-start'}}>
             <Text style={{color: '#262626', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{item.data.topic}</Text>
           </View>
@@ -223,15 +254,17 @@ export class NodeList extends Component<IProps, IState> {
     // @ts-ignore
     let newPrivateList = await this.props.privatePlaceList;
     if (newList) {
-      this.setState({isRefreshing: false});
+      this.setState({
+        isRefreshing: false,
+        data: newList,
+      });
     } else {
       await this.setState({isRefreshing: false});
-      return;
     }
+    return;
   }
 
   render() {
-    console.log(this.state.data);
     const buttons = ['nearest', 'trending'];
     return (
       <View style={{flex: 1}}>
@@ -269,7 +302,7 @@ export class NodeList extends Component<IProps, IState> {
       <View style={styles.flatlist}>
         <FlatList
          // filter blacklist nodes from nodeList
-         data={this.state.data.filter(node => node.data.node_id !== this.state.blacklist)}
+         data={this.state.data.filter(node => !this.state.blacklist.includes(node.data.node_id))}
          renderItem={this._renderItem}
          extraData={this.state}
          onEndReachedThreshold={0}

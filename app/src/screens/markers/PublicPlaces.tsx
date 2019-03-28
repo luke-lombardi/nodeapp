@@ -24,7 +24,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
             messages: '',
             nodeId: '',
             tracksViewChanges: true,
-            blacklist: '',
+            blacklist: [],
         };
 
         this.componentDidUpdate = this.componentDidUpdate.bind(this);
@@ -33,6 +33,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
     }
 
     componentWillReceiveProps(nextProps: any) {
+      this.getBlacklist();
       if (!_.isEqual(this.props, nextProps)) {
         this.setState({ tracksViewChanges: true });
       }
@@ -45,7 +46,14 @@ export default class PublicPlaces extends Component<IProps, IState> {
     }
 
     async getBlacklist() {
-      let blacklist = await AsyncStorage.getItem('blacklist');
+      let blacklist: any = await AsyncStorage.getItem('blacklist');
+
+      if (blacklist !== null) {
+        blacklist = JSON.parse(blacklist);
+      } else  {
+        blacklist = [];
+      }
+
       await this.setState({blacklist: blacklist});
     }
 
@@ -58,7 +66,7 @@ export default class PublicPlaces extends Component<IProps, IState> {
         return (
             this.props.publicPlaceList.map(marker => (
               marker.node_id !== undefined &&
-              marker.node_id !== this.state.blacklist ?
+              !this.state.blacklist.includes(marker.node_id) ?
               <View key={marker.node_id}>
                 <Marker
                     coordinate={{latitude: parseFloat(marker.data.latitude), longitude: parseFloat(marker.data.longitude)} }

@@ -110,10 +110,7 @@ const InternalStack = createStackNavigator({
   },
   GetPermissions: { screen: GetPermissions,
     navigationOptions: () => ({
-      headerStyle: {backgroundColor: '#006494' },
-      headerTitleStyle: {color: 'white'},
-      title: 'permissions',
-      headerLeft: <View></View>,
+      header: null,
       }),
   },
   Nodes: { screen: NodeList,

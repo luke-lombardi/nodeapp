@@ -46,7 +46,6 @@
 		2E4CEACB2187F004008D205B /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E4CEAB72187EF12008D205B /* libReact Native Open Settings.a */; };
 		2E502DCB22075DEB00A327C5 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E502DCA22075DE600A327C5 /* libRNGestureHandler.a */; };
 		2E5B3EAF21F4C83500B5048C /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E5B3E8621F4C7DD00B5048C /* libRCTPushNotification.a */; };
-		2E747B1C213C481100EC738F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E747B1B213C481100EC738F /* GameKit.framework */; };
 		2E8CD0EA214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */; };
 		2E8CD0F7214DA68B004137D1 /* libRNSimpleCompass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E8CD0F6214DA678004137D1 /* libRNSimpleCompass.a */; };
 		2ED289B9214D81CF00582FC3 /* NativeSleep.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ED289B7214D81CF00582FC3 /* NativeSleep.m */; };
@@ -513,7 +512,6 @@
 		2E5B3E6F21F4C7DD00B5048C /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RCTPushNotification.xcodeproj; sourceTree = "<group>"; };
 		2E5B3EA621F4C82500B5048C /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		2E747B1A213C480900EC738F /* Smartshare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Smartshare.entitlements; path = Smartshare/Smartshare.entitlements; sourceTree = "<group>"; };
-		2E747B1B213C481100EC738F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		2E8CD0BC214D9DB5004137D1 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		2E8CD0F1214DA678004137D1 /* RNSimpleCompass.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleCompass.xcodeproj; path = "../node_modules/react-native-simple-compass/ios/RNSimpleCompass.xcodeproj"; sourceTree = "<group>"; };
 		2ED289B7214D81CF00582FC3 /* NativeSleep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeSleep.m; path = Smartshare/NativeSleep.m; sourceTree = "<group>"; };
@@ -595,7 +593,6 @@
 				397A003988194EFBAFA5ACC3 /* libz.tbd in Frameworks */,
 				70E2CE7DEA58425CAD211CDB /* libRNGeocoder.a in Frameworks */,
 				34591FE7C2E74C8B868E87FA /* libBVLinearGradient.a in Frameworks */,
-				2E747B1C213C481100EC738F /* GameKit.framework in Frameworks */,
 				E9539205D168491EA08D8FB4 /* libRNVectorIcons.a in Frameworks */,
 				4CA24CF95357D54A30EDBF3A /* libPods-Smartshare.a in Frameworks */,
 				0402D80B81014975AB2ABF7E /* libPushyRN.a in Frameworks */,
@@ -762,7 +759,6 @@
 			isa = PBXGroup;
 			children = (
 				2E5B3E6B21F4C7DD00B5048C /* PushNotificationIOS */,
-				2E747B1B213C481100EC738F /* GameKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				17E0612A16444329BE411F7B /* libz.tbd */,
 				319C462A15AD0337CA987884 /* libPods-Smartshare.a */,
@@ -1119,7 +1115,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.GameCenter.iOS = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.Push = {
 								enabled = 1;

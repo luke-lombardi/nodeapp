@@ -205,6 +205,13 @@ export class GetPermissions extends Component<IProps, IState> {
         paginationStyle={{position: 'absolute', bottom: '5%'}}
         loop={false}
       >
+      <View style={styles.slide}>
+        <Text style={styles.header}>welcome to sudo.</Text>
+        <Text style={styles.header}>get a live feed of what people are saying around you.</Text>
+        <Text style={styles.text}>send private messages.</Text>
+        <Text style={styles.text}>share your location.</Text>
+        <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
+      </View>
       {/* USER AGREEMENT */}
       <View style={styles.container}>
         <Icon
@@ -323,22 +330,53 @@ export class GetPermissions extends Component<IProps, IState> {
     },
     largeIcon: {
       alignSelf: 'center',
-      marginBottom: 30,
+      marginBottom: 10,
     },
     rulesIcon: {
       alignSelf: 'center',
-      marginBottom: 30,
+      marginBottom: 10,
     },
     rulesText: {
       width: '100%',
-      paddingVertical: 10,
-      paddingHorizontal: 40,
+      paddingVertical: 5,
+      paddingHorizontal: 30,
       fontSize: 20,
     },
     agreementTitle: {
       alignSelf: 'center',
       fontWeight: 'bold',
       fontSize: 20,
+    },
+    slide: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: '#006494',
+    },
+    header: {
+      width: '90%',
+      marginTop: 75,
+      alignSelf: 'center',
+      alignItems: 'center',
+      color: 'white',
+      fontSize: 24,
+    },
+    subtitle: {
+      width: '90%',
+      paddingTop: 20,
+      alignSelf: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: 'white',
+      fontSize: 24,
+    },
+    text: {
+      width: '90%',
+      marginTop: 20,
+      alignSelf: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: 'white',
+      fontSize: 24,
     },
   });
 

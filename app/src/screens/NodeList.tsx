@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // @ts-ignore
-import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, InteractionManager, AsyncStorage, Alert } from 'react-native';
 import { ButtonGroup, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import Moment from 'moment';
@@ -32,6 +32,7 @@ interface IState {
   elaspedTime: number;
   time: any;
   blacklist: any;
+  refresh: boolean;
 }
 
 Moment.locale('en', {
@@ -66,6 +67,7 @@ export class NodeList extends Component<IProps, IState> {
       elaspedTime: 0,
       time: '',
       blacklist: [],
+      refresh: false,
     };
 
     this.updateIndex = this.updateIndex.bind(this);
@@ -79,6 +81,7 @@ export class NodeList extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    // AsyncStorage.clear();
     this.getBlacklist();
   }
 
@@ -121,8 +124,8 @@ export class NodeList extends Component<IProps, IState> {
 
   async reportNode(item: any) {
     Snackbar.show({
-      title: `reporting node ${item.node_id}...`,
-      duration: Snackbar.LENGTH_SHORT,
+      title: `thanks for reporting offensive content. the content has been removed from your feed.`,
+      duration: Snackbar.LENGTH_LONG,
     });
 
     let blacklist: any = await AsyncStorage.getItem('blacklist');
@@ -137,7 +140,10 @@ export class NodeList extends Component<IProps, IState> {
     console.log('newBlacklist', blacklist);
     await AsyncStorage.setItem('blacklist', JSON.stringify(blacklist));
     // refresh nodelist after content is blocked
-    this.onRefresh();
+    this.setState({
+      data: this.props.publicPlaceList,
+      refresh: !this.state.refresh,
+    });
   }
 
   updateIndex (selectedIndex) {
@@ -203,10 +209,26 @@ export class NodeList extends Component<IProps, IState> {
 
         // @ts-ignore
     _renderItem = ({item, index}) => (
+      <View>
+        <View style={{alignSelf: 'flex-end', zIndex: 5, right: '5%', top: 10}}>
+        <Icon name='flag'
+          color='gray'
+          size={18}
+          type='feather'
+          onPress={() => Alert.alert(
+            `report this node?`,
+            `the content will be removed from your feed immediately.`,
+            [
+              {text: 'submit', onPress: () => this.reportNode(item)},
+              {text: 'cancel'},
+            ],
+            { cancelable: true},
+          )}
+          containerStyle={{flex: 1, position: 'absolute', top: 5, alignSelf: 'flex-end'}}
+        />
+        </View>
       <TouchableOpacity
-        onLongPress={async () => await this.reportNode(item)}
         onPress={ async () => await this.goToChat(item.data, index)}
-        // onPress={() => this._onTouchNode(item, index)}
         activeOpacity={0.7}
         style={{
           flex: 1,
@@ -222,13 +244,7 @@ export class NodeList extends Component<IProps, IState> {
           // padding: 15,
         }}>
         <View style={{flex: 1}}>
-        {/* <Icon name='flag'
-          color='gray'
-          type='feather'
-          onPress={async () => await this.reportNode(item)}
-          containerStyle={{flex: 1, position: 'absolute', top: 5, alignSelf: 'flex-end'}}
-        /> */}
-          <View style={{padding: 10, width: '100%', justifyContent: 'flex-start'}}>
+          <View style={{padding: 10, width: '90%', justifyContent: 'flex-start'}}>
             <Text style={{color: '#262626', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{item.data.topic}</Text>
           </View>
           {/* <View style={{flex: 1, flexDirection: 'row', right: -10, width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
@@ -246,22 +262,26 @@ export class NodeList extends Component<IProps, IState> {
               </Text>
             </View>
       </TouchableOpacity>
+      </View>
     )
 
   async onRefresh() {
     await this.setState({isRefreshing: true});
     let newList = await this.props.publicPlaceList;
-    // @ts-ignore
-    let newPrivateList = await this.props.privatePlaceList;
     if (newList) {
+      console.log('newlist', newList);
       this.setState({
         isRefreshing: false,
         data: newList,
       });
-    } else {
-      await this.setState({isRefreshing: false});
+        console.log('newlist', newList);
+        this.setState({isRefreshing: false});
     }
-    return;
+    // @ts-ignore
+    this.setState({
+        isRefreshing: false,
+        data: newList,
+    });
   }
 
   render() {
@@ -309,7 +329,7 @@ export class NodeList extends Component<IProps, IState> {
          ListHeaderComponent={<View style={{ height: 0, marginTop: 0 }}></View>}
          showsVerticalScrollIndicator={true}
          keyExtractor={item => item.node_id}
-         refreshing={this.state.isRefreshing ? true : false}
+         refreshing={this.state.isRefreshing}
          onRefresh={this.onRefresh}
          ListEmptyComponent={
           <View style={styles.nullContainer}>

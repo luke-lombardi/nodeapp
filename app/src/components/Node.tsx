@@ -368,7 +368,7 @@ const styles = ScaledSheet.create({
     bottom: 0,
   },
   nodeCard: {
-    height: '200@vs',
+    height: '75%',
     width: '90%',
     borderRadius: 20,
     borderColor: 'rgba(44,55,71,.9)',

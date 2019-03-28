@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // @ts-ignore
 import { View, StyleSheet, Text, TextInput, ActivityIndicator } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
@@ -41,20 +41,13 @@ export default class Tour extends Component<IProps, IState> {
               <Swiper
                 style={{alignSelf: 'center', flex: 1, height: '100%', flexDirection: 'row', justifyContent: 'center'}}
                 showsButtons={false}
-                paginationStyle={{position: 'absolute', bottom: '15%'}}
+                paginationStyle={{position: 'absolute', bottom: '10%'}}
                 loop={false}
               >
               <View style={styles.slide}>
-                <Icon
-                  name='lock'
-                  type='feather'
-                  size={72}
-                  color={'white'}
-                  containerStyle={{paddingVertical: 50}}
-                />
-                <Text style={styles.text}>get a live feed of what people are saying around you</Text>
-                <Text style={styles.text}>send private messages</Text>
-                <Text style={styles.text}>share your location</Text>
+                <Text style={styles.header}>get a live feed of what people are saying around you.</Text>
+                <Text style={styles.text}>send private messages.</Text>
+                <Text style={styles.text}>share your location.</Text>
                 <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
                 <Button
                   title='get started'
@@ -79,13 +72,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#006494',
   },
-
+  header: {
+    width: '90%',
+    marginTop: 75,
+    alignSelf: 'center',
+    alignItems: 'center',
+    color: 'white',
+    fontSize: 24,
+  },
   text: {
     width: '90%',
-    paddingVertical: 20,
+    marginTop: 20,
     alignSelf: 'center',
     justifyContent: 'center',
-    textAlign: 'center',
     alignItems: 'center',
     color: 'white',
     fontSize: 24,
@@ -95,7 +94,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     alignSelf: 'center',
     justifyContent: 'center',
-    textAlign: 'center',
     alignItems: 'center',
     color: 'white',
     fontSize: 24,

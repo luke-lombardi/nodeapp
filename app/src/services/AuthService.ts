@@ -77,7 +77,7 @@ export default class AuthService {
 
     public static async hasPermissions() {
       let locationPermissions = await Permissions.check('location', { type: 'always'} );
-      let notificationPermissions = await Permissions.check('notification');
+      // let notificationPermissions = await Permissions.check('notification');
       // @ts-ignore
       let motionPermissions = await Permissions.check('motion');
 
@@ -86,9 +86,9 @@ export default class AuthService {
       }
 
       // TODO: notification permissions need to be optional
-      if (notificationPermissions !== 'authorized') {
-        return false;
-      }
+      // if (notificationPermissions !== 'authorized') {
+      //   return false;
+      // }
 
       // if (motionPermissions !== 'authorized') {
       //   return false;

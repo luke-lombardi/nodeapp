@@ -64,6 +64,9 @@ interface IState {
     nodeId: string;
     userUuid: string;
     username: string;
+    blacklist: any;
+    // refresh is a handler to update flatlist when state changes (like when a offensive message is flagged)
+    refresh: boolean;
 }
 
 const MINIMUM_MSG_LENGTH = 1;
@@ -142,6 +145,8 @@ export class Chat extends Component<IProps, IState> {
               NavigationService.reset('Nodes', {})
               :
               params.action === 'node_chat' ?
+              // TODO: this should zoom to the node on the map
+              // need to pass node index as param
               NavigationService.reset('Map', {})
               :
               NavigationService.reset('FriendList', {});
@@ -179,6 +184,8 @@ export class Chat extends Component<IProps, IState> {
         nodeId: '',
         userUuid: '',
         username: '',
+        blacklist: [],
+        refresh: false,
     };
 
     this._renderItem = this._renderItem.bind(this);
@@ -207,30 +214,89 @@ export class Chat extends Component<IProps, IState> {
     this.getTime = this.getTime.bind(this);
     this.reportUser = this.reportUser.bind(this);
     this.reportItem = this.reportItem.bind(this);
+    this.reportMessage = this.reportMessage.bind(this);
+    this.getBlacklist = this.getBlacklist.bind(this);
     }
+
+  async getBlacklist() {
+    let blacklist: any = await AsyncStorage.getItem('blacklist');
+
+    if (blacklist !== null) {
+      blacklist = JSON.parse(blacklist);
+    } else  {
+      blacklist = [];
+    }
+
+    await this.setState({blacklist: blacklist});
+    console.log('chat - this.state.blacklist', this.state.blacklist);
+  }
 
     async closeConfirmModal() {
       await this.setState({confirmModalVisible: false});
     }
 
     async reportUser(displayName) {
-      Snackbar.show({
-        title: `reported ${displayName}`,
-        duration: Snackbar.LENGTH_SHORT,
-      });
+      Alert.alert(
+        `report ${displayName}?`,
+        `the user will be removed from your feed immediately.`,
+        [
+          {
+            text: 'submit', onPress: () =>
+            Snackbar.show({
+              title: `reported ${displayName}`,
+              duration: Snackbar.LENGTH_LONG,
+            }),
+          },
+          { text: 'cancel' },
+        ],
+        { cancelable: true },
+      );
     }
 
     async reportItem(selectedNode) {
+
       Snackbar.show({
-        title: `reporting node ${selectedNode.node_id}...`,
-        duration: Snackbar.LENGTH_SHORT,
+        title: `thanks for reporting offensive content. the content has been removed from your feed.`,
+        duration: Snackbar.LENGTH_LONG,
       });
 
-      await AsyncStorage.setItem('blacklist', selectedNode.node_id);
       let blacklist: any = await AsyncStorage.getItem('blacklist');
-      console.log('blacklist for user----->', blacklist);
+      console.log('got blacklist', blacklist);
+
+      if (blacklist !== null) {
+        blacklist = JSON.parse(blacklist);
+        console.log('jsonparsed blacklist', blacklist);
+      } else  {
+        blacklist = [];
+      }
+
+      blacklist.push(selectedNode.node_id);
+      await AsyncStorage.setItem('blacklist', JSON.stringify(blacklist));
 
       NavigationService.reset('Nodes', {});
+    }
+
+    async reportMessage(item) {
+
+      Snackbar.show({
+        title: `thanks for reporting offensive content. the content has been removed from your feed.`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+
+      let blacklist: any = await AsyncStorage.getItem('blacklist');
+      console.log('got blacklist', blacklist);
+
+      if (blacklist !== null) {
+        blacklist = JSON.parse(blacklist);
+        console.log('jsonparsed blacklist', blacklist);
+      } else  {
+        blacklist = [];
+      }
+
+      blacklist.push(item.timestamp);
+      await AsyncStorage.setItem('blacklist', JSON.stringify(blacklist));
+
+      await this.setState({refresh: !this.state.refresh});
     }
 
     async submitMessage() {
@@ -381,6 +447,24 @@ export class Chat extends Component<IProps, IState> {
 
       // @ts-ignore
       _renderItem = ({item, index}) => (
+        <View>
+        <View style={{alignSelf: 'flex-end', zIndex: 5, right: '5%', top: 10}}>
+        <Icon name='flag'
+          color='gray'
+          size={18}
+          type='feather'
+          onPress={() => Alert.alert(
+            `report this message?`,
+            `the content will be removed from your feed immediately.`,
+            [
+              {text: 'submit', onPress: () => this.reportMessage(item)},
+              {text: 'cancel'},
+            ],
+            { cancelable: true},
+          )}
+          containerStyle={{flex: 1, position: 'absolute', top: 5, alignSelf: 'flex-end'}}
+        />
+        </View>
         <TouchableOpacity
         onLongPress={() => this.showConfirmModal(item)}
         activeOpacity={0.7}
@@ -414,6 +498,7 @@ export class Chat extends Component<IProps, IState> {
             </View>
           </View>
       </TouchableOpacity>
+      </View>
     )
 
     // @ts-ignore
@@ -488,12 +573,11 @@ export class Chat extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-      console.log('got props', this.props);
       // Updates the message data for the node
       this.monitorMessages();
       this.getUserInfo();
       // this.props.navigation.setParams({node: node});
-
+      this.getBlacklist();
     }
 
     componentWillUnmount() {
@@ -614,7 +698,8 @@ export class Chat extends Component<IProps, IState> {
           <FlatList
            keyboardDismissMode={'on-drag'}
            keyboardShouldPersistTaps='always'
-           data={this.state.data}
+           extraData={this.state}
+           data={this.state.data.filter(message => !this.state.blacklist.includes(message.timestamp))}
            inverted={this.action === 'node_chat' ? false : true}
            renderItem={this.action === 'node_chat' ? this._renderItem : this._renderDirectMessage}
            keyExtractor={item => item.timestamp}
@@ -642,8 +727,17 @@ export class Chat extends Component<IProps, IState> {
                <View style={{padding: 10, width: '90%'}}>
                  <Text style={{color: 'rgba(27, 28, 29, 1)', width: '90%', alignSelf: 'flex-start', fontWeight: '600', fontSize: 18}}>{selectedNode.topic}</Text>
                </View>
-               <View style={{width: '10%', marginVertical: 20}}>
-               <Icon name='flag' color='gray' type='feather' onPress={() => this.reportItem(selectedNode)}/>
+               <View style={{width: '10%', marginVertical: 10}}>
+               <Icon name='flag' color='gray' type='feather' size={18}
+               onPress={() => Alert.alert(
+                `report this node?`,
+                `the content will be removed from your feed immediately.`,
+                [
+                  {text: 'submit', onPress: () => this.reportItem(selectedNode)},
+                  {text: 'cancel'},
+                ],
+                { cancelable: true},
+              )} />
               </View>
                {/* <View style={{height: '100%', flex: 1, flexDirection: 'row', width: '20%', position: 'absolute', justifyContent: 'center', alignSelf: 'flex-end', alignItems: 'center'}}>
                <Vote selectedNode={selectedNode} />

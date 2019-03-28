@@ -293,7 +293,6 @@ const styles = ScaledSheet.create({
   },
   fullWidthButton: {
     backgroundColor: '#006494',
-    // height: '65@vs',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -336,7 +335,7 @@ const styles = ScaledSheet.create({
     width: '100%',
     alignItems: 'center',
     position: 'absolute',
-    top: '35@vs',
+    top: '10%',
   },
   sliderText: {
     alignSelf: 'center',

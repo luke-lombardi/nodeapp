@@ -93,6 +93,7 @@ interface IState {
   direction: number;
   paymentModalVisible: boolean;
   tourViewed: boolean;
+  blacklist: any;
 }
 
 export class MainMap extends Component<IProps, IState> {
@@ -135,6 +136,7 @@ export class MainMap extends Component<IProps, IState> {
     this.componentWillMount = this.componentWillMount.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.getBlacklist = this.getBlacklist.bind(this);
 
     this.nodeService = new NodeService(
       {
@@ -168,6 +170,7 @@ export class MainMap extends Component<IProps, IState> {
       tourModalVisible: false,
       paymentModalVisible: false,
       tourViewed: true,
+      blacklist: [],
       destination: {
         latitude: '',
         longitude: '',
@@ -177,6 +180,7 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    this.getBlacklist();
     // start listening for scrollview events
     // If there is any message to display, then show a snackbar at the bottom of the map
     let showMessage = this.props.navigation.getParam('showMessage', true);
@@ -209,6 +213,19 @@ export class MainMap extends Component<IProps, IState> {
         }
       }, 5);
     }
+  }
+
+  async getBlacklist() {
+    let blacklist: any = await AsyncStorage.getItem('blacklist');
+
+    if (blacklist !== null) {
+      blacklist = JSON.parse(blacklist);
+    } else  {
+      blacklist = [];
+    }
+
+    await this.setState({blacklist: blacklist});
+    console.log('this.state.blacklist', this.state.blacklist);
   }
 
  animateToNodeLocation() {
@@ -385,7 +402,7 @@ export class MainMap extends Component<IProps, IState> {
         nodeListToSearch = this.props.publicPersonList;
         break;
       case 'publicPlace':
-        nodeListToSearch = this.props.publicPlaceList;
+        nodeListToSearch = this.props.publicPlaceList.filter(node => !this.state.blacklist.includes(node.data.node_id));
         break;
       case 'privatePerson':
         nodeListToSearch = this.props.privatePersonList;
@@ -670,7 +687,7 @@ export class MainMap extends Component<IProps, IState> {
                 data={this.props}
                 index={this.state.selectedNodeIndex}
                 nodeId={this.state.selectedNode.data.node_id}
-                nodeType={ this.state.selectedNode.nodeType }
+                nodeType={this.state.selectedNode.nodeType}
                 topic={this.state.selectedNode.data.topic}
                 ttl={this.state.selectedNode.data.ttl}
                 origin={this.props.userRegion}

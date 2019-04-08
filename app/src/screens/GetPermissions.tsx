@@ -89,10 +89,7 @@ export class GetPermissions extends Component<IProps, IState> {
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
-          { text: 'ok', onPress: permissionsRequested.location !== true ? async () => {
-          await this.requestPermissions('location');
-          await AuthService.setPermissionsRequested('location'); }
-          : OpenSettings.openSettings()},
+          {text: 'open settings', onPress: OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );

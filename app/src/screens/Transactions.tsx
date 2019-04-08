@@ -4,7 +4,7 @@ import { ScaledSheet } from 'react-native-size-matters';
 // @ts-ignore
 import { View, FlatList, StyleSheet, Text, Alert, Animated, Clipboard, TextInput, TouchableOpacity, KeyboardAvoidingView, Keyboard, AsyncStorage, TouchableHighlight } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
-// import PlaidAuthenticator from 'react-native-plaid-link';
+import PlaidAuthenticator from 'react-native-plaid-link';
 
 // const PLAID_CLIENT_ID = '5be83d9fd4530d0014d4a287';
 // const PLAID_PUBLIC_KEY = '5a051f20478de47fc55b0e33ffa325';
@@ -95,7 +95,7 @@ export class Transactions extends Component<IProps, IState> {
     this.state = {
         data: [],
         accounts: [],
-        isLoading: true,
+        isLoading: false,
         txHash: undefined,
         detailModalVisible: false,
         plaidToken: undefined,
@@ -277,14 +277,14 @@ export class Transactions extends Component<IProps, IState> {
       const balance = 12;
       return (
       <View style={{flex: 1}}>
-        {/* <PlaidAuthenticator
+        <PlaidAuthenticator
           onMessage={(data) => this.onMessage(data)}
           publicKey='5a051f20478de47fc55b0e33ffa325'
           env='development'
           product='auth,transactions'
           clientName='Smartshare'
           selectAccount={false}
-        /> */}
+        />
       {
         this.state.detailModalVisible &&
         <TransactionDetail functions={{
@@ -296,7 +296,7 @@ export class Transactions extends Component<IProps, IState> {
         />
       }
       {
-        !this.state.plaidToken !== undefined &&
+        this.state.plaidToken !== undefined &&
         <View style={styles.flatlist}>
           <FlatList
            data={this.state.data}
@@ -309,12 +309,12 @@ export class Transactions extends Component<IProps, IState> {
           //    <Text style={{padding: 20}}>{balance}</Text>
           //    </View>
           //  }
-           ListEmptyComponent={
-            <View style={styles.nullContainer}>
-            <Text style={styles.null}>no transactions.</Text>
-            <Text style={styles.nullSubtitle}>you can find transactions here.</Text>
-            </View>
-      }
+      //      ListEmptyComponent={
+      //       <View style={styles.nullContainer}>
+      //       <Text style={styles.null}>no transactions.</Text>
+      //       <Text style={styles.nullSubtitle}>you can find transactions here.</Text>
+      //       </View>
+      // }
           />
           </View>
       }

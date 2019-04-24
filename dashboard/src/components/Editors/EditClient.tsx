@@ -16,6 +16,11 @@ import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import classNames from 'classnames';
+import TextField from '@material-ui/core/TextField';
+// import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import Input from '@material-ui/core/Input';
 
 // @ts-ignore
 import Utils from './common/Utils';
@@ -237,19 +242,70 @@ class EditClient extends Component<IProps, IState> {
           <Divider />
 
           <form className={classes.container} noValidate autoComplete='off'>
-              <h4> Create New Lead </h4>
-
+              <h4> Create New Campaign </h4>
               {/* INPUT: Client id */}
-              <TextInput label='Full Name' field='name' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Title' field='title' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Department' field='department' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextInput label='Campaign Name' field='name' data={this.state.leadData} handleChange={this.handleChange} />
+              <TextField
+                id='outlined-multiline-flexible'
+                label='Multiline'
+                multiline
+                rowsMax='4'
+                // value={this.state.multiline}
+                // onChange={this.handleChange('multiline')}
+                className={classes.textField}
+                margin='normal'
+                helperText='hello'
+                variant='outlined'
+              />
+              <TextField
+                id='outlined-select-currency'
+                select
+                label='Select'
+                className={classes.textField}
+                // value={this.state.currency}
+                // onChange={this.handleChange('currency')}
+                SelectProps={{
+                  MenuProps: {
+                    className: classes.menu,
+                  },
+                }}
+                helperText='Please select your currency'
+                margin='normal'
+                variant='outlined'
+              >
+              {/* {currencies.map(option => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))} */}
+              </TextField>
+              <TextField
+                margin='normal'
+                variant='outlined'
+                id='datetime-local'
+                label='Next appointment'
+                type='datetime-local'
+                defaultValue='2017-05-24T10:30'
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <input
+                accept='image/*'
+                className={classes.input}
+                style={{ display: 'none' }}
+                id='raised-button-file'
+                multiple
+                type='file'
+              />
+              <label htmlFor='raised-button-file'>
+                <Button variant='raised' component='span' className={classes.input}>
+                  Upload Image
+                </Button>
+              </label>
+              <TextInput label='Message' field='department' data={this.state.leadData} handleChange={this.handleChange} />
               <TextInput label='Phone' field='phone' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Email' field='email' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Product' field='product' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='MRR' field='mrr' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Notes' field='notes' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Probability' field='probability' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Status' field='status' data={this.state.leadData} handleChange={this.handleChange} />
               {/* INPUT: Enable processing */}
               <FormGroup row>
                 <FormControlLabel
@@ -260,7 +316,7 @@ class EditClient extends Component<IProps, IState> {
                     value={this.state.leadData.enableProcessing}
                   />
                 }
-              label='Enable processing'
+              label='Add "Reply STOP to unsubscribe"'
             />
             </FormGroup>
           </form>
@@ -269,11 +325,11 @@ class EditClient extends Component<IProps, IState> {
         <div>
           <Button variant='contained' size='large' className={classes.button} onClick={this.saveData} disabled={this.state.isLoading}>
               <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-              Save Client
+              Schedule Campaign
           </Button>
           <Button variant='contained' size='large' className={classes.button} disabled={this.state.newLead} onClick={this.confirmDelete}>
               <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-              Delete Client
+              Cancel
           </Button>
         </div>
         <br />

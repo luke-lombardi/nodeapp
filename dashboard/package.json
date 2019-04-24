@@ -63,6 +63,7 @@
     "react-dom": "^16.4.2",
     "react-google-maps": "^9.4.5",
     "react-grid-system": "^4.3.0",
+    "react-images-upload": "^1.2.6",
     "react-material-snackbar": "^3.0.1",
     "react-places-autocomplete": "^7.2.0",
     "react-redux": "^5.0.7",

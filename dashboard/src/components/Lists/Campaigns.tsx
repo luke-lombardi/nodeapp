@@ -14,22 +14,19 @@ import IStoreState from '../../store/IStoreState';
 import { PageChangedActionCreator } from '../../actions/NavActions';
 import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
-// import AppBar from '@material-ui/core/AppBar';
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab';
 // @ts-ignore
 import { Container, Row, Col } from 'react-grid-system';
 
 // @ts-ignore
 import Button from '@material-ui/core/Button';
 // import AddIcon from '@material-ui/icons/Add';
+import IconButton from '@material-ui/core/IconButton';
 // @ts-ignore
 import EditIcon from '@material-ui/icons/Edit';
-// import Campaigns from './Campaigns';
+import MaterialTable from 'material-table';
 
 // services
 import ApiService from '../../services/ApiService';
-import Campaigns from './Campaigns';
 
 interface IProps {
   readonly currentPage: string;
@@ -47,7 +44,43 @@ interface IState {
   Value: number;
 }
 
-class ClientList extends Component<IProps, IState> {
+class Campaigns extends Component<IProps, IState> {
+
+  private columns = [
+    {
+      title: 'Name',
+      field: 'name',
+    },
+    {
+      title: 'Date',
+      field: 'date',
+    },
+    {
+      title: 'Group',
+      field: 'group',
+    },
+    {
+      title: 'Status',
+      field: 'status',
+    },
+    {
+    title: 'Actions',
+     // @ts-ignore
+      render: rowData => {
+        // @ts-ignore
+        const link = '/clients/edit/' + parseInt(rowData.id, 10);
+        return (
+          <div style={{ width: '100%', height: 40 }}>
+                <Link to={link}>
+                  <IconButton color='secondary' aria-label='Edit'>
+                    <EditIcon fontSize='small'/>
+                  </IconButton>
+                </Link>
+          </div>
+        );
+      },
+    },
+  ];
 
   private apiService: ApiService;
 
@@ -58,12 +91,12 @@ class ClientList extends Component<IProps, IState> {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
     this.state = {
-      Clients: [],
+      Clients: [{'name': 'eli'}, {'name': 'ken'}],
       Value: 1,
     };
 
     this.handleAuthChange = this.handleAuthChange.bind(this);
-    this.renderTable = this.renderTable.bind(this);
+
     this.setClientList = this.setClientList.bind(this);
     this.addFilter = this.addFilter.bind(this);
 
@@ -96,42 +129,18 @@ class ClientList extends Component<IProps, IState> {
     await this.setState({Clients: clients});
   }
 
-  handleChange = (event: any, value: number) => {
-    console.log(value, event);
-    this.setState({Value: value});
-    //
-  }
-
-  renderTable() {
-    switch (this.state.Value) {
-      case 0:
-        return <Campaigns />;
-        break;
-      case 1:
-        return <Campaigns />;
-        break;
-      default:
-    }
-    return;
-  }
-
   render() {
-    // const value = this.state;
+
     // if (this.props.auth.loggedIn === false) {
     //   return <Redirect to='/login' />; }
     return (
-      // @ts-ignore
-      // <div style={styles.root}>
-      //   <AppBar position='static'>
-      //     <Tabs value={value} onChange={this.handleChange}>
-      //       <Tab label='Scheduled' />
-      //       <Tab label='Sent' />
-      //     </Tabs>
-      //   </AppBar>
-      //   {this.renderTable}
-      // </div>
-      <div>
-      <Campaigns />
+      <div style={styles.tableContainer}>
+        <MaterialTable
+          columns={this.columns}
+          data={this.state.Clients}
+          title='Campaigns'
+          options={{pageSize: 20, selection: false, filtering: false}}
+        />
       </div>
     );
   }
@@ -164,7 +173,7 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClientList);
+export default connect(mapStateToProps, mapDispatchToProps)(Campaigns);
 
 // @ts-ignore
 const styles = {
@@ -183,6 +192,5 @@ const styles = {
   },
   root: {
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
   },
 };

@@ -40,6 +40,7 @@ import DashboardStyles from './styles/Dashboard';
 // Common imports
 import SideNav from './common/SideNav';
 import PageActions from './common/PageActions';
+import Login from './Login';
 
 // Modules
 import Summary from './Modules/Summary';
@@ -129,9 +130,9 @@ class Dashboard extends Component<IProps, IState> {
     let pageTitle = '';
 
     switch (this.props.currentPage) {
-      case 'clients': pageTitle = 'Clients';
+      case 'clients': pageTitle = 'Campaigns';
         break;
-      case 'client_editor': pageTitle = 'Edit Client';
+      case 'client_editor': pageTitle = 'Edit Campaign';
         break;
       case 'warehouses': pageTitle = 'Warehouses';
         break;
@@ -254,7 +255,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route path='/login' component={() => window.location = '/'}/>
                    }
 
-                  <Route exact path='/' component={ClientList} />
+                  <Route exact path='/' component={Login} />
 
                   <Route exact path='/summary' component={Summary} />
 

@@ -22,6 +22,8 @@ export default class ApiService {
     this.props = props;
 
     this.authService = new AuthService({});
+    this.PopulateData = this.PopulateData.bind(this);
+    this.getSubscribers = this.getSubscribers.bind(this);
   }
 
   //
@@ -39,37 +41,56 @@ export default class ApiService {
     this.MonitorAsync(table, filters);
   }
 
-  public async PopulateData(table: string, filters: any) {
-      console.log(`Populating data: ${table}, ${JSON.stringify(filters)}`);
+  public async PopulateData() {
+      console.log('populating');
       // Start the monitor loop - don't await this because it runs forever
-      let results = undefined;
+      let url = 'http://localhost:3000/campaigns';
+      // return await this.getListRequest(url);
 
-      switch (table) {
-        case 'athletes':
-          results =  await this.GetLeadsListAsync();
-          break;
-        case 'clients':
-          results =  await this.GetLeadsListAsync();
-          break;
-        default:
-          console.log('Unhandled');
-      }
+      let response = await fetch(url, {
+        method: 'GET',
+      });
 
-      results = await this.GetLeadsListAsync();
+      console.log(response);
 
-      if (results !== undefined) {
-        console.log('RESULTS', results);
-        await this.props.functions.setList(results);
-      }
+      if (response !== undefined) {
+        console.log('got list-------> ', response);
+        response = await response.json();
+        return response;
+        }
 
+        console.log('unable to get list', response);
+        return undefined;
   }
+
+  public async getSubscribers() {
+    console.log('populating');
+    // Start the monitor loop - don't await this because it runs forever
+    let url = 'http://localhost:3000/subscribers';
+    // return await this.getListRequest(url);
+
+    let response = await fetch(url, {
+      method: 'GET',
+    });
+
+    console.log(response);
+
+    if (response !== undefined) {
+      console.log('got subscribers-------> ', response);
+      response = await response.json();
+      return response;
+      }
+
+      console.log('unable to get subscribers', response);
+      return undefined;
+}
 
   StopMonitoring() {
     this.stopping = true;
   }
 
   public async GetLeadsListAsync() {
-    let url = 'https://sr1.smartshare.io/dev/getleads';
+    let url = 'http://localhost:3000/campaigns';
     return await this.getListRequest(url);
   }
 
@@ -93,27 +114,23 @@ export default class ApiService {
     return await this.sendDeleteRequest('deleteAthlete', 'athlete_id', athleteId);
   }
 
-    // Shared request code
   // upload new customer
-  public async createLead(leadData: any) {
+  public async createLead(args: any) {
 
-    let response = await fetch('https://sr1.smartshare.io/dev/createlead', {
+    console.log('args', args);
+
+    let response = await fetch('http://localhost:3000/createCampaign', {
           method: 'POST',
-          body: JSON.stringify(leadData),
-        });
+          body: JSON.stringify(args),
+      });
 
     if (response !== undefined) {
-
-      console.log('successfully created lead for', leadData);
-      console.log('lead id ------->', response);
-
       response = await response.json();
-
+      console.log('success', response);
       return response;
       }
 
-      console.log('unable to create lead', response);
-
+      console.log('unable to create campaign', response);
       return undefined;
   }
 
@@ -214,21 +231,14 @@ export default class ApiService {
 
   private async getListRequest(url: string) {
     let response = await fetch(url, {
-          method: 'GET',
-        });
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
 
-    if (response !== undefined) {
-
-      console.log('got lead list', response);
-
-      response = await response.json();
-
-      return response;
-      }
-
-      console.log('unable to get lead list', response);
-
-      return undefined;
+    response = await response.json();
+    return response;
   }
 
   // @ts-ignore

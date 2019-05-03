@@ -101,7 +101,7 @@ class GroupList extends Component<IProps, IState> {
       },
     });
 
-    this.apiService.PopulateData('groups', this.props.currentFilters);
+    this.apiService.PopulateData();
   }
 
   async handleAuthChange(auth: any) {

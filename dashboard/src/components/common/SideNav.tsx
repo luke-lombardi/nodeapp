@@ -7,7 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 
 // Import icons for sidebar
-// import DashboardIcon from '@material-ui/icons/Dashboard';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 // import WarehouseIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/Person';
 
@@ -47,9 +47,9 @@ class SideNav extends Component<IProps, IState> {
     <Link to='/clients'>
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary='Leads' />
+      <ListItemText primary='Dashboard' />
     </ListItem>
     </Link>
 
@@ -58,18 +58,36 @@ class SideNav extends Component<IProps, IState> {
         <ListItemIcon>
           <AddIcon />
         </ListItemIcon>
-      <ListItemText primary='Add Lead' />
+      <ListItemText primary='Messages' />
     </ListItem>
     </Link>
 
-    {/* <Link to='/triggers'>
+    <Link to='/subscribers'>
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary='Triggers' />
+      <ListItemText primary='Subscribers' />
     </ListItem>
-    </Link> */}
+    </Link>
+
+    <Link to='/triggers'>
+    <ListItem button>
+      <ListItemIcon>
+        <PeopleIcon />
+      </ListItemIcon>
+      <ListItemText primary='Conversations' />
+    </ListItem>
+    </Link>
+
+    <Link to='/triggers'>
+    <ListItem button>
+      <ListItemIcon>
+        <PeopleIcon />
+      </ListItemIcon>
+      <ListItemText primary='Settings' />
+    </ListItem>
+    </Link>
 
   </div>
   );

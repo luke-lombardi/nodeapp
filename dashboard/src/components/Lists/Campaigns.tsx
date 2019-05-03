@@ -16,9 +16,11 @@ import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
 // @ts-ignore
 import { Container, Row, Col } from 'react-grid-system';
-
+import Chip from '@material-ui/core/Chip';
 // @ts-ignore
 import Button from '@material-ui/core/Button';
+// import Paper from '@material-ui/core/Paper';
+// import Grid from '@material-ui/core/Grid';
 // import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 // @ts-ignore
@@ -53,7 +55,7 @@ class Campaigns extends Component<IProps, IState> {
     },
     {
       title: 'Date',
-      field: 'date',
+      field: 'send_time',
     },
     {
       title: 'Group',
@@ -62,6 +64,17 @@ class Campaigns extends Component<IProps, IState> {
     {
       title: 'Status',
       field: 'status',
+      // @ts-ignore
+      render: rowData => {
+      return (
+      <div>
+        <Chip
+        label={rowData.status}
+        color={rowData.status !== 'scheduled' ? 'default' : 'primary'}
+        />
+        </div>
+        );
+      },
     },
     {
     title: 'Actions',
@@ -91,7 +104,7 @@ class Campaigns extends Component<IProps, IState> {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
 
     this.state = {
-      Clients: [{'name': 'eli'}, {'name': 'ken'}],
+      Clients: [],
       Value: 1,
     };
 
@@ -107,7 +120,7 @@ class Campaigns extends Component<IProps, IState> {
       },
     });
 
-    this.apiService.PopulateData('clients', this.props.currentFilters);
+    this.apiService.PopulateData();
   }
 
   async handleAuthChange(auth: any) {
@@ -116,6 +129,7 @@ class Campaigns extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    this.setClientList();
     console.log('ClientList component mounted');
     // @ts-ignore
     this.props.currentPageChanged('clients');
@@ -125,12 +139,13 @@ class Campaigns extends Component<IProps, IState> {
     console.log('ClientList component unmounting');
   }
 
-  public async setClientList(clients: any) {
-    await this.setState({Clients: clients});
+  public async setClientList() {
+    let clients = await this.apiService.GetLeadsListAsync();
+    console.log('clients', clients);
+    this.setState({Clients: clients});
   }
 
   render() {
-
     // if (this.props.auth.loggedIn === false) {
     //   return <Redirect to='/login' />; }
     return (
@@ -139,7 +154,11 @@ class Campaigns extends Component<IProps, IState> {
           columns={this.columns}
           data={this.state.Clients}
           title='Campaigns'
-          options={{pageSize: 20, selection: false, filtering: false}}
+          options={{
+            pageSize: 10,
+            selection: false,
+            filtering: false,
+          }}
         />
       </div>
     );
@@ -179,6 +198,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Campaigns);
 const styles = {
   tableContainer: {
     padding: 20,
+    marginBottom: 50,
     paddingTop: 0,
     backgroundColor: 'white',
   },

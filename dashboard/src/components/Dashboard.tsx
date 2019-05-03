@@ -64,6 +64,7 @@ import { bindActionCreators } from 'redux';
 import IStoreState from '../store/IStoreState';
 import { PageChangedActionCreator } from '../actions/NavActions';
 import { FiltersChangedActionCreator } from '../actions/FilterActions';
+import Subscribers from './Lists/Subscribers';
 
 interface IProps {
   readonly currentPage: string;
@@ -89,7 +90,6 @@ class Dashboard extends Component<IProps, IState> {
     super(props);
 
     this.removeFilter = this.removeFilter.bind(this);
-
     this.componentDidMount = this.componentDidMount.bind(this);
     this.currentPageTitle = this.currentPageTitle.bind(this);
   }
@@ -130,11 +130,11 @@ class Dashboard extends Component<IProps, IState> {
     let pageTitle = '';
 
     switch (this.props.currentPage) {
-      case 'clients': pageTitle = 'Campaigns';
+      case 'clients': pageTitle = 'Messages';
         break;
-      case 'client_editor': pageTitle = 'Edit Campaign';
+      case 'client_editor': pageTitle = 'Edit Message';
         break;
-      case 'warehouses': pageTitle = 'Warehouses';
+      case 'subscribers': pageTitle = 'Subscribers';
         break;
       default:
         console.log('Unhandled');
@@ -263,6 +263,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route exact path='/clients/edit' component={EditClient} />
                   <Route exact path='/clients/edit/' component={EditClient} />
                   <Route path='/clients/edit/:clientId?' component={EditClient} />
+                  <Route path='/subscribers' component={Subscribers} />
 
                   {/* <Route exact path='/warehouses/edit' component={EditWarehouse} />
                   <Route exact path='/warehouses/edit/' component={EditWarehouse} />

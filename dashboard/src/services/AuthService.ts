@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 // @ts-ignore
 import SleepUtil from './SleepUtil';
 import { ConfigGlobalLoader } from './config/ConfigGlobal';
+// import json5 = require('json5');
 
 interface IProps {
 }
@@ -17,6 +18,18 @@ export class AuthService {
 
   constructor(props: IProps) {
     this.props = props;
+  }
+
+  public async loginUser(args: any) {
+    let response = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      body: JSON.stringify(args),
+    });
+    if (response !== undefined) {
+      console.log('found user in db', response);
+      return response;
+    }
+    return 'unable to find user';
   }
 
   public async getAuthToken() {

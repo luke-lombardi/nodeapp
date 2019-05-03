@@ -14,25 +14,20 @@ import IStoreState from '../../store/IStoreState';
 import { PageChangedActionCreator } from '../../actions/NavActions';
 import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
-// import AppBar from '@material-ui/core/AppBar';
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab';
-// import Card from '@material-ui/core/Card';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 // @ts-ignore
 import { Container, Row, Col } from 'react-grid-system';
-
 // @ts-ignore
 import Button from '@material-ui/core/Button';
+// import Paper from '@material-ui/core/Paper';
+// import Grid from '@material-ui/core/Grid';
 // import AddIcon from '@material-ui/icons/Add';
+import IconButton from '@material-ui/core/IconButton';
 // @ts-ignore
 import EditIcon from '@material-ui/icons/Edit';
-// import Campaigns from './Campaigns';
+import MaterialTable from 'material-table';
 
 // services
 import ApiService from '../../services/ApiService';
-import Campaigns from './Campaigns';
 
 interface IProps {
   readonly currentPage: string;
@@ -50,7 +45,43 @@ interface IState {
   Value: number;
 }
 
-class ClientList extends Component<IProps, IState> {
+class Subscribers extends Component<IProps, IState> {
+
+  private columns = [
+    {
+      title: 'First Name',
+      field: 'first_name',
+    },
+    {
+      title: 'Last Name',
+      field: 'last_name',
+    },
+    {
+      title: 'Phone',
+      field: 'phone',
+    },
+    {
+      title: 'Email',
+      field: 'email',
+    },
+    {
+    title: 'Actions',
+     // @ts-ignore
+      render: rowData => {
+        // @ts-ignore
+        const link = '/clients/edit/' + parseInt(rowData.id, 10);
+        return (
+          <div style={{ width: '100%', height: 40 }}>
+                <Link to={link}>
+                  <IconButton color='secondary' aria-label='Edit'>
+                    <EditIcon fontSize='small'/>
+                  </IconButton>
+                </Link>
+          </div>
+        );
+      },
+    },
+  ];
 
   private apiService: ApiService;
 
@@ -66,7 +97,7 @@ class ClientList extends Component<IProps, IState> {
     };
 
     this.handleAuthChange = this.handleAuthChange.bind(this);
-    this.renderTable = this.renderTable.bind(this);
+
     this.setClientList = this.setClientList.bind(this);
     this.addFilter = this.addFilter.bind(this);
 
@@ -77,7 +108,7 @@ class ClientList extends Component<IProps, IState> {
       },
     });
 
-    this.apiService.PopulateData();
+    this.apiService.getSubscribers();
   }
 
   async handleAuthChange(auth: any) {
@@ -86,68 +117,37 @@ class ClientList extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    this.setClientList();
     console.log('ClientList component mounted');
     // @ts-ignore
-    this.props.currentPageChanged('clients');
+    this.props.currentPageChanged('subscribers');
   }
 
   componentWillUnmount() {
     console.log('ClientList component unmounting');
   }
 
-  public async setClientList(clients: any) {
-    await this.setState({Clients: clients});
-  }
-
-  handleChange = (event: any, value: number) => {
-    console.log(value, event);
-    this.setState({Value: value});
-    //
-  }
-
-  renderTable() {
-    switch (this.state.Value) {
-      case 0:
-        return <Campaigns />;
-        break;
-      case 1:
-        return <Campaigns />;
-        break;
-      default:
-    }
-    return;
+  public async setClientList() {
+    let clients = await this.apiService.getSubscribers();
+    console.log('clients', clients);
+    this.setState({Clients: clients});
   }
 
   render() {
-    // @ts-ignore
-    const { classes } = this.props;
-
-    // const value = this.state;
     // if (this.props.auth.loggedIn === false) {
     //   return <Redirect to='/login' />; }
     return (
-      // @ts-ignore
-      <div style={styles.root}>
-          <Grid style={{padding: 50}} container direction='row' justify='center' alignItems='stretch' spacing={24}>
-          <Grid justify='center' alignItems='center' item xs={3}>
-          <Paper style={{padding: 20}}>
-          <h4 style={{alignSelf: 'center'}}> Sent Messages </h4>
-          </Paper>
-          </Grid>
-          <Grid justify='center' alignItems='center' item xs={3}>
-          <Paper style={{padding: 20, alignItems: 'center'}}>
-          <h4 style={{alignSelf: 'center'}}> Opens </h4>
-          </Paper>
-          </Grid>
-          <Grid justify='center' alignItems='center' item xs={3}>
-          <Paper style={{padding: 20}}>
-          <h4 style={{alignSelf: 'center'}}> Subscribers </h4>
-          </Paper>
-          </Grid>
-          </Grid>
-        <Row>
-          <Col><Campaigns /></Col>
-        </Row>
+      <div style={styles.tableContainer}>
+        <MaterialTable
+          columns={this.columns}
+          data={this.state.Clients}
+          title='Subscribers'
+          options={{
+            pageSize: 10,
+            selection: false,
+            filtering: false,
+          }}
+        />
       </div>
     );
   }
@@ -180,17 +180,15 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClientList);
+export default connect(mapStateToProps, mapDispatchToProps)(Subscribers);
 
 // @ts-ignore
 const styles = {
   tableContainer: {
     padding: 20,
+    marginBottom: 50,
     paddingTop: 0,
     backgroundColor: 'white',
-  },
-  card: {
-    minWidth: 275,
   },
   toolbarContainer: {
     backgroundColor: 'black',
@@ -202,8 +200,5 @@ const styles = {
   },
   root: {
     flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // backgroundColor: theme.palette.background.paper,
   },
 };

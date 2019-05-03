@@ -2,31 +2,34 @@ import React from 'react';
 import  { Component }  from 'react';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-
+import Grid from '@material-ui/core/Grid';
 import styles from '../styles/EditClient';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import BackArrowIcon from '@material-ui/icons/ArrowBack';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import CardContent from '@material-ui/core/CardContent';
+// import FormGroup from '@material-ui/core/FormGroup';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import classNames from 'classnames';
 import TextField from '@material-ui/core/TextField';
-// import Select from '@material-ui/core/Select';
-// import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
-// import Input from '@material-ui/core/Input';
-
+import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
 // @ts-ignore
 import Utils from './common/Utils';
-import { TextInput } from './common/Inputs';
-
 import { ConfigGlobalLoader } from '../../services/config/ConfigGlobal';
+import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+// import Checkbox from '@material-ui/core/Checkbox';
+import Input from '@material-ui/core/Input';
 
 // Services
 import ApiService from '../../services/ApiService';
@@ -40,6 +43,7 @@ import IStoreState from '../../store/IStoreState';
 import { PageChangedActionCreator } from '../../actions/NavActions';
 import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
+import Campaigns from '../Lists/Campaigns';
 
 interface IProps {
   readonly currentPage: string;
@@ -68,7 +72,7 @@ interface IProps {
 
 interface IState {
   newLead: boolean;
-  leadData: any;
+  campaignArgs: any;
   isErrorOpen: boolean;
   isDeleteOpen: boolean;
   messages: Array<string>;
@@ -77,6 +81,8 @@ interface IState {
   snackbarMessage: string;
   snackbarVisible: boolean;
   isLoading: boolean;
+  send_time: any;
+  subscribers: any;
 }
 
 class EditClient extends Component<IProps, IState> {
@@ -90,23 +96,19 @@ class EditClient extends Component<IProps, IState> {
 
     // Initialize state variables
     this.state = {
-      leadData: {
+      campaignArgs: {
         name: '',
-        title: '',
-        phone: '',
-        email: '',
-        department: '',
-        probability: 0.0,
-        mrr: 0.0,
-        notes: '',
         status: '',
-        product: '',
+        send_time: '',
+        message_body: '',
+        subscribers: '',
     },
+      subscribers: '',
       newLead: false,
       isErrorOpen: false,
       isDeleteOpen: false,
       messages: [],
-
+      send_time: undefined,
       toList: false,
       toLogin: false,
       snackbarMessage: '',
@@ -149,14 +151,20 @@ class EditClient extends Component<IProps, IState> {
   }
 
   async handleChange(name: string, value: any) {
-    let leadData = this.state.leadData;
-    leadData[name] = value;
+    let campaignArgs = this.state.campaignArgs;
+    campaignArgs[name] = value;
     await this.setState({
-      leadData: leadData,
+      campaignArgs: campaignArgs,
     });
   }
 
   async loadData() {
+    let subscribers = await this.apiService.getSubscribers();
+    console.log('subscribers', subscribers);
+    if (subscribers !== undefined) {
+      // @ts-ignore
+      this.setState({subscribers: subscribers});
+    }
     console.log('No data to load');
   }
 
@@ -176,22 +184,20 @@ class EditClient extends Component<IProps, IState> {
 
     await this.setState({isLoading: true});
 
-    let leadData = {
-      name: this.state.leadData.name,
-      title: this.state.leadData.title,
-      phone: this.state.leadData.phone,
-      email: this.state.leadData.email,
-      department: this.state.leadData.department,
-      probability: this.state.leadData.probability,
-      mrr: this.state.leadData.mrr,
-      notes: this.state.leadData.notes,
-      status: this.state.leadData.status,
-      product: this.state.leadData.product,
+    let args = {
+      name: this.state.campaignArgs.name,
+      status: this.state.campaignArgs.status,
+      send_time: this.state.send_time,
+      message_body: this.state.campaignArgs.message_body,
+      from_number: this.state.campaignArgs.from_number,
+      subscribers: this.state.campaignArgs.subscribers,
     };
+
+    console.log(args);
     // Build request body
     // Save the new lead data
 
-    let response = await this.apiService.createLead(leadData);
+    let response = await this.apiService.createLead(args);
 
     if (response !== undefined) {
       await this.setState({isLoading: false});
@@ -222,6 +228,7 @@ class EditClient extends Component<IProps, IState> {
   }
 
   render() {
+    // const groups = [ 'Ford', 'BMW', 'Fiat' ];
     // @ts-ignore
     const { classes } = this.props;
 
@@ -238,100 +245,71 @@ class EditClient extends Component<IProps, IState> {
             <BackArrowIcon />
           </IconButton>
           </Link>
-
-          <Divider />
-
-          <form className={classes.container} noValidate autoComplete='off'>
-              <h4> Create New Campaign </h4>
+          <Divider style={{marginBottom: 20}} />
+          <Grid container direction='row' justify='center' alignItems='stretch' spacing={8}>
+          <Grid justify='center' alignItems='center' item xs={6}>
+          <Paper style={{padding: 20}} className={classes.paper}>
+          <h4 style={{alignSelf: 'center'}}> Enter Message Details </h4>
               {/* INPUT: Client id */}
-              <TextInput label='Campaign Name' field='name' data={this.state.leadData} handleChange={this.handleChange} />
               <TextField
-                id='outlined-multiline-flexible'
-                label='Multiline'
+                className={classes.textField}
+                margin='normal'
+                variant='outlined'
+                label='title'
+                defaultValue='enter a title...'
                 multiline
-                rowsMax='4'
-                // value={this.state.multiline}
-                // onChange={this.handleChange('multiline')}
-                className={classes.textField}
-                margin='normal'
-                helperText='hello'
-                variant='outlined'
+                rows='4'
+                name='name'
+                value={this.state.campaignArgs.name}
+                onChange={(event) => this.handleChange('name', event.target.value)}
               />
               <TextField
-                id='outlined-select-currency'
-                select
-                label='Select'
                 className={classes.textField}
-                // value={this.state.currency}
-                // onChange={this.handleChange('currency')}
-                SelectProps={{
-                  MenuProps: {
-                    className: classes.menu,
-                  },
-                }}
-                helperText='Please select your currency'
                 margin='normal'
                 variant='outlined'
-              >
-              {/* {currencies.map(option => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))} */}
-              </TextField>
-              <TextField
+                label='message body'
+                defaultValue='enter your message...'
+                multiline
+                rows='4'
+                name='message_body'
+                value={this.state.campaignArgs.message_body}
+                onChange={(event) => this.handleChange('message_body', event.target.value)}
+              />
+              {/* <TextField
+                className={classes.textField}
                 margin='normal'
                 variant='outlined'
-                id='datetime-local'
-                label='Next appointment'
-                type='datetime-local'
-                defaultValue='2017-05-24T10:30'
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <input
-                accept='image/*'
-                className={classes.input}
-                style={{ display: 'none' }}
-                id='raised-button-file'
-                multiple
-                type='file'
-              />
-              <label htmlFor='raised-button-file'>
-                <Button variant='raised' component='span' className={classes.input}>
-                  Upload Image
-                </Button>
-              </label>
-              <TextInput label='Message' field='department' data={this.state.leadData} handleChange={this.handleChange} />
-              <TextInput label='Phone' field='phone' data={this.state.leadData} handleChange={this.handleChange} />
-              {/* INPUT: Enable processing */}
-              <FormGroup row>
-                <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.leadData.enableProcessing}
-                    // onClick={ (event) => { this.handleChange('enableProcessing', !this.state.leadData.enableProcessing); }}
-                    value={this.state.leadData.enableProcessing}
-                  />
-                }
-              label='Add "Reply STOP to unsubscribe"'
-            />
-            </FormGroup>
-          </form>
-
-      <Divider />
-        <div>
-          <Button variant='contained' size='large' className={classes.button} onClick={this.saveData} disabled={this.state.isLoading}>
-              <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-              Schedule Campaign
-          </Button>
-          <Button variant='contained' size='large' className={classes.button} disabled={this.state.newLead} onClick={this.confirmDelete}>
-              <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-              Cancel
-          </Button>
-        </div>
+                label='subscribers'
+                defaultValue='enter message recepients'
+                multiline
+                rows='4'
+                name='subscribers'
+                value={this.state.campaignArgs.subscribers}
+                onChange={(event) => this.handleChange('subscribers', event.target.value)}
+              /> */}
+            <FormControl className={classes.formControl}>
+            <InputLabel htmlFor='select-multiple-checkbox'>Tag</InputLabel>
+            <Select
+              multiple
+              // value={personName}
+              onChange={(event) => this.handleChange('subscribers', event.target.value)}
+              input={<Input id='select-multiple-checkbox' />}
+              // renderValue={selected => selected.join(', ')}
+              // MenuProps={MenuProps}
+            >
+            </Select>
+          </FormControl>
+          <div>
+          <TextField
+            style={{marginLeft: 15}}
+            type='datetime-local'
+            defaultValue='2017-05-24T10:30'
+            label='Scheduled Date'
+            name='send_time'
+            value={this.state.send_time}
+            onChange={(event) => this.setState({send_time: event.target.value})}
+          />
+          </div>
         <br />
         {
           this.state.isLoading
@@ -340,7 +318,6 @@ class EditClient extends Component<IProps, IState> {
             classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }}
           />
         }
-
         <Snackbar
         ContentProps={{
           classes: {
@@ -351,6 +328,30 @@ class EditClient extends Component<IProps, IState> {
         open={this.state.snackbarVisible}
         message={<span> {this.state.snackbarMessage} </span>}
         />
+      </Paper>
+      <Paper style={{padding: 50, marginTop: 75}} className={classes.paper}>
+      <h4>Message Preview</h4>
+      <Card className={classes.card}>
+      <CardContent>
+      <p>{this.state.campaignArgs.message_body}</p>
+      </CardContent>
+      </Card>
+      <div>
+          <Button variant='contained' size='large' className={classes.button} onClick={this.saveData} disabled={this.state.isLoading}>
+              <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+              Schedule Campaign
+          </Button>
+          <Button variant='contained' size='large' className={classes.button} disabled={this.state.newLead} onClick={this.confirmDelete}>
+              <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+              Cancel
+          </Button>
+        </div>
+      </Paper>
+      </Grid>
+      <Grid item xs={6}>
+      <Campaigns />
+      </Grid>
+      </Grid>
       </div>
     );
   }

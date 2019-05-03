@@ -64,7 +64,7 @@ class SkillList extends Component<IProps, IState> {
       },
     });
 
-    this.apiService.PopulateData('athletes', this.props.currentFilters);
+    this.apiService.PopulateData();
   }
 
   async handleAuthChange(auth: any) {

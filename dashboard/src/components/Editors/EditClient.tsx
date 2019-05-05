@@ -10,9 +10,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import BackArrowIcon from '@material-ui/icons/ArrowBack';
 import CardContent from '@material-ui/core/CardContent';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Checkbox from '@material-ui/core/Checkbox';
 // import FormGroup from '@material-ui/core/FormGroup';
 // import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 import SaveIcon from '@material-ui/icons/Save';
 import Snackbar from '@material-ui/core/Snackbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -24,13 +26,10 @@ import Card from '@material-ui/core/Card';
 // @ts-ignore
 import Utils from './common/Utils';
 import { ConfigGlobalLoader } from '../../services/config/ConfigGlobal';
-import InputLabel from '@material-ui/core/InputLabel';
 // import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-// import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
-
 // Services
 import ApiService from '../../services/ApiService';
 import SleepUtil from '../../services/SleepUtil';
@@ -83,6 +82,7 @@ interface IState {
   isLoading: boolean;
   send_time: any;
   subscribers: any;
+  selectedSubscriber: Array<any>;
 }
 
 class EditClient extends Component<IProps, IState> {
@@ -103,7 +103,7 @@ class EditClient extends Component<IProps, IState> {
         message_body: '',
         subscribers: '',
     },
-      subscribers: '',
+      subscribers: [],
       newLead: false,
       isErrorOpen: false,
       isDeleteOpen: false,
@@ -114,9 +114,11 @@ class EditClient extends Component<IProps, IState> {
       snackbarMessage: '',
       snackbarVisible: false,
       isLoading: false,
+      selectedSubscriber: [],
     };
 
     this.handleAuthChange = this.handleAuthChange.bind(this);
+    this.handleMultipleChange = this.handleMultipleChange.bind(this);
 
     // Make any API calls through the API service
     this.apiService = new ApiService({functions: {authChanged: this.handleAuthChange}});
@@ -148,6 +150,10 @@ class EditClient extends Component<IProps, IState> {
   async handleAuthChange(auth: any) {
     // @ts-ignore
     await this.props.authStateChanged(auth);
+  }
+
+  async handleMultipleChange(event: any) {
+    await this.setState({selectedSubscriber: event.target.value});
   }
 
   async handleChange(name: string, value: any) {
@@ -190,7 +196,7 @@ class EditClient extends Component<IProps, IState> {
       send_time: this.state.send_time,
       message_body: this.state.campaignArgs.message_body,
       from_number: this.state.campaignArgs.from_number,
-      subscribers: this.state.campaignArgs.subscribers,
+      subscribers: this.state.selectedSubscriber,
     };
 
     console.log(args);
@@ -228,7 +234,6 @@ class EditClient extends Component<IProps, IState> {
   }
 
   render() {
-    // const groups = [ 'Ford', 'BMW', 'Fiat' ];
     // @ts-ignore
     const { classes } = this.props;
 
@@ -287,23 +292,11 @@ class EditClient extends Component<IProps, IState> {
                 value={this.state.campaignArgs.subscribers}
                 onChange={(event) => this.handleChange('subscribers', event.target.value)}
               /> */}
-            <FormControl className={classes.formControl}>
-            <InputLabel htmlFor='select-multiple-checkbox'>Tag</InputLabel>
-            <Select
-              multiple
-              // value={personName}
-              onChange={(event) => this.handleChange('subscribers', event.target.value)}
-              input={<Input id='select-multiple-checkbox' />}
-              // renderValue={selected => selected.join(', ')}
-              // MenuProps={MenuProps}
-            >
-            </Select>
-          </FormControl>
           <div>
           <TextField
             style={{marginLeft: 15}}
             type='datetime-local'
-            defaultValue='2017-05-24T10:30'
+            defaultValue='2019-05-04T20:35'
             label='Scheduled Date'
             name='send_time'
             value={this.state.send_time}
@@ -329,6 +322,41 @@ class EditClient extends Component<IProps, IState> {
         message={<span> {this.state.snackbarMessage} </span>}
         />
       </Paper>
+
+      <Paper style={{padding: 50, marginTop: 75}} className={classes.paper}>
+      <h4>Select Subscribers</h4>
+      <FormControl className={classes.formControl}>
+            <Select
+              style={{width: 300}}
+              fullWidth
+              multiple
+              value={this.state.selectedSubscriber}
+              inputProps={{
+                id: 'select-multiple-native',
+              }}
+              onChange={(event) => this.handleMultipleChange(event)}
+              input={<Input id='select-multiple-checkbox' />}
+              renderValue={selected => {
+                return (
+                <span style={{ color: '#ff4081' }}>
+                  {this.state.selectedSubscriber.join(', ')}
+                </span>
+                ); }
+              }
+              >
+              {
+                // @ts-ignore
+                this.state.subscribers.map(subscriber => (
+                <MenuItem key={subscriber.id} value={subscriber.id}>
+                  <Checkbox checked={this.state.selectedSubscriber.includes(subscriber.id)} color='primary' />
+                  <ListItemText primary={subscriber.name} />
+                </MenuItem>
+              ))}
+            >
+            </Select>
+          </FormControl>
+      </Paper>
+
       <Paper style={{padding: 50, marginTop: 75}} className={classes.paper}>
       <h4>Message Preview</h4>
       <Card className={classes.card}>

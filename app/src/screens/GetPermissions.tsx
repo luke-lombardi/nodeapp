@@ -84,12 +84,15 @@ export class GetPermissions extends Component<IProps, IState> {
     switch (type) {
       case 'location':
       Alert.alert(
-        'Background Location Request',
-        'dropping nodes works best with background location enabled',
+        'Unable to verify location',
+        'Please visit your settings page and set your location services to "Always"',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
-          {text: 'open settings', onPress: OpenSettings.openSettings()},
+          {text: 'open settings', onPress: permissionsRequested.location !== true ? async () => {
+            await this.requestPermissions('location');
+            await AuthService.setPermissionsRequested('location');
+          } : OpenSettings.openSettings()},
         ],
         { cancelable: false },
       );
@@ -245,7 +248,7 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>enable background location</Text>
+              <Text>take me to settings</Text>
               </View>
             }
             iconRight
@@ -255,7 +258,7 @@ export class GetPermissions extends Component<IProps, IState> {
             checkedColor='green'
             uncheckedColor='gray'
             onIconPress={async () => { await  this.showModal('location'); }}
-            onPress={async () => { await this.showModal('location'); }}
+            onPress={async () => { await OpenSettings.openSettings(); }}
             checked={this.state.locationPermissions === 'authorized'}
             />
         <CheckBox

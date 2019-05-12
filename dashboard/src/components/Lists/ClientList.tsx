@@ -48,6 +48,7 @@ interface IProps {
 interface IState {
   Clients: any;
   Value: number;
+  metrics: any;
 }
 
 class ClientList extends Component<IProps, IState> {
@@ -63,6 +64,11 @@ class ClientList extends Component<IProps, IState> {
     this.state = {
       Clients: [],
       Value: 1,
+      metrics: {
+        opens: 20,
+        sent: 102,
+        subs: 4943,
+      },
     };
 
     this.handleAuthChange = this.handleAuthChange.bind(this);
@@ -132,16 +138,19 @@ class ClientList extends Component<IProps, IState> {
           <Grid justify='center' alignItems='center' item xs={3}>
           <Paper style={{padding: 20}}>
           <h4 style={{alignSelf: 'center'}}> Sent Messages </h4>
+          <h4 style={{alignSelf: 'center'}}>{this.state.metrics.sent}</h4>
           </Paper>
           </Grid>
           <Grid justify='center' alignItems='center' item xs={3}>
           <Paper style={{padding: 20, alignItems: 'center'}}>
           <h4 style={{alignSelf: 'center'}}> Opens </h4>
+          <h4 style={{alignSelf: 'center'}}>{this.state.metrics.opens}</h4>
           </Paper>
           </Grid>
           <Grid justify='center' alignItems='center' item xs={3}>
           <Paper style={{padding: 20}}>
           <h4 style={{alignSelf: 'center'}}> Subscribers </h4>
+          <h4 style={{alignSelf: 'center'}}>{this.state.metrics.subs}</h4>
           </Paper>
           </Grid>
           </Grid>

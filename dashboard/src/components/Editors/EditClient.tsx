@@ -42,7 +42,6 @@ import IStoreState from '../../store/IStoreState';
 import { PageChangedActionCreator } from '../../actions/NavActions';
 import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
-import Campaigns from '../Lists/Campaigns';
 
 interface IProps {
   readonly currentPage: string;
@@ -137,6 +136,7 @@ class EditClient extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    // if action is edit, load campaignArgs from campaign object in DB
     console.log('EditLead component mounted');
 
     // @ts-ignore
@@ -153,8 +153,9 @@ class EditClient extends Component<IProps, IState> {
   }
 
   async handleMultipleChange(event: any) {
+    // let selected = this.state.subscribers.filter(i => i.id === event.target.value[0]);
     await this.setState({selectedSubscriber: event.target.value});
-  }
+    }
 
   async handleChange(name: string, value: any) {
     let campaignArgs = this.state.campaignArgs;
@@ -165,7 +166,14 @@ class EditClient extends Component<IProps, IState> {
   }
 
   async loadData() {
-    let subscribers = await this.apiService.getSubscribers();
+    // if (window.location.href.includes('edit')) {
+    //   let campaignId = window.location.href.length - 2;
+    //   // let savedCampaign = await this.apiService.GetSavedCampaign(campaignId);
+    //   console.log('got saved campaign', savedCampaign);
+    //   this.setState({campaignArgs: savedCampaign});
+    // }
+
+    let subscribers = await this.apiService.getGroups();
     console.log('subscribers', subscribers);
     if (subscribers !== undefined) {
       // @ts-ignore
@@ -234,6 +242,8 @@ class EditClient extends Component<IProps, IState> {
   }
 
   render() {
+    console.log(this.state.subscribers);
+    console.log(this.state.selectedSubscriber);
     // @ts-ignore
     const { classes } = this.props;
 
@@ -252,11 +262,12 @@ class EditClient extends Component<IProps, IState> {
           </Link>
           <Divider style={{marginBottom: 20}} />
           <Grid container direction='row' justify='center' alignItems='stretch' spacing={8}>
-          <Grid justify='center' alignItems='center' item xs={6}>
+          <Grid justify='center' alignItems='center' item xs={12}>
           <Paper style={{padding: 20}} className={classes.paper}>
           <h4 style={{alignSelf: 'center'}}> Enter Message Details </h4>
               {/* INPUT: Client id */}
               <TextField
+                style={{width: 300}}
                 className={classes.textField}
                 margin='normal'
                 variant='outlined'
@@ -269,6 +280,7 @@ class EditClient extends Component<IProps, IState> {
                 onChange={(event) => this.handleChange('name', event.target.value)}
               />
               <TextField
+                style={{width: 500}}
                 className={classes.textField}
                 margin='normal'
                 variant='outlined'
@@ -323,7 +335,7 @@ class EditClient extends Component<IProps, IState> {
         />
       </Paper>
 
-      <Paper style={{padding: 50, marginTop: 75}} className={classes.paper}>
+      <Paper style={{padding: 50, marginTop: 50}} className={classes.paper}>
       <h4>Select Subscribers</h4>
       <FormControl className={classes.formControl}>
             <Select
@@ -357,7 +369,7 @@ class EditClient extends Component<IProps, IState> {
           </FormControl>
       </Paper>
 
-      <Paper style={{padding: 50, marginTop: 75}} className={classes.paper}>
+      <Paper style={{padding: 50, marginTop: 50}} className={classes.paper}>
       <h4>Message Preview</h4>
       <Card className={classes.card}>
       <CardContent>
@@ -375,9 +387,6 @@ class EditClient extends Component<IProps, IState> {
           </Button>
         </div>
       </Paper>
-      </Grid>
-      <Grid item xs={6}>
-      <Campaigns />
       </Grid>
       </Grid>
       </div>

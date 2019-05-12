@@ -23,9 +23,9 @@ import CardContent from '@material-ui/core/CardContent';
 import MaterialTable from 'material-table';
 // @ts-ignore
 import MainMap from '../common/MainMap';
-import MUIPlacesAutocomplete from 'mui-places-autocomplete';
+// import MUIPlacesAutocomplete from 'mui-places-autocomplete';
 
-import { TextInput } from '../Editors/common/Inputs';
+// import { TextInput } from '../Editors/common/Inputs';
 // @ts-ignore
 import LocationSearchInput from '../common/LocationInput';
 
@@ -111,10 +111,10 @@ class Summary extends Component<IProps, IState> {
           <Grid item xs={12}>
               {/* <form className={classes.container} noValidate autoComplete='off'> */}
                 {/* INPUT: Address */}
-                <MUIPlacesAutocomplete
+                {/* <MUIPlacesAutocomplete
                   onSuggestionSelected={this.onSuggestionSelected}
                   renderTarget={() => (<TextInput label='Address' field='id' data={this.state.location} handleChange={this.handleChange} disabled={true}/>)}
-                />
+                /> */}
                 <MainMap />
 
               {/* </form> */}

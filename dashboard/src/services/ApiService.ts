@@ -24,6 +24,7 @@ export default class ApiService {
     this.authService = new AuthService({});
     this.PopulateData = this.PopulateData.bind(this);
     this.getSubscribers = this.getSubscribers.bind(this);
+    this.getGroups = this.getGroups.bind(this);
   }
 
   //
@@ -83,6 +84,28 @@ export default class ApiService {
 
       console.log('unable to get subscribers', response);
       return undefined;
+}
+
+public async getGroups() {
+  console.log('populating');
+  // Start the monitor loop - don't await this because it runs forever
+  let url = 'http://localhost:3000/groups';
+  // return await this.getListRequest(url);
+
+  let response = await fetch(url, {
+    method: 'GET',
+  });
+
+  console.log(response);
+
+  if (response !== undefined) {
+    console.log('got groups-------> ', response);
+    response = await response.json();
+    return response;
+    }
+
+    console.log('unable to get groups', response);
+    return undefined;
 }
 
   StopMonitoring() {

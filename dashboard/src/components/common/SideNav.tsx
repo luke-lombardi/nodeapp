@@ -8,8 +8,9 @@ import AddIcon from '@material-ui/icons/Add';
 
 // Import icons for sidebar
 import DashboardIcon from '@material-ui/icons/Dashboard';
-// import WarehouseIcon from '@material-ui/icons/Home';
+import WarehouseIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/Person';
+import ThreeDRotation from '@material-ui/icons/ThreeDRotation';
 
 // @ts-ignore
 import { withRouter } from 'react-router';
@@ -58,7 +59,7 @@ class SideNav extends Component<IProps, IState> {
         <ListItemIcon>
           <AddIcon />
         </ListItemIcon>
-      <ListItemText primary='Messages' />
+      <ListItemText primary='New Message' />
     </ListItem>
     </Link>
 
@@ -74,16 +75,16 @@ class SideNav extends Component<IProps, IState> {
     <Link to='/conversations'>
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <WarehouseIcon />
       </ListItemIcon>
-      <ListItemText primary='Conversations' />
+      <ListItemText primary='Replies' />
     </ListItem>
     </Link>
 
     <Link to='/triggers'>
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <ThreeDRotation />
       </ListItemIcon>
       <ListItemText primary='Settings' />
     </ListItem>

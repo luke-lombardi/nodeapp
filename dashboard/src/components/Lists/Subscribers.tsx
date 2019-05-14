@@ -1,10 +1,8 @@
 import React from 'react';
 import  { Component }  from 'react';
-
 // @ts-ignore
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 // import { Redirect } from 'react-router';
-
 // Redux imports
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -16,8 +14,7 @@ import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
 // @ts-ignore
 import { Container, Row, Col } from 'react-grid-system';
-// @ts-ignore
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 // import Paper from '@material-ui/core/Paper';
 // import Grid from '@material-ui/core/Grid';
 // import AddIcon from '@material-ui/icons/Add';
@@ -25,7 +22,8 @@ import IconButton from '@material-ui/core/IconButton';
 // @ts-ignore
 import EditIcon from '@material-ui/icons/Edit';
 import MaterialTable from 'material-table';
-
+// import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+// import classNames from 'classnames';
 // services
 import ApiService from '../../services/ApiService';
 
@@ -134,6 +132,8 @@ class Subscribers extends Component<IProps, IState> {
   }
 
   render() {
+    // @ts-ignore
+    const { classes } = this.props;
     // if (this.props.auth.loggedIn === false) {
     //   return <Redirect to='/login' />; }
     return (
@@ -148,6 +148,14 @@ class Subscribers extends Component<IProps, IState> {
             filtering: false,
           }}
         />
+        {/* <div>
+        <Button variant='contained' size='large' className={classes.button}
+            onClick={() => console.log('click')}
+          >
+        <CloudUploadIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+          Upload
+        </Button>
+        </div> */}
       </div>
     );
   }

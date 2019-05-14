@@ -147,6 +147,13 @@ class Conversations extends Component<IProps, IState> {
             selection: false,
             filtering: false,
           }}
+          actions={[
+            {
+              icon: 'save',
+              tooltip: 'Reply',
+              onClick: (event, rowData) => alert('Send a reply to ' + rowData.name + '?'),
+            },
+          ]}
         />
       </div>
     );

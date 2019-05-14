@@ -33,7 +33,7 @@ import Input from '@material-ui/core/Input';
 // Services
 import ApiService from '../../services/ApiService';
 import SleepUtil from '../../services/SleepUtil';
-
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 // Redux imports
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -130,6 +130,7 @@ class EditClient extends Component<IProps, IState> {
     this.loadData = this.loadData.bind(this);
     this.setData = this.setData.bind(this);
     this.saveData = this.saveData.bind(this);
+    this.uploadList = this.uploadList.bind(this);
     this.confirmDelete = this.confirmDelete.bind(this);
     this.showSnackbar = this.showSnackbar.bind(this);
     // this._deleteWarehouse = this._deleteWarehouse.bind(this);
@@ -223,6 +224,10 @@ class EditClient extends Component<IProps, IState> {
     await this.showSnackbar('Error saving lead!', 1000);
     return undefined;
     }
+
+  async uploadList() {
+    //
+  }
 
   async _deleteClient() {
     this.setState({ isDeleteOpen: true });
@@ -367,6 +372,20 @@ class EditClient extends Component<IProps, IState> {
             >
             </Select>
           </FormControl>
+      </Paper>
+
+      <Paper style={{padding: 50, marginTop: 50}} className={classes.paper}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            // checked={state.checkedB}
+            // onChange={handleChange('checkedB')}
+            value='checkedB'
+            color='primary'
+          />
+        }
+        label='Tag subscribers who reply to this message'
+      />
       </Paper>
 
       <Paper style={{padding: 50, marginTop: 50}} className={classes.paper}>

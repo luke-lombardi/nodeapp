@@ -76,14 +76,6 @@
 	<string>We need permission to use your camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>We need permission to access your contact list</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app requires background location tracking to connect you with users nearby.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app requires background location tracking to connect you with users nearby.</string>
-	<key>NSLocationUsageDescription</key>
-	<string>This app requires background location tracking to connect you with users nearby.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires background location tracking to connect you with users nearby.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>This app requires motion location tracking to conserve battery life.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
@@ -92,6 +84,10 @@
 	<string>This app requires access to your photos.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app may analyze your voice.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app requires background location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires your location.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
@@ -109,7 +105,6 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
-		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

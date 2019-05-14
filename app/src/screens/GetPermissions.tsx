@@ -84,12 +84,12 @@ export class GetPermissions extends Component<IProps, IState> {
     switch (type) {
       case 'location':
       Alert.alert(
-        'Unable to verify location',
-        'Please visit your settings page and set your location services to "Always"',
+        'background location request',
+        'enable background geolocation to track other nodes nearby',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
-          {text: 'open settings', onPress: permissionsRequested.location !== true ? async () => {
+          {text: 'ok', onPress: permissionsRequested.location !== true ? async () => {
             await this.requestPermissions('location');
             await AuthService.setPermissionsRequested('location');
           } : OpenSettings.openSettings()},
@@ -141,7 +141,6 @@ export class GetPermissions extends Component<IProps, IState> {
         hasPermissions = await Permissions.check('location', { type: 'always'} );
         if (hasPermissions !== 'authorized') {
           response = await Permissions.request('location', { type: 'always'});
-          OpenSettings.openSettings();
         }
 
         try {
@@ -248,7 +247,7 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>take me to settings</Text>
+              <Text>enable background location</Text>
               </View>
             }
             iconRight
@@ -258,7 +257,7 @@ export class GetPermissions extends Component<IProps, IState> {
             checkedColor='green'
             uncheckedColor='gray'
             onIconPress={async () => { await  this.showModal('location'); }}
-            onPress={async () => { await OpenSettings.openSettings(); }}
+            onPress={async () => { await this.showModal('location'); }}
             checked={this.state.locationPermissions === 'authorized'}
             />
         <CheckBox

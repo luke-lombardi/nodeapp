@@ -24,6 +24,7 @@ export default class ApiService {
     this.authService = new AuthService({});
     this.PopulateData = this.PopulateData.bind(this);
     this.getSubscribers = this.getSubscribers.bind(this);
+    this.getResponses = this.getResponses.bind(this);
     this.getGroups = this.getGroups.bind(this);
   }
 
@@ -64,26 +65,48 @@ export default class ApiService {
         return undefined;
   }
 
-  public async getSubscribers() {
-    console.log('populating');
-    // Start the monitor loop - don't await this because it runs forever
-    let url = 'http://localhost:3000/subscribers';
-    // return await this.getListRequest(url);
+public async getResponses() {
+  console.log('populating');
+  // Start the monitor loop - don't await this because it runs forever
+  let url = 'http://localhost:3000/responses';
+  // return await this.getListRequest(url);
 
-    let response = await fetch(url, {
-      method: 'GET',
-    });
+  let response = await fetch(url, {
+    method: 'GET',
+  });
 
-    console.log(response);
+  console.log(response);
 
-    if (response !== undefined) {
-      console.log('got subscribers-------> ', response);
-      response = await response.json();
-      return response;
-      }
+  if (response !== undefined) {
+    console.log('got responses-------> ', response);
+    response = await response.json();
+    return response;
+    }
 
-      console.log('unable to get subscribers', response);
-      return undefined;
+    console.log('unable to get responses', response);
+    return undefined;
+}
+
+public async getSubscribers() {
+  console.log('populating');
+  // Start the monitor loop - don't await this because it runs forever
+  let url = 'http://localhost:3000/subscribers';
+  // return await this.getListRequest(url);
+
+  let response = await fetch(url, {
+    method: 'GET',
+  });
+
+  console.log(response);
+
+  if (response !== undefined) {
+    console.log('got subscribers-------> ', response);
+    response = await response.json();
+    return response;
+    }
+
+    console.log('unable to get subscribers', response);
+    return undefined;
 }
 
 public async getGroups() {

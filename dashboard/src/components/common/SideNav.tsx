@@ -71,7 +71,7 @@ class SideNav extends Component<IProps, IState> {
     </ListItem>
     </Link>
 
-    <Link to='/triggers'>
+    <Link to='/conversations'>
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />

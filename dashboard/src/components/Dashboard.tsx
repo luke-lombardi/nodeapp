@@ -65,6 +65,7 @@ import IStoreState from '../store/IStoreState';
 import { PageChangedActionCreator } from '../actions/NavActions';
 import { FiltersChangedActionCreator } from '../actions/FilterActions';
 import Subscribers from './Lists/Subscribers';
+import Conversations from './Lists/Conversations';
 
 interface IProps {
   readonly currentPage: string;
@@ -264,11 +265,10 @@ class Dashboard extends Component<IProps, IState> {
                   <Route exact path='/clients/edit/' component={EditClient} />
                   <Route path='/clients/edit/:clientId?' component={EditClient} />
                   <Route path='/subscribers' component={Subscribers} />
-
+                  <Route path='/conversations' component={Conversations} />
                   {/* <Route exact path='/warehouses/edit' component={EditWarehouse} />
                   <Route exact path='/warehouses/edit/' component={EditWarehouse} />
                   <Route path='/warehouses/edit/:warehouseId?' component={EditWarehouse} /> */}
-
                   {/* <Route exact path='/skills' component={AthleteList} /> */}
                   <Route exact path='/groups' component={GroupList} />
 

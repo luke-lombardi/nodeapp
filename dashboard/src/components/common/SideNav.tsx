@@ -5,6 +5,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
+import Badge from '@material-ui/core/Badge';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import DashboardStyles from '../styles/Dashboard';
 
 // Import icons for sidebar
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -33,7 +37,9 @@ class SideNav extends Component<IProps, IState> {
     super(props);
   }
 
-  render() { return (
+  render() {
+    // @ts-ignore
+    return (
     <div>
 
     {/* <Link to='/summary'>
@@ -75,13 +81,15 @@ class SideNav extends Component<IProps, IState> {
     <Link to='/conversations'>
     <ListItem button>
       <ListItemIcon>
+      <Badge badgeContent={4} color='primary'>
         <WarehouseIcon />
+      </Badge>
       </ListItemIcon>
       <ListItemText primary='Replies' />
     </ListItem>
     </Link>
 
-    <Link to='/triggers'>
+    <Link to='/settings'>
     <ListItem button>
       <ListItemIcon>
         <ThreeDRotation />
@@ -91,9 +99,14 @@ class SideNav extends Component<IProps, IState> {
     </Link>
 
   </div>
-  );
+    );
+  }
 }
-}
+
+// @ts-ignore
+SideNav.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 function mapStateToProps(state: IStoreState): IProps {
   // @ts-ignore
@@ -107,4 +120,4 @@ function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
 }
 
 // @ts-ignore
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SideNav));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(DashboardStyles)(SideNav)));

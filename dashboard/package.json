@@ -62,6 +62,7 @@
     "raf": "3.4.0",
     "react": "^16.4.2",
     "react-calendar": "^2.18.1",
+    "react-csv-reader": "^1.2.2",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.2",
     "react-google-maps": "^9.4.5",

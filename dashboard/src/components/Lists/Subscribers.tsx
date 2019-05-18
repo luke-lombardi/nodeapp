@@ -6,12 +6,20 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 // Redux imports
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 // @ts-ignore
 import { bindActionCreators } from 'redux';
 import IStoreState from '../../store/IStoreState';
 import { PageChangedActionCreator } from '../../actions/NavActions';
 import { FiltersChangedActionCreator } from '../../actions/FilterActions';
 import { AuthStateChangeActionCreator } from '../../actions/AuthActions';
+import Grid from '@material-ui/core/Grid';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 // @ts-ignore
 import { Container, Row, Col } from 'react-grid-system';
 // import Button from '@material-ui/core/Button';
@@ -41,6 +49,7 @@ interface IProps {
 interface IState {
   Clients: any;
   Value: number;
+  open: boolean;
 }
 
 class Subscribers extends Component<IProps, IState> {
@@ -92,12 +101,14 @@ class Subscribers extends Component<IProps, IState> {
     this.state = {
       Clients: [],
       Value: 1,
+      open: false,
     };
 
     this.handleAuthChange = this.handleAuthChange.bind(this);
 
     this.setClientList = this.setClientList.bind(this);
     this.addFilter = this.addFilter.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
 
     this.apiService = new ApiService({
       functions: {
@@ -107,6 +118,10 @@ class Subscribers extends Component<IProps, IState> {
     });
 
     this.apiService.getSubscribers();
+  }
+
+  async handleOpen() {
+    await this.setState({open: !this.state.open});
   }
 
   async handleAuthChange(auth: any) {
@@ -138,7 +153,44 @@ class Subscribers extends Component<IProps, IState> {
     //   return <Redirect to='/login' />; }
     return (
       <div style={styles.tableContainer}>
-        <MaterialTable
+      <Grid container direction='row' justify='flex-start' spacing={0}>
+      <Grid justify='space-between' alignItems='flex-start' item xs={12}>
+          <Button onClick={this.handleOpen} style={{marginTop: 20, marginBottom: 20}} variant='contained' size='large'>
+              Add Subscriber
+          </Button>
+          <Dialog open={this.state.open} onClose={this.handleOpen} aria-labelledby='form-dialog-title'>
+        <DialogTitle id='form-dialog-title'>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To subscribe to this website, please enter your email address here. We will send updates
+            occasionally.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin='dense'
+            id='name'
+            label='Email Address'
+            type='email'
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleOpen} color='primary'>
+            Cancel
+          </Button>
+          <Button onClick={this.handleOpen} color='primary'>
+            Subscribe
+          </Button>
+        </DialogActions>
+      </Dialog>
+          </Grid>
+          <Grid justify='space-between' alignItems='flex-start' item xs={12}>
+          {/* <Button style={{marginTop: 20, marginBottom: 20}} variant='contained' size='large'>
+              Import CSV
+          </Button> */}
+          </Grid>
+          </Grid>
+          <MaterialTable
           columns={this.columns}
           data={this.state.Clients}
           title='Subscribers'

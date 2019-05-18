@@ -120,7 +120,7 @@ class Conversations extends Component<IProps, IState> {
     this.setClientList();
     console.log('ClientList component mounted');
     // @ts-ignore
-    this.props.currentPageChanged('subscribers');
+    this.props.currentPageChanged('responses');
   }
 
   componentWillUnmount() {

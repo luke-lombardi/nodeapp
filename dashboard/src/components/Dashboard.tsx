@@ -66,6 +66,7 @@ import { PageChangedActionCreator } from '../actions/NavActions';
 import { FiltersChangedActionCreator } from '../actions/FilterActions';
 import Subscribers from './Lists/Subscribers';
 import Conversations from './Lists/Conversations';
+import Settings from './Settings';
 
 interface IProps {
   readonly currentPage: string;
@@ -136,6 +137,8 @@ class Dashboard extends Component<IProps, IState> {
       case 'client_editor': pageTitle = 'Edit Message';
         break;
       case 'subscribers': pageTitle = 'Subscribers';
+        break;
+      case 'responses': pageTitle = 'Replies';
         break;
       default:
         console.log('Unhandled');
@@ -271,7 +274,7 @@ class Dashboard extends Component<IProps, IState> {
                   <Route path='/warehouses/edit/:warehouseId?' component={EditWarehouse} /> */}
                   {/* <Route exact path='/skills' component={AthleteList} /> */}
                   <Route exact path='/groups' component={GroupList} />
-
+                  <Route exact path='/settings' component={Settings} />
               </Switch>
               {/* END: Define routes */}
 

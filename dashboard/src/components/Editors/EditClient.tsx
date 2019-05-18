@@ -33,7 +33,6 @@ import Input from '@material-ui/core/Input';
 // Services
 import ApiService from '../../services/ApiService';
 import SleepUtil from '../../services/SleepUtil';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 // Redux imports
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -101,6 +100,7 @@ class EditClient extends Component<IProps, IState> {
         send_time: '',
         message_body: '',
         subscribers: '',
+        reply: '',
     },
       subscribers: [],
       newLead: false,
@@ -206,6 +206,7 @@ class EditClient extends Component<IProps, IState> {
       message_body: this.state.campaignArgs.message_body,
       from_number: this.state.campaignArgs.from_number,
       subscribers: this.state.selectedSubscriber,
+      reply: this.state.campaignArgs.reply,
     };
 
     console.log(args);
@@ -374,8 +375,8 @@ class EditClient extends Component<IProps, IState> {
           </FormControl>
       </Paper>
 
-      <Paper style={{padding: 50, marginTop: 50}} className={classes.paper}>
-      <FormControlLabel
+      <Paper style={{padding: 25, marginTop: 50}} className={classes.paper}>
+      {/* <FormControlLabel
         control={
           <Checkbox
             // checked={state.checkedB}
@@ -385,6 +386,21 @@ class EditClient extends Component<IProps, IState> {
           />
         }
         label='Tag subscribers who reply to this message'
+      /> */}
+      <h4>Send a reply to users who respond to this message</h4>
+
+      <TextField
+        style={{width: 500}}
+        className={classes.textField}
+        margin='normal'
+        variant='outlined'
+        label='thanks for signing up!'
+        defaultValue='thanks for signing up!'
+        multiline
+        rows='4'
+        name='message_body'
+        value={this.state.campaignArgs.reply}
+        onChange={(event) => this.handleChange('reply', event.target.value)}
       />
       </Paper>
 

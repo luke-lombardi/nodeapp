@@ -546,6 +546,7 @@ export class App extends Component<IProps, IState> {
         autoSync: true,         // <-- [Default: true] Set true to sync each location to server as it arrives.
         headers: {},
         params: params,
+        disableLocationAuthorizationAlert: true,
       }, (state) => {
         Logger.info(`BackgroundGeolocation is configured and ready: ${state.enabled}`);
 

@@ -9,6 +9,7 @@ import NavigationService from '../services/NavigationService';
 
 // @ts-ignore
 import { GetPermissions } from '../screens/GetPermissions';
+// @ts-ignore
 import App from '../components/App';
 
 interface IProps {

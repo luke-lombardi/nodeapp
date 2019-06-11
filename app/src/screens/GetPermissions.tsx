@@ -84,12 +84,12 @@ export class GetPermissions extends Component<IProps, IState> {
     switch (type) {
       case 'location':
       Alert.alert(
-        'Unable to verify location',
-        'Please visit your settings page and set your location services to "Always"',
+        'background location request',
+        'enable background location so we can notify you when nodes are nearby',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
-          {text: 'open settings', onPress: permissionsRequested.location !== true ? async () => {
+          {text: 'ok', onPress: permissionsRequested.location !== true ? async () => {
             await this.requestPermissions('location');
             await AuthService.setPermissionsRequested('location');
           } : OpenSettings.openSettings()},
@@ -141,7 +141,6 @@ export class GetPermissions extends Component<IProps, IState> {
         hasPermissions = await Permissions.check('location', { type: 'always'} );
         if (hasPermissions !== 'authorized') {
           response = await Permissions.request('location', { type: 'always'});
-          OpenSettings.openSettings();
         }
 
         try {
@@ -224,11 +223,11 @@ export class GetPermissions extends Component<IProps, IState> {
           containerStyle={styles.rulesIcon}
         />
         <Text style={styles.agreementTitle}>user agreement</Text>
-        <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>help us keep our community an enjoyable and productive place to be.</Text>
+        <Text style={{fontSize: 14, paddingVertical: 20, width: '80%', alignSelf: 'center', alignItems: 'center'}}>let's keep our community an enjoyable and productive place to be.</Text>
         <View style={{width: '100%', alignSelf: 'flex-start'}}>
-        <Text style={styles.rulesText}>1. do not threaten or bully other users</Text>
-        <Text style={styles.rulesText}>2. do not post another user's sensitive information</Text>
-        <Text style={styles.rulesText}>3. do not bully other users</Text>
+        <Text style={styles.rulesText}>1. don't threaten or bully other users</Text>
+        <Text style={styles.rulesText}>2. don't post another user's sensitive information</Text>
+        <Text style={styles.rulesText}>3. don't bully other users</Text>
         <Text style={styles.rulesText}>4. don't be a jerk</Text>
         </View>
       </View>
@@ -248,7 +247,7 @@ export class GetPermissions extends Component<IProps, IState> {
             center
             title={
               <View style={{alignContent: 'center', alignItems: 'center', width: 200}}>
-              <Text>take me to settings</Text>
+              <Text>enable background location</Text>
               </View>
             }
             iconRight
@@ -298,7 +297,7 @@ export class GetPermissions extends Component<IProps, IState> {
         <Button
           title='Continue'
           containerStyle={{padding: 20, alignSelf: 'center', width: '90%'}}
-          onPress={async () => { await OpenSettings.openSettings(); }}
+          onPress={async () => { await this.checkPermissions(); }}
           disabled={
             this.state.locationPermissions !== 'authorized' ||
             this.state.motionPermissions !== 'authorized'

@@ -335,7 +335,7 @@ const styles = ScaledSheet.create({
     width: '100%',
     alignItems: 'center',
     position: 'absolute',
-    top: '10%',
+    marginTop: '10%',
   },
   sliderText: {
     alignSelf: 'center',

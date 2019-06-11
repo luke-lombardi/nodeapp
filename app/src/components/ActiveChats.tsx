@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, FlatList, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, FlatList, Dimensions, AsyncStorage } from 'react-native';
 
 import IStoreState from '../store/IStoreState';
 import { connect, Dispatch } from 'react-redux';
@@ -46,6 +46,7 @@ interface IState {
   isLoading: boolean;
   selectedIndex: number;
   data: Array<any>;
+  blacklist: any;
 }
 
 export class ActiveChats extends Component<IProps, IState> {
@@ -61,11 +62,14 @@ export class ActiveChats extends Component<IProps, IState> {
           numberOfNotifications: undefined,
           selectedIndex: 0,
           data: this.props.trackedNodeList,
+          blacklist: [],
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.updateIndex = this.updateIndex.bind(this);
         this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.getBlacklist = this.getBlacklist.bind(this);
     }
 
     componentWillReceiveProps() {
@@ -95,6 +99,24 @@ export class ActiveChats extends Component<IProps, IState> {
 
     componentWillMount() {
       //
+    }
+
+    componentDidMount() {
+      // AsyncStorage.clear();
+      this.getBlacklist();
+    }
+
+    async getBlacklist() {
+      let blacklist: any = await AsyncStorage.getItem('blacklist');
+
+      if (blacklist !== null) {
+        blacklist = JSON.parse(blacklist);
+      } else  {
+        blacklist = [];
+      }
+
+      await this.setState({blacklist: blacklist});
+      console.log('this.state.blacklist', this.state.blacklist);
     }
 
     // @ts-ignore
@@ -179,7 +201,7 @@ export class ActiveChats extends Component<IProps, IState> {
         </View>
         <View style={styles.flatlist}>
           <FlatList
-           data={this.state.data}
+           data={this.state.data.filter(node => !this.state.blacklist.includes(node.data.node_id))}
            renderItem={this._renderItem}
            extraData={this.state}
            onEndReachedThreshold={0}

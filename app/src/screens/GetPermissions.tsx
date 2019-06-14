@@ -85,7 +85,7 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'location':
       Alert.alert(
         'background location request',
-        'enable background location so we can notify you when nodes are nearby',
+        'enable background location to discover events happening nearby.',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           // background location always requires user to give permission manually, so go directly to settings
@@ -100,7 +100,7 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'notification':
       Alert.alert(
         'notification request',
-        'enable notifications to receive updates when other users message you',
+        'enable notifications to receive updates about events.',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           {text: 'ok', onPress: permissionsRequested.notification !== true ? async () => {
@@ -114,7 +114,7 @@ export class GetPermissions extends Component<IProps, IState> {
       case 'motion':
       Alert.alert(
         'motion request',
-        'motion tracking helps us keep our node train running on schedule',
+        'enable motion to receive updates when you are nearby an event.',
         [
           {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           {text: 'ok', onPress: permissionsRequested.motion !== true ? async () => {
@@ -205,11 +205,11 @@ export class GetPermissions extends Component<IProps, IState> {
         loop={false}
       >
       <View style={styles.slide}>
-        <Text style={styles.header}>welcome to sudo.</Text>
-        <Text style={styles.header}>get a live feed of what people are saying around you.</Text>
-        <Text style={styles.text}>send private messages.</Text>
+        <Text style={styles.header}>welcome to sudo!</Text>
+        <Text style={styles.header}>find interesting things happening in your neighborhood.</Text>
+        {/* <Text style={styles.text}>send private messages.</Text>
         <Text style={styles.text}>share your location.</Text>
-        <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
+        <Text style={styles.subtitle}>no accounts. always anonymous.</Text> */}
       </View>
       {/* USER AGREEMENT */}
       <View style={styles.container}>

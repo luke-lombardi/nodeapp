@@ -45,10 +45,10 @@ export default class Tour extends Component<IProps, IState> {
                 loop={false}
               >
               <View style={styles.slide}>
-                <Text style={styles.header}>get a live feed of what people are saying around you.</Text>
-                <Text style={styles.text}>send private messages.</Text>
-                <Text style={styles.text}>share your location.</Text>
-                <Text style={styles.subtitle}>no accounts. always anonymous.</Text>
+                <Text style={styles.header}>see something interesting in your neighborhood?</Text>
+                <Text style={styles.text}>drop a node!</Text>
+                <Text style={styles.text}>whether it's a yard sale, lost dog, or free couch, it's easy to stay in touch with your neighborhood on sudo.</Text>
+                {/* <Text style={styles.subtitle}>no accounts. always anonymous.</Text> */}
                 <Button
                   title='get started'
                   titleStyle={{color: 'white', fontWeight: 'bold', fontSize: 24}}

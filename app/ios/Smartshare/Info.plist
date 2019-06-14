@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.71</string>
+	<string>1.0.74</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>71</string>
+	<string>74</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>Fabric</key>
@@ -85,7 +85,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires the use of your microphone.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>This app requires motion location tracking to conserve battery life.</string>
+	<string>This app requires motion tracking to notify you about places nearby.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app requires access to your photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -1,13 +1,10 @@
 PODS:
-  - CocoaLumberjack (3.4.2):
-    - CocoaLumberjack/Default (= 3.4.2)
-    - CocoaLumberjack/Extensions (= 3.4.2)
-  - CocoaLumberjack/Default (3.4.2)
-  - CocoaLumberjack/Extensions (3.4.2):
-    - CocoaLumberjack/Default
-  - Crashlytics (3.12.0):
-    - Fabric (~> 1.9.0)
-  - Fabric (1.9.0)
+  - CocoaLumberjack (3.5.3):
+    - CocoaLumberjack/Core (= 3.5.3)
+  - CocoaLumberjack/Core (3.5.3)
+  - Crashlytics (3.13.1):
+    - Fabric (~> 1.10.1)
+  - Fabric (1.10.1)
   - Google-Maps-iOS-Utils (2.1.0):
     - Google-Maps-iOS-Utils/Clustering (= 2.1.0)
     - Google-Maps-iOS-Utils/Geometry (= 2.1.0)
@@ -82,13 +79,11 @@ PODS:
     - React
   - RNBackgroundFetch (2.4.3):
     - React
-  - RNBackgroundGeolocation (2.13.3):
+  - RNBackgroundGeolocation (2.14.2):
     - CocoaLumberjack (~> 3.0)
     - React
   - RNSnackbar (0.5.1):
     - React
-  - ViroKit_static_lib (1.0)
-  - ViroReact (1.0)
   - yoga (0.55.4.React)
 
 DEPENDENCIES:
@@ -117,42 +112,45 @@ DEPENDENCIES:
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - RNSnackbar (from `../node_modules/react-native-snackbar`)
-  - ViroKit_static_lib (from `../node_modules/react-viro/ios/dist/ViroRenderer/static_lib`)
-  - ViroReact (from `../node_modules/react-viro/ios/`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CocoaLumberjack
+    - Crashlytics
+    - Fabric
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
+    - GooglePlaces
 
 EXTERNAL SOURCES:
   React:
-    :path: ../node_modules/react-native
+    :path: "../node_modules/react-native"
   react-native-blur:
-    :path: ../node_modules/react-native-blur
+    :path: "../node_modules/react-native-blur"
   react-native-contacts:
-    :path: ../node_modules/react-native-contacts
+    :path: "../node_modules/react-native-contacts"
   react-native-google-maps:
-    :path: ../node_modules/react-native-maps
+    :path: "../node_modules/react-native-maps"
   react-native-maps:
-    :path: ../node_modules/react-native-maps
+    :path: "../node_modules/react-native-maps"
   ReactNativeFabric:
-    :path: ../node_modules/react-native-fabric
+    :path: "../node_modules/react-native-fabric"
   ReactNativePermissions:
-    :path: ../node_modules/react-native-permissions
+    :path: "../node_modules/react-native-permissions"
   RNBackgroundFetch:
-    :path: ../node_modules/react-native-background-fetch
+    :path: "../node_modules/react-native-background-fetch"
   RNBackgroundGeolocation:
-    :path: ../node_modules/react-native-background-geolocation
+    :path: "../node_modules/react-native-background-geolocation"
   RNSnackbar:
-    :path: ../node_modules/react-native-snackbar
-  ViroKit_static_lib:
-    :path: ../node_modules/react-viro/ios/dist/ViroRenderer/static_lib
-  ViroReact:
-    :path: ../node_modules/react-viro/ios/
+    :path: "../node_modules/react-native-snackbar"
   yoga:
-    :path: ../node_modules/react-native/ReactCommon/yoga
+    :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
-  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
+  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  Crashlytics: 5aa8e90dcbf2f34898b4f5a0037787531246cca0
+  Fabric: f6f21452846788bb44595d73e9909d79d328e617
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
@@ -166,10 +164,8 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 8c4f77f83c398c659bce82af2f0a885079417b9e
   RNBackgroundGeolocation: c9bbf69b9aa277f0b46754cc5f853bd26051a18f
   RNSnackbar: 30ae0274ca33ea8b7b72a74b6402366a1ce27dd7
-  ViroKit_static_lib: 17cb5bbb409057a98d2922cef37afb6b132dd630
-  ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: a64ee21457f1bcf7be2a6be189b08d45b8d3af7c
+PODFILE CHECKSUM: 6bc114e4b4bb96afdddbbdf3a683837be85a0d71
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.2

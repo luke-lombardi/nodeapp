@@ -590,7 +590,7 @@ export class App extends Component<IProps, IState> {
           BackgroundGeolocation.setConfig({
             params: params,
           });
-
+          // @ts-ignore
           BackgroundGeolocation.getCurrentPosition((location) => {
             this.onLocation(location);
           });

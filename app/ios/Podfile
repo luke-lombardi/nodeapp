@@ -28,9 +28,6 @@ pod 'React', :path => '../node_modules/react-native', :subspecs => [
 ]
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
   
-  pod 'ViroReact', :path => '../node_modules/react-viro/ios/'
-  pod 'ViroKit_static_lib', :path => '../node_modules/react-viro/ios/dist/ViroRenderer/static_lib'
-  
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
 
   pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'

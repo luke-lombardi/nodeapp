@@ -1,0 +1,190 @@
+Traceback (most recent call last):
+  File "stress_test.py", line 13, in <module>
+    import redis
+ImportError: No module named redis
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+WARNING:prawcore:Retrying due to ConnectionError(ProtocolError('Connection aborted.', error(50, 'Network is down')),) status: GET https://oauth.reddit.com/r/ASKNYC/controversial
+McCarren Tennis Courts- Players / Group Meetups?
+40.7201629188
+-74.0087124421
+public:Williamsburg in 1988. A lot has changed in the past 30 years.
+39.6280131634
+-105.033893173
+public:Vert is one of the new breed of gourmet-sandwich operations, run by chefs with impressive pedigrees who have committed to running their deli operation along the lines of a proper French kitchen.
+How to get rid of upside down car loan?
+39.6540170121
+-105.036161256
+public:Credit Card was suing, then halted because I moved states. Should I try to settle in the meantime?
+Inserted 1 new nodes.
+JA Happ the new Sonny Grey
+40.7552336036
+-73.9945238233
+public:The Yankees should DFA Gardner when Judge comes back
+39.6760552141
+-105.005886373
+public:Nice 2nd location with plenty of potential for expansion. Beer is brewed at the original location, but this offers a great alternative location to drink.
+Credit Card Debt - Notice of Arbitration
+39.7724646693
+-105.011340434
+public:11k Debt in 1 Credit Card
+Inserted 1 new nodes.
+The real court case. Join us for the 5 day court case starting tomorrow 4:30pm PT. ALL RISE
+40.7074727306
+-73.9530895705
+public:SWEEP SWEEP SWEEP SWEEP
+39.6059941606
+-105.016681107
+public:Trendy Mediterranean tapas bar & restaurant that overlooks the city. We loved the carrots, baba ghanoush, and the green sofrito paella, made with lentils & quinoa. Great vibe just for drinks too.
+Where does Lexis Nexus get bank/financial information from?
+39.6818530715
+-105.005090278
+public:My plan for working out of 13k of credit card debt, is this sound?
+Inserted 1 new nodes.
+Is there a secret to watching horror movies in NYC theaters?
+40.7202547745
+-73.9567525238
+Traceback (most recent call last):
+  File "stress_test.py", line 357, in <module>
+    if __name__ == '__main__': run()
+  File "stress_test.py", line 349, in run
+    response = generate(test_event)
+  File "stress_test.py", line 306, in generate
+    key_name = insert_node(rds, node_id, node)
+  File "stress_test.py", line 198, in insert_node
+    rds.setex(name=key_name, value=json.dumps(node_data), time=int(ttl))
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/client.py", line 1472, in setex
+    return self.execute_command('SETEX', name, time, value)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/client.py", line 775, in execute_command
+    return self.parse_response(connection, command_name, **options)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/client.py", line 789, in parse_response
+    response = connection.read_response()
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/connection.py", line 637, in read_response
+    response = self._parser.read_response()
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/connection.py", line 290, in read_response
+    response = self._buffer.readline()
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/connection.py", line 224, in readline
+    self._read_from_socket()
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/redis/connection.py", line 199, in _read_from_socket
+    (e.args,))
+redis.exceptions.ConnectionError: Error while reading from socket: (54, 'Connection reset by peer')
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Could not connect to redis cache.
+INFO:root:Deployment Stage: DEV
+INFO:root:Could not connect to redis cache.
+INFO:root:Deployment Stage: DEV
+INFO:root:Could not connect to redis cache.
+ERROR:foursquare:Error connecting with foursquare API: HTTPSConnectionPool(host='api.foursquare.com', port=443): Max retries exceeded with url: /v2/venues/55a3ff7f498e60f3d825c961/tips?client_secret=STMMKGZ3JNJEOTTUPQBQBUYBQF0V1M1RUZFTKN4EIUP2UNUT&client_id=K14FVC2J10UYPEHTE2JL1PHXNRX3CCPXSB0KUMCYOSNQUY5Y&v=20190216 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x105a72d50>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known',))
+ERROR:foursquare:Error connecting with foursquare API: HTTPSConnectionPool(host='api.foursquare.com', port=443): Max retries exceeded with url: /v2/venues/55a3ff7f498e60f3d825c961/tips?client_secret=STMMKGZ3JNJEOTTUPQBQBUYBQF0V1M1RUZFTKN4EIUP2UNUT&client_id=K14FVC2J10UYPEHTE2JL1PHXNRX3CCPXSB0KUMCYOSNQUY5Y&v=20190216 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x105a72c10>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known',))
+ERROR:foursquare:Error connecting with foursquare API: HTTPSConnectionPool(host='api.foursquare.com', port=443): Max retries exceeded with url: /v2/venues/55a3ff7f498e60f3d825c961/tips?client_secret=STMMKGZ3JNJEOTTUPQBQBUYBQF0V1M1RUZFTKN4EIUP2UNUT&client_id=K14FVC2J10UYPEHTE2JL1PHXNRX3CCPXSB0KUMCYOSNQUY5Y&v=20190216 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x105a72910>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known',))
+Sonny Gray has infected the bullpen
+40.7805528783
+-73.9874923634
+public:Would You Trade Gary Sanchez If You Knew It Would Land Jacob deGrom?
+39.7488270936
+-105.048042629
+public:You can't go wrong here. Pancakes are better than any pancake I've ever had, and service is always phenomenal. Get here early if you want <45min wait. Either way, so worth it. Love the food & vibes
+Name your knife "kindness" and then kill them with kindness.
+39.6065445267
+-105.036145034
+public:Portland and snowflakes go together like women and cocaine
+Inserted 1 new nodes.
+Anyone interested in a game of handball in McCarren?
+40.7430508366
+-73.9941180758
+public:Film Submissions Wanted
+Traceback (most recent call last):
+  File "stress_test.py", line 357, in <module>
+    if __name__ == '__main__': run()
+  File "stress_test.py", line 350, in run
+    denver_response = generate_denver(test_event)
+  File "stress_test.py", line 317, in generate_denver
+    generated_nodes = generate_random_nodes_denver(n=1)
+  File "stress_test.py", line 209, in generate_random_nodes_denver
+    random_node_title = get_foursquare()
+  File "stress_test.py", line 69, in get_foursquare
+    tip = client.venues.tips(place)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/foursquare/__init__.py", line 453, in tips
+    return self.GET('{VENUE_ID}/tips'.format(VENUE_ID=VENUE_ID), params, multi=multi)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/foursquare/__init__.py", line 270, in GET
+    return self.requester.GET(self._expanded_path(path), *args, **kwargs)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/foursquare/__init__.py", line 204, in GET
+    result = _get(url, headers=headers, params=params)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/foursquare/__init__.py", line 760, in _get
+    _log_and_raise_exception('Error connecting with foursquare API', e)
+  File "/Users/beta9/smartshare/tools/nodeapp/lib/python2.7/site-packages/foursquare/__init__.py", line 746, in _log_and_raise_exception
+    raise cls(u'{0}: {1}'.format(msg, data))
+foursquare.FoursquareException: Error connecting with foursquare API: HTTPSConnectionPool(host='api.foursquare.com', port=443): Max retries exceeded with url: /v2/venues/55a3ff7f498e60f3d825c961/tips?client_secret=STMMKGZ3JNJEOTTUPQBQBUYBQF0V1M1RUZFTKN4EIUP2UNUT&client_id=K14FVC2J10UYPEHTE2JL1PHXNRX3CCPXSB0KUMCYOSNQUY5Y&v=20190216 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x105a72910>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known',))
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+INFO:root:Deployment Stage: DEV
+INFO:root:Connection successful.
+Last name mentioned here seems very interesting if the Yanks are going to make a move for a SP
+40.7445320818
+-73.9659367772
+public:My condolences...and one other thing
+39.6241684996
+-105.045380348
+public:Great neighborhood, rain, snow or shine this park is always busy. Denver's Central Park. A must visit any time of year! But get there early for a spot in the sun or else! Lol
+I made that and i wanna share.
+39.7136387219
+-105.046798045
+public:Had a serious realization
+Inserted 1 new nodes.
+Inserted None new nodes.
+Short tempered
+40.7441268494
+-73.9907096796
+public:Boeing executives have agreed on the Boeing 737 Max 8 for the next Air Force One.
+39.7102577872
+-105.023708765
+Traceback (most recent call last):
+  File "stress_test.py", line 357, in <module>
+    if __name__ == '__main__': run()
+  File "stress_test.py", line 350, in run
+    denver_response = generate_denver(test_event)
+  File "stress_test.py", line 321, in generate_denver
+    key_name = insert_node(rds, node_id, node)
+  File "stress_test.py", line 189, in insert_node
+    key_name = prefix+str(node_id)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\u2014' in position 109: ordinal not in range(128)

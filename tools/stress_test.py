@@ -218,8 +218,7 @@ def generate_random_nodes_denver(n=1):
     # }
 
     random_node_data = {
-      'id': random_node_id,
-      'topic': random_node_title['tip'].replace('/', ' '),
+      'topic': str(random_node_title['tip'].replace('/', ' ')),
       'lat': str(random_node_title['lat']),
       'lng': str(random_node_title['lng']),
       'private': False,
@@ -244,7 +243,7 @@ def generate_random_nodes_denver_reddit(n=1):
     random_node_title = get_reddit_denver()
 
     random_node_data = {
-      'topic': random_node_title,
+      'topic': str(random_node_title),
       'lat': str(random_lat),
       'lng': str(random_long),
       'private': False,
@@ -270,7 +269,7 @@ def generate_random_nodes(n=1):
     random_node_title = get_reddit()
 
     random_node_data = {
-      'topic': random_node_title,
+      'topic': str(random_node_title),
       'lat': str(random_lat),
       'lng': str(random_long),
       'private': False,
@@ -303,7 +302,7 @@ def generate(event):
     generated_nodes = generate_random_nodes(n=1)
 
     for node in generated_nodes:
-      node_id = node['id']
+      node_id = node['topic']
       key_name = insert_node(rds, node_id, node)
       print(key_name)
     
@@ -318,7 +317,7 @@ def generate_denver(event):
     generated_nodes = generate_random_nodes_denver(n=1)
 
     for node in generated_nodes:
-      node_id = node['id']
+      node_id = node['topic']
       key_name = insert_node(rds, node_id, node)
       print(key_name)
     
@@ -333,7 +332,7 @@ def generate_denver_reddit(event):
     generated_nodes = generate_random_nodes_denver_reddit(n=1)
 
     for node in generated_nodes:
-      node_id = node['id']
+      node_id = node['topic']
       key_name = insert_node(rds, node_id, node)
       print(key_name)
     

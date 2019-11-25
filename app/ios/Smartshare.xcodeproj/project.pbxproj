@@ -28,7 +28,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		16543E78B1A04CC8A5D009F4 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A06D858E1A344E4ABDBD131 /* FontAwesome.ttf */; };
 		28D31EF73AAB4355A95D814C /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE22B697808A47FAAD146FF7 /* MaterialCommunityIcons.ttf */; };
-		2C2B317622B1DE7D0070A04A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B314222B1DE780070A04A /* logo.png */; };
+		2C27B301238AB760002062C7 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C27B300238AB760002062C7 /* logo.png */; };
 		2CDE50DB21449FB9000ACB06 /*  .swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE50DA21449FB9000ACB06 /*  .swift */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -499,7 +499,7 @@
 		251A5DE16FB04F7E92C67503 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		2A06D858E1A344E4ABDBD131 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		2A519AAA2A4BF15D438E66DE /* Pods-Smartshare.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smartshare.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare.debug.xcconfig"; sourceTree = "<group>"; };
-		2C2B314222B1DE780070A04A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = ../../../Desktop/logo.png; sourceTree = "<group>"; };
+		2C27B300238AB760002062C7 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Smartshare/Images.xcassets/logo.imageset/logo.png; sourceTree = "<group>"; };
 		2CDE50DA21449FB9000ACB06 /*  .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " .swift"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Smartshare-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smartshare-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Smartshare-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Smartshare-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -716,7 +716,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				2C2B314222B1DE780070A04A /* logo.png */,
+				2C27B300238AB760002062C7 /* logo.png */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				2CDE50DA21449FB9000ACB06 /*  .swift */,
@@ -1045,7 +1045,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				0953191932B045C01996793E /* [CP] Embed Pods Frameworks */,
 				9F48BBF0BF5DE91851791C9A /* [CP] Copy Pods Resources */,
 				2CC4C440213F084E004E556E /* ShellScript */,
 			);
@@ -1630,8 +1629,8 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				7EFD2BD93778488AA17ED601 /* emoji_smile_diffuse.png in Resources */,
-				2C2B317622B1DE7D0070A04A /* logo.png in Resources */,
 				133B57756FCA4B2D89F105EB /* emoji_smile_normal.png in Resources */,
+				2C27B301238AB760002062C7 /* logo.png in Resources */,
 				94A7ABB177264C1392F36B18 /* emoji_smile_specular.png in Resources */,
 				5E7C5B108902427FA2092054 /* big-guy.png in Resources */,
 				D32142E87C3B468D9A7F4529 /* gift.png in Resources */,
@@ -1689,24 +1688,6 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh artifacts/index.js\n";
 		};
-		0953191932B045C01996793E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare-frameworks.sh",
-				"${PODS_ROOT}/../../node_modules/react-viro/ios/dist/ViroRenderer/static_lib/ViroKit_static_lib.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViroKit_static_lib.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		2CC4C440213F084E004E556E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1758,7 +1739,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Smartshare/Pods-Smartshare-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
 			);
@@ -1769,7 +1750,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Smartshare/Pods-Smartshare-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Smartshare/Pods-Smartshare-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

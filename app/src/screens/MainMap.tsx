@@ -1,83 +1,94 @@
-import React, { Component } from 'react';
-import { View, Dimensions, Animated, Alert, AsyncStorage } from 'react-native';
+import React, { Component } from "react";
+import { View, Dimensions, Animated, Alert, AsyncStorage } from "react-native";
 // @ts-ignore
-import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import GestureRecognizer, {
+  // @ts-ignore
+  swipeDirections
+} from "react-native-swipe-gestures";
 
-import {
-  StyleSheet,
-} from 'react-native';
-import MapView from 'react-native-maps';
-import Snackbar from 'react-native-snackbar';
-import { Button } from 'react-native-elements';
+import { StyleSheet } from "react-native";
+import MapView from "react-native-maps";
+import Snackbar from "react-native-snackbar";
+import { Button } from "react-native-elements";
 
 // Redux imports
-import IStoreState from '../store/IStoreState';
-import { connect, Dispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import IStoreState from "../store/IStoreState";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 
 // Redux actions
-import { UserPositionChangedActionCreator } from '../actions/MapActions';
-import { TrackedFriendListUpdatedActionCreator } from '../actions/TrackedFriendActions';
-import { PublicPersonListUpdatedActionCreator } from '../actions/NodeActions';
-import { PublicPlaceListUpdatedActionCreator } from '../actions/NodeActions';
-import { PrivatePersonListUpdatedActionCreator } from '../actions/NodeActions';
-import { PrivatePlaceListUpdatedActionCreator } from '../actions/NodeActions';
+import { UserPositionChangedActionCreator } from "../actions/MapActions";
+import { TrackedFriendListUpdatedActionCreator } from "../actions/TrackedFriendActions";
+import { PublicPersonListUpdatedActionCreator } from "../actions/NodeActions";
+import { PublicPlaceListUpdatedActionCreator } from "../actions/NodeActions";
+import { PrivatePersonListUpdatedActionCreator } from "../actions/NodeActions";
+import { PrivatePlaceListUpdatedActionCreator } from "../actions/NodeActions";
 
 // Services
-import NodeService,
-  {
-    IPublicPersonListUpdated,
-    IPublicPlaceListUpdated,
-    IPrivatePersonListUpdated,
-    IPrivatePlaceListUpdated,
-    IFriendListUpdated,
-  }
-  from '../services/NodeService';
+import NodeService, {
+  IPublicPersonListUpdated,
+  IPublicPlaceListUpdated,
+  IPrivatePersonListUpdated,
+  IPrivatePlaceListUpdated,
+  IFriendListUpdated
+} from "../services/NodeService";
 
-import NavigationService from '../services/NavigationService';
-import SleepUtil from '../services/SleepUtil';
+import NavigationService from "../services/NavigationService";
+import SleepUtil from "../services/SleepUtil";
 
 // @ts-ignore
-import Logger from '../services/Logger';
-import Node from '../components/Node';
-import Person from '../components/Person';
+import Logger from "../services/Logger";
+import Node from "../components/Node";
+import Person from "../components/Person";
 
 // Import various types of map markers
-import PublicPlaces from './markers/PublicPlaces';
-import PrivatePlaces from './markers/PrivatePlaces';
-import PublicPeople from './markers/PublicPeople';
-import PrivatePeople from './markers/PrivatePeople';
-import Friends from './markers/Friends';
+import PublicPlaces from "./markers/PublicPlaces";
+import PrivatePlaces from "./markers/PrivatePlaces";
+import PublicPeople from "./markers/PublicPeople";
+import PrivatePeople from "./markers/PrivatePeople";
+import Friends from "./markers/Friends";
 
-import { mapStyle } from '../config/map';
-import PaymentModal from '../components/PaymentModal';
-import Tour from '../components/Tour';
+import { mapStyle } from "../config/map";
+import PaymentModal from "../components/PaymentModal";
+import Tour from "../components/Tour";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 // @ts-ignore
 const CARD_HEIGHT = height / 4;
 // @ts-ignore
 const CARD_WIDTH = width;
 
 interface IProps {
-    functions: any;
-    navigation: any;
-    publicNodesVisible: boolean;
-    publicPersonList: Array<any>;
-    publicPlaceList: Array<any>;
-    privatePersonList: Array<any>;
-    privatePlaceList: Array<any>;
-    friendList: Array<any>;
-    userRegion: any;
-    wallet: any;
+  functions: any;
+  navigation: any;
+  publicNodesVisible: boolean;
+  publicPersonList: Array<any>;
+  publicPlaceList: Array<any>;
+  privatePersonList: Array<any>;
+  privatePlaceList: Array<any>;
+  friendList: Array<any>;
+  userRegion: any;
+  wallet: any;
 
-    // Redux actions
-    PublicPersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-    PublicPlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-    PrivatePersonListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-    PrivatePlaceListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-    FriendListUpdated: (nodeList: Array<any>) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
-    UserPositionChanged: (userRegion: any) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  // Redux actions
+  PublicPersonListUpdated: (
+    nodeList: Array<any>
+  ) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PublicPlaceListUpdated: (
+    nodeList: Array<any>
+  ) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PrivatePersonListUpdated: (
+    nodeList: Array<any>
+  ) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  PrivatePlaceListUpdated: (
+    nodeList: Array<any>
+  ) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  FriendListUpdated: (
+    nodeList: Array<any>
+  ) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
+  UserPositionChanged: (
+    userRegion: any
+  ) => (dispatch: Dispatch<IStoreState>) => Promise<void>;
 }
 
 interface IState {
@@ -138,19 +149,21 @@ export class MainMap extends Component<IProps, IState> {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
     this.getBlacklist = this.getBlacklist.bind(this);
 
-    this.nodeService = new NodeService(
-      {
-        publicPersonListUpdated: this.gotNewPublicPersonList,
-        publicPlaceListUpdated: this.gotNewPublicPlaceList,
-        privatePersonListUpdated: this.gotNewPrivatePersonList,
-        privatePlaceListUpdated: this.gotNewPrivatePlaceList,
-        friendListUpdated: this.gotNewFriendList,
-        currentUserRegion: this.props.userRegion,
+    this.nodeService = new NodeService({
+      publicPersonListUpdated: this.gotNewPublicPersonList,
+      publicPlaceListUpdated: this.gotNewPublicPlaceList,
+      privatePersonListUpdated: this.gotNewPrivatePersonList,
+      privatePlaceListUpdated: this.gotNewPrivatePlaceList,
+      friendListUpdated: this.gotNewFriendList,
+      currentUserRegion: this.props.userRegion
     });
 
-    let markerRegion = this.props.navigation.getParam('region', undefined);
-    this.selectedNodeType = this.props.navigation.getParam('nodeType', '');
-    this.selectedNodeIndex = this.props.navigation.getParam('nodeIndex', undefined);
+    let markerRegion = this.props.navigation.getParam("region", undefined);
+    this.selectedNodeType = this.props.navigation.getParam("nodeType", "");
+    this.selectedNodeIndex = this.props.navigation.getParam(
+      "nodeIndex",
+      undefined
+    );
 
     this.currentMarkerRegion = markerRegion;
     this.waitForUserPosition = this.waitForUserPosition.bind(this);
@@ -160,22 +173,23 @@ export class MainMap extends Component<IProps, IState> {
     this.onSwipeRight = this.onSwipeRight.bind(this);
 
     this.state = {
-      lastLat: '0.0',
-      lastLong: '0.0',
+      lastLat: "0.0",
+      lastLong: "0.0",
       mapRegion: {},
       nodeSelected: false,
       selectedNode: {},
-      selectedNodeIndex: this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
+      selectedNodeIndex:
+        this.selectedNodeIndex === undefined ? 0 : this.selectedNodeIndex,
       confirmModalVisible: false,
       tourModalVisible: false,
       paymentModalVisible: false,
       tourViewed: true,
       blacklist: [],
       destination: {
-        latitude: '',
-        longitude: '',
+        latitude: "",
+        longitude: ""
       },
-      direction: -1 * CARD_WIDTH,
+      direction: -1 * CARD_WIDTH
     };
   }
 
@@ -183,15 +197,18 @@ export class MainMap extends Component<IProps, IState> {
     this.getBlacklist();
     // start listening for scrollview events
     // If there is any message to display, then show a snackbar at the bottom of the map
-    let showMessage = this.props.navigation.getParam('showMessage', true);
+    let showMessage = this.props.navigation.getParam("showMessage", true);
     if (showMessage) {
-      let messageText = this.props.navigation.getParam('messageText', undefined);
+      let messageText = this.props.navigation.getParam(
+        "messageText",
+        undefined
+      );
       if (messageText !== undefined) {
-          // Show success message
-          Snackbar.show({
-            title: messageText,
-            duration: Snackbar.LENGTH_SHORT,
-          });
+        // Show success message
+        Snackbar.show({
+          title: messageText,
+          duration: Snackbar.LENGTH_SHORT
+        });
       }
     }
 
@@ -216,19 +233,19 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async getBlacklist() {
-    let blacklist: any = await AsyncStorage.getItem('blacklist');
+    let blacklist: any = await AsyncStorage.getItem("blacklist");
 
     if (blacklist !== null) {
       blacklist = JSON.parse(blacklist);
-    } else  {
+    } else {
       blacklist = [];
     }
 
-    await this.setState({blacklist: blacklist});
-    console.log('this.state.blacklist', this.state.blacklist);
+    await this.setState({ blacklist: blacklist });
+    console.log("this.state.blacklist", this.state.blacklist);
   }
 
- animateToNodeLocation() {
+  animateToNodeLocation() {
     // If we are coming from any of the node lists, a current marker region will have been passed in, so open the Node
     if (this.selectedNodeIndex !== undefined) {
       let nodeListToSearch = this.getNodeListToSearch();
@@ -242,11 +259,10 @@ export class MainMap extends Component<IProps, IState> {
 
       // If we found the node in the list, move the map location to the node location
       if (selectedNode) {
-
         this.setState({
           selectedNode: selectedNode,
           nodeSelected: true,
-          selectedNodeIndex: this.selectedNodeIndex,
+          selectedNodeIndex: this.selectedNodeIndex
         });
 
         try {
@@ -258,12 +274,15 @@ export class MainMap extends Component<IProps, IState> {
 
         setTimeout(() => {
           try {
-            this._map.animateToRegion({
-              latitude: selectedNode.data.latitude,
-              longitude: selectedNode.data.longitude,
-              latitudeDelta: 0.00122 * 1.5,
-              longitudeDelta: 0.00121 * 1.5,
-            }, 300);
+            this._map.animateToRegion(
+              {
+                latitude: selectedNode.data.latitude,
+                longitude: selectedNode.data.longitude,
+                latitudeDelta: 0.00122 * 1.5,
+                longitudeDelta: 0.00121 * 1.5
+              },
+              300
+            );
           } catch (error) {
             // If we got here, we unmounted
             // console.log(error);
@@ -303,9 +322,9 @@ export class MainMap extends Component<IProps, IState> {
               latitudeDelta: 0.00122 * 1.5,
               longitudeDelta: 0.00121 * 1.5,
               latitude: node.data.latitude,
-              longitude: node.data.longitude,
+              longitude: node.data.longitude
             },
-            100,
+            100
           );
         }
       }, 10);
@@ -313,16 +332,15 @@ export class MainMap extends Component<IProps, IState> {
       // Component unmounted, do nothing
       return;
     }
-
-}
+  }
 
   componentWillMount() {
-    this.checkTour();
+    // this.checkTour();
     // set the index for the horizontal node list
     this.index = 0;
     this.animation = new Animated.Value(0);
 
-    let shouldUpdate = this.props.navigation.getParam('updateNodes', false);
+    let shouldUpdate = this.props.navigation.getParam("updateNodes", false);
 
     if (shouldUpdate) {
       this.nodeService.CheckNow();
@@ -334,7 +352,6 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async waitForUserPosition() {
-
     while (this.props.userRegion.latitude === undefined) {
       await SleepUtil.SleepAsync(1);
     }
@@ -350,24 +367,28 @@ export class MainMap extends Component<IProps, IState> {
   zoomToUserLocation() {
     try {
       this._map.animateToRegion(this.props.userRegion, 100);
-      this.clearSelectedNode({nativeEvent: {action: ''}});
+      this.clearSelectedNode({ nativeEvent: { action: "" } });
     } catch (error) {
       // If we get this, we unmounted
       // console.log(error);
     }
   }
 
-   async onNodeSelected(e, nodeType) {
+  async onNodeSelected(e, nodeType) {
     const coordinate = e.nativeEvent.coordinate;
     this.selectedNodeType = nodeType;
     let nodeListToSearch = this.getNodeListToSearch();
 
     const marker = nodeListToSearch.find(
-      m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
+      m =>
+        parseFloat(m.data.latitude) === coordinate.latitude &&
+        parseFloat(m.data.longitude) === coordinate.longitude
     );
 
     const nodeIndex = nodeListToSearch.findIndex(
-      m => parseFloat(m.data.latitude) === coordinate.latitude && parseFloat(m.data.longitude) === coordinate.longitude,
+      m =>
+        parseFloat(m.data.latitude) === coordinate.latitude &&
+        parseFloat(m.data.longitude) === coordinate.longitude
     );
 
     if (marker) {
@@ -380,16 +401,16 @@ export class MainMap extends Component<IProps, IState> {
         selectedNodeIndex: nodeIndex,
         nodeSelected: true,
         destination: {
-            latitude: marker.data.latitude,
-            longitude: marker.data.longitude,
-        },
+          latitude: marker.data.latitude,
+          longitude: marker.data.longitude
+        }
       });
     }
   }
 
   clearSelectedNode(e) {
-    if (e.nativeEvent.action !== 'marker-press') {
-      this.setState({nodeSelected: false, selectedNode: undefined});
+    if (e.nativeEvent.action !== "marker-press") {
+      this.setState({ nodeSelected: false, selectedNode: undefined });
       return;
     }
   }
@@ -398,19 +419,21 @@ export class MainMap extends Component<IProps, IState> {
     let nodeListToSearch = undefined;
 
     switch (this.selectedNodeType) {
-      case 'publicPerson':
+      case "publicPerson":
         nodeListToSearch = this.props.publicPersonList;
         break;
-      case 'publicPlace':
-        nodeListToSearch = this.props.publicPlaceList.filter(node => !this.state.blacklist.includes(node.data.node_id));
+      case "publicPlace":
+        nodeListToSearch = this.props.publicPlaceList.filter(
+          node => !this.state.blacklist.includes(node.data.node_id)
+        );
         break;
-      case 'privatePerson':
+      case "privatePerson":
         nodeListToSearch = this.props.privatePersonList;
         break;
-      case 'privatePlace':
+      case "privatePlace":
         nodeListToSearch = this.props.privatePlaceList;
         break;
-      case 'friend':
+      case "friend":
         nodeListToSearch = this.props.friendList;
         break;
       default:
@@ -421,36 +444,42 @@ export class MainMap extends Component<IProps, IState> {
   }
 
   async checkTour() {
-    let tourViewed = await AsyncStorage.getItem('tourViewed');
-    if (tourViewed !== 'true') {
-      this.setState({tourViewed: false});
+    let tourViewed = await AsyncStorage.getItem("tourViewed");
+    if (tourViewed !== "true") {
+      this.setState({ tourViewed: false });
     }
   }
 
   async showTourModal() {
-    await this.setState({tourModalVisible: true});
+    await this.setState({ tourModalVisible: true });
   }
 
   async closeTourModal() {
-    await AsyncStorage.setItem('tourViewed', 'true');
+    await AsyncStorage.setItem("tourViewed", "true");
     await this.setState({
       tourModalVisible: false,
-      tourViewed: true,
+      tourViewed: true
     });
+    return this.navigateToPage("CreateNode");
   }
 
   async showPaymentModal() {
-    if (this.props.wallet.address !== undefined && this.state.selectedNode.data.wallet !== undefined
-      && (this.state.selectedNode.data.wallet !== this.props.wallet.address)) {
+    if (
+      this.props.wallet.address !== undefined &&
+      this.state.selectedNode.data.wallet !== undefined &&
+      this.state.selectedNode.data.wallet !== this.props.wallet.address
+    ) {
       await this.setState({
         paymentModalVisible: true,
-        nodeSelected: false,
+        nodeSelected: false
       });
     } else if (this.props.wallet.address === undefined) {
       Alert.alert(`You need a wallet hooked up to send funds.`);
     } else if (this.state.selectedNode.data.wallet === undefined) {
       Alert.alert(`This node has no wallet attached to it.`);
-    } else if (this.state.selectedNode.data.wallet === this.props.wallet.address) {
+    } else if (
+      this.state.selectedNode.data.wallet === this.props.wallet.address
+    ) {
       Alert.alert(`You can't send funds to yourself.`);
     }
   }
@@ -458,13 +487,13 @@ export class MainMap extends Component<IProps, IState> {
   async closePaymentModal() {
     await this.setState({
       paymentModalVisible: false,
-      nodeSelected: true,
+      nodeSelected: true
     });
   }
 
   // @ts-ignore
   async onSwipeRight(state) {
-    await this.setState({ direction: 1 * CARD_WIDTH} );
+    await this.setState({ direction: 1 * CARD_WIDTH });
     this.selectedNodeIndex = this.state.selectedNodeIndex + 1;
 
     if (this.selectedNodeIndex >= this.props.publicPlaceList.length) {
@@ -476,7 +505,7 @@ export class MainMap extends Component<IProps, IState> {
 
   // @ts-ignore
   async onSwipeLeft(state) {
-    await this.setState({ direction: -1 * CARD_WIDTH} );
+    await this.setState({ direction: -1 * CARD_WIDTH });
     this.selectedNodeIndex = this.state.selectedNodeIndex - 1;
 
     if (this.selectedNodeIndex <= 0) {
@@ -489,221 +518,275 @@ export class MainMap extends Component<IProps, IState> {
   render() {
     const config = {
       velocityThreshold: 0.3,
-      directionalOffsetThreshold: 80,
+      directionalOffsetThreshold: 80
     };
 
     return (
       // Map screen view (exported component)
-      <View style={styles.mainView} >
-      {
-        this.state.paymentModalVisible &&
-        <PaymentModal
-          functions={{
-            'showPaymentModal': this.showPaymentModal,
-            'closePaymentModal': this.closePaymentModal,
-          }}
-          wallet={this.state.selectedNode.data.wallet}
-          toUser={this.state.selectedNode.data.creator}
-          balanceUSD={this.props.wallet.balance_usd}
-        />
-      }
-      {
-        this.state.tourModalVisible &&
-        <Tour
-          functions={{
-            'showTourModal': this.showTourModal,
-            'closeTourModal': this.closeTourModal,
-          }}
-        />
-      }
-          {
-            // Main map view
-            <View style={styles.mapView}>
-              <MapView
-                provider='google'
-                ref={ component => { this._map = component; } }
-                style={ StyleSheet.absoluteFillObject }
-                showsUserLocation={true}
-                followsUserLocation={false}
-                showsIndoorLevelPicker={false}
-                onPress={this.clearSelectedNode}
-                // zoomEnabled={false}
-                // scrollEnabled={false}
-                // pitchEnabled={false}
-                // rotateEnabled={false}
-                customMapStyle={mapStyle}
-              >
+      <View style={styles.mainView}>
+        {this.state.paymentModalVisible && (
+          <PaymentModal
+            functions={{
+              showPaymentModal: this.showPaymentModal,
+              closePaymentModal: this.closePaymentModal
+            }}
+            wallet={this.state.selectedNode.data.wallet}
+            toUser={this.state.selectedNode.data.creator}
+            balanceUSD={this.props.wallet.balance_usd}
+          />
+        )}
+        {this.state.tourModalVisible && (
+          <Tour
+            functions={{
+              showTourModal: this.showTourModal,
+              closeTourModal: this.closeTourModal
+            }}
+          />
+        )}
+        {
+          // Main map view
+          <View style={styles.mapView}>
+            <MapView
+              provider="google"
+              ref={component => {
+                this._map = component;
+              }}
+              style={StyleSheet.absoluteFillObject}
+              showsUserLocation={true}
+              followsUserLocation={false}
+              showsIndoorLevelPicker={false}
+              onPress={this.clearSelectedNode}
+              // zoomEnabled={false}
+              // scrollEnabled={false}
+              // pitchEnabled={false}
+              // rotateEnabled={false}
+              customMapStyle={mapStyle}
+            >
               {/* swipe buffer to let user open sidebar menus */}
-              <View style={{ zIndex: 10, position: 'absolute', top: 0, bottom: 0, right: 0, left: width - 20, backgroundColor: 'transparent' }}></View>
-              <View style={{ zIndex: 10, position: 'absolute', top: 0, bottom: 0, right: width - 20, left: 0, backgroundColor: 'transparent' }}></View>
+              <View
+                style={{
+                  zIndex: 10,
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  left: width - 20,
+                  backgroundColor: "transparent"
+                }}
+              ></View>
+              <View
+                style={{
+                  zIndex: 10,
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  right: width - 20,
+                  left: 0,
+                  backgroundColor: "transparent"
+                }}
+              ></View>
 
               {/* Map markers  */}
-              <PublicPlaces publicPlaceList={this.props.publicPlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } nodeId={this.state.selectedNode} />
-              <PublicPeople publicPersonList={this.props.publicPersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
-              <PrivatePlaces privatePlaceList={this.props.privatePlaceList} functions={ {'onNodeSelected': this.onNodeSelected} } />
-              <PrivatePeople privatePersonList={this.props.privatePersonList} functions={ {'onNodeSelected': this.onNodeSelected} } />
-              <Friends friendList={this.props.friendList} functions={ {'onNodeSelected': this.onNodeSelected} } />
+              <PublicPlaces
+                publicPlaceList={this.props.publicPlaceList}
+                functions={{ onNodeSelected: this.onNodeSelected }}
+                nodeId={this.state.selectedNode}
+              />
+              <PublicPeople
+                publicPersonList={this.props.publicPersonList}
+                functions={{ onNodeSelected: this.onNodeSelected }}
+              />
+              <PrivatePlaces
+                privatePlaceList={this.props.privatePlaceList}
+                functions={{ onNodeSelected: this.onNodeSelected }}
+              />
+              <PrivatePeople
+                privatePersonList={this.props.privatePersonList}
+                functions={{ onNodeSelected: this.onNodeSelected }}
+              />
+              <Friends
+                friendList={this.props.friendList}
+                functions={{ onNodeSelected: this.onNodeSelected }}
+              />
             </MapView>
 
-      <View style={styles.mapBuffer} />
-      <View style={{top: '10%', width: '90%', justifyContent: 'space-between', alignItems: 'center', alignSelf: 'center', flexDirection: 'row'}}>
-        <View style={{padding: 10}}>
-          <Button
-            icon={{
-              name: 'menu',
-              type: 'feather',
-              size: 30,
-              underlayColor: 'rgba(44,55,71, 0.7)',
-              color: '#ffffff',
-            }}
-            onPress={() => { this.props.navigation.toggleLeftDrawer(); } }
-            style={styles.refreshButton}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            />
-        </View>
-        {
-          !this.state.tourViewed &&
-          <View style={{padding: 10}}>
-            <Button
-              style={styles.nodeButton}
-              containerStyle={styles.helpButtonContainer}
-              buttonStyle={styles.helpTransparentButton}
-              title='about'
-              onPress={async () => { await this.showTourModal(); }
-              }
-            />
-          </View>
-        }
-          <View style={{padding: 10}}>
-            <Button
-              icon={{
-                name: 'search',
-                size: 30,
-                color: '#ffffff',
+            <View style={styles.mapBuffer} />
+            <View
+              style={{
+                top: "10%",
+                width: "90%",
+                justifyContent: "space-between",
+                alignItems: "center",
+                alignSelf: "center",
+                flexDirection: "row"
               }}
-              style={styles.nodeButton}
-              containerStyle={styles.buttonContainer}
-              buttonStyle={styles.transparentButton}
-              title=''
-              onPress={() => { this.navigateToPage('Nodes'); }
-              }
-            />
+            >
+              <Button
+                icon={{
+                  name: "menu",
+                  type: "feather",
+                  size: 30,
+                  underlayColor: "rgba(44,55,71, 0.7)",
+                  color: "#ffffff"
+                }}
+                onPress={() => {
+                  this.props.navigation.toggleLeftDrawer();
+                }}
+                style={styles.refreshButton}
+                containerStyle={styles.buttonContainer}
+                buttonStyle={styles.transparentButton}
+                title=""
+              />
+              <Button
+                style={styles.nodeButton}
+                containerStyle={styles.helpButtonContainer}
+                buttonStyle={styles.helpTransparentButton}
+                title="how it works"
+                onPress={async () => {
+                  await this.showTourModal();
+                }}
+              />
+              <Button
+                icon={{
+                  name: "search",
+                  size: 30,
+                  color: "#ffffff"
+                }}
+                style={styles.nodeButton}
+                containerStyle={styles.buttonContainer}
+                buttonStyle={styles.transparentButton}
+                title=""
+                onPress={() => {
+                  this.navigateToPage("Nodes");
+                }}
+              />
+            </View>
+            {!this.state.nodeSelected && (
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  justifyContent: "space-between",
+                  padding: 30,
+                  alignSelf: "flex-end",
+                  bottom: 0,
+                  position: "absolute"
+                }}
+              >
+                {/* <Button
+                  icon={{
+                    name: "refresh",
+                    size: 35,
+                    color: "#ffffff"
+                  }}
+                  style={styles.nodeButton}
+                  containerStyle={styles.bottomButtonContainer}
+                  buttonStyle={styles.transparentButton}
+                  title=""
+                  onPress={this.refreshNodes}
+                /> */}
+                {/* <Button
+                  icon={{
+                    name: "location-searching",
+                    size: 35,
+                    color: "#ffffff"
+                  }}
+                  style={styles.nodeButton}
+                  containerStyle={styles.bottomButtonContainer}
+                  buttonStyle={styles.transparentButton}
+                  title=""
+                  onPress={this.zoomToUserLocation}
+                /> */}
+                {/* <Button
+                  icon={{
+                    name: "message-circle",
+                    type: "feather",
+                    size: 30,
+                    color: "#ffffff"
+                  }}
+                  style={styles.nodeButton}
+                  containerStyle={styles.bottomButtonContainer}
+                  buttonStyle={styles.transparentButton}
+                  title=""
+                  onPress={() => {
+                    this.props.navigation.toggleRightDrawer();
+                  }}
+                /> */}
+                <Button
+                  icon={{
+                    name: "add",
+                    size: 35,
+                    color: "#ffffff"
+                  }}
+                  style={styles.nodeButton}
+                  containerStyle={styles.bottomButtonContainer}
+                  buttonStyle={styles.transparentButton}
+                  title=""
+                  onPress={() => {
+                    this.navigateToPage("CreateNode");
+                  }}
+                />
+              </View>
+            )}
+            {/* */}
           </View>
-        </View>
-        {
-        (!this.state.nodeSelected) &&
-        <View style={{flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', padding: 30, alignSelf: 'flex-end', bottom: 0, position: 'absolute'}}>
-          <Button
-              icon={{
-                name: 'refresh',
-                size: 35,
-                color: '#ffffff',
-              }}
-              style={styles.nodeButton}
-              containerStyle={styles.bottomButtonContainer}
-              buttonStyle={styles.transparentButton}
-              title=''
-              onPress={this.refreshNodes}
-            />
-          <Button
-            icon={{
-              name: 'location-searching',
-              size: 35,
-              color: '#ffffff',
-            }}
-            style={styles.nodeButton}
-            containerStyle={styles.bottomButtonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={this.zoomToUserLocation}
-          />
-          <Button
-            icon={{
-              name: 'message-circle',
-              type: 'feather',
-              size: 30,
-              color: '#ffffff',
-            }}
-            style={styles.nodeButton}
-            containerStyle={styles.bottomButtonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={() => {  this.props.navigation.toggleRightDrawer(); } }
-          />
-          <Button
-            icon={{
-               name: 'add',
-              size: 35,
-              color: '#ffffff',
-            }}
-            style={styles.nodeButton}
-            containerStyle={styles.bottomButtonContainer}
-            buttonStyle={styles.transparentButton}
-            title=''
-            onPress={() => { this.navigateToPage('CreateNode');
-            }}
-          />
-        </View>
-        }
-      {/* */}
-        </View>
           // End map view
         }
 
-        {
-          // Node selected view
-          this.state.nodeSelected &&
+        {// Node selected view
+        this.state.nodeSelected && (
           <View>
-          {
-            this.state.selectedNode.nodeType === 'friend' ?
-            <View style={styles.personSelectedView}>
-              <Person
-                functions={{
-                  'showPaymentModal': this.showPaymentModal,
+            {this.state.selectedNode.nodeType === "friend" ? (
+              <View style={styles.personSelectedView}>
+                <Person
+                  functions={{
+                    showPaymentModal: this.showPaymentModal
+                  }}
+                  nodeId={this.state.selectedNode.data.node_id}
+                  nodeType={this.state.selectedNode.nodeType}
+                  topic={this.state.selectedNode.data.topic}
+                  ttl={this.state.selectedNode.data.ttl}
+                  origin={this.props.userRegion}
+                  destination={this.state.selectedNode.data}
+                  navigation={this.props.navigation}
+                  data={this.state.selectedNode}
+                />
+              </View>
+            ) : (
+              <GestureRecognizer
+                onSwipeLeft={async state => {
+                  await this.onSwipeLeft(state);
                 }}
-                nodeId={this.state.selectedNode.data.node_id}
-                nodeType={ this.state.selectedNode.nodeType }
-                topic={this.state.selectedNode.data.topic}
-                ttl={this.state.selectedNode.data.ttl}
-                origin={this.props.userRegion}
-                destination={this.state.selectedNode.data}
-                navigation={this.props.navigation}
-                data={this.state.selectedNode}
-              />
-            </View>
-            :
-            <GestureRecognizer
-            onSwipeLeft={async (state) => { await this.onSwipeLeft(state); } }
-            onSwipeRight={async (state) => { await this.onSwipeRight(state); } }
-            config={config}
-            style={styles.nodeSelectedView}
-            >
-              <Node
-                functions={{
-                  'showPaymentModal': this.showPaymentModal,
+                onSwipeRight={async state => {
+                  await this.onSwipeRight(state);
                 }}
-                data={this.props}
-                index={this.state.selectedNodeIndex}
-                nodeId={this.state.selectedNode.data.node_id}
-                nodeType={this.state.selectedNode.nodeType}
-                topic={this.state.selectedNode.data.topic}
-                ttl={this.state.selectedNode.data.ttl}
-                origin={this.props.userRegion}
-                destination={this.state.selectedNode.data}
-                navigation={this.props.navigation}
-                likes={this.state.selectedNode.data.likes}
-                direction={this.state.direction}
-              />
-            </GestureRecognizer>
-          }
+                config={config}
+                style={styles.nodeSelectedView}
+              >
+                <Node
+                  functions={{
+                    showPaymentModal: this.showPaymentModal
+                  }}
+                  data={this.props}
+                  index={this.state.selectedNodeIndex}
+                  nodeId={this.state.selectedNode.data.node_id}
+                  nodeType={this.state.selectedNode.nodeType}
+                  topic={this.state.selectedNode.data.topic}
+                  ttl={this.state.selectedNode.data.ttl}
+                  origin={this.props.userRegion}
+                  destination={this.state.selectedNode.data}
+                  navigation={this.props.navigation}
+                  likes={this.state.selectedNode.data.likes}
+                  direction={this.state.direction}
+                />
+              </GestureRecognizer>
+            )}
           </View>
-          // End node selected view
+        )
+        // End node selected view
         }
-
       </View>
-     // End map screen view (exported component)
+      // End map screen view (exported component)
     );
   }
 
@@ -731,8 +814,8 @@ export class MainMap extends Component<IProps, IState> {
     this.nodeService.CheckNow();
 
     Snackbar.show({
-      title: 'updating node list.',
-      duration: Snackbar.LENGTH_SHORT,
+      title: "updating node list.",
+      duration: Snackbar.LENGTH_SHORT
     });
   }
 
@@ -740,29 +823,29 @@ export class MainMap extends Component<IProps, IState> {
     let params = undefined;
 
     switch (pageName) {
-      case 'Nodes':
+      case "Nodes":
         params = {};
         break;
-      case 'CreateNode':
-        params = {action: 'create_node', userRegion: this.props.userRegion};
+      case "CreateNode":
+        params = { action: "create_node", userRegion: this.props.userRegion };
         break;
-      case 'ContactList':
-        params = {action: 'add_friend', userRegion: this.props.userRegion};
+      case "ContactList":
+        params = { action: "add_friend", userRegion: this.props.userRegion };
         break;
-      case 'Finder':
+      case "Finder":
         params = {
-          action: 'find_node', userRegion: this.props.userRegion,
+          action: "find_node",
+          userRegion: this.props.userRegion,
           nodeId: this.state.selectedNode.data.node_id,
-          nodeType: this.state.selectedNode.nodeType,
+          nodeType: this.state.selectedNode.nodeType
         };
         break;
       default:
-        // console.log('Page not found');
+      // console.log('Page not found');
     }
 
     NavigationService.reset(pageName, params);
   }
-
 }
 
 // Redux setup functions
@@ -775,18 +858,36 @@ function mapStateToProps(state: IStoreState): IProps {
     privatePlaceList: state.privatePlaceList,
     friendList: state.friendList,
     userRegion: state.userRegion,
-    wallet: state.wallet,
+    wallet: state.wallet
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IStoreState>) {
   return {
-    PublicPersonListUpdated: bindActionCreators(PublicPersonListUpdatedActionCreator, dispatch),
-    PublicPlaceListUpdated: bindActionCreators(PublicPlaceListUpdatedActionCreator, dispatch),
-    PrivatePersonListUpdated: bindActionCreators(PrivatePersonListUpdatedActionCreator, dispatch),
-    PrivatePlaceListUpdated: bindActionCreators(PrivatePlaceListUpdatedActionCreator, dispatch),
-    FriendListUpdated: bindActionCreators(TrackedFriendListUpdatedActionCreator, dispatch),
-    UserPositionChanged: bindActionCreators(UserPositionChangedActionCreator, dispatch),
+    PublicPersonListUpdated: bindActionCreators(
+      PublicPersonListUpdatedActionCreator,
+      dispatch
+    ),
+    PublicPlaceListUpdated: bindActionCreators(
+      PublicPlaceListUpdatedActionCreator,
+      dispatch
+    ),
+    PrivatePersonListUpdated: bindActionCreators(
+      PrivatePersonListUpdatedActionCreator,
+      dispatch
+    ),
+    PrivatePlaceListUpdated: bindActionCreators(
+      PrivatePlaceListUpdatedActionCreator,
+      dispatch
+    ),
+    FriendListUpdated: bindActionCreators(
+      TrackedFriendListUpdatedActionCreator,
+      dispatch
+    ),
+    UserPositionChanged: bindActionCreators(
+      UserPositionChangedActionCreator,
+      dispatch
+    )
   };
 }
 
@@ -796,146 +897,149 @@ export default connect(mapStateToProps, mapDispatchToProps)(MainMap);
 // Local styles
 const styles = StyleSheet.create({
   mainView: {
-    flex: 1,
+    flex: 1
   },
   mapView: {
-    flex: 14,
+    flex: 14
   },
   headerView: {
     flex: 1,
     zIndex: 3,
-    padding: 10,
+    padding: 10
   },
   mapBuffer: {
-    position: 'absolute',
-    backgroundColor: 'black',
+    position: "absolute",
+    backgroundColor: "black",
     left: 0,
     top: 0,
     opacity: 0.0,
-    height: Dimensions.get('window').height,
-    width: 20,
+    height: Dimensions.get("window").height,
+    width: 20
   },
   nodeSelectedView: {
-    flexDirection: 'column',
+    flexDirection: "column",
     marginTop: 0,
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     left: 0,
     height: 300,
-    width: '100%',
-    zIndex: 1,
+    width: "100%",
+    zIndex: 1
   },
   personSelectedView: {
-    flexDirection: 'column',
-    position: 'absolute',
+    flexDirection: "column",
+    position: "absolute",
     bottom: 0,
     height: 100,
-    width: '100%',
-    zIndex: 1,
+    width: "100%",
+    zIndex: 1
   },
   actionButtonIcon: {
     fontSize: 22,
     height: 22,
-    color: 'white',
+    color: "white"
   },
   buttonItem: {
-    width: 100,
+    width: 100
   },
   absolute: {
-    position: 'absolute',
-    top: 0, left: 0, bottom: 0, right: 0,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0
   },
   refreshButton: {
-    width: '100%',
-    height: '100%',
-    alignSelf: 'flex-start',
-    padding: 0,
+    width: "100%",
+    height: "100%",
+    alignSelf: "flex-start",
+    padding: 0
   },
   locationButton: {
-    width: '100%',
-    height: '100%',
-    alignSelf: 'flex-start',
-    padding: 0,
+    width: "100%",
+    height: "100%",
+    alignSelf: "flex-start",
+    padding: 0
   },
   createNodeButton: {
-    width: '100%',
-    height: '100%',
-    alignSelf: 'flex-start',
-    padding: 0,
+    width: "100%",
+    height: "100%",
+    alignSelf: "flex-start",
+    padding: 0
   },
   nodeButton: {
-    width: '100%',
-    height: '100%',
-    padding: 0,
+    width: "100%",
+    height: "100%",
+    padding: 0
   },
   helpButtonContainer: {
-    backgroundColor: 'rgba(44,55,71,.5)',
+    backgroundColor: "rgba(44,55,71,.5)",
     paddingHorizontal: 10,
     height: 50,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray"
   },
   helpTransparentButton: {
-    backgroundColor: 'rgba(44,55,71,0.0)',
-    paddingTop: 5,
+    backgroundColor: "rgba(44,55,71,0.0)",
+    paddingTop: 5
   },
   buttonContainer: {
-    backgroundColor: 'rgba(44,55,71,.5)',
+    backgroundColor: "rgba(44,55,71,.5)",
     width: 50,
     height: 50,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray"
   },
   bottomButtonContainer: {
-    backgroundColor: 'rgba(44,55,71,.5)',
+    backgroundColor: "rgba(44,55,71,.5)",
     width: 50,
     height: 50,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'gray',
-    marginVertical: 10,
+    borderColor: "gray",
+    marginVertical: 10
   },
   floatRight: {
-    backgroundColor: 'rgba(44,55,71,0.0)',
+    backgroundColor: "rgba(44,55,71,0.0)",
     padding: 0,
-    width: '15%',
-    height: '100%',
+    width: "15%",
+    height: "100%",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'gray',
-    position: 'absolute',
-    right: 70,
+    borderColor: "gray",
+    position: "absolute",
+    right: 70
   },
   center: {
     marginTop: 20,
-    backgroundColor: 'rgba(44,55,71,0.0)',
+    backgroundColor: "rgba(44,55,71,0.0)",
     padding: 0,
-    width: '10%',
-    height: '100%',
+    width: "10%",
+    height: "100%",
     borderRightWidth: 0,
-    borderRightColor: 'rgba(44,55,71,0.3)',
-    position: 'absolute',
+    borderRightColor: "rgba(44,55,71,0.3)",
+    position: "absolute",
     borderRadius: 20,
-    right: 25,
+    right: 25
   },
   transparentButton: {
-    backgroundColor: 'rgba(44,55,71,0.0)',
-    paddingTop: 8,
+    backgroundColor: "rgba(44,55,71,0.0)",
+    paddingTop: 8
   },
   switch: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingTop: 20,
     margin: 10,
     // marginLeft: '20%',
-    alignSelf: 'center',
+    alignSelf: "center"
   },
   scrollView: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 30,
     left: 0,
     right: 0,
-    paddingVertical: 10,
-  },
+    paddingVertical: 10
+  }
 });

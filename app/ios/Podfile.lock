@@ -79,7 +79,7 @@ PODS:
     - React
   - RNBackgroundFetch (2.4.3):
     - React
-  - RNBackgroundGeolocation (2.14.2):
+  - RNBackgroundGeolocation (2.13.3):
     - CocoaLumberjack (~> 3.0)
     - React
   - RNSnackbar (0.5.1):
@@ -115,7 +115,7 @@ DEPENDENCIES:
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - CocoaLumberjack
     - Crashlytics
     - Fabric
@@ -154,18 +154,18 @@ SPEC CHECKSUMS:
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
-  React: aa2040dbb6f317b95314968021bd2888816e03d5
-  react-native-blur: c35c1f6c2c76db7108bde7ed343bd2b01d64e0c0
-  react-native-contacts: 1a8913219e54d1fa20e817b99d9b42b9ec98558d
-  react-native-google-maps: 2cfe3b01f8422c7dae51d8764139fd70f888cfce
-  react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
-  ReactNativeFabric: 3912bf9c714d7cc98110eadf06ca6dedef219322
-  ReactNativePermissions: 9f2d9c45c98800795e6c2ed330e25d11a66a8169
-  RNBackgroundFetch: 8c4f77f83c398c659bce82af2f0a885079417b9e
-  RNBackgroundGeolocation: c9bbf69b9aa277f0b46754cc5f853bd26051a18f
-  RNSnackbar: 30ae0274ca33ea8b7b72a74b6402366a1ce27dd7
-  yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
+  React: 755b16d9a9387e856d4dce6528130c51e4d409b8
+  react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
+  react-native-contacts: d15b877fc739dbdc44c61dfce395ac70904bfea3
+  react-native-google-maps: 68a831730110823d3dadfea0e133f0f4426cd213
+  react-native-maps: fb06a43ce6884256097eec1dd69d23957b71df88
+  ReactNativeFabric: 681ea672581869b08108ad6eb7ab3dda67f6f63d
+  ReactNativePermissions: 2e324bb3baf12702e3ec27f76c8ae1158fa69fc6
+  RNBackgroundFetch: 6711ee4d09741f7c5946b09d93182f907dc484fd
+  RNBackgroundGeolocation: 4d9348ad1c17730c47611fb94863ba05a8815902
+  RNSnackbar: 493d68894d434746bb550ee48763871a6705453e
+  yoga: c3ce6137f85f60c93a834235d7f08e2b44a42eed
 
 PODFILE CHECKSUM: 6bc114e4b4bb96afdddbbdf3a683837be85a0d71
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.8.1

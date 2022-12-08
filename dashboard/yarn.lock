@@ -149,9 +149,19 @@
 
 "@types/google-maps@*":
   version "3.2.0"
-  resolved "http://registry.npmjs.org/@types/google-maps/-/google-maps-3.2.0.tgz#804a3ae9ac9265b4e0d1508b5b9b894867974f82"
+  resolved "https://registry.npmjs.org/@types/google-maps/-/google-maps-3.2.0.tgz#804a3ae9ac9265b4e0d1508b5b9b894867974f82"
   dependencies:
     "@types/googlemaps" "*"
+
+"@types/google-maps@^3.2.0":
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/@types/google-maps/-/google-maps-3.2.3.tgz#ea99526e40d3b58a2c07f0b3d5f3b8e0750119c3"
+  dependencies:
+    "@types/google.maps" "*"
+
+"@types/google.maps@*":
+  version "3.50.5"
+  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.50.5.tgz#a0d12675b547205fc163c4b8d999db305ba3862a"
 
 "@types/googlemaps@*", "@types/googlemaps@^3.30.16":
   version "3.30.16"
@@ -281,6 +291,12 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/recompose@^0.27.0":
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/@types/recompose/-/recompose-0.27.1.tgz#eafe5a80b6bdce2108c025bbf19d030136aad894"
+  dependencies:
+    "@types/react" "*"
 
 abab@^1.0.4:
   version "1.0.4"
@@ -609,6 +625,12 @@ autoprefixer@^6.3.1:
     num2fraction "^1.2.2"
     postcss "^5.2.16"
     postcss-value-parser "^3.2.3"
+
+autosuggest-highlight@^3.1.0:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/autosuggest-highlight/-/autosuggest-highlight-3.3.4.tgz#d71b575ba8eab40b5adba73df9244e9ba88cc387"
+  dependencies:
+    remove-accents "^0.4.2"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
@@ -2094,7 +2116,7 @@ css-color-names@0.0.4:
 
 css-in-js-utils@^2.0.0:
   version "2.0.1"
-  resolved "http://registry.npmjs.org/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz#3b472b398787291b47cfe3e44fecfdd9e914ba99"
+  resolved "https://registry.npmjs.org/css-in-js-utils/-/css-in-js-utils-2.0.1.tgz#3b472b398787291b47cfe3e44fecfdd9e914ba99"
   dependencies:
     hyphenate-style-name "^1.0.2"
     isobject "^3.0.1"
@@ -2512,6 +2534,10 @@ dot-prop@^4.1.0:
 dotenv-expand@4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-4.2.0.tgz#def1f1ca5d6059d24a766e587942c21106ce1275"
+
+downshift@^1.22.5:
+  version "1.31.16"
+  resolved "https://registry.yarnpkg.com/downshift/-/downshift-1.31.16.tgz#acd81631539502d4112d01bd573654419fd9f640"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -5202,6 +5228,15 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
+mui-places-autocomplete@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/mui-places-autocomplete/-/mui-places-autocomplete-2.0.0.tgz#6bedb8cfe23c14b7ecc798322af4afa2a73a6ccb"
+  dependencies:
+    autosuggest-highlight "^3.1.0"
+    downshift "^1.22.5"
+    prop-types "^15.6.0"
+    react-popper "^0.8.3"
+
 multicast-dns-service-types@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/multicast-dns-service-types/-/multicast-dns-service-types-1.1.0.tgz#899f11d9686e5e05cb91b35d5f0e63b773cfc901"
@@ -5818,6 +5853,10 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
+popper.js@^1.12.9:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
+
 popper.js@^1.14.1:
   version "1.14.4"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.4.tgz#8eec1d8ff02a5a3a152dd43414a15c7b79fd69b6"
@@ -6251,8 +6290,8 @@ qs@6.5.1:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
 
 qs@~6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.1.tgz#2bad97710a5b661c366b378b1e3a44a592ff45e6"
 
 qs@~6.5.1:
   version "6.5.2"
@@ -6425,6 +6464,20 @@ react-material-snackbar@^3.0.1:
     prop-types "^15.6.0"
     react "^16.0.0"
     react-dom "^16.0.0"
+
+react-places-autocomplete@^7.2.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/react-places-autocomplete/-/react-places-autocomplete-7.3.0.tgz#81a2345ae4a6fc35d7a712ccd4850d497553ba1b"
+  dependencies:
+    lodash.debounce "^4.0.8"
+    prop-types "^15.5.8"
+
+react-popper@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.8.3.tgz#0f73333137c9fb0af6ec4074d2d0585a0a0461e1"
+  dependencies:
+    popper.js "^1.12.9"
+    prop-types "^15.6.0"
 
 react-popper@^1.0.0:
   version "1.0.2"
@@ -6684,9 +6737,9 @@ redux-seamless-immutable@^0.4.0:
     react-router-redux "^4.0.0"
     seamless-immutable "^7.1.2"
 
-redux-thunk@^2.2.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
+redux-thunk@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
 redux@^3.7.2:
   version "3.7.2"
@@ -6779,6 +6832,10 @@ regjsparser@^0.1.4:
 relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
+
+remove-accents@^0.4.2:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/remove-accents/-/remove-accents-0.4.4.tgz#73704abf7dae3764295d475d2b6afac4ea23e4d9"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
